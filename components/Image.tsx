@@ -15,7 +15,7 @@ export const ImageWithCredit: React.FC<{
       height={height}
       className="w-full h-auto"
     />
-    <div className="absolute bottom-2 right-2 p-1 border-2 border-black bg-2ed-light-blue text-black">
+    <div className="absolute bottom-2 right-2 p-1 border-2 border-black bg-2ed-light-blue text-black text-xs md:text-sm">
       <cite>{title}</cite>, by {artist}
     </div>
   </div>

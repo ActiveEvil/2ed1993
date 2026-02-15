@@ -50,14 +50,7 @@ export default function RootLayout({
       <body
         className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} antialiased flex flex-col justify-center  items-center w-full p-2 md:p-4`}
       >
-        <div className="w-full max-w-5xl">
-          <Link className="font-subtitle text-xl " href={"/"}>
-            2ed1993
-          </Link>
-        </div>
-        <main className="flex flex-col justify-center items-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black">
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );

@@ -1,0 +1,86 @@
+import { ImageWithCredit } from "@/components/Image";
+import { Database } from "@/database.types";
+import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
+import { Metadata } from "next/types";
+
+export function generateMetadata(): Metadata {
+  return {
+    title: "Warhammer 40,000 Secomnd Edition Factions | 2ed1993",
+    description: "Warhammer 40,000 Secomnd Edition Factions.",
+  };
+}
+
+export default async function Page() {
+  const supabase = createClient<Database>(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+  );
+
+  const { data: hero } = await supabase
+    .from("images")
+    .select("file_name, artist, title")
+    .eq("id", 3)
+    .single();
+
+  const { data: factions } = await supabase
+    .from("factions")
+    .select("id, name")
+    .order("name");
+
+  if (hero && factions) {
+    const heroImage = supabase.storage
+      .from("images")
+      .getPublicUrl(hero.file_name, {
+        transform: {
+          width: 1024,
+          height: 722,
+          quality: 100,
+        },
+      }).data.publicUrl;
+
+    return (
+      <>
+        <div className="flex gap-2 w-full max-w-5xl">
+          <Link
+            className="font-subtitle text-lg hover:underline underline-offset-4"
+            href="/"
+          >
+            2ed1993
+          </Link>
+          &gt;
+          <span className="font-subtitle text-lg">Factions</span>
+        </div>
+        <main className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black">
+          <header>
+            <h1 className="font-title uppercase tracking-wide text-6xl text-center">
+              Factions
+            </h1>
+          </header>
+
+          <section className="w-full">
+            <ul className="ml-4">
+              {factions.map(({ id, name }) => (
+                <li key={id}>
+                  <Link
+                    className="font-base uppercase tracking-wide hover:underline underline-offset-4"
+                    href={`/factions/${id}`}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <ImageWithCredit
+            src={heroImage}
+            width={1024}
+            height={722}
+            title={hero.title}
+            artist={hero.artist}
+          />
+        </main>
+      </>
+    );
+  }
+}

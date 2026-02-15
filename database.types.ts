@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      factions: {
+        Row: {
+          created_at: string
+          description: string
+          id: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: number
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: number
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       images: {
         Row: {
           artist: string

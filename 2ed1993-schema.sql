@@ -18,7 +18,7 @@ CREATE POLICY "Public factions are viewable by everyone." ON public.factions FOR
 SELECT
   USING (true);
 
-ALTER TABLE public.images ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.factions ENABLE ROW LEVEL SECURITY;
 
 CREATE TABLE IF NOT EXISTS
   public.images (
