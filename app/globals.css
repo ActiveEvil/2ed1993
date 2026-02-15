@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fafafa;
   --foreground: #2d2d2d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-2ed-yellow: #fff20b;
+  --color-2ed-black: #2d2d2d;
+  --color-2ed-light-yellow: #fff20b;
+  --color-2ed-dark-yellow: #fda82e;
   --color-2ed-dark-red: #ea2323;
   --color-2ed-light-red: #ea7c7c;
   --color-2ed-dark-blue: #008cc1;
@@ -18,12 +20,80 @@
   --font-block: var(--crimson-text);
 }
 
-/* @media (prefers-color-scheme: dark) {
+@layer utilities {
+  .aquilla-bars {
+    ::before {
+      content: " ";
+      position: absolute;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--color-background),
+        var(--color-background) 1rem,
+        transparent 1rem,
+        transparent 2rem
+      );
+      top: 1rem;
+      bottom: 1rem;
+      left: 0;
+      width: 5rem;
+    }
+    ::after {
+      content: " ";
+      position: absolute;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--color-background),
+        var(--color-background) 1rem,
+        transparent 1rem,
+        transparent 2rem
+      );
+      top: 1rem;
+      bottom: 1rem;
+      right: 0;
+      width: 5rem;
+    }
+  }
+
+  .aquilla-bars-sm {
+    ::before {
+      content: " ";
+      position: absolute;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--color-background),
+        var(--color-background) 1rem,
+        transparent 1rem,
+        transparent 2rem
+      );
+      top: 1rem;
+      bottom: 1rem;
+      left: 0;
+      width: 2.5rem;
+    }
+    ::after {
+      content: " ";
+      position: absolute;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--color-background),
+        var(--color-background) 1rem,
+        transparent 1rem,
+        transparent 2rem
+      );
+      top: 1rem;
+      bottom: 1rem;
+      right: 0;
+      width: 2.5rem;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
     --background: #2d2d2d;
-    --foreground: #ffffff;
+    --foreground: #fafafa;
   }
-} */
+}
 
 body {
   background: var(--background);

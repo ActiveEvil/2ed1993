@@ -23,7 +23,11 @@ const crimsonText = Crimson_Text({
 
 export const metadata: Metadata = {
   title: "2ed1993",
-  description: "",
+  description: "A digital record of the 2nd Edition of Warhammer 40,000",
+  icons: [
+    { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
+    { rel: "shortcut icon", url: "/favicon.ico" },
+  ],
 };
 
 export function generateViewport() {
@@ -40,15 +44,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="apple-mobile-web-app-title" content="2ed1993" />
+      </head>
       <body
         className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} antialiased flex flex-col justify-center  items-center w-full p-2 md:p-4`}
       >
         <div className="w-full max-w-5xl">
-          <Link className="font-subtitle text-xl" href={"/"}>
+          <Link className="font-subtitle text-xl " href={"/"}>
             2ed1993
           </Link>
         </div>
-        <main className="flex flex-col justify-center items-center gap-8 w-full max-w-5xl p-8 border-2 border-foreground">
+        <main className="flex flex-col justify-center items-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black">
           {children}
         </main>
       </body>
