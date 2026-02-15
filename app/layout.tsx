@@ -1,0 +1,57 @@
+import "./globals.css";
+import type { Metadata } from "next";
+import { Merriweather, IBM_Plex_Sans, Crimson_Text } from "next/font/google";
+import Link from "next/link";
+
+const merriweather = Merriweather({
+  variable: "--merriweather",
+  subsets: ["latin"],
+  weight: ["900"],
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--ibm-plex-sans",
+  subsets: ["latin"],
+  weight: ["700"],
+});
+
+const crimsonText = Crimson_Text({
+  variable: "--crimson-text",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+export const metadata: Metadata = {
+  title: "2ed1993",
+  description: "",
+};
+
+export function generateViewport() {
+  return {
+    viewport:
+      "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
+  };
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} antialiased flex flex-col justify-center  items-center w-full p-2 md:p-4`}
+      >
+        <div className="w-full max-w-5xl">
+          <Link className="font-subtitle text-xl" href={"/"}>
+            2ed1993
+          </Link>
+        </div>
+        <main className="flex flex-col justify-center items-center gap-8 w-full max-w-5xl p-8 border-2 border-foreground">
+          {children}
+        </main>
+      </body>
+    </html>
+  );
+}
