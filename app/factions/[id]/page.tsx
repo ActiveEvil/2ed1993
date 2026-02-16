@@ -1,4 +1,5 @@
 import { ImageWithCredit } from "@/components/Image";
+import { _2ed1993 } from "@/components/Logos";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
@@ -37,11 +38,22 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const { data: faction } = await supabase
     .from("factions")
-    .select(`name, description`)
+    .select(`name, description, images(file_name, artist, title)`)
     .eq("id", params.id)
     .single();
 
   if (faction) {
+    const [hero] = faction.images;
+    const heroImage = supabase.storage
+      .from("images")
+      .getPublicUrl(hero.file_name, {
+        transform: {
+          width: 960,
+          height: 1280,
+          quality: 100,
+        },
+      }).data.publicUrl;
+
     return (
       <>
         <div className="flex gap-2 w-full max-w-5xl">
@@ -67,8 +79,21 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
               {faction.name}
             </h1>
           </header>
-          <section>
-            <p className="">{faction.description}</p>
+
+          <section className="grid grid-cols-2 gap-4">
+            <ImageWithCredit
+              src={heroImage}
+              width={960}
+              height={1280}
+              title={hero.title}
+              artist={hero.artist}
+            />
+            <div className="flex flex-col gap-4">
+              <p>{faction.description}</p>
+              <div className="flex flex-col items-center justify-center grow">
+                <_2ed1993 grayscale />
+              </div>
+            </div>
           </section>
         </main>
       </>

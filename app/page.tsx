@@ -37,8 +37,8 @@ export default async function Page() {
         <div className="w-full max-w-5xl">
           <span className="font-subtitle text-lg">2ed1993</span>
         </div>
-        <main className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black">
-          <header>
+        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black">
+          <header className="flex items-center justify-center">
             <Oldhammer />
           </header>
           <section className="w-full">

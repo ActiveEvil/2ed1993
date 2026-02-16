@@ -14,12 +14,76 @@ export type Database = {
   }
   public: {
     Tables: {
+      equipment_weapons: {
+        Row: {
+          faction_id: number
+          points: number
+          weapon_id: number
+        }
+        Insert: {
+          faction_id: number
+          points: number
+          weapon_id: number
+        }
+        Update: {
+          faction_id?: number
+          points?: number
+          weapon_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_weapons_faction_id_fkey"
+            columns: ["faction_id"]
+            isOneToOne: false
+            referencedRelation: "factions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_weapons_weapon_id_fkey"
+            columns: ["weapon_id"]
+            isOneToOne: false
+            referencedRelation: "weapons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      faction_images: {
+        Row: {
+          faction_id: number
+          image_id: number
+        }
+        Insert: {
+          faction_id: number
+          image_id: number
+        }
+        Update: {
+          faction_id?: number
+          image_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faction_images_faction_id_fkey"
+            columns: ["faction_id"]
+            isOneToOne: false
+            referencedRelation: "factions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "faction_images_image_id_fkey"
+            columns: ["image_id"]
+            isOneToOne: false
+            referencedRelation: "images"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       factions: {
         Row: {
           created_at: string
           description: string
           id: number
           name: string
+          parent_faction_id: number | null
           updated_at: string | null
         }
         Insert: {
@@ -27,6 +91,7 @@ export type Database = {
           description: string
           id?: number
           name: string
+          parent_faction_id?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -34,9 +99,18 @@ export type Database = {
           description?: string
           id?: number
           name?: string
+          parent_faction_id?: number | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "factions_parent_faction_id_fkey"
+            columns: ["parent_faction_id"]
+            isOneToOne: false
+            referencedRelation: "factions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       images: {
         Row: {
@@ -65,6 +139,54 @@ export type Database = {
         }
         Relationships: []
       }
+      weapons: {
+        Row: {
+          armour_penetration: string
+          category: Database["public"]["Enums"]["weapon_categories"]
+          created_at: string
+          damage: string
+          id: number
+          long_range: string
+          long_to_hit: string
+          name: string
+          save_modifier: string
+          short_range: string
+          short_to_hit: string
+          strength: string
+          updated_at: string | null
+        }
+        Insert: {
+          armour_penetration: string
+          category: Database["public"]["Enums"]["weapon_categories"]
+          created_at?: string
+          damage: string
+          id?: number
+          long_range: string
+          long_to_hit: string
+          name: string
+          save_modifier: string
+          short_range: string
+          short_to_hit: string
+          strength: string
+          updated_at?: string | null
+        }
+        Update: {
+          armour_penetration?: string
+          category?: Database["public"]["Enums"]["weapon_categories"]
+          created_at?: string
+          damage?: string
+          id?: number
+          long_range?: string
+          long_to_hit?: string
+          name?: string
+          save_modifier?: string
+          short_range?: string
+          short_to_hit?: string
+          strength?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -73,7 +195,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      weapon_categories:
+        | "Basic"
+        | "Close combat"
+        | "Heavy"
+        | "Pistol"
+        | "Support"
+        | "Wargear"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -200,6 +328,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      weapon_categories: [
+        "Basic",
+        "Close combat",
+        "Heavy",
+        "Pistol",
+        "Support",
+        "Wargear",
+      ],
+    },
   },
 } as const
