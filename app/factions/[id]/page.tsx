@@ -30,6 +30,18 @@ export async function generateMetadata(props: {
   throw new Error("No data");
 }
 
+const groupByCategory = (items: Database): Map<string, EquipmentWeapon[]> => {
+  const map = new Map<string, EquipmentWeapon[]>();
+
+  for (const item of items) {
+    const bucket = map.get(item.category) ?? [];
+    bucket.push(item);
+    map.set(item.category, bucket);
+  }
+
+  return map;
+};
+
 export default async function Page(props: { params: Promise<{ id: number }> }) {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
@@ -38,7 +50,9 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const { data: faction } = await supabase
     .from("factions")
-    .select(`name, description, images(file_name, artist, title)`)
+    .select(
+      `name, description, images(file_name, artist, title), equipment_weapons(category, points, weapons(name))`,
+    )
     .eq("id", params.id)
     .single();
 
@@ -53,6 +67,21 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
           quality: 100,
         },
       }).data.publicUrl;
+
+    const categories = new Map<string, typeof faction.equipment_weapons>();
+
+    for (const item of faction.equipment_weapons) {
+      const bucket = categories.get(item.category) ?? [];
+      bucket.push(item);
+      categories.set(item.category, bucket);
+    }
+
+    const equipment = Array.from(categories.entries()).map(
+      ([category, items]) => ({
+        category,
+        items,
+      }),
+    );
 
     return (
       <>
@@ -90,11 +119,43 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
             />
             <div className="flex flex-col gap-4">
               <p>{faction.description}</p>
-              <div className="flex flex-col items-center justify-center grow">
+              <div className="flex flex-col items-center justify-center grow bg-black">
                 <_2ed1993 grayscale />
               </div>
             </div>
           </section>
+          {!!equipment.length && (
+            <section>
+              <h3 className="font-title text-3xl text-center uppercase">
+                {faction.name} Equipment
+              </h3>
+              <section className="grid grid-cols-2 gap-2">
+                {equipment.map((section) => (
+                  <div key={section.category} className="flex flex-col gap-4">
+                    <h3 className="font-subtitle text-2xl">
+                      {section.category}
+                    </h3>
+                    <ul>
+                      {section.items.map((item) => (
+                        <li className="flex items-baseline gap-2">
+                          <span className="whitespace-nowrap">
+                            {item.weapons.name}
+                          </span>
+                          <span
+                            className="flex-1 border-b-2 border-dotted border-foreground"
+                            aria-hidden="true"
+                          />
+                          <span className="whitespace-nowrap">
+                            {item.points}pts
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </section>
+            </section>
+          )}
         </main>
       </>
     );

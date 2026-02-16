@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS
     weapon_id int references weapons NOT NULL,
     faction_id int references factions NOT NULL,
     points int NOT NULL,
+    category text NOT NULL,
     primary key (weapon_id, faction_id)
   );
 

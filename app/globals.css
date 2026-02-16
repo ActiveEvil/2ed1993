@@ -87,14 +87,14 @@
     }
   }
 
-  .aquilla-bars-sm {
+  .aquilla-bars-black {
     ::before {
       content: " ";
       position: absolute;
       background-image: repeating-linear-gradient(
         to bottom,
-        var(--color-background),
-        var(--color-background) 1.2rem,
+        var(--color-black),
+        var(--color-black) 1.2rem,
         transparent 1.2rem,
         transparent 2.4rem
       );
@@ -108,8 +108,8 @@
       position: absolute;
       background-image: repeating-linear-gradient(
         to bottom,
-        var(--color-background),
-        var(--color-background) 1.2rem,
+        var(--color-black),
+        var(--color-black) 1.2rem,
         transparent 1.2rem,
         transparent 2.4rem
       );

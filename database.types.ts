@@ -16,16 +16,19 @@ export type Database = {
     Tables: {
       equipment_weapons: {
         Row: {
+          category: string
           faction_id: number
           points: number
           weapon_id: number
         }
         Insert: {
+          category: string
           faction_id: number
           points: number
           weapon_id: number
         }
         Update: {
+          category?: string
           faction_id?: number
           points?: number
           weapon_id?: number

@@ -21,7 +21,7 @@ export const _2ed1993: React.FC<{
   return (
     <div
       className={clsx({
-        "relative aquilla-bars-sm flex flex-col justify-center items-center gap-8": true,
+        "relative aquilla-bars-black flex flex-col justify-center items-center gap-8": true,
         grayscale: !!grayscale,
       })}
     >
