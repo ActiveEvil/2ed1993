@@ -30,18 +30,6 @@ export async function generateMetadata(props: {
   throw new Error("No data");
 }
 
-const groupByCategory = (items: Database): Map<string, EquipmentWeapon[]> => {
-  const map = new Map<string, EquipmentWeapon[]>();
-
-  for (const item of items) {
-    const bucket = map.get(item.category) ?? [];
-    bucket.push(item);
-    map.set(item.category, bucket);
-  }
-
-  return map;
-};
-
 export default async function Page(props: { params: Promise<{ id: number }> }) {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
