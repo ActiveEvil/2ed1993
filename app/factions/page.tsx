@@ -63,7 +63,7 @@ export default async function Page() {
               {factions.map(({ id, name }) => (
                 <li key={id}>
                   <Link
-                    className="font-base uppercase tracking-wide hover:underline underline-offset-4"
+                    className="font-subtitle text-2xl hover:underline underline-offset-4"
                     href={`/factions/${id}`}
                   >
                     {name}

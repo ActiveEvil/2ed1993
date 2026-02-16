@@ -39,7 +39,7 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
   const { data: faction } = await supabase
     .from("factions")
     .select(
-      `name, description, images(file_name, artist, title), equipment_weapons(category, points, weapons(name))`,
+      `name, description, images(file_name, artist, title), equipment_weapons(category, points, weapons(id, name))`,
     )
     .eq("id", params.id)
     .single();
@@ -97,7 +97,7 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
             </h1>
           </header>
 
-          <section className="grid grid-cols-2 gap-4">
+          <section className="grid md:grid-cols-2 gap-4">
             <ImageWithCredit
               src={heroImage}
               width={960}
@@ -107,25 +107,28 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
             />
             <div className="flex flex-col gap-4">
               <p>{faction.description}</p>
-              <div className="flex flex-col items-center justify-center grow bg-black">
+              <div className="flex flex-col items-center justify-center grow px-2 py-8 bg-black">
                 <_2ed1993 grayscale />
               </div>
             </div>
           </section>
           {!!equipment.length && (
-            <section>
+            <section className="flex flex-col gap-4">
               <h3 className="font-title text-3xl text-center uppercase">
                 {faction.name} Equipment
               </h3>
-              <section className="grid grid-cols-2 gap-2">
+              <section className="grid md:grid-cols-2 gap-8">
                 {equipment.map((section) => (
                   <div key={section.category} className="flex flex-col gap-4">
-                    <h3 className="font-subtitle text-2xl">
+                    <h3 className="font-subtitle text-2xl capitalize">
                       {section.category}
                     </h3>
                     <ul>
                       {section.items.map((item) => (
-                        <li className="flex items-baseline gap-2">
+                        <li
+                          key={item.weapons.id}
+                          className="flex items-baseline gap-2"
+                        >
                           <span className="whitespace-nowrap">
                             {item.weapons.name}
                           </span>
