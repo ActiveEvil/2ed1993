@@ -198,6 +198,60 @@ export type Database = {
           },
         ]
       }
+      weapon_profiles_special_rules: {
+        Row: {
+          special_rule_id: number
+          weapon_profile_id: number
+        }
+        Insert: {
+          special_rule_id: number
+          weapon_profile_id: number
+        }
+        Update: {
+          special_rule_id?: number
+          weapon_profile_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weapon_profiles_special_rules_special_rule_id_fkey"
+            columns: ["special_rule_id"]
+            isOneToOne: false
+            referencedRelation: "weapon_special_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "weapon_profiles_special_rules_weapon_profile_id_fkey"
+            columns: ["weapon_profile_id"]
+            isOneToOne: false
+            referencedRelation: "weapon_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weapon_special_rules: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          rule: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          rule: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          rule?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       weapons: {
         Row: {
           category: Database["public"]["Enums"]["weapon_categories"]

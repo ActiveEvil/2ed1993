@@ -1,4 +1,4 @@
-import { Highlighter } from "@/components/Highlighter";
+import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
@@ -28,11 +28,16 @@ export default async function Page() {
   const { data: weapons } = await supabase
     .from("weapons")
     .select(
-      "id, name, category, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration)",
+      "id, name, category, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
     )
     .order("name");
 
-  if (hero && weapons) {
+  const { data: weaponSpecialRules } = await supabase
+    .from("weapon_special_rules")
+    .select("name, rule")
+    .order("name");
+
+  if (hero && weapons && weaponSpecialRules) {
     const heroImage = supabase.storage
       .from("images")
       .getPublicUrl(hero.file_name, {
@@ -102,7 +107,7 @@ export default async function Page() {
                     </h3>
                     <section className="relative overflow-x-auto">
                       <table className="relative w-full min-w-max table-auto bg-black border-collapse border-2 border-black text-center">
-                        <thead className=" bg-black font-subtitle text-sm text-white">
+                        <thead className="bg-black font-subtitle text-sm text-white">
                           <tr>
                             <th scope="col" rowSpan={2} className="p-2">
                               Weapon
@@ -153,6 +158,13 @@ export default async function Page() {
                             >
                               Armour Penetration
                             </th>
+                            <th
+                              scope="col"
+                              rowSpan={2}
+                              className="p-2 max-w-24"
+                            >
+                              Special
+                            </th>
                           </tr>
                           {categoryId !== "Close_combat" && (
                             <tr>
@@ -183,7 +195,7 @@ export default async function Page() {
                               {item.weapon_profiles.length > 1 && (
                                 <tr>
                                   <th
-                                    colSpan={9}
+                                    colSpan={10}
                                     className="pt-2 pl-4 text-left whitespace-nowrap"
                                   >
                                     {item.name}
@@ -235,6 +247,25 @@ export default async function Page() {
                                   <td className="py-2 max-w-24">
                                     {profile.armour_penetration}
                                   </td>
+                                  <td className="py-2 max-w-24 text-sm">
+                                    <div className="flex flex-col">
+                                      {profile.weapon_special_rules.map(
+                                        (rule) => {
+                                          const ruleId = `${rule.name.split(" ").join("_")}_rule`;
+
+                                          return (
+                                            <HighlighterLink
+                                              key={ruleId}
+                                              className="hover:underline underline-offset-4"
+                                              href={`/weapons#${ruleId}`}
+                                            >
+                                              {rule.name}
+                                            </HighlighterLink>
+                                          );
+                                        },
+                                      )}
+                                    </div>
+                                  </td>
                                 </tr>
                               ))}
                             </tbody>
@@ -245,6 +276,46 @@ export default async function Page() {
                   </div>
                 );
               })}
+              <div className="flex flex-col gap-4">
+                <h3 className="font-subtitle text-2xl capitalize">
+                  Weapon Special Rules
+                </h3>
+                <section className="relative overflow-x-auto">
+                  <table className="relative w-full table-auto bg-black border-collapse border-2 border-black text-left">
+                    <thead className="bg-black font-subtitle text-sm text-white">
+                      <tr>
+                        <th scope="col" className="p-2">
+                          Name
+                        </th>
+                        <th scope="col" className="p-2">
+                          Rule
+                        </th>
+                      </tr>
+                    </thead>
+                    {weaponSpecialRules.map((rule) => {
+                      const ruleId = `${rule.name.split(" ").join("_")}_rule`;
+
+                      return (
+                        <tbody
+                          key={ruleId}
+                          id={ruleId}
+                          className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                        >
+                          <tr>
+                            <th
+                              scope="row"
+                              className="p-2 whitespace-nowrap font-semibold"
+                            >
+                              {rule.name}
+                            </th>
+                            <td className="p-2">{rule.rule}</td>
+                          </tr>
+                        </tbody>
+                      );
+                    })}
+                  </table>
+                </section>
+              </div>
             </section>
           )}
         </main>
