@@ -190,7 +190,7 @@ export default async function Page() {
                             <tbody
                               key={`${weaponId}`}
                               id={`${weaponId}`}
-                              className="bg-background even:bg-background/80 focus:bg-2ed-light-yellow target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold"
+                              className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold"
                             >
                               {item.weapon_profiles.length > 1 && (
                                 <tr>
