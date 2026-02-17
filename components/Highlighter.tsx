@@ -19,14 +19,16 @@ export const HighlighterLink: React.FC<
   {
     className?: string | undefined;
     href: string;
+    scroll?: boolean | undefined;
   } & React.PropsWithChildren
-> = ({ className, href, children }): React.JSX.Element => (
+> = ({ className, href, scroll, children }): React.JSX.Element => (
   <Link
     className={className}
     href={href}
     onNavigate={() => {
       window.location.replace(new URL(window.location.origin + href));
     }}
+    scroll={scroll}
   >
     {children}
   </Link>

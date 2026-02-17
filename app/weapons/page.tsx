@@ -196,7 +196,7 @@ export default async function Page() {
                                 <tr>
                                   <th
                                     colSpan={10}
-                                    className="pt-2 pl-4 text-left whitespace-nowrap"
+                                    className="pt-2 px-2 text-left whitespace-nowrap"
                                   >
                                     {item.name}
                                   </th>
@@ -207,7 +207,7 @@ export default async function Page() {
                                   <th
                                     scope="row"
                                     className={clsx({
-                                      "py-2 pl-4 text-left whitespace-nowrap": true,
+                                      "p-2 text-left whitespace-nowrap": true,
                                       "pl-8": !!profile.name,
                                     })}
                                   >
@@ -220,34 +220,34 @@ export default async function Page() {
                                       </td>
                                       <td
                                         className={clsx({
-                                          "py-2 max-w-24": true,
+                                          "p-2 max-w-24": true,
                                           "text-sm":
                                             profile.long_range.length > 8,
                                         })}
                                       >
                                         {profile.long_range}
                                       </td>
-                                      <td className="py-2 max-w-24">
+                                      <td className="p-2 max-w-24">
                                         {profile.short_to_hit}
                                       </td>
-                                      <td className="py-2 max-w-24">
+                                      <td className="p-2 max-w-24">
                                         {profile.long_to_hit}
                                       </td>
                                     </>
                                   )}
-                                  <td className="py-2 max-w-24">
+                                  <td className="p-2 max-w-24">
                                     {profile.strength}
                                   </td>
-                                  <td className="py-2 max-w-24">
+                                  <td className="p-2 max-w-24">
                                     {profile.damage}
                                   </td>
-                                  <td className="py-2 max-w-24">
+                                  <td className="p-2 max-w-24">
                                     {profile.save_modifier}
                                   </td>
-                                  <td className="py-2 max-w-24">
+                                  <td className="p-2 max-w-24">
                                     {profile.armour_penetration}
                                   </td>
-                                  <td className="py-2 max-w-24 text-sm">
+                                  <td className="p-2 max-w-24 text-sm">
                                     <div className="flex flex-col">
                                       {profile.weapon_special_rules.map(
                                         (rule) => {
@@ -299,7 +299,7 @@ export default async function Page() {
                         <tbody
                           key={ruleId}
                           id={ruleId}
-                          className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                          className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg target:[&_a]:inline"
                         >
                           <tr>
                             <th
@@ -308,7 +308,18 @@ export default async function Page() {
                             >
                               {rule.name}
                             </th>
-                            <td className="p-2">{rule.rule}</td>
+                            <td className="p-2">
+                              <div className="flex justify-between items-center">
+                                <span>{rule.rule}</span>
+                                <HighlighterLink
+                                  href="/weapons#"
+                                  className="hidden text-base text-2ed-black"
+                                  scroll={false}
+                                >
+                                  ✖
+                                </HighlighterLink>
+                              </div>
+                            </td>
                           </tr>
                         </tbody>
                       );
