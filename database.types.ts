@@ -142,50 +142,82 @@ export type Database = {
         }
         Relationships: []
       }
-      weapons: {
+      weapon_profiles: {
         Row: {
           armour_penetration: string
-          category: Database["public"]["Enums"]["weapon_categories"]
           created_at: string
           damage: string
           id: number
           long_range: string
           long_to_hit: string
-          name: string
+          name: string | null
           save_modifier: string
           short_range: string
           short_to_hit: string
           strength: string
           updated_at: string | null
+          weapon_id: number
         }
         Insert: {
           armour_penetration: string
-          category: Database["public"]["Enums"]["weapon_categories"]
           created_at?: string
           damage: string
           id?: number
           long_range: string
           long_to_hit: string
-          name: string
+          name?: string | null
           save_modifier: string
           short_range: string
           short_to_hit: string
           strength: string
           updated_at?: string | null
+          weapon_id: number
         }
         Update: {
           armour_penetration?: string
-          category?: Database["public"]["Enums"]["weapon_categories"]
           created_at?: string
           damage?: string
           id?: number
           long_range?: string
           long_to_hit?: string
-          name?: string
+          name?: string | null
           save_modifier?: string
           short_range?: string
           short_to_hit?: string
           strength?: string
+          updated_at?: string | null
+          weapon_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weapon_profiles_weapon_id_fkey"
+            columns: ["weapon_id"]
+            isOneToOne: false
+            referencedRelation: "weapons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weapons: {
+        Row: {
+          category: Database["public"]["Enums"]["weapon_categories"]
+          created_at: string
+          id: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["weapon_categories"]
+          created_at?: string
+          id?: number
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["weapon_categories"]
+          created_at?: string
+          id?: number
+          name?: string
           updated_at?: string | null
         }
         Relationships: []

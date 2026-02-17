@@ -41,20 +41,18 @@ export default async function Page() {
           <header className="flex items-center justify-center">
             <Oldhammer />
           </header>
-          <section className="w-full">
-            <p className="text-lg">
+          <section className="w-full text-xl">
+            <p>
               The 2ed1993 project aims to maintain a digital record of the 2nd
               Edition of Warhammer 40,000.
             </p>
-            <p className="text-lg">
-              The site is currently a work in progress...
-            </p>
+            <p>The site is currently a work in progress...</p>
           </section>
           <section>
             <ul className="">
               <li className="">
                 <Link
-                  className="font-subtitle uppercase tracking-wide text-2xl hover:underline underline-offset-4"
+                  className="font-title text-3xl text-center uppercase hover:underline underline-offset-4"
                   href="/factions"
                 >
                   Factions
@@ -63,7 +61,7 @@ export default async function Page() {
                   {factions.map(({ id, name }) => (
                     <li key={id}>
                       <Link
-                        className="font-base uppercase tracking-wide hover:underline underline-offset-4"
+                        className="font-subtitle text-2xl capitalize hover:underline underline-offset-4"
                         href={`/factions/${id}`}
                       >
                         {name}

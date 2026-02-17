@@ -96,7 +96,6 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
               {faction.name}
             </h1>
           </header>
-
           <section className="grid md:grid-cols-2 gap-4">
             <ImageWithCredit
               src={heroImage}
@@ -106,7 +105,7 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
               artist={hero.artist}
             />
             <div className="flex flex-col gap-4">
-              <p>{faction.description}</p>
+              <p className="text-lg">{faction.description}</p>
               <div className="flex flex-col items-center justify-center grow px-2 py-8 bg-black">
                 <_2ed1993 grayscale />
               </div>
@@ -129,9 +128,12 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
                           key={item.weapons.id}
                           className="flex items-baseline gap-2"
                         >
-                          <span className="whitespace-nowrap">
+                          <Link
+                            href={`/weapons#${item.weapons.name.split(" ").join("_")}`}
+                            className="whitespace-nowrap hover:underline underline-offset-4"
+                          >
                             {item.weapons.name}
-                          </span>
+                          </Link>
                           <span
                             className="flex-1 border-b-2 border-dotted border-foreground"
                             aria-hidden="true"

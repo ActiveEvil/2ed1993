@@ -128,6 +128,14 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+:target {
+  scroll-margin-top: 4em;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

@@ -48,7 +48,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="2ed1993" />
       </head>
       <body
-        className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} antialiased flex flex-col justify-center  items-center w-full p-2 md:p-4`}
+        className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} font-block text-base antialiased flex flex-col justify-center  items-center w-full p-2 md:p-4`}
       >
         {children}
       </body>

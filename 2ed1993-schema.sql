@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS
     created_at timestamp with time zone DEFAULT "now" () NOT NULL,
     updated_at timestamp with time zone,
     weapon_id int references weapons NOT NULL,
+    name text,
     short_range text NOT NULL,
     long_range text NOT NULL,
     short_to_hit text NOT NULL,
