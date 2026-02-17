@@ -190,7 +190,7 @@ export default async function Page() {
                             <tbody
                               key={`${weaponId}`}
                               id={`${weaponId}`}
-                              className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold"
+                              className="bg-background even:bg-background/80 focus:bg-2ed-light-yellow target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold"
                             >
                               {item.weapon_profiles.length > 1 && (
                                 <tr>
@@ -198,7 +198,12 @@ export default async function Page() {
                                     colSpan={10}
                                     className="pt-2 px-2 text-left whitespace-nowrap"
                                   >
-                                    {item.name}
+                                    <HighlighterLink
+                                      className="hover:underline underline-offset-4"
+                                      href={`/weapons#${weaponId}`}
+                                    >
+                                      {item.name}
+                                    </HighlighterLink>
                                   </th>
                                 </tr>
                               )}
@@ -211,7 +216,12 @@ export default async function Page() {
                                       "pl-8": !!profile.name,
                                     })}
                                   >
-                                    {profile.name || item.name}
+                                    <HighlighterLink
+                                      className="hover:underline underline-offset-4"
+                                      href={`/weapons#${weaponId}`}
+                                    >
+                                      {profile.name || item.name}
+                                    </HighlighterLink>
                                   </th>
                                   {categoryId !== "Close_combat" && (
                                     <>
@@ -299,26 +309,22 @@ export default async function Page() {
                         <tbody
                           key={ruleId}
                           id={ruleId}
-                          className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg target:[&_a]:inline"
+                          className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
                         >
                           <tr>
                             <th
                               scope="row"
                               className="p-2 whitespace-nowrap font-semibold"
                             >
-                              {rule.name}
+                              <HighlighterLink
+                                href={`/weapons#${ruleId}`}
+                                className="hover:underline underline-offset-4"
+                              >
+                                {rule.name}
+                              </HighlighterLink>
                             </th>
                             <td className="p-2">
-                              <div className="flex justify-between items-center">
-                                <span>{rule.rule}</span>
-                                <HighlighterLink
-                                  href="/weapons#"
-                                  className="hidden text-base text-2ed-black"
-                                  scroll={false}
-                                >
-                                  ✖
-                                </HighlighterLink>
-                              </div>
+                              <div>{rule.rule}</div>
                             </td>
                           </tr>
                         </tbody>

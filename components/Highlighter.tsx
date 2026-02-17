@@ -25,8 +25,19 @@ export const HighlighterLink: React.FC<
   <Link
     className={className}
     href={href}
-    onNavigate={() => {
-      window.location.replace(new URL(window.location.origin + href));
+    onNavigate={(e) => {
+      e.preventDefault();
+
+      const previous = encodeURI(href);
+      const current = window.location.pathname + window.location.hash;
+
+      if (current === previous) {
+        window.location.replace(
+          new URL(window.location.origin + window.location.pathname + "#"),
+        );
+      } else {
+        window.location.replace(new URL(window.location.origin + href));
+      }
     }}
     scroll={scroll}
   >
