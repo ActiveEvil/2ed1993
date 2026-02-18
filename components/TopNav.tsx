@@ -42,7 +42,11 @@ const BurgerMenu: React.FC<{
           {anchor}
         </span>
       ) : (
-        <Link className="p-1 underline underline-offset-4" href={href}>
+        <Link
+          className="p-1 underline underline-offset-4"
+          href={href}
+          onNavigate={() => setOpen(false)}
+        >
           {anchor}
         </Link>
       )}
@@ -52,7 +56,7 @@ const BurgerMenu: React.FC<{
   useEffect(() => {
     const handleClickOutside = (e: Event) => {
       if (open && !ref.current?.contains(e.target as Node)) {
-        setOpen(!open);
+        setOpen(false);
       }
     };
     document.addEventListener("click", handleClickOutside);
@@ -66,7 +70,7 @@ const BurgerMenu: React.FC<{
       <div>
         <button
           className="flex flex-col gap-1 w-8 h-6"
-          onClick={(e) => setOpen(!open)}
+          onClick={(e) => setOpen(true)}
         >
           <span className="sr-only">Menu</span>
           <div className="w-8 h-1 bg-2ed-light-yellow"></div>
