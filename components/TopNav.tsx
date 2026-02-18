@@ -51,13 +51,13 @@ const BurgerMenu: React.FC<{
 
   useEffect(() => {
     const handleClickOutside = (e: Event) => {
-      if (open && ref.current && !ref.current.contains(e.target as Node)) {
+      if (open && !ref.current?.contains(e.target as Node)) {
         setOpen(!open);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [ref, open]);
 
@@ -76,11 +76,11 @@ const BurgerMenu: React.FC<{
         <div
           ref={ref}
           className={clsx({
-            "collapse absolute inset-y-auto right-2 p-2 bg-background border-4 border-black text-foreground": true,
-            visible: open,
+            "-z-10 collapse absolute inset-y-auto right-2 p-2 bg-background border-4 border-black text-foreground": true,
+            "z-10 visible": open,
           })}
         >
-          <ul className="flex flex-col gap-2 w-full">{list}</ul>
+          <ul className="flex flex-col gap-4 w-full">{list}</ul>
         </div>
       </div>
     </div>
