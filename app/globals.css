@@ -121,12 +121,46 @@
   }
 }
 
+.aquilla-bars-tiny {
+  ::before {
+    content: " ";
+    position: absolute;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--color-black),
+      var(--color-black) 0.4rem,
+      transparent 0.4rem,
+      transparent 0.8rem
+    );
+    top: 0.4rem;
+    bottom: 0.4em;
+    left: 0;
+    width: 0.7rem;
+  }
+  ::after {
+    content: " ";
+    position: absolute;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--color-black),
+      var(--color-black) 0.4rem,
+      transparent 0.4rem,
+      transparent 0.8rem
+    );
+    top: 0.4rem;
+    bottom: 0.4em;
+    right: 0;
+    width: 0.7rem;
+  }
+}
+
+/* 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #2d2d2d;
     --foreground: #fafafa;
   }
-}
+} */
 
 html {
   scroll-behavior: smooth;

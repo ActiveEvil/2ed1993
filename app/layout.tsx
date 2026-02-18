@@ -1,4 +1,5 @@
 import "./globals.css";
+import { TopNav } from "@/components/TopNav";
 import type { Metadata } from "next";
 import { Merriweather, IBM_Plex_Sans, Crimson_Text } from "next/font/google";
 import Link from "next/link";
@@ -48,9 +49,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="2ed1993" />
       </head>
       <body
-        className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} font-block text-base antialiased flex flex-col justify-center  items-center w-full p-2 md:p-4`}
+        className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} font-block text-base antialiased flex flex-col justify-center items-center w-full`}
       >
-        {children}
+        <TopNav />
+        <div className="flex flex-col justify-center items-center w-full p-2 md:p-4">
+          {children}
+        </div>
       </body>
     </html>
   );

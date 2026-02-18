@@ -36,3 +36,25 @@ export const _2ed1993: React.FC<{
     </div>
   );
 };
+
+export const Tiny2ed1993: React.FC<{
+  grayscale?: boolean;
+}> = ({ grayscale }): React.JSX.Element => {
+  return (
+    <div
+      className={clsx({
+        "relative aquilla-bars-tiny flex flex-col justify-center items-center gap-8": true,
+        grayscale: !!grayscale,
+      })}
+    >
+      <div className="inline-flex flex-col justify-center items-center px-1 border-2ed-light-yellow border-t-[3rem] border-x-[0.6rem] border-x-transparent font-title tracking-widest leading-0">
+        <span className="inline-block -mt-11 p-1 bg-black border-2ed-dark-yellow border-2 [border-style:inset] text-xl text-2ed-dark-yellow [-webkit-text-stroke:1px_#fff20b]">
+          2ED
+        </span>
+        <span className="inline-block -mt-2 px-1/2 py-1/2 bg-2ed-light-yellow border-2ed-dark-yellow border-2 [border-style:outset] text-xs text-2ed-dark-red">
+          1993
+        </span>
+      </div>
+    </div>
+  );
+};

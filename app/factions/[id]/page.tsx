@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { _2ed1993 } from "@/components/Logos";
 import { Database } from "@/database.types";
@@ -73,24 +74,22 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
 
     return (
       <>
-        <div className="flex gap-2 w-full max-w-5xl">
-          <Link
-            className="font-subtitle text-lg hover:underline underline-offset-4"
-            href="/"
-          >
-            2ed1993
-          </Link>
-          &gt;
-          <Link
-            className="font-subtitle text-lg hover:underline underline-offset-4"
-            href="/factions"
-          >
-            Factions
-          </Link>
-          &gt;
-          <span className="font-subtitle text-lg">{faction.name}</span>
-        </div>
-        <main className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black">
+        <Breadcrumbs
+          crumbs={[
+            {
+              href: "/",
+              anchor: "2ed1993",
+            },
+            {
+              href: "/factions",
+              anchor: "Factions",
+            },
+            {
+              anchor: faction.name,
+            },
+          ]}
+        />
+        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
             <h1 className="font-title uppercase tracking-wide text-6xl text-center">
               {faction.name}
@@ -106,7 +105,7 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
             />
             <div className="flex flex-col gap-4">
               <p className="text-lg">{faction.description}</p>
-              <div className="flex flex-col items-center justify-center grow px-2 py-8 bg-black">
+              <div className="flex flex-col justify-center items-center grow px-2 py-8 bg-black">
                 <_2ed1993 grayscale />
               </div>
             </div>
@@ -126,11 +125,11 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
                       {section.items.map((item) => (
                         <li
                           key={item.weapons.id}
-                          className="flex items-baseline gap-2"
+                          className="flex items-baseline gap-2 text-lg"
                         >
                           <Link
-                            href={`/weapons#${item.weapons.name.split(" ").join("_")}`}
-                            className="whitespace-nowrap hover:underline underline-offset-4"
+                            href={`/wargear/weapons#${item.weapons.name.split(" ").join("_")}`}
+                            className="whitespace-nowrap underline underline-offset-4"
                           >
                             {item.weapons.name}
                           </Link>

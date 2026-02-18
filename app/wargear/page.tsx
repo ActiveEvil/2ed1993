@@ -21,15 +21,10 @@ export default async function Page() {
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .eq("id", 3)
+    .eq("id", 7)
     .single();
 
-  const { data: factions } = await supabase
-    .from("factions")
-    .select("id, name")
-    .order("name");
-
-  if (hero && factions) {
+  if (hero) {
     const heroImage = supabase.storage
       .from("images")
       .getPublicUrl(hero.file_name, {
@@ -49,29 +44,27 @@ export default async function Page() {
               anchor: "2ed1993",
             },
             {
-              anchor: "Factions",
+              anchor: "Wargear",
             },
           ]}
         />
         <main className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
             <h1 className="font-title uppercase tracking-wide text-6xl text-center">
-              Factions
+              Wargear
             </h1>
           </header>
 
           <nav>
             <ul>
-              {factions.map(({ id, name }) => (
-                <li key={id}>
-                  <Link
-                    className="font-subtitle text-2xl hover:underline underline-offset-4"
-                    href={`/factions/${id}`}
-                  >
-                    {name}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link
+                  className="font-subtitle text-2xl hover:underline underline-offset-4"
+                  href="/wargear/weapons"
+                >
+                  Weapons
+                </Link>
+              </li>
             </ul>
           </nav>
           <ImageWithCredit

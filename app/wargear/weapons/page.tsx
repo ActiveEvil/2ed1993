@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
@@ -66,33 +67,40 @@ export default async function Page() {
     return (
       <>
         <Highlighter />
-        <div className="flex gap-2 w-full max-w-5xl">
-          <Link
-            className="font-subtitle text-lg hover:underline underline-offset-4"
-            href="/"
-          >
-            2ed1993
-          </Link>
-          &gt;
-          <span className="font-subtitle text-lg">Weapons</span>
-        </div>
-        <main className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black">
-          <header>
+        <Breadcrumbs
+          crumbs={[
+            {
+              href: "/",
+              anchor: "2ed1993",
+            },
+            {
+              href: "/wargear",
+              anchor: "Wargear",
+            },
+            {
+              anchor: "Weapons",
+            },
+          ]}
+        />
+        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl pt-4 md:pt-8 border-4 border-black shadow-lg">
+          <header className="px-4 md:px-8">
             <h1 className="font-title uppercase tracking-wide text-6xl text-center">
               Weapons
             </h1>
           </header>
 
-          <ImageWithCredit
-            src={heroImage}
-            width={1280}
-            height={720}
-            title={hero.title}
-            artist={hero.artist}
-          />
+          <div className="px-4 md:px-8">
+            <ImageWithCredit
+              src={heroImage}
+              width={1280}
+              height={720}
+              title={hero.title}
+              artist={hero.artist}
+            />
+          </div>
 
           {!!weaponCategories.length && (
-            <section className="flex flex-col gap-4">
+            <section className="flex flex-col gap-4 pt-4 border-t-4 border-black">
               {weaponCategories.map((section) => {
                 const categoryId = section.category.split(" ").join("_");
 
@@ -102,11 +110,11 @@ export default async function Page() {
                     id={categoryId}
                     className="flex flex-col gap-4"
                   >
-                    <h3 className="font-subtitle text-2xl capitalize">
+                    <h3 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
                       {section.category} Weapons
                     </h3>
                     <section className="relative overflow-x-auto">
-                      <table className="relative w-full min-w-max table-auto bg-black border-collapse border-2 border-black text-center">
+                      <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
                         <thead className="bg-black font-subtitle text-sm text-white">
                           <tr>
                             <th scope="col" rowSpan={2} className="p-2">
@@ -200,7 +208,7 @@ export default async function Page() {
                                   >
                                     <HighlighterLink
                                       className="hover:underline underline-offset-4"
-                                      href={`/weapons#${weaponId}`}
+                                      href={`/wargear/weapons#${weaponId}`}
                                     >
                                       {item.name}
                                     </HighlighterLink>
@@ -218,7 +226,7 @@ export default async function Page() {
                                   >
                                     <HighlighterLink
                                       className="hover:underline underline-offset-4"
-                                      href={`/weapons#${weaponId}`}
+                                      href={`/wargear/weapons#${weaponId}`}
                                     >
                                       {profile.name || item.name}
                                     </HighlighterLink>
@@ -266,8 +274,8 @@ export default async function Page() {
                                           return (
                                             <HighlighterLink
                                               key={ruleId}
-                                              className="hover:underline underline-offset-4"
-                                              href={`/weapons#${ruleId}`}
+                                              className="underline underline-offset-4"
+                                              href={`/wargear/weapons#${ruleId}`}
                                             >
                                               {rule.name}
                                             </HighlighterLink>
@@ -287,11 +295,11 @@ export default async function Page() {
                 );
               })}
               <div className="flex flex-col gap-4">
-                <h3 className="font-subtitle text-2xl capitalize">
+                <h3 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
                   Weapon Special Rules
                 </h3>
                 <section className="relative overflow-x-auto">
-                  <table className="relative w-full table-auto bg-black border-collapse border-2 border-black text-left">
+                  <table className="relative w-full table-auto bg-black border-collapse border-b-4 border-black text-left">
                     <thead className="bg-black font-subtitle text-sm text-white">
                       <tr>
                         <th scope="col" className="p-2">
@@ -317,7 +325,7 @@ export default async function Page() {
                               className="p-2 whitespace-nowrap font-semibold"
                             >
                               <HighlighterLink
-                                href={`/weapons#${ruleId}`}
+                                href={`/wargear/weapons#${ruleId}`}
                                 className="hover:underline underline-offset-4"
                               >
                                 {rule.name}
