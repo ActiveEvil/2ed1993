@@ -3,6 +3,15 @@ import { ImageWithCredit } from "@/components/Image";
 import { Oldhammer, _2ed1993 } from "@/components/Logos";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
+import { Metadata } from "next";
+
+export function generateMetadata(): Metadata {
+  return {
+    title: "Warhammer 40,000 Second Edition | 2ed1993",
+    description:
+      "2ed1993 is a Warhammer 40,000 Second Edition archive project.",
+  };
+}
 
 export default async function Page() {
   const supabase = createClient<Database>(

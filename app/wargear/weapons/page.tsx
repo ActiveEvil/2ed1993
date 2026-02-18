@@ -4,13 +4,12 @@ import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
 import { clsx } from "clsx";
-import Link from "next/link";
 import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 Secomnd Edition Weapons | 2ed1993",
-    description: "Warhammer 40,000 Secomnd Edition Weapons.",
+    title: "Warhammer 40,000 Second Edition Weapons | 2ed1993",
+    description: "Warhammer 40,000 Second Edition Weapons.",
   };
 }
 

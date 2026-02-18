@@ -7,8 +7,8 @@ import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 Secomnd Edition Factions | 2ed1993",
-    description: "Warhammer 40,000 Secomnd Edition Factions.",
+    title: "Warhammer 40,000 Second Edition Rules | 2ed1993",
+    description: "Warhammer 40,000 Second Edition Rules.",
   };
 }
 
@@ -68,6 +68,18 @@ export default async function Page() {
               </li>
             </ul>
           </nav> */}
+
+          {/* Warhammer 40,000 is a challenging and involving game, with
+many fantastic races, and endless possibilities. I n a game of
+this size and level o f complexity there are bound t o be some
+situations where the rules seem unclear, or a particular
+situation lies outside the rules as they are written. This is
+inevitable, as we can't possibly give rules to cover every
+circumstance. Nor would we want to try, a s that would restrict
+what you can and cannot do far too much. Players should feel
+free to invent and improvise, exploring the galaxy of
+Warhammer 40,000 for themselves and taking the game far
+beyond the published rules if they wish. */}
           <ImageWithCredit
             src={heroImage}
             width={1280}
