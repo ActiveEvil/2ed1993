@@ -87,17 +87,13 @@ export default async function Page() {
               Weapons
             </h1>
           </header>
-
           <div className="px-4 md:px-8">
             <ImageWithCredit
               src={heroImage}
-              width={1280}
-              height={720}
               title={hero.title}
               artist={hero.artist}
             />
           </div>
-
           {!!weaponCategories.length && (
             <section className="flex flex-col gap-4 pt-4 border-t-4 border-black">
               {weaponCategories.map((section) => {
@@ -109,9 +105,9 @@ export default async function Page() {
                     id={categoryId}
                     className="flex flex-col gap-4"
                   >
-                    <h3 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
+                    <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
                       {section.category} Weapons
-                    </h3>
+                    </h2>
                     <section className="relative overflow-x-auto">
                       <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
                         <thead className="bg-black font-subtitle text-sm text-white">
@@ -294,9 +290,9 @@ export default async function Page() {
                 );
               })}
               <div className="flex flex-col gap-4">
-                <h3 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
+                <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
                   Weapon Special Rules
-                </h3>
+                </h2>
                 <section className="relative overflow-x-auto">
                   <table className="relative w-full table-auto bg-black border-collapse border-b-4 border-black text-left">
                     <thead className="bg-black font-subtitle text-sm text-white">

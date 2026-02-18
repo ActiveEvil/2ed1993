@@ -1,15 +1,14 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { Oldhammer, _2ed1993 } from "@/components/Logos";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
-import { Metadata } from "next";
+import Link from "next/link";
+import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 Second Edition | 2ed1993",
-    description:
-      "2ed1993 is a Warhammer 40,000 Second Edition archive project.",
+    title: "Warhammer 40,000 Second Edition Rules | 2ed1993",
+    description: "Warhammer 40,000 Second Edition Rules.",
   };
 }
 
@@ -22,7 +21,7 @@ export default async function Page() {
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .eq("id", 1)
+    .eq("id", 9)
     .single();
 
   if (hero) {
@@ -31,28 +30,28 @@ export default async function Page() {
         <Breadcrumbs
           crumbs={[
             {
+              href: "/",
               anchor: "2ed1993",
+            },
+            {
+              href: "/rules",
+              anchor: "Rules",
+            },
+            {
+              anchor: "Weapon Rules",
             },
           ]}
         />
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
-          <header className="flex justify-center items-center">
-            <Oldhammer />
+          <header>
+            <h1 className="font-title uppercase tracking-wide text-6xl text-center">
+              Weapon Rules
+            </h1>
           </header>
-          <section className="flex flex-col gap-4 w-full text-xl">
-            <p>
-              The 2ed1993 project aims to maintain a digital record of the 2nd
-              Edition of Warhammer 40,000.
-            </p>
-            <p className="font-bold">
-              The site is currently work in progress...
-            </p>
-          </section>
           <ImageWithCredit
             src={`images/${hero.file_name}`}
             title={hero.title}
             artist={hero.artist}
-            aspect="aspect-retro"
           />
         </main>
       </>

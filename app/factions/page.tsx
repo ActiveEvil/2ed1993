@@ -30,16 +30,6 @@ export default async function Page() {
     .order("name");
 
   if (hero && factions) {
-    const heroImage = supabase.storage
-      .from("images")
-      .getPublicUrl(hero.file_name, {
-        transform: {
-          width: 1280,
-          height: 720,
-          quality: 100,
-        },
-      }).data.publicUrl;
-
     return (
       <>
         <Breadcrumbs
@@ -59,7 +49,6 @@ export default async function Page() {
               Factions
             </h1>
           </header>
-
           <nav>
             <ul>
               {factions.map(({ id, name }) => (
@@ -75,9 +64,7 @@ export default async function Page() {
             </ul>
           </nav>
           <ImageWithCredit
-            src={heroImage}
-            width={1280}
-            height={720}
+            src={`images/${hero.file_name}`}
             title={hero.title}
             artist={hero.artist}
           />

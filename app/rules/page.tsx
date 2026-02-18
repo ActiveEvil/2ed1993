@@ -25,16 +25,6 @@ export default async function Page() {
     .single();
 
   if (hero) {
-    const heroImage = supabase.storage
-      .from("images")
-      .getPublicUrl(hero.file_name, {
-        transform: {
-          width: 1280,
-          height: 720,
-          quality: 100,
-        },
-      }).data.publicUrl;
-
     return (
       <>
         <Breadcrumbs
@@ -48,42 +38,74 @@ export default async function Page() {
             },
           ]}
         />
-
-        <main className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
+        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
             <h1 className="font-title uppercase tracking-wide text-6xl text-center">
               Rules
             </h1>
           </header>
 
-          {/* <nav>
+          <section className="flex flex-col justify-center gap-4">
+            <h2 className="font-title text-3xl text-center uppercase">
+              The Golden Rule
+            </h2>
+            <section className="flex flex-col gap-4 text-xl">
+              <p>
+                First and foremost, 2nd Edition 40K is meant to be fun. The
+                rules should serve the story you want to tell on the tabletop,
+                not dictate it. Remember, the ultimate goal is a memorable,
+                immersive battle that leaves everyone eager for the next game.
+                Be a good sport, and have fun!
+              </p>
+              <p>
+                If the internet has broken your brain and you are now thinking{" "}
+                <em>"but muh Meta!?"</em>, remember:
+              </p>
+            </section>
+            <section className="flex flex-col justify-center gap-2 bg-2ed-light-green p-2 border-2 border-black shadow-lg">
+              <blockquote className="text-2ed-black text-lg italic">
+                <p>
+                  Warhammer 40,000 is a challenging and involving game, with
+                  many fantastic races, and endless possibilities. In a game of
+                  this size and level of complexity there are bound to be some
+                  situations where the rules seem unclear, or a particular
+                  situation lies outside the rules as they are written. This is
+                  inevitable, as we can&apos;t possibly give rules to cover
+                  every circumstance. Nor would we want to try, as that would
+                  restrict what you can and cannot do far too much. Players
+                  should feel free to invent and improvise, exploring the galaxy
+                  of Warhammer 40,000 for themselves and taking the game far
+                  beyond the published rules if they wish.
+                </p>
+              </blockquote>
+              <p className="font-bold text-black text-xs text-right">
+                &mdash;Rick Priestley &amp; Andy Chambers,{" "}
+                <cite>Warhammer 40,000 Rulebook (2nd Edition)</cite>
+              </p>
+            </section>
+          </section>
+          <nav>
             <ul>
               <li>
                 <Link
                   className="font-subtitle text-2xl hover:underline underline-offset-4"
-                  href="/wargear/weapons"
+                  href={`/rules/general-rules`}
                 >
-                  Weapons
+                  General Rules
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="font-subtitle text-2xl hover:underline underline-offset-4"
+                  href={`/rules/weapon-rules`}
+                >
+                  Weapon Rules
                 </Link>
               </li>
             </ul>
-          </nav> */}
-
-          {/* Warhammer 40,000 is a challenging and involving game, with
-many fantastic races, and endless possibilities. I n a game of
-this size and level o f complexity there are bound t o be some
-situations where the rules seem unclear, or a particular
-situation lies outside the rules as they are written. This is
-inevitable, as we can't possibly give rules to cover every
-circumstance. Nor would we want to try, a s that would restrict
-what you can and cannot do far too much. Players should feel
-free to invent and improvise, exploring the galaxy of
-Warhammer 40,000 for themselves and taking the game far
-beyond the published rules if they wish. */}
+          </nav>
           <ImageWithCredit
-            src={heroImage}
-            width={1280}
-            height={720}
+            src={`images/${hero.file_name}`}
             title={hero.title}
             artist={hero.artist}
           />

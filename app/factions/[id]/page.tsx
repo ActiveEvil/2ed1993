@@ -47,16 +47,6 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
 
   if (faction) {
     const [hero] = faction.images;
-    const heroImage = supabase.storage
-      .from("images")
-      .getPublicUrl(hero.file_name, {
-        transform: {
-          width: 960,
-          height: 1280,
-          quality: 100,
-        },
-      }).data.publicUrl;
-
     const categories = new Map<string, typeof faction.equipment_weapons>();
 
     for (const item of faction.equipment_weapons) {
@@ -97,11 +87,10 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
           </header>
           <section className="grid md:grid-cols-2 gap-4">
             <ImageWithCredit
-              src={heroImage}
-              width={960}
-              height={1280}
+              src={`images/${hero.file_name}`}
               title={hero.title}
               artist={hero.artist}
+              aspect="aspect-portrait"
             />
             <div className="flex flex-col gap-4">
               <p className="text-lg">{faction.description}</p>
@@ -112,9 +101,9 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
           </section>
           {!!equipment.length && (
             <section className="flex flex-col gap-4">
-              <h3 className="font-title text-3xl text-center uppercase">
+              <h2 className="font-title text-3xl text-center uppercase">
                 {faction.name} Equipment
-              </h3>
+              </h2>
               <section className="grid md:grid-cols-2 gap-8">
                 {equipment.map((section) => (
                   <div key={section.category} className="flex flex-col gap-4">
