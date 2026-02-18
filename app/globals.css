@@ -154,13 +154,12 @@
   }
 }
 
-/* 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #2d2d2d;
     --foreground: #fafafa;
   }
-} */
+}
 
 html {
   scroll-behavior: smooth;
