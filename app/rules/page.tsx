@@ -49,19 +49,17 @@ export default async function Page() {
             <h2 className="font-title text-3xl text-center uppercase">
               The Golden Rule
             </h2>
-            <section className="flex flex-col gap-4 text-xl">
-              <p>
-                First and foremost, 2nd Edition 40K is meant to be fun. The
-                rules should serve the story you want to tell on the tabletop,
-                not dictate it. Remember, the ultimate goal is a memorable,
-                immersive battle that leaves everyone eager for the next game.
-                Be a good sport, and have fun!
-              </p>
-              <p>
-                If the internet has broken your brain and you are now thinking{" "}
-                <em>"but muh Meta!?"</em>, remember:
-              </p>
-            </section>
+            <p className="text-xl">
+              First and foremost, 2nd Edition 40K is meant to be fun. The rules
+              should serve the story you want to tell on the tabletop, not
+              dictate it. Remember, the ultimate goal is a memorable, immersive
+              battle that leaves everyone eager for the next game. Be a good
+              sport, and have fun!
+            </p>
+            <p className="text-xl">
+              If the internet has broken your brain and you are now thinking{" "}
+              <em>"but muh Meta!?"</em>, remember:
+            </p>
             <section className="flex flex-col justify-center gap-2 bg-2ed-light-green p-2 border-2 border-black shadow-lg">
               <blockquote className="text-2ed-black text-lg italic">
                 <p>

@@ -38,16 +38,6 @@ export default async function Page() {
     .order("name");
 
   if (hero && weapons && weaponSpecialRules) {
-    const heroImage = supabase.storage
-      .from("images")
-      .getPublicUrl(hero.file_name, {
-        transform: {
-          width: 1280,
-          height: 720,
-          quality: 100,
-        },
-      }).data.publicUrl;
-
     const categories = new Map<string, typeof weapons>();
 
     for (const item of weapons) {
@@ -89,7 +79,7 @@ export default async function Page() {
           </header>
           <div className="px-4 md:px-8">
             <ImageWithCredit
-              src={heroImage}
+              src={`images/${hero.file_name}`}
               title={hero.title}
               artist={hero.artist}
             />

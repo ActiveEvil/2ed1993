@@ -24,7 +24,13 @@ export default async function Page() {
     .eq("id", 9)
     .single();
 
-  if (hero) {
+  const { data: rules } = await supabase
+    .from("rules")
+    .select("name, rule")
+    .eq("category_id", 1)
+    .order("position");
+
+  if (hero && rules) {
     return (
       <>
         <Breadcrumbs
@@ -53,6 +59,28 @@ export default async function Page() {
             title={hero.title}
             artist={hero.artist}
           />
+          <section className="flex flex-col justify-center gap-16 mt-8">
+            {rules.map((item) => {
+              const ruleId = item.name.split(" ").join("_");
+              return (
+                <section
+                  key={ruleId}
+                  className="flex flex-col justify-center gap-4"
+                >
+                  <div className="relative flex items-center justify-center w-full h-9">
+                    <hr className="w-full h-1 bg-black border border-black" />
+                    <h2 className="absolute px-8 bg-background font-title text-3xl uppercase">
+                      {item.name}
+                    </h2>
+                  </div>
+                  <section
+                    className="flex flex-col justify-center gap-4"
+                    dangerouslySetInnerHTML={{ __html: item.rule }}
+                  />
+                </section>
+              );
+            })}
+          </section>
         </main>
       </>
     );

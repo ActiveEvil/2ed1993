@@ -142,6 +142,65 @@ export type Database = {
         }
         Relationships: []
       }
+      rule_categories: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      rules: {
+        Row: {
+          category_id: number
+          created_at: string
+          id: number
+          name: string
+          position: number
+          rule: string
+          updated_at: string | null
+        }
+        Insert: {
+          category_id: number
+          created_at?: string
+          id?: number
+          name: string
+          position: number
+          rule: string
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: number
+          created_at?: string
+          id?: number
+          name?: string
+          position?: number
+          rule?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rules_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "rule_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       weapon_profiles: {
         Row: {
           armour_penetration: string
