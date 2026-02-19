@@ -84,14 +84,14 @@ export default async function Page() {
           </section>
           <nav>
             <ul>
-              <li>
+              {/* <li>
                 <Link
                   className="font-subtitle text-2xl hover:underline underline-offset-4"
                   href={`/rules/general-rules`}
                 >
                   General Rules
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   className="font-subtitle text-2xl hover:underline underline-offset-4"
