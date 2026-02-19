@@ -8,8 +8,8 @@ import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 Second Edition Weapons | 2ed1993",
-    description: "Warhammer 40,000 Second Edition Weapons.",
+    title: "Warhammer 40,000 2nd Edition Weapons | 2ed1993",
+    description: "Warhammer 40,000 2nd Edition Weapons.",
   };
 }
 

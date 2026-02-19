@@ -24,7 +24,7 @@ const crimsonText = Crimson_Text({
 
 export const metadata: Metadata = {
   title: "2ed1993",
-  description: "A digital record of the 2nd Edition of Warhammer 40,000",
+  description: "The Warhammer 40,000 2nd Edition digital record project.",
   icons: [
     { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
     { rel: "shortcut icon", url: "/favicon.ico" },
@@ -57,8 +57,8 @@ export default function RootLayout({
         </div>
       </body>
       <footer className="p-4 mb-4 font-title text-xs">
-        ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 Second Edition
-        digital archive project). All rights reserved.
+        ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
+        digital record project). All rights reserved.
       </footer>
     </html>
   );

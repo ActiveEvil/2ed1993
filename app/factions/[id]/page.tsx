@@ -23,7 +23,7 @@ export async function generateMetadata(props: {
   if (faction) {
     const { name, description } = faction;
     return {
-      title: name + " in Warhammer 40,000 Second Edition | 2ed1993",
+      title: name + " in Warhammer 40,000 2nd Edition | 2ed1993",
       description,
     };
   }

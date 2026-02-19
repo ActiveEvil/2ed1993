@@ -7,8 +7,8 @@ import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 Second Edition Factions | 2ed1993",
-    description: "Warhammer 40,000 Second Edition Factions.",
+    title: "Warhammer 40,000 2nd Edition Factions | 2ed1993",
+    description: "Warhammer 40,000 2nd Edition Factions.",
   };
 }
 
