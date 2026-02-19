@@ -56,6 +56,10 @@ export default function RootLayout({
           {children}
         </div>
       </body>
+      <footer className="p-4 mb-4 font-title text-xs">
+        ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 Second Edition
+        digital archive project). All rights reserved.
+      </footer>
     </html>
   );
 }

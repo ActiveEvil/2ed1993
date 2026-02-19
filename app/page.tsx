@@ -7,9 +7,9 @@ import { Metadata } from "next";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 Second Edition | 2ed1993",
+    title: "The Warhammer 40,000 Second Edition digital archive | 2ed1993",
     description:
-      "2ed1993 is a Warhammer 40,000 Second Edition archive project.",
+      "2ed1993, the Warhammer 40,000 Second Edition digital archive project.",
   };
 }
 
@@ -41,8 +41,8 @@ export default async function Page() {
           </header>
           <section className="flex flex-col gap-4 w-full text-xl">
             <p>
-              The 2ed1993 project aims to maintain a digital record of the 2nd
-              Edition of Warhammer 40,000.
+              2ed1993 is a Warhammer 40,000 Second Edition digital archive
+              project.
             </p>
             <p className="font-bold">
               The site is currently work in progress...

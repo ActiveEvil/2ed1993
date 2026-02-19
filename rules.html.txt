@@ -11,7 +11,7 @@ Damage
     wound.
 </p>
 <section class="relative overflow-x-auto">
-    <table class="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
+    <table class="relative w-full min-w-max table-auto bg-black border-collapse border-4 border-black text-center">
         <thead class="bg-black font-subtitle text-sm text-white">
             <tr>
                 <td class="min-w-10"></td>
@@ -55,140 +55,161 @@ Damage
                 </th>
             </tr>
         </thead>
-        <tbody class="bg-background even:bg-background/80 text-lg font-semibold">
+        <tbody class="text-lg font-semibold">
             <tr>
                 <th rowSpan="11" class="p-2 bg-black font-subtitle text-lg text-white [writing-mode:sideways-lr]">
                     Hit Strength
                 </th>
             </tr>
             <tr>
-                <th scope="row" class="pb-2 px-2 min-w-10 bg-black font-subtitle text-sm text-white">
+                <th scope="row" class="pb-2 px-2 min-w-10 font-subtitle text-sm text-white">
                     1
                 </th>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background">4</td>
+                <td class="min-w-10 bg-background">5</td>
+                <td class="min-w-10 bg-background">6</td>
+                <td class="min-w-10 bg-background">6</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 min-w-10 bg-black font-subtitle text-sm text-white">
                     2
                 </th>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background/80">3</td>
+                <td class="min-w-10 bg-background/80">4</td>
+                <td class="min-w-10 bg-background/80">5</td>
+                <td class="min-w-10 bg-background/80">6</td>
+                <td class="min-w-10 bg-background/80">6</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 min-w-10 bg-black font-subtitle text-sm text-white">
                     3
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">3</td>
+                <td class="min-w-10 bg-background">4</td>
+                <td class="min-w-10 bg-background">5</td>
+                <td class="min-w-10 bg-background">6</td>
+                <td class="min-w-10 bg-background">6</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 min-w-10 bg-black font-subtitle text-sm text-white">
                     4
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">3</td>
+                <td class="min-w-10 bg-background/80">4</td>
+                <td class="min-w-10 bg-background/80">5</td>
+                <td class="min-w-10 bg-background/80">6</td>
+                <td class="min-w-10 bg-background/80">6</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 min-w-10 bg-black font-subtitle text-sm text-white">
                     5
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">3</td>
+                <td class="min-w-10 bg-background">4</td>
+                <td class="min-w-10 bg-background">5</td>
+                <td class="min-w-10 bg-background">6</td>
+                <td class="min-w-10 bg-background">6</td>
+                <td class="min-w-10">–</td>
+                <td class="min-w-10">–</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 bg-black font-subtitle text-sm text-white">
                     6
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">3</td>
+                <td class="min-w-10 bg-background/80">4</td>
+                <td class="min-w-10 bg-background/80">5</td>
+                <td class="min-w-10 bg-background/80">6</td>
+                <td class="min-w-10 bg-background/80">6</td>
+                <td class="min-w-10">–</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 bg-black font-subtitle text-sm text-white">
                     7
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">3</td>
+                <td class="min-w-10 bg-background">4</td>
+                <td class="min-w-10 bg-background">5</td>
+                <td class="min-w-10 bg-background">6</td>
+                <td class="min-w-10 bg-background">6</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 bg-black font-subtitle text-sm text-white">
                     8
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
-                <td class="min-w-10">6</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">3</td>
+                <td class="min-w-10 bg-background/80">4</td>
+                <td class="min-w-10 bg-background/80">5</td>
+                <td class="min-w-10 bg-background/80">6</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 bg-black font-subtitle text-sm text-white">
                     9
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
-                <td class="min-w-10">5</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">2</td>
+                <td class="min-w-10 bg-background">3</td>
+                <td class="min-w-10 bg-background">4</td>
+                <td class="min-w-10 bg-background">5</td>
             </tr>
             <tr>
                 <th scope="row" class="pb-2 px-2 bg-black font-subtitle text-sm text-white">
                     10
                 </th>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">2</td>
-                <td class="min-w-10">3</td>
-                <td class="min-w-10">4</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">2</td>
+                <td class="min-w-10 bg-background/80">3</td>
+                <td class="min-w-10 bg-background/80">4</td>
             </tr>
         </tbody>
     </table>
@@ -208,4 +229,52 @@ Armour Saves
     a <strong>Save Modifier</strong> on the weapon&apos;s profile. For example, if a model is wearing Mesh armor with a
     base save value of 5+, and it is hit by a Boltgun that has a save modifier of -1, the modified roll becomes 6+. If
     the modified save is greater than the highest possible dice score, then the armour is automatically penetrated.
+</p>
+
+Catching On Fire
+<p class="text-lg">
+    Certain weapons use volatile, burning-chemical ammunition. If a model survives a hit from such a weapon, it must
+    roll a D6; on a result of 4+, they <strong>Catch on fire</strong>. At the start of its own turn a model that is on
+    fire must make a <strong>Fire Test</strong>:
+</p>
+<section class="grid grid-cols-6 border-4 border-black">
+    <h3 class="col-span-6 p-2 bg-black font-subtitle text-sm text-white">
+        Fire Test Chart (D6)
+    </h3>
+    <div class="content-center col-span-1 p-2 border-b-4 border-black text-lg text-center">
+        1-5
+    </div>
+    <div class="col-span-5 p-2 border-b-4 border-black text-lg">
+        The fire continues to burn causing a further automatic hit. Work out damage as another automatic hit from the
+        weapon that caused the model to catch on fire. If the target survives, it moves its full <strong>Move</strong>
+        characteristic in a random direction dictated by a scatter dice. <strong>Squad coherency</strong> rules are
+        suspended for this model.
+    </div>
+    <div class="content-center col-span-1 p-2 text-lg text-center">
+        6
+    </div>
+    <div class="col-span-5 p-2 text-lg">
+        The flames are extinguished; the model is no longer on fire. It may not move or shoot for the rest of the turn,
+        but it can act normally starting from its next turn.
+    </div>
+</section>
+<h3 class="font-subtitle text-2xl">While On Fire</h3>
+<p class="text-lg">
+    During the <strong>Movement Phase</strong>, any friendly model that is elagable to do so may move within 1" of a
+    burning model and attempt to beat out the flames. On a D6 roll of 6 the flames are put out. For each additional
+    friendly model that helps +1 modifier is applied. Models that help a burning model may not shoot during the
+    <strong>Shooting Phase</strong>.
+</p>
+<p class="text-lg">
+    Vehicles (including Dreadnoughts), models in Terminator Armour, Frenzied troops, and Tyranid models may choose to
+    ignore the flames and continue fighting as normal.
+</p>
+
+
+Force Weapons
+<p class="text-lg">
+    Force weapons may only be wielded by psykers. During close combat, the weapon adds the psyker&apos;s
+    <strong>Mastery Level</strong> to the user <strong>Strength</strong> rating. If the weapon profile has a
+    <strong>Strength</strong> rating of its own, that be may be used instead, whichever is highest. Force weapons wound
+    daemons automatically; normal daemonic aura saving throws are ignored.
 </p>
