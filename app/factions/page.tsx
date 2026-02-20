@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
+import slugify from "@sindresorhus/slugify";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -50,12 +51,12 @@ export default async function Page() {
             </h1>
           </header>
           <nav>
-            <ul>
+            <ul className="flex flex-col gap-2 text-2xl">
               {factions.map(({ id, name }) => (
                 <li key={id}>
                   <Link
-                    className="font-subtitle text-2xl hover:underline underline-offset-4"
-                    href={`/factions/${id}`}
+                    className="font-subtitle hover:underline underline-offset-4"
+                    href={`/factions/${id}/${slugify(name)}`}
                   >
                     {name}
                   </Link>

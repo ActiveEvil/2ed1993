@@ -2,8 +2,10 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { _2ed1993 } from "@/components/Logos";
 import { Database } from "@/database.types";
+import slugify from "@sindresorhus/slugify";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
 export async function generateMetadata(props: {
@@ -16,7 +18,7 @@ export async function generateMetadata(props: {
   const params = await props.params;
   const { data: faction } = await supabase
     .from("factions")
-    .select(`name, description`)
+    .select("name, description")
     .eq("id", params.id)
     .single();
 
@@ -31,7 +33,9 @@ export async function generateMetadata(props: {
   throw new Error("No data");
 }
 
-export default async function Page(props: { params: Promise<{ id: number }> }) {
+export default async function Page(props: {
+  params: Promise<{ id: number; name: string }>;
+}) {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
@@ -46,6 +50,10 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
     .single();
 
   if (faction) {
+    if (slugify(faction.name) !== params.name) {
+      notFound();
+    }
+
     const [hero] = faction.images;
     const categories = new Map<string, typeof faction.equipment_weapons>();
 

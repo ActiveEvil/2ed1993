@@ -147,21 +147,54 @@ export type Database = {
           created_at: string
           id: number
           name: string
+          position: number
           updated_at: string | null
         }
         Insert: {
           created_at?: string
           id?: number
           name: string
+          position: number
           updated_at?: string | null
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
+          position?: number
           updated_at?: string | null
         }
         Relationships: []
+      }
+      rule_category_images: {
+        Row: {
+          image_id: number
+          rule_category_id: number
+        }
+        Insert: {
+          image_id: number
+          rule_category_id: number
+        }
+        Update: {
+          image_id?: number
+          rule_category_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rule_category_images_image_id_fkey"
+            columns: ["image_id"]
+            isOneToOne: false
+            referencedRelation: "images"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rule_category_images_rule_category_id_fkey"
+            columns: ["rule_category_id"]
+            isOneToOne: false
+            referencedRelation: "rule_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rules: {
         Row: {

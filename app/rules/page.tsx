@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
+import slugify from "@sindresorhus/slugify";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -23,8 +24,12 @@ export default async function Page() {
     .select("file_name, artist, title")
     .eq("id", 8)
     .single();
+  const { data: rule_categories } = await supabase
+    .from("rule_categories")
+    .select("id, name, rules(name)")
+    .order("position");
 
-  if (hero) {
+  if (hero && rule_categories) {
     return (
       <>
         <Breadcrumbs
@@ -83,24 +88,41 @@ export default async function Page() {
             </section>
           </section>
           <nav>
-            <ul>
-              {/* <li>
-                <Link
-                  className="font-subtitle text-2xl hover:underline underline-offset-4"
-                  href={`/rules/general-rules`}
-                >
-                  General Rules
-                </Link>
-              </li> */}
-              <li>
-                <Link
-                  className="font-subtitle text-2xl hover:underline underline-offset-4"
-                  href={`/rules/weapon-rules`}
-                >
-                  Weapon Rules
-                </Link>
-              </li>
-            </ul>
+            <ol className="flex flex-col gap-2 list-decimal text-2xl">
+              {rule_categories.map(({ id, name, rules }) => {
+                const href = `/rules/${id}/${slugify(name)}`;
+
+                return (
+                  <li key={id}>
+                    <Link
+                      className="font-subtitle hover:underline underline-offset-4"
+                      href={href}
+                    >
+                      {name}
+                    </Link>
+                    <ol className="flex flex-col gap-2 pl-8 list-decimal text-xl">
+                      {rules.map(({ name }) => {
+                        const ruleId = name.split(" ").join("_");
+
+                        return (
+                          <li
+                            key={ruleId}
+                            className="before:mr-2 before:content-[counter(item)'.'] before:[counter-increment:item]"
+                          >
+                            <Link
+                              className="hover:underline underline-offset-4"
+                              href={`${href}#${ruleId}`}
+                            >
+                              {name}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </li>
+                );
+              })}
+            </ol>
           </nav>
           <ImageWithCredit
             src={`images/${hero.file_name}`}

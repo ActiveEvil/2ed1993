@@ -1,36 +1,56 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
+import slugify from "@sindresorhus/slugify";
 import { createClient } from "@supabase/supabase-js";
-import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
-export function generateMetadata(): Metadata {
-  return {
-    title: "Warhammer 40,000 2nd Edition Rules | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Rules.",
-  };
-}
-
-export default async function Page() {
+export async function generateMetadata(props: {
+  params: Promise<{ id: number }>;
+}): Promise<Metadata> {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
   );
-
-  const { data: hero } = await supabase
-    .from("images")
-    .select("file_name, artist, title")
-    .eq("id", 9)
+  const params = await props.params;
+  const { data: category } = await supabase
+    .from("rule_categories")
+    .select("name")
+    .eq("id", params.id)
     .single();
 
-  const { data: rules } = await supabase
-    .from("rules")
-    .select("name, rule")
-    .eq("category_id", 1)
-    .order("position");
+  if (category) {
+    const { name } = category;
+    return {
+      title: `Warhammer 40,000 2nd Edition ${category.name}  Rules | 2ed1993`,
+      description: `Warhammer 40,000 2nd Edition  ${category.name} Rules.`,
+    };
+  }
 
-  if (hero && rules) {
+  throw new Error("No data");
+}
+
+export default async function Page(props: {
+  params: Promise<{ id: number; name: string }>;
+}) {
+  const supabase = createClient<Database>(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+  );
+  const params = await props.params;
+  const { data: category } = await supabase
+    .from("rule_categories")
+    .select("name, images(file_name, artist, title), rules(name, rule)")
+    .eq("id", params.id)
+    .single();
+
+  if (category) {
+    if (slugify(category.name) !== params.name) {
+      notFound();
+    }
+    const [hero] = category.images;
+
     return (
       <>
         <Breadcrumbs
@@ -51,7 +71,7 @@ export default async function Page() {
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
             <h1 className="font-title uppercase tracking-wide text-6xl text-center">
-              Weapon Rules
+              {category.name}
             </h1>
           </header>
           <ImageWithCredit
@@ -60,11 +80,12 @@ export default async function Page() {
             artist={hero.artist}
           />
           <section className="flex flex-col justify-center gap-8 md:gap-16 mt-8">
-            {rules.map((item) => {
+            {category.rules.map((item) => {
               const ruleId = item.name.split(" ").join("_");
               return (
                 <section
                   key={ruleId}
+                  id={ruleId}
                   className="flex flex-col justify-center gap-4"
                 >
                   <div className="relative flex items-center justify-center w-full h-9">
