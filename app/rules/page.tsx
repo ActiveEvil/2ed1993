@@ -88,7 +88,7 @@ export default async function Page() {
             </section>
           </section>
           <nav>
-            <ol className="flex flex-col gap-2 pl-4 list-decimal text-2xl">
+            <ol className="flex flex-col gap-2 pl-6 list-decimal text-2xl">
               {rule_categories.map(({ id, name, rules }) => {
                 const href = `/rules/${id}/${slugify(name)}`;
 
