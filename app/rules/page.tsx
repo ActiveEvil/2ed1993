@@ -63,7 +63,7 @@ export default async function Page() {
             </p>
             <p className="text-xl">
               If the internet has broken your brain and you are now thinking{" "}
-              <em>"b...bu...but muh Meta!?"</em>, remember:
+              <em>"b...bu' muh Meta!?"</em>, remember:
             </p>
             <section className="flex flex-col justify-center gap-2 bg-2ed-light-green p-2 border-2 border-black shadow-lg">
               <blockquote className="text-2ed-black text-lg italic">
