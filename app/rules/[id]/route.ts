@@ -5,22 +5,22 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  props: { params: Promise<{ id: number }> },
+  { params }: RouteContext<"/rules/[id]">,
 ) {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
   );
-  const params = await props.params;
+  const { id } = await params;
   const { data: category } = await supabase
     .from("rule_categories")
     .select("name")
-    .eq("id", params.id)
+    .eq("id", Number(id))
     .single();
   const redirectTo = request.nextUrl.clone();
 
   if (category) {
-    redirectTo.pathname = `/rules/${params.id}/${slugify(category.name)}`;
+    redirectTo.pathname = `/rules/${id}/${slugify(category.name)}`;
     return NextResponse.redirect(redirectTo, 308);
   }
 
