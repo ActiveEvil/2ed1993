@@ -62,8 +62,8 @@ export default async function Page() {
               sport and have fun!
             </p>
             <p className="text-xl">
-              If the internet has broken your brain and you are now thinking{" "}
-              <em>"b...bu' muh Meta!?"</em>, remember:
+              And if the internet has broken your brain and you are now thinking{" "}
+              <em>"b...but muh Meta!?"</em>, remember:
             </p>
             <section className="flex flex-col justify-center gap-2 bg-2ed-light-green p-2 border-2 border-black shadow-lg">
               <blockquote className="text-2ed-black text-lg italic">
@@ -87,8 +87,8 @@ export default async function Page() {
               </p>
             </section>
           </section>
-          <nav>
-            <ol className="flex flex-col gap-2 pl-8 list-decimal text-2xl">
+          <nav className="ordered-list">
+            <ol className="flex flex-col gap-2 text-2xl">
               {rule_categories.map(({ id, name, rules }) => {
                 const href = `/rules/${id}/${slugify(name)}`;
 
@@ -100,15 +100,12 @@ export default async function Page() {
                     >
                       {name}
                     </Link>
-                    <ol className="flex flex-col gap-2 pl-8 list-decimal text-xl">
+                    <ol className="flex flex-col gap-2 pl-4 text-xl">
                       {rules.map(({ name }) => {
                         const ruleId = name.split(" ").join("_");
 
                         return (
-                          <li
-                            key={ruleId}
-                            className="before:mr-2 before:content-[counter(item)'.'] before:[counter-increment:item]"
-                          >
+                          <li key={ruleId} className="">
                             <Link
                               className="hover:underline underline-offset-4"
                               href={`${href}#${ruleId}`}

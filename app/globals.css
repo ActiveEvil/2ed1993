@@ -122,38 +122,49 @@
       width: 3.25rem;
     }
   }
-}
-
-.aquilla-bars-tiny {
-  ::before {
-    content: " ";
-    position: absolute;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      var(--color-black),
-      var(--color-black) 0.4rem,
-      transparent 0.4rem,
-      transparent 0.8rem
-    );
-    top: 0.4rem;
-    bottom: 0.4em;
-    left: 0;
-    width: 0.7rem;
+  .aquilla-bars-tiny {
+    ::before {
+      content: " ";
+      position: absolute;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--color-black),
+        var(--color-black) 0.4rem,
+        transparent 0.4rem,
+        transparent 0.8rem
+      );
+      top: 0.4rem;
+      bottom: 0.4em;
+      left: 0;
+      width: 0.7rem;
+    }
+    ::after {
+      content: " ";
+      position: absolute;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--color-black),
+        var(--color-black) 0.4rem,
+        transparent 0.4rem,
+        transparent 0.8rem
+      );
+      top: 0.4rem;
+      bottom: 0.4em;
+      right: 0;
+      width: 0.7rem;
+    }
   }
-  ::after {
-    content: " ";
-    position: absolute;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      var(--color-black),
-      var(--color-black) 0.4rem,
-      transparent 0.4rem,
-      transparent 0.8rem
-    );
-    top: 0.4rem;
-    bottom: 0.4em;
-    right: 0;
-    width: 0.7rem;
+
+  .ordered-list {
+    ol {
+      counter-reset: item;
+    }
+    li {
+      counter-increment: item;
+    }
+    li::before {
+      content: counters(item, ".") ". ";
+    }
   }
 }
 
