@@ -47,6 +47,13 @@ export default async function Page() {
               Edition. It aims to collect together every rule, army list, unit
               profile, FAQ, or similar material in one location.
             </p>
+            <p>
+              For reasons that should be obvious, this is not a direct copy of
+              the original material produced by Games Workshop in the &apos;90s.
+              Instead, it is a functionally identical yet legally distinct
+              ruleset—one that may actually improve on the original in some
+              respects, particularly regarding clarity.
+            </p>
           </section>
           <ImageWithCredit
             src={`images/${hero.file_name}`}

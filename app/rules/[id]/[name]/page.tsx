@@ -64,7 +64,7 @@ export default async function Page(props: {
               anchor: "Rules",
             },
             {
-              anchor: "Weapon Rules",
+              anchor: category.name,
             },
           ]}
         />

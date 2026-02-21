@@ -102,7 +102,11 @@ export default async function Page() {
                       <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
                         <thead className="bg-black font-subtitle text-sm text-white">
                           <tr>
-                            <th scope="col" rowSpan={2} className="p-2">
+                            <th
+                              scope="col"
+                              rowSpan={2}
+                              className="p-2 text-left"
+                            >
                               Weapon
                             </th>
                             {categoryId !== "Close_combat" && (
