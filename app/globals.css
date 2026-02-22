@@ -231,9 +231,11 @@
           min-width: calc(var(--spacing) * 10);
           padding: calc(var(--spacing) * 2);
           line-height: var(--tw-leading, var(--text-lg--line-height));
+          color: var(--color-white);
         }
         .empty {
           background: transparent !important;
+          color: var(--color-white);
         }
       }
     }
