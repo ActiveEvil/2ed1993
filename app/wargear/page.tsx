@@ -44,17 +44,17 @@ export default async function Page() {
               Wargear
             </h1>
           </header>
-          <nav>
-            <ul>
+          <nav className="ordered-list">
+            <ol className="flex flex-col gap-2 text-2xl">
               <li>
                 <Link
-                  className="font-subtitle text-2xl hover:underline underline-offset-4"
+                  className="font-subtitle hover:underline underline-offset-4"
                   href="/wargear/weapons"
                 >
                   Weapons
                 </Link>
               </li>
-            </ul>
+            </ol>
           </nav>
           <ImageWithCredit
             src={`images/${hero.file_name}`}
