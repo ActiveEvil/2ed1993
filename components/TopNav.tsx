@@ -118,10 +118,10 @@ export const TopNav: React.FC = (): React.JSX.Element => {
   const isSmallScreen = useIsSmallScreen();
 
   const items = [
-    {
+    /*{
       href: "/factions",
       anchor: "Factions",
-    },
+    },*/
     {
       href: "/wargear",
       anchor: "Wargear",
