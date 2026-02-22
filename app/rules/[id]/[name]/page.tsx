@@ -95,7 +95,7 @@ export default async function Page(props: {
                     </h2>
                   </div>
                   <section
-                    className="flex flex-col justify-center gap-4"
+                    className="dynamic-content flex flex-col justify-center gap-4"
                     dangerouslySetInnerHTML={{ __html: item.rule }}
                   />
                 </section>

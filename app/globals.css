@@ -55,7 +55,6 @@
       right: 0;
       width: 2.5rem;
     }
-
     @variant md {
       ::before {
         content: " ";
@@ -89,7 +88,6 @@
       }
     }
   }
-
   .aquilla-bars-black {
     ::before {
       content: " ";
@@ -154,7 +152,6 @@
       width: 0.7rem;
     }
   }
-
   .ordered-list {
     ol {
       counter-reset: item;
@@ -164,6 +161,102 @@
     }
     li::before {
       content: counters(item, ".") ". ";
+    }
+  }
+  .dynamic-content {
+    h3 {
+      font-family: var(--ibm-plex-sans);
+      font-size: var(--text-2xl);
+      line-height: var(--tw-leading, var(--text-2xl--line-height));
+    }
+    h4 {
+      font-family: var(--ibm-plex-sans);
+      font-size: var(--text-xl);
+      line-height: var(--tw-leading, var(--text-xl--line-height));
+    }
+
+    p {
+      font-size: var(--text-lg);
+      line-height: var(--tw-leading, var(--text-lg--line-height));
+    }
+    .text-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: calc(var(--spacing) * 2);
+    }
+    .text-vertical {
+      writing-mode: sideways-lr;
+    }
+    .table {
+      overflow-x: auto;
+      position: relative;
+      table {
+        position: relative;
+        width: 100%;
+        min-width: max-content;
+        table-layout: auto;
+        background-color: var(--color-black);
+        border-color: var(--color-black);
+        border-style: var(--tw-border-style);
+        border-width: 4px;
+        border-collapse: collapse;
+        text-align: center;
+        thead {
+          background-color: var(--color-black);
+          font-size: var(--text-sm);
+          line-height: var(--tw-leading, var(--text-sm--line-height));
+          font-family: var(--ibm-plex-sans);
+        }
+        tbody {
+          --tw-font-weight: var(--font-weight-semibold);
+          font-weight: var(--font-weight-semibold);
+          font-size: var(--text-lg);
+          line-height: var(--tw-leading, var(--text-lg--line-height));
+          tr:nth-child(odd) td {
+            background-color: var(--background);
+          }
+          tr:nth-child(even) td {
+            background-color: color-mix(
+              in oklab,
+              var(--background) 80%,
+              transparent
+            );
+          }
+        }
+        th {
+          min-width: calc(var(--spacing) * 10);
+          padding: calc(var(--spacing) * 2);
+          line-height: var(--tw-leading, var(--text-lg--line-height));
+        }
+        .empty {
+          background: transparent !important;
+        }
+      }
+    }
+    .chart {
+      display: grid;
+      border-color: var(--color-black);
+      border-style: var(--tw-border-style);
+      border-width: 4px;
+      border-bottom: none;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      h3 {
+        padding: calc(var(--spacing) * 2);
+        background-color: var(--color-black);
+        color: var(--color-white);
+        font-family: var(--ibm-plex-sans);
+        font-size: var(--text-sm);
+        line-height: var(--tw-leading, var(--text-sm--line-height));
+      }
+      div {
+        padding: calc(var(--spacing) * 2);
+        font-size: var(--text-lg);
+        line-height: var(--tw-leading, var(--text-lg--line-height));
+        border-color: var(--color-black);
+        border-bottom-style: var(--tw-border-style);
+        border-bottom-width: 4px;
+      }
     }
   }
 }
