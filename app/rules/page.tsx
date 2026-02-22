@@ -101,7 +101,7 @@ export default async function Page() {
                     >
                       {name}
                     </Link>
-                    <ol className="flex flex-col gap-2 pl-4 text-xl">
+                    <ol className="flex flex-col gap-2 text-xl">
                       {rules.map(({ name }) => {
                         const ruleId = name.split(" ").join("_");
 

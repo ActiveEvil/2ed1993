@@ -82,7 +82,7 @@ export default async function Page(props: {
             title={hero.title}
             artist={hero.artist}
           />
-          <section className="flex flex-col justify-center gap-8 md:gap-16 mt-8">
+          <section className="flex flex-col justify-center gap-8 md:gap-16 md:mt-8">
             {category.rules.map((item) => {
               const ruleId = item.name.split(" ").join("_");
               return (
@@ -91,9 +91,9 @@ export default async function Page(props: {
                   id={ruleId}
                   className="flex flex-col justify-center gap-4"
                 >
-                  <div className="relative flex items-center justify-center w-full h-9">
-                    <hr className="w-full h-1 bg-black border border-black" />
-                    <h2 className="absolute px-2 bg-background font-title text-3xl uppercase">
+                  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+                    <hr className="md:absolute -z-10 w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black" />
+                    <h2 className="md:px-2 bg-background font-title text-3xl uppercase">
                       {item.name}
                     </h2>
                   </div>
