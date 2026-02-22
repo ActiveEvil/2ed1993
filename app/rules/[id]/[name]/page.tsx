@@ -80,7 +80,7 @@ export default async function Page(props: {
             artist={hero.artist}
           />
           <section className="flex flex-col justify-center gap-8 md:gap-16 mt-8">
-            {category.rules.map((item) => {
+            {category.rules.sort((a, b) => b.position - a.position).map((item) => {
               const ruleId = item.name.split(" ").join("_");
               return (
                 <section
