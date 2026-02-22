@@ -27,6 +27,7 @@ export default async function Page() {
   const { data: rule_categories } = await supabase
     .from("rule_categories")
     .select("id, name, rules(name)")
+    .order("position", { referencedTable: "rules" })
     .order("position");
 
   if (hero && rule_categories) {
