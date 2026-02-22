@@ -158,9 +158,11 @@
     }
     li {
       counter-increment: item;
+      padding-left: calc(var(--spacing) * 6);
     }
     li::before {
       content: counters(item, ".") ". ";
+      margin-left: calc(var(--spacing) * -6);
     }
   }
   .dynamic-content {
