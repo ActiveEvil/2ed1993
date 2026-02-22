@@ -209,6 +209,7 @@
           font-size: var(--text-sm);
           line-height: var(--tw-leading, var(--text-sm--line-height));
           font-family: var(--ibm-plex-sans);
+          color: var(--color-white);
         }
         tbody {
           --tw-font-weight: var(--font-weight-semibold);
