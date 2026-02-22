@@ -93,7 +93,7 @@ export default async function Page(props: {
                 >
                   <div className="relative flex flex-col items-center justify-center gap-4 w-full">
                     <hr className="md:absolute -z-10 w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black" />
-                    <h2 className="md:px-2 bg-background font-title text-3xl uppercase">
+                    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
                       {item.name}
                     </h2>
                   </div>
