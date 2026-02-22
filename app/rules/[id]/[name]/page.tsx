@@ -41,8 +41,11 @@ export default async function Page(props: {
   const params = await props.params;
   const { data: category } = await supabase
     .from("rule_categories")
-    .select("name, images(file_name, artist, title), rules(name, rule)")
+    .select(
+      "name, images(file_name, artist, title), rules(name, rule, position)",
+    )
     .eq("id", params.id)
+    .order("position", { referencedTable: "rules" })
     .single();
 
   if (category) {
@@ -80,7 +83,7 @@ export default async function Page(props: {
             artist={hero.artist}
           />
           <section className="flex flex-col justify-center gap-8 md:gap-16 mt-8">
-            {category.rules.sort((a, b) => b.position - a.position).map((item) => {
+            {category.rules.map((item) => {
               const ruleId = item.name.split(" ").join("_");
               return (
                 <section
