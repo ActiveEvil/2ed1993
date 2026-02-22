@@ -14,31 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      army_lists: {
+        Row: {
+          created_at: string
+          description: string | null
+          faction_id: number
+          id: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          faction_id: number
+          id?: number
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          faction_id?: number
+          id?: number
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "army_lists_faction_id_fkey"
+            columns: ["faction_id"]
+            isOneToOne: false
+            referencedRelation: "factions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_weapons: {
         Row: {
+          army_list_id: number
           category: string
-          faction_id: number
+          note: string | null
           points: number
           weapon_id: number
         }
         Insert: {
+          army_list_id: number
           category: string
-          faction_id: number
+          note?: string | null
           points: number
           weapon_id: number
         }
         Update: {
+          army_list_id?: number
           category?: string
-          faction_id?: number
+          note?: string | null
           points?: number
           weapon_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "equipment_weapons_faction_id_fkey"
-            columns: ["faction_id"]
+            foreignKeyName: "equipment_weapons_army_list_id_fkey"
+            columns: ["army_list_id"]
             isOneToOne: false
-            referencedRelation: "factions"
+            referencedRelation: "army_lists"
             referencedColumns: ["id"]
           },
           {
