@@ -56,7 +56,7 @@ export default async function Page() {
               The Golden Rule
             </h2>
             <p className="text-xl">
-              First and foremost, 2nd Edition 40K is meant to be fun. The rules
+              First and foremost, 2nd Edition 40k is meant to be fun. The rules
               should serve the story you want to tell on the tabletop, not
               dictate it. Remember, the ultimate goal is a memorable, immersive
               battle that leaves everyone eager for the next game. Be a good
