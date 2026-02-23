@@ -12,6 +12,7 @@
     "@sindresorhus/slugify": "^3.0.0",
     "@supabase/supabase-js": "^2.95.3",
     "clsx": "^2.1.1",
+    "js-cookie": "^3.0.5",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

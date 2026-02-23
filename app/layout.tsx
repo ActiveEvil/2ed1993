@@ -1,8 +1,8 @@
 import "./globals.css";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { TopNav } from "@/components/TopNav";
 import type { Metadata } from "next";
 import { Merriweather, IBM_Plex_Sans, Crimson_Text } from "next/font/google";
-import Link from "next/link";
 
 const merriweather = Merriweather({
   variable: "--merriweather",
@@ -38,7 +38,7 @@ export function generateViewport() {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -59,6 +59,7 @@ export default function RootLayout({
           ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
           digital record project). All rights reserved.
         </footer>
+        <InstallPrompt />
       </body>
     </html>
   );
