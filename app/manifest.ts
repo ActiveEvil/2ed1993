@@ -8,6 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
       "2ed1993, the Warhammer 40,000 2nd Edition digital record project.",
     start_url: "/",
     display: "standalone",
+    orientation: "portrait",
     background_color: "#000000",
     theme_color: "#000000",
     icons: [
