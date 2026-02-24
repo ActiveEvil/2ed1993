@@ -52,7 +52,7 @@ export default async function Page(props: {
     if (slugify(category.name) !== params.name) {
       notFound();
     }
-    const [hero] = category.images;
+    const heros = category.images.slice(0, 2);
 
     return (
       <>
@@ -73,15 +73,31 @@ export default async function Page(props: {
         />
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
-            <h1 className="font-title uppercase tracking-wide text-6xl text-center">
+            <h1 className="font-title uppercase tracking-wide text-5xl text-center">
               {category.name}
             </h1>
           </header>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
-          />
+          {heros.length === 1 ? (
+            <ImageWithCredit
+              key={heros[0].file_name}
+              src={`images/${heros[0].file_name}`}
+              title={heros[0].title}
+              artist={heros[0].artist}
+            />
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              {heros.map((hero, index) => (
+                <div key={hero.file_name}>
+                  <ImageWithCredit
+                    src={`images/${hero.file_name}`}
+                    title={hero.title}
+                    artist={hero.artist}
+                    aspect="aspect-portrait"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
           <section className="flex flex-col justify-center gap-8 md:gap-16 md:mt-8">
             {category.rules.map((item) => {
               const ruleId = item.name.split(" ").join("_");

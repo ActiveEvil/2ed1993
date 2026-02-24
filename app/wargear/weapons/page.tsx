@@ -73,7 +73,7 @@ export default async function Page() {
         />
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl pt-4 md:pt-8 border-4 border-black shadow-lg">
           <header className="px-4 md:px-8">
-            <h1 className="font-title uppercase tracking-wide text-6xl text-center">
+            <h1 className="font-title uppercase tracking-wide text-5xl text-center">
               Weapons
             </h1>
           </header>
