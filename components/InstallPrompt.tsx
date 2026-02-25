@@ -32,7 +32,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
       });
 
       window.addEventListener("appinstalled", () => {
-        c.set(installCookie, "installed");
+        c.set(installCookie, "installed", { expires: 360 });
       });
 
       ref.current?.showPopover();
@@ -56,7 +56,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
           <div className="flex gap-2">
             <button
               onClick={() => {
-                c.set(installCookie, "dismissed");
+                c.set(installCookie, "dismissed", { expires: 56 });
                 ref.current?.hidePopover();
               }}
               className="px-4 py-1 rounded-none bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
@@ -69,7 +69,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
                 deferredPrompt.prompt();
                 // @ts-ignore
                 const { outcome } = await deferredPrompt.userChoice;
-                c.set(installCookie, outcome);
+                c.set(installCookie, outcome, { expires: 56 });
                 setDeferredPrompt(undefined);
                 ref.current?.hidePopover();
               }}
@@ -186,7 +186,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  c.set(installCookie, "dismissed");
+                  c.set(installCookie, "dismissed", { expires: 56 });
                   ref.current?.hidePopover();
                 }}
                 className="px-4 py-1 rounded-none bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
