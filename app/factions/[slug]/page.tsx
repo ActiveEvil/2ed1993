@@ -2,14 +2,12 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { _2ed1993 } from "@/components/Logos";
 import { Database } from "@/database.types";
-import slugify from "@sindresorhus/slugify";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
 export async function generateMetadata(props: {
-  params: Promise<{ id: number }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
@@ -19,7 +17,7 @@ export async function generateMetadata(props: {
   const { data: faction } = await supabase
     .from("factions")
     .select("name, description")
-    .eq("id", params.id)
+    .eq("slug", params.slug)
     .single();
 
   if (faction) {
@@ -34,7 +32,7 @@ export async function generateMetadata(props: {
 }
 
 export default async function Page(props: {
-  params: Promise<{ id: number; name: string }>;
+  params: Promise<{ slug: string }>;
 }) {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
@@ -44,18 +42,14 @@ export default async function Page(props: {
   const { data: faction } = await supabase
     .from("factions")
     .select(
-      `name, description, images(file_name, artist, title), army_lists(id, name, equipment_weapons(category, note, points, weapons(id, name)))`,
+      `slug, name, description, images(file_name, artist, title), army_lists(id, name, equipment_weapons(category, note, points, weapons(id, name)))`,
     )
-    .eq("id", params.id)
+    .eq("slug", params.slug)
     .order("name", { referencedTable: "army_lists" })
     .order("points", { referencedTable: "army_lists.equipment_weapons" })
     .single();
 
   if (faction) {
-    if (slugify(faction.name) !== params.name) {
-      notFound();
-    }
-
     const heros = faction.images.slice(0, 2);
 
     return (
@@ -112,7 +106,7 @@ export default async function Page(props: {
             <nav className="ordered-list">
               <ol className="flex flex-col gap-2 text-2xl">
                 {faction.army_lists.map((list) => {
-                  const href = `/factions/${params.id}/${slugify(faction.name)}#${list.name.split(" ").join("_")}`;
+                  const href = `/factions/${faction.slug}#${list.name.split(" ").join("_")}`;
 
                   return (
                     <li key={list.id}>

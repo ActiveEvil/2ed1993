@@ -125,6 +125,7 @@ export type Database = {
           id: number
           name: string
           parent_faction_id: number | null
+          slug: string
           updated_at: string | null
         }
         Insert: {
@@ -133,6 +134,7 @@ export type Database = {
           id?: number
           name: string
           parent_faction_id?: number | null
+          slug: string
           updated_at?: string | null
         }
         Update: {
@@ -141,6 +143,7 @@ export type Database = {
           id?: number
           name?: string
           parent_faction_id?: number | null
+          slug?: string
           updated_at?: string | null
         }
         Relationships: [
@@ -186,6 +189,7 @@ export type Database = {
           id: number
           name: string
           position: number
+          slug: string | null
           updated_at: string | null
         }
         Insert: {
@@ -193,6 +197,7 @@ export type Database = {
           id?: number
           name: string
           position: number
+          slug?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -200,6 +205,7 @@ export type Database = {
           id?: number
           name?: string
           position?: number
+          slug?: string | null
           updated_at?: string | null
         }
         Relationships: []
