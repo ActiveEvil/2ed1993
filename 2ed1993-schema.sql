@@ -5,8 +5,10 @@ CREATE TABLE IF NOT EXISTS
     updated_at timestamp with time zone,
     name text NOT NULL,
     description text NOT NULL,
-    parent_faction_id int references factions 
+    parent_faction_id int references factions,
+    slug text NOT NULL unique
   );
+  
 
 ALTER TABLE public.factions OWNER TO postgres;
 

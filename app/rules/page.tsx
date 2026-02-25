@@ -26,7 +26,7 @@ export default async function Page() {
     .single();
   const { data: rule_categories } = await supabase
     .from("rule_categories")
-    .select("id, name, rules(name)")
+    .select("slug, name, rules(name)")
     .order("position", { referencedTable: "rules" })
     .order("position");
 
@@ -90,11 +90,11 @@ export default async function Page() {
           </section>
           <nav className="ordered-list">
             <ol className="flex flex-col gap-2 text-2xl">
-              {rule_categories.map(({ id, name, rules }) => {
-                const href = `/rules/${id}/${slugify(name)}`;
+              {rule_categories.map(({ slug, name, rules }) => {
+                const href = `/rules/${slug}`;
 
                 return (
-                  <li key={id}>
+                  <li key={slug}>
                     <Link
                       className="font-subtitle hover:underline underline-offset-4"
                       href={href}

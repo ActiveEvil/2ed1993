@@ -27,7 +27,7 @@ export default async function Page() {
 
   const { data: factions } = await supabase
     .from("factions")
-    .select("id, name")
+    .select("slug, name")
     .order("name");
 
   if (hero && factions) {
@@ -52,11 +52,11 @@ export default async function Page() {
           </header>
           <nav className="ordered-list">
             <ol className="flex flex-col gap-2 text-2xl">
-              {factions.map(({ id, name }) => (
-                <li key={id}>
+              {factions.map(({ slug, name }) => (
+                <li key={slug}>
                   <Link
                     className="font-subtitle hover:underline underline-offset-4"
-                    href={`/factions/${id}/${slugify(name)}`}
+                    href={`/factions/${slug}`}
                   >
                     {name}
                   </Link>

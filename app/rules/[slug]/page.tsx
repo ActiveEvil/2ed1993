@@ -1,13 +1,11 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
-import slugify from "@sindresorhus/slugify";
 import { createClient } from "@supabase/supabase-js";
-import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
 export async function generateMetadata(props: {
-  params: Promise<{ id: number }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
@@ -17,7 +15,7 @@ export async function generateMetadata(props: {
   const { data: category } = await supabase
     .from("rule_categories")
     .select("name")
-    .eq("id", params.id)
+    .eq("slug", params.slug)
     .single();
 
   if (category) {
@@ -32,7 +30,7 @@ export async function generateMetadata(props: {
 }
 
 export default async function Page(props: {
-  params: Promise<{ id: number; name: string }>;
+  params: Promise<{ slug: string }>;
 }) {
   const supabase = createClient<Database>(
     process.env.SUPABASE_URL!,
@@ -44,14 +42,11 @@ export default async function Page(props: {
     .select(
       "name, images(file_name, artist, title), rules(name, rule, position)",
     )
-    .eq("id", params.id)
+    .eq("slug", params.slug)
     .order("position", { referencedTable: "rules" })
     .single();
 
   if (category) {
-    if (slugify(category.name) !== params.name) {
-      notFound();
-    }
     const heros = category.images.slice(0, 2);
 
     return (

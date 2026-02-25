@@ -183,6 +183,11 @@
       font-size: var(--text-lg);
       line-height: var(--tw-leading, var(--text-lg--line-height));
     }
+    a {
+      font-weight: bolder;
+      text-underline-offset: 4px;
+      text-decoration-line: underline;
+    }
     .ordered-list {
       ol {
         flex-direction: column;
