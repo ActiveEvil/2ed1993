@@ -16,6 +16,11 @@ export default async function Page() {
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
   );
+  const { data: hero } = await supabase
+    .from("images")
+    .select("file_name, artist, title")
+    .eq("id", 22)
+    .single();
   const { data: mission_cards } = await supabase
     .from("mission_cards")
     .select(
@@ -23,9 +28,7 @@ export default async function Page() {
     )
     .order("name");
 
-  if (mission_cards) {
-    // const heros = category.images.slice(0, 2);
-
+  if (hero && mission_cards) {
     const origins = new Map<string, typeof mission_cards>();
 
     for (const item of mission_cards) {
@@ -62,27 +65,11 @@ export default async function Page() {
               Mission Cards
             </h1>
           </header>
-          {/* {heros.length === 1 ? (
           <ImageWithCredit
-            key={heros[0].file_name}
-            src={`images/${heros[0].file_name}`}
-            title={heros[0].title}
-            artist={heros[0].artist}
+            src={`images/${hero.file_name}`}
+            title={hero.title}
+            artist={hero.artist}
           />
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            {heros.map((hero, index) => (
-              <div key={hero.file_name}>
-                <ImageWithCredit
-                  src={`images/${hero.file_name}`}
-                  title={hero.title}
-                  artist={hero.artist}
-                  aspect="aspect-portrait"
-                />
-              </div>
-            ))}
-          </div>
-        )} */}
           {cards.map((section) => {
             const originId = section.origin.split(" ").join("_");
             return (
