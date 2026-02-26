@@ -68,7 +68,7 @@ export default async function Page(props: {
         />
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
-            <h1 className="font-title uppercase tracking-wide text-5xl text-center">
+            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               {category.name}
             </h1>
           </header>

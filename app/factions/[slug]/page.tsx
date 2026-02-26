@@ -71,7 +71,7 @@ export default async function Page(props: {
         />
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
-            <h1 className="font-title uppercase tracking-wide text-5xl text-center">
+            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               {faction.name}
             </h1>
           </header>
@@ -100,7 +100,7 @@ export default async function Page(props: {
             <p className="text-lg">{faction.description}</p>
           </section>
           <section className="flex flex-col gap-8">
-            <h2 className="font-title uppercase tracking-wide text-5xl text-center">
+            <h2 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               Army Lists
             </h2>
             <nav className="ordered-list">
