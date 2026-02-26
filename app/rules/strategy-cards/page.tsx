@@ -19,13 +19,11 @@ export default async function Page() {
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .eq("id", 2)
+    .eq("id", 27)
     .single();
   const { data: mission_cards } = await supabase
-    .from("mission_cards")
-    .select(
-      "id, origin, name, description, primary_objective, secondary_objective",
-    )
+    .from("strategy_cards")
+    .select("id, origin, name, description")
     .order("name");
 
   if (hero && mission_cards) {
@@ -55,14 +53,14 @@ export default async function Page() {
               anchor: "Rules",
             },
             {
-              anchor: "Mission Cards",
+              anchor: "Strategy Cards",
             },
           ]}
         />
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
             <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Mission Cards
+              Strategy Cards
             </h1>
           </header>
           <ImageWithCredit
@@ -91,37 +89,13 @@ export default async function Page() {
                       <div
                         id={cardId}
                         key={cardId}
-                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-mid-blue"
+                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red"
                       >
-                        <h3 className=" font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
-                          {card.name}
-                        </h3>
                         <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black text-sm md:text-base">
+                          <h3 className=" font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">
+                            {card.name}
+                          </h3>
                           <p>{card.description}</p>
-                          <div className="flex flex-col justify-center items-center gap-2">
-                            <h4 className="font-subtitle text-xl text-2ed-dark-red">
-                              Primary Objective
-                            </h4>
-                            <div
-                              className="flex flex-col justify-center gap-2 text-black"
-                              dangerouslySetInnerHTML={{
-                                __html: card.primary_objective,
-                              }}
-                            ></div>
-                          </div>
-                          {card.secondary_objective && (
-                            <div className="flex flex-col justify-center items-center gap-2">
-                              <h4 className="font-subtitle text-xl text-2ed-dark-red">
-                                Secondary Objective
-                              </h4>
-                              <div
-                                className="flex flex-col justify-center items-center gap-2 text-black"
-                                dangerouslySetInnerHTML={{
-                                  __html: card.secondary_objective,
-                                }}
-                              ></div>
-                            </div>
-                          )}
                         </div>
                       </div>
                     );

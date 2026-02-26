@@ -4,7 +4,6 @@
   --background: #fafafa;
   --foreground: #2d2d2d;
 }
-
 @theme inline {
   --aspect-retro: 4 / 3;
   --aspect-portrait: 4 / 5;
@@ -16,7 +15,8 @@
   --color-2ed-dark-yellow: #fda82e;
   --color-2ed-dark-red: #ea2323;
   --color-2ed-light-red: #ea7c7c;
-  --color-2ed-dark-blue: #008cc1;
+  --color-2ed-dark-blue: #005097;
+  --color-2ed-mid-blue: #008cc1;
   --color-2ed-light-blue: #6dcef7;
   --color-2ed-light-green: #c2dfcf;
   --color-2ed-dark-green: #00a800;
