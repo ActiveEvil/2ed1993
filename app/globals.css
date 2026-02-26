@@ -11,6 +11,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-2ed-black: #2d2d2d;
+  --color-2ed-white: #fafafa;
   --color-2ed-light-yellow: #fff20b;
   --color-2ed-dark-yellow: #fda82e;
   --color-2ed-dark-red: #ea2323;
@@ -18,6 +19,7 @@
   --color-2ed-dark-blue: #008cc1;
   --color-2ed-light-blue: #6dcef7;
   --color-2ed-light-green: #c2dfcf;
+  --color-2ed-dark-green: #00a800;
   --font-title: var(--merriweather);
   --font-subtitle: var(--ibm-plex-sans);
   --font-block: var(--crimson-text);
