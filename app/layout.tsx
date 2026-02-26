@@ -29,6 +29,17 @@ export const metadata: Metadata = {
     { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
     { rel: "shortcut icon", url: "/favicon.ico" },
   ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export function generateViewport() {
