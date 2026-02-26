@@ -91,7 +91,7 @@ export default async function Page() {
                       <div
                         id={cardId}
                         key={cardId}
-                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue"
+                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-green"
                       >
                         <h3 className=" font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
                           {card.name}
