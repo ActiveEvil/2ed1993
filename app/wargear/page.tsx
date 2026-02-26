@@ -44,6 +44,11 @@ export default async function Page() {
               Wargear
             </h1>
           </header>
+          <ImageWithCredit
+            src={`images/${hero.file_name}`}
+            title={hero.title}
+            artist={hero.artist}
+          />
           <nav className="ordered-list">
             <ol className="flex flex-col gap-2 text-2xl">
               <li>
@@ -56,11 +61,6 @@ export default async function Page() {
               </li>
             </ol>
           </nav>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
-          />
         </main>
       </>
     );
