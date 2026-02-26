@@ -311,6 +311,33 @@ export type Database = {
           },
         ]
       }
+      strategy_cards: {
+        Row: {
+          created_at: string
+          description: string
+          id: number
+          name: string
+          origin: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: number
+          name: string
+          origin: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: number
+          name?: string
+          origin?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       weapon_profiles: {
         Row: {
           armour_penetration: string
