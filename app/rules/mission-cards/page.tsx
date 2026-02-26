@@ -80,9 +80,9 @@ export default async function Page() {
               >
                 <div className="relative flex flex-col items-center justify-center gap-4 w-full">
                   <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black" />
-                  <h3 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                  <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
                     {section.origin}
-                  </h3>
+                  </h2>
                 </div>
                 <section className="grid md:grid-cols-2 gap-4">
                   {section.items.map((card) => {
@@ -91,17 +91,17 @@ export default async function Page() {
                       <div
                         id={cardId}
                         key={cardId}
-                        className="flex flex-col justify-center items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue"
+                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue"
                       >
-                        <h4 className=" font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
+                        <h3 className=" font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
                           {card.name}
-                        </h4>
+                        </h3>
                         <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black">
                           <p>{card.description}</p>
                           <div className="flex flex-col justify-center items-center gap-2">
-                            <h5 className="font-subtitle text-xl text-2ed-dark-red">
+                            <h4 className="font-subtitle text-xl text-2ed-dark-red">
                               Primary Objective
-                            </h5>
+                            </h4>
                             <div
                               className="flex flex-col justify-center gap-2 text-black"
                               dangerouslySetInnerHTML={{
@@ -111,9 +111,9 @@ export default async function Page() {
                           </div>
                           {card.secondary_objective && (
                             <div className="flex flex-col justify-center items-center gap-2">
-                              <h5 className="font-subtitle text-xl text-2ed-dark-red">
+                              <h4 className="font-subtitle text-xl text-2ed-dark-red">
                                 Secondary Objective
-                              </h5>
+                              </h4>
                               <div
                                 className="flex flex-col justify-center items-center gap-2 text-black"
                                 dangerouslySetInnerHTML={{
