@@ -11,7 +11,7 @@ export const ImageWithCredit: React.FC<{
     <NextImage
       src={src}
       alt={`${title} by ${artist}`}
-      quality={100}
+      quality={80}
       loading="lazy"
       placeholder="blur"
       blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPMPff9PwAHFQMzdqydyAAAAABJRU5ErkJggg=="
