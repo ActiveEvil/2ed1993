@@ -19,7 +19,7 @@ export default async function Page() {
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .eq("id", 26)
+    .eq("id", 2)
     .single();
   const { data: mission_cards } = await supabase
     .from("mission_cards")
