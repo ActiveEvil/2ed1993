@@ -183,13 +183,46 @@ export type Database = {
         }
         Relationships: []
       }
+      mission_cards: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          name: string
+          origin: string
+          primary_objective: string
+          secondary_objective: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          name: string
+          origin: string
+          primary_objective: string
+          secondary_objective?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          name?: string
+          origin?: string
+          primary_objective?: string
+          secondary_objective?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       rule_categories: {
         Row: {
           created_at: string
           id: number
           name: string
           position: number
-          slug: string | null
+          slug: string
           updated_at: string | null
         }
         Insert: {
@@ -197,7 +230,7 @@ export type Database = {
           id?: number
           name: string
           position: number
-          slug?: string | null
+          slug: string
           updated_at?: string | null
         }
         Update: {
@@ -205,7 +238,7 @@ export type Database = {
           id?: number
           name?: string
           position?: number
-          slug?: string | null
+          slug?: string
           updated_at?: string | null
         }
         Relationships: []
