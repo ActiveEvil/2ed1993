@@ -12,9 +12,14 @@ export const CardRamdomiser: React.FC<{
   const [origins, setOrigins] = useState(
     new Set(cards.map(({ origin }) => origin)),
   );
-  const ids = cards
+  const [excludeVirusOutbreak, setExcludeVirusOutbreak] = useState(true);
+  let ids = cards
     .filter((card) => origins.has(card.origin))
     .flatMap(({ ids }) => ids);
+
+  if (excludeVirusOutbreak) {
+    ids = ids.filter((id) => id !== "Virus_Outbreak");
+  }
 
   return (
     <div className="flex flex-col items-start gap-4 p-4 bg-2ed-mid-blue border-4 border-black">
@@ -66,6 +71,20 @@ export const CardRamdomiser: React.FC<{
             </div>
           );
         })}
+        <div className="flex gap-2">
+          <input
+            type="checkbox"
+            id="Exclude_Virus_Outbreak"
+            checked={excludeVirusOutbreak}
+            onChange={() => {
+              setExcludeVirusOutbreak(!excludeVirusOutbreak);
+            }}
+            className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+          />
+          <label htmlFor="Exclude_Virus_Outbreak" className="text-lg">
+            Exclude Virus Outbreak
+          </label>
+        </div>
       </div>
     </div>
   );
