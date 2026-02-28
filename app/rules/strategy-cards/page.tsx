@@ -1,5 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
+import { CardRamdomiser } from "@/components/Ramdomiser";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
 import { Metadata } from "next/types";
@@ -27,6 +29,7 @@ export default async function Page() {
     .order("name");
 
   if (hero && mission_cards) {
+    const ids = mission_cards.map(({ name }) => name.split(" ").join("_"));
     const origins = new Map<string, typeof mission_cards>();
 
     for (const item of mission_cards) {
@@ -42,6 +45,7 @@ export default async function Page() {
 
     return (
       <>
+        <Highlighter />
         <Breadcrumbs
           crumbs={[
             {
@@ -68,6 +72,14 @@ export default async function Page() {
             title={hero.title}
             artist={hero.artist}
           />
+
+          <CardRamdomiser
+            baseHref="/rules/strategy-cards"
+            cards={cards.map(({ origin, items }) => ({
+              origin,
+              ids: items.map(({ name }) => name.split(" ").join("_")),
+            }))}
+          />
           {cards.map((section) => {
             const originId = section.origin.split(" ").join("_");
             return (
@@ -86,18 +98,22 @@ export default async function Page() {
                   {section.items.map((card) => {
                     const cardId = card.name.split(" ").join("_");
                     return (
-                      <div
-                        id={cardId}
+                      <HighlighterLink
                         key={cardId}
-                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red"
+                        href={`/rules/strategy-cards#${cardId}`}
                       >
-                        <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black text-sm md:text-base">
-                          <h3 className=" font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">
-                            {card.name}
-                          </h3>
-                          <p>{card.description}</p>
+                        <div
+                          id={cardId}
+                          className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red target:border-2ed-light-yellow"
+                        >
+                          <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black text-sm md:text-base">
+                            <h3 className=" font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">
+                              {card.name}
+                            </h3>
+                            <p>{card.description}</p>
+                          </div>
                         </div>
-                      </div>
+                      </HighlighterLink>
                     );
                   })}
                 </section>
