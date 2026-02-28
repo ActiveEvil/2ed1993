@@ -26,21 +26,6 @@ export const StrategyCardRandomiser: React.FC<{
       <p className="text-xl">
         Select which card decks you wish to include and randomly draw one card.
       </p>
-      <Link
-        className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg"
-        href={baseHref}
-        onNavigate={(e) => {
-          e.preventDefault();
-
-          const href =
-            baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
-
-          window.location.replace(new URL(window.location.origin + href));
-        }}
-        scroll
-      >
-        Draw one card at random!
-      </Link>
       <div className="flex flex-wrap items-center gap-4">
         {cards.map((group) => {
           const originId = group.origin.split(" ").join("_");
@@ -86,6 +71,21 @@ export const StrategyCardRandomiser: React.FC<{
           </label>
         </div>
       </div>
+      <Link
+        className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg"
+        href={baseHref}
+        onNavigate={(e) => {
+          e.preventDefault();
+
+          const href =
+            baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
+
+          window.location.replace(new URL(window.location.origin + href));
+        }}
+        scroll
+      >
+        Draw one card at random!
+      </Link>
     </div>
   );
 };
