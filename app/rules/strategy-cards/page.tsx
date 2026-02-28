@@ -1,7 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { StrategyCardRandomiser } from "@/components/CardRandomisers";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { CardRamdomiser } from "@/components/Ramdomiser";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
 import { Metadata } from "next/types";
@@ -73,7 +73,7 @@ export default async function Page() {
             artist={hero.artist}
           />
 
-          <CardRamdomiser
+          <StrategyCardRandomiser
             baseHref="/rules/strategy-cards"
             cards={cards.map(({ origin, items }) => ({
               origin,

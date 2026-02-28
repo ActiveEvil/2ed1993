@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export const CardRamdomiser: React.FC<{
+export const StrategyCardRandomiser: React.FC<{
   baseHref: string;
   cards: {
     origin: string;
