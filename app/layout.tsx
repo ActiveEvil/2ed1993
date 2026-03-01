@@ -1,7 +1,7 @@
 import "./globals.css";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { TopNav } from "@/components/TopNav";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Merriweather, IBM_Plex_Sans, Crimson_Text } from "next/font/google";
 
 const merriweather = Merriweather({
@@ -42,12 +42,14 @@ export const metadata: Metadata = {
   },
 };
 
-export function generateViewport() {
-  return {
-    viewport:
-      "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
-  };
-}
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#2d2d2d",
+};
 
 export default async function RootLayout({
   children,
