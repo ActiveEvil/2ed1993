@@ -120,6 +120,10 @@ export const TopNav: React.FC = (): React.JSX.Element => {
   const isSmallScreen = useIsSmallScreen();
 
   const items = [
+    {
+      href: "/rules",
+      anchor: "Rules",
+    },
     /*{
       href: "/factions",
       anchor: "Factions",
@@ -127,10 +131,6 @@ export const TopNav: React.FC = (): React.JSX.Element => {
     {
       href: "/wargear",
       anchor: "Wargear",
-    },
-    {
-      href: "/rules",
-      anchor: "Rules",
     },
     {
       href: "/rules/mission-cards",
