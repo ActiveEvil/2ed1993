@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { StrategyCardRandomiser } from "@/components/CardRandomisers";
-import { Highlighter, HighlighterLink } from "@/components/Highlighter";
+import { Highlighter, HighlighterButton } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
@@ -89,7 +89,7 @@ export default async function Page() {
                 className="flex flex-col gap-4"
               >
                 <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                  <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black" />
+                  <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black shadow-lg" />
                   <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
                     {section.origin}
                   </h2>
@@ -97,23 +97,26 @@ export default async function Page() {
                 <section className="grid md:grid-cols-2 gap-4">
                   {section.items.map((card) => {
                     const cardId = card.name.split(" ").join("_");
+
                     return (
-                      <HighlighterLink
+                      <HighlighterButton
                         key={cardId}
+                        id={cardId}
+                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red target:border-2ed-light-yellow"
                         href={`/rules/strategy-cards#${cardId}`}
                       >
-                        <div
-                          id={cardId}
-                          className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red target:border-2ed-light-yellow"
-                        >
-                          <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black text-sm md:text-base">
-                            <h3 className=" font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">
-                              {card.name}
-                            </h3>
-                            <p>{card.description}</p>
-                          </div>
+                        <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black">
+                          <h3 className="font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">
+                            {card.name}
+                          </h3>
+                          <div
+                            className="dynamic-content flex flex-col justify-center gap-2"
+                            dangerouslySetInnerHTML={{
+                              __html: card.description,
+                            }}
+                          />
                         </div>
-                      </HighlighterLink>
+                      </HighlighterButton>
                     );
                   })}
                 </section>

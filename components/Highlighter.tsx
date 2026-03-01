@@ -1,46 +1,48 @@
 "use client";
 
-import Link from "next/link";
+import { clsx } from "clsx";
 import { useEffect } from "react";
 
 export const Highlighter: React.FC = (): null => {
   useEffect(() => {
-    const url = new URL(window.location.href);
-
-    if (url.hash) {
-      window.location.replace(url);
+    if (window.location.hash) {
+      const el = document.getElementById(window.location.hash.slice(1));
+      el?.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
 
   return null;
 };
 
-export const HighlighterLink: React.FC<
+export const HighlighterButton: React.FC<
   {
+    id?: string | undefined;
     className?: string | undefined;
     href: string;
     scroll?: boolean | undefined;
   } & React.PropsWithChildren
-> = ({ className, href, scroll, children }): React.JSX.Element => (
-  <Link
-    className={className}
-    href={href}
-    onNavigate={(e) => {
+> = ({ id, className, href, scroll, children }): React.JSX.Element => (
+  <button
+    id={id}
+    className={clsx("cursor-pointer", className)}
+    onClick={(e) => {
       e.preventDefault();
 
       const previous = encodeURI(href);
       const current = window.location.pathname + window.location.hash;
 
       if (current === previous) {
-        window.location.replace(
-          new URL(window.location.origin + window.location.pathname + "#"),
+        const target = new URL(
+          window.location.pathname + "#",
+          window.location.origin,
         );
+        window.location.replace(target);
       } else {
-        window.location.replace(new URL(window.location.origin + href));
+        const target = new URL(href, window.location.origin);
+        window.location.replace(target);
       }
     }}
-    scroll={scroll}
   >
     {children}
-  </Link>
+  </button>
 );
