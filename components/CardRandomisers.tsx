@@ -129,11 +129,12 @@ export const MissionCardRandomiser: React.FC<{
     ids: string[];
   }[];
 }> = ({ baseHref, cards }): React.JSX.Element => {
+  const originCodexTyranids = "Codex: Tyranids";
   const [origins, setOrigins] = useState(
     new Set(
       cards
         .map(({ origin }) => origin)
-        .filter((origin) => origin !== "Codex: Tyranids"),
+        .filter((origin) => origin !== originCodexTyranids),
     ),
   );
   const [fightingAsTyranids, setFightingAsTyranids] = useState(false);
@@ -207,8 +208,10 @@ export const MissionCardRandomiser: React.FC<{
                 setOrigins((previous) => {
                   const next = new Set(previous);
 
-                  if (!next.has("Codex: Tyranids")) {
-                    next.add("Codex: Tyranids");
+                  if (next.has(originCodexTyranids)) {
+                    next.delete(originCodexTyranids);
+                  } else {
+                    next.add(originCodexTyranids);
                   }
 
                   return next;
