@@ -1,4 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { MissionCardRandomiser } from "@/components/CardRandomisers";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
@@ -25,9 +26,9 @@ export default async function Page() {
   const { data: mission_cards } = await supabase
     .from("mission_cards")
     .select(
-      "id, origin, name, description, primary_objective, secondary_objective",
+      "id, origin, name, description, primary_objective, secondary_objective, special_rules",
     )
-    .order("name");
+    .order("id");
 
   if (hero && mission_cards) {
     const origins = new Map<string, typeof mission_cards>();
@@ -72,6 +73,13 @@ export default async function Page() {
             title={hero.title}
             artist={hero.artist}
           />
+          <MissionCardRandomiser
+            baseHref="/rules/mission-cards"
+            cards={cards.map(({ origin, items }) => ({
+              origin,
+              ids: items.map(({ name }) => name.split(" ").join("_")),
+            }))}
+          />
           {cards.map((section) => {
             const originId = section.origin.split(" ").join("_");
             return (
@@ -94,13 +102,13 @@ export default async function Page() {
                       <div
                         key={cardId}
                         id={cardId}
-                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue shadow-lg"
+                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue target:border-2ed-dark-yellow shadow-lg"
                       >
                         <h3 className="font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
                           {card.name}
                         </h3>
                         <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black">
-                          <p>{card.description}</p>
+                          <p className="text-lg">{card.description}</p>
                           <div className="flex flex-col justify-center items-center gap-2">
                             <h4 className="font-subtitle text-xl text-2ed-dark-red">
                               Primary Objective
@@ -118,9 +126,22 @@ export default async function Page() {
                                 Secondary Objective
                               </h4>
                               <div
-                                className="dynamic-contentflex flex-col justify-center items-center gap-2"
+                                className="dynamic-content flex flex-col justify-center gap-2"
                                 dangerouslySetInnerHTML={{
                                   __html: card.secondary_objective,
+                                }}
+                              />
+                            </div>
+                          )}
+                          {card.special_rules && (
+                            <div className="flex flex-col justify-center items-center gap-2">
+                              <h4 className="font-subtitle text-xl text-2ed-dark-red">
+                                Special Rules
+                              </h4>
+                              <div
+                                className="dynamic-content flex flex-col justify-center gap-2"
+                                dangerouslySetInnerHTML={{
+                                  __html: card.special_rules,
                                 }}
                               />
                             </div>

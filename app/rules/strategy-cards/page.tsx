@@ -26,7 +26,7 @@ export default async function Page() {
   const { data: mission_cards } = await supabase
     .from("strategy_cards")
     .select("id, origin, name, description")
-    .order("name");
+    .order("id");
 
   if (hero && mission_cards) {
     const ids = mission_cards.map(({ name }) => name.split(" ").join("_"));
@@ -102,7 +102,7 @@ export default async function Page() {
                       <div
                         key={cardId}
                         id={cardId}
-                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red target:border-2ed-light-yellow"
+                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red target:border-2ed-light-yellow shadow-xl"
                       >
                         <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black">
                           <h3 className="font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">

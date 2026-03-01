@@ -101,7 +101,9 @@ const StandardMenu: React.FC<{
   const list = items.map(({ href, anchor }) => (
     <li key={href} className="font-subtitle text-xl uppercase">
       {pathname === href ? (
-        <span>{anchor}</span>
+        <span className="p-1 bg-2ed-light-yellow text-black underline underline-offset-4">
+          {anchor}
+        </span>
       ) : (
         <Link className="hover:underline underline-offset-4" href={href}>
           {anchor}
@@ -129,6 +131,14 @@ export const TopNav: React.FC = (): React.JSX.Element => {
     {
       href: "/rules",
       anchor: "Rules",
+    },
+    {
+      href: "/rules/mission-cards",
+      anchor: "Mission Cards",
+    },
+    {
+      href: "/rules/strategy-cards",
+      anchor: "Strategy Cards",
     },
   ];
 
