@@ -204,6 +204,15 @@ export const MissionCardRandomiser: React.FC<{
               checked={fightingAsTyranids}
               onChange={() => {
                 setFightingAsTyranids(!fightingAsTyranids);
+                setOrigins((previous) => {
+                  const next = new Set(previous);
+
+                  if (!next.has("Codex: Tyranids")) {
+                    next.add("Codex: Tyranids");
+                  }
+
+                  return next;
+                });
               }}
               className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
             />
