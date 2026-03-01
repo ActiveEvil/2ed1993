@@ -99,11 +99,10 @@ export default async function Page() {
                     const cardId = card.name.split(" ").join("_");
 
                     return (
-                      <HighlighterButton
+                      <div
                         key={cardId}
                         id={cardId}
                         className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red target:border-2ed-light-yellow"
-                        href={`/rules/strategy-cards#${cardId}`}
                       >
                         <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black">
                           <h3 className="font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">
@@ -116,7 +115,7 @@ export default async function Page() {
                             }}
                           />
                         </div>
-                      </HighlighterButton>
+                      </div>
                     );
                   })}
                 </section>

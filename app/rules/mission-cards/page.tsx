@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { HighlighterButton } from "@/components/Highlighter";
+import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
@@ -45,6 +45,7 @@ export default async function Page() {
 
     return (
       <>
+        <Highlighter />
         <Breadcrumbs
           crumbs={[
             {
@@ -90,11 +91,10 @@ export default async function Page() {
                     const cardId = card.name.split(" ").join("_");
 
                     return (
-                      <HighlighterButton
+                      <div
                         key={cardId}
                         id={cardId}
                         className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue shadow-lg"
-                        href={`/rules/mission-cards#${cardId}`}
                       >
                         <h3 className="font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
                           {card.name}
@@ -126,7 +126,7 @@ export default async function Page() {
                             </div>
                           )}
                         </div>
-                      </HighlighterButton>
+                      </div>
                     );
                   })}
                 </section>
