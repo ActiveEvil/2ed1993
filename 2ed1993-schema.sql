@@ -272,6 +272,7 @@ CREATE TABLE IF NOT EXISTS
     description text,
     primary_objective text NOT NULL,
     secondary_objective text,
+    special_rules text,
     origin text NOT NULL
   );
 
