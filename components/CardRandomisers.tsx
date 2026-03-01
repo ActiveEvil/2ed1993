@@ -138,6 +138,7 @@ export const MissionCardRandomiser: React.FC<{
     ),
   );
   const [fightingAsTyranids, setFightingAsTyranids] = useState(false);
+  const [fightingAsOrks, setFightingAsOrks] = useState(false);
 
   const allIds = cards
     .filter((card) => origins.has(card.origin))
@@ -158,6 +159,10 @@ export const MissionCardRandomiser: React.FC<{
         "Trap",
       ].includes(id),
     );
+  }
+
+  if (fightingAsOrks) {
+    ids = allIds.filter((id) => !["The Assasins", "Witch Hunt"].includes(id));
   }
 
   return (
@@ -197,7 +202,6 @@ export const MissionCardRandomiser: React.FC<{
               </div>
             );
           })}
-
           <div className="flex gap-2">
             <input
               type="checkbox"
@@ -221,6 +225,20 @@ export const MissionCardRandomiser: React.FC<{
             />
             <label htmlFor="Fighting_As_Tyranids" className="text-lg">
               Fighting as Tyranids?
+            </label>
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="checkbox"
+              id="Fighting_As_Orks"
+              checked={fightingAsTyranids}
+              onChange={() => {
+                setFightingAsOrks(!fightingAsOrks);
+              }}
+              className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+            />
+            <label htmlFor="Fighting_As_Orks" className="text-lg">
+              Fighting as Orks?
             </label>
           </div>
         </div>
