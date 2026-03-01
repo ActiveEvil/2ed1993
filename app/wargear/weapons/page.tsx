@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { Highlighter, HighlighterLink } from "@/components/Highlighter";
+import { Highlighter, HighlighterButton } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
@@ -195,12 +195,12 @@ export default async function Page() {
                                     colSpan={10}
                                     className="pt-2 px-2 text-left whitespace-nowrap"
                                   >
-                                    <HighlighterLink
+                                    <HighlighterButton
                                       className="hover:underline underline-offset-4"
                                       href={`/wargear/weapons#${weaponId}`}
                                     >
                                       {item.name}
-                                    </HighlighterLink>
+                                    </HighlighterButton>
                                   </th>
                                 </tr>
                               )}
@@ -213,12 +213,12 @@ export default async function Page() {
                                       "pl-8": !!profile.name,
                                     })}
                                   >
-                                    <HighlighterLink
+                                    <HighlighterButton
                                       className="hover:underline underline-offset-4"
                                       href={`/wargear/weapons#${weaponId}`}
                                     >
                                       {profile.name || item.name}
-                                    </HighlighterLink>
+                                    </HighlighterButton>
                                   </th>
                                   {categoryId !== "Close_combat" && (
                                     <>
@@ -261,13 +261,13 @@ export default async function Page() {
                                           const ruleId = `${rule.name.split(" ").join("_")}_rule`;
 
                                           return (
-                                            <HighlighterLink
+                                            <HighlighterButton
                                               key={ruleId}
                                               className="underline underline-offset-4"
                                               href={`/wargear/weapons#${ruleId}`}
                                             >
                                               {rule.name}
-                                            </HighlighterLink>
+                                            </HighlighterButton>
                                           );
                                         },
                                       )}
@@ -313,12 +313,12 @@ export default async function Page() {
                               scope="row"
                               className="p-2 whitespace-nowrap font-semibold"
                             >
-                              <HighlighterLink
+                              <HighlighterButton
                                 href={`/wargear/weapons#${ruleId}`}
                                 className="hover:underline underline-offset-4"
                               >
                                 {rule.name}
-                              </HighlighterLink>
+                              </HighlighterButton>
                             </th>
                             <td className="p-2">
                               <div>{rule.rule}</div>

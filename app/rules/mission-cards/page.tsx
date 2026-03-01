@@ -1,4 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { HighlighterButton } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
@@ -87,27 +88,29 @@ export default async function Page() {
                 <section className="grid md:grid-cols-2 gap-4">
                   {section.items.map((card) => {
                     const cardId = card.name.split(" ").join("_");
+
                     return (
-                      <div
-                        id={cardId}
+                      <HighlighterButton
                         key={cardId}
-                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue"
+                        id={cardId}
+                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-blue shadow-lg"
+                        href={`/rules/mission-cards#${cardId}`}
                       >
-                        <h3 className=" font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
+                        <h3 className="font-subtitle uppercase text-2xl text-2ed-light-yellow  text-center">
                           {card.name}
                         </h3>
-                        <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black text-sm md:text-base">
+                        <div className="flex flex-col justify-center items-center gap-4 p-4 bg-2ed-white text-2ed-black">
                           <p>{card.description}</p>
                           <div className="flex flex-col justify-center items-center gap-2">
                             <h4 className="font-subtitle text-xl text-2ed-dark-red">
                               Primary Objective
                             </h4>
                             <div
-                              className="flex flex-col justify-center gap-2 text-black"
+                              className="dynamic-content flex flex-col justify-center gap-2"
                               dangerouslySetInnerHTML={{
                                 __html: card.primary_objective,
                               }}
-                            ></div>
+                            />
                           </div>
                           {card.secondary_objective && (
                             <div className="flex flex-col justify-center items-center gap-2">
@@ -115,15 +118,15 @@ export default async function Page() {
                                 Secondary Objective
                               </h4>
                               <div
-                                className="flex flex-col justify-center items-center gap-2 text-black"
+                                className="dynamic-contentflex flex-col justify-center items-center gap-2"
                                 dangerouslySetInnerHTML={{
                                   __html: card.secondary_objective,
                                 }}
-                              ></div>
+                              />
                             </div>
                           )}
                         </div>
-                      </div>
+                      </HighlighterButton>
                     );
                   })}
                 </section>
