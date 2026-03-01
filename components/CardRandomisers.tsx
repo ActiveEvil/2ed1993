@@ -75,24 +75,26 @@ export const StrategyCardRandomiser: React.FC<{
           </div>
         </div>
       </div>
-      <div className="sticky top-0 z-10 -mx-4 md:-mx-8 -mt-8 flex flex-col items-start gap-4 p-4 md:px-8 bg-2ed-mid-blue border-b-4 border-black shadow-lg">
-        <Link
-          className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg"
-          href={baseHref}
-          onNavigate={(e) => {
-            e.preventDefault();
+      <div className="sticky top-0 z-10 -mx-4 md:-mx-8 -mt-8 bg-background border-b-4 border-black shadow-lg">
+        <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue ">
+          <Link
+            className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg"
+            href={baseHref}
+            onNavigate={(e) => {
+              e.preventDefault();
 
-            if (ids.length) {
-              const href =
-                baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
+              if (ids.length) {
+                const href =
+                  baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
 
-              window.location.replace(new URL(window.location.origin + href));
-            }
-          }}
-          scroll
-        >
-          Draw one card at random!
-        </Link>
+                window.location.replace(new URL(window.location.origin + href));
+              }
+            }}
+            scroll
+          >
+            Draw one card at random!
+          </Link>
+        </div>
       </div>
     </>
   );
