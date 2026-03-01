@@ -35,7 +35,7 @@ export const StrategyCardRandomiser: React.FC<{
       <div className="-mx-4 md:-mx-8 flex flex-col items-start gap-4 pt-4 px-4 md:px-8 bg-2ed-mid-blue border-t-4 border-black shadow-lg">
         <p className="text-xl">
           Select which card decks you wish to include and randomly draw one
-          card.
+          card:
         </p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           {cards.map((group) => {
@@ -81,6 +81,9 @@ export const StrategyCardRandomiser: React.FC<{
               Exclude Virus Outbreak
             </label>
           </div>
+        </div>
+        <p className="text-xl">Faction specific options:</p>
+        <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           <div className="flex gap-2">
             <input
               type="checkbox"
@@ -170,7 +173,7 @@ export const MissionCardRandomiser: React.FC<{
       <div className="-mx-4 md:-mx-8 flex flex-col items-start gap-4 pt-4 px-4 md:px-8 bg-2ed-mid-blue border-t-4 border-black shadow-lg">
         <p className="text-xl">
           Select which card decks you wish to include and randomly draw one
-          card.
+          card:
         </p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           {cards.map((group) => {
@@ -202,6 +205,9 @@ export const MissionCardRandomiser: React.FC<{
               </div>
             );
           })}
+        </div>
+        <p className="text-xl">Faction specific options:</p>
+        <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           <div className="flex gap-2">
             <input
               type="checkbox"
@@ -231,7 +237,7 @@ export const MissionCardRandomiser: React.FC<{
             <input
               type="checkbox"
               id="Fighting_As_Orks"
-              checked={fightingAsTyranids}
+              checked={fightingAsOrks}
               onChange={() => {
                 setFightingAsOrks(!fightingAsOrks);
               }}
