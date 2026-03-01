@@ -14,6 +14,8 @@ export const StrategyCardRandomiser: React.FC<{
     new Set(cards.map(({ origin }) => origin)),
   );
   const [excludeVirusOutbreak, setExcludeVirusOutbreak] = useState(true);
+  const [fightingTyranids, setFightingTyranids] = useState(false);
+
   let ids = cards
     .filter((card) => origins.has(card.origin))
     .flatMap(({ ids }) => ids);
@@ -22,14 +24,20 @@ export const StrategyCardRandomiser: React.FC<{
     ids = ids.filter((id) => id !== "Virus_Outbreak");
   }
 
+  if (fightingTyranids) {
+    ids = ids.filter(
+      (id) => !["Virus_Outbreak", "Malfunction", "Traitor"].includes(id),
+    );
+  }
+
   return (
     <>
-      <div className="-mx-4 md:-mx-8 flex flex-col items-start gap-4 pt-4 px-4 md:px-8 bg-2ed-mid-blue/99 border-t-4 border-black shadow-lg">
+      <div className="-mx-4 md:-mx-8 flex flex-col items-start gap-4 pt-4 px-4 md:px-8 bg-2ed-mid-blue border-t-4 border-black shadow-lg">
         <p className="text-xl">
           Select which card decks you wish to include and randomly draw one
           card.
         </p>
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           {cards.map((group) => {
             const originId = group.origin.split(" ").join("_");
             return (
@@ -73,10 +81,24 @@ export const StrategyCardRandomiser: React.FC<{
               Exclude Virus Outbreak
             </label>
           </div>
+          <div className="flex gap-2">
+            <input
+              type="checkbox"
+              id="Fighting_Tyranids"
+              checked={fightingTyranids}
+              onChange={() => {
+                setFightingTyranids(!fightingTyranids);
+              }}
+              className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+            />
+            <label htmlFor="Fighting_Tyranids" className="text-lg">
+              Fighting Tyranids?
+            </label>
+          </div>
         </div>
       </div>
       <div className="sticky top-0 z-10 -mx-4 md:-mx-8 -mt-8 bg-background border-b-4 border-black shadow-lg">
-        <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue/99">
+        <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue">
           <Link
             className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg"
             href={baseHref}
