@@ -433,6 +433,7 @@ export type Database = {
           id: number
           name: string
           rule: string
+          rule_id: number | null
           updated_at: string | null
         }
         Insert: {
@@ -440,6 +441,7 @@ export type Database = {
           id?: number
           name: string
           rule: string
+          rule_id?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -447,9 +449,18 @@ export type Database = {
           id?: number
           name?: string
           rule?: string
+          rule_id?: number | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "weapon_special_rules_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "rules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       weapons: {
         Row: {

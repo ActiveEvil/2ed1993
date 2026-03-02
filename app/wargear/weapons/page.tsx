@@ -4,6 +4,7 @@ import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
 import { clsx } from "clsx";
+import Link from "next/link";
 import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
@@ -34,7 +35,7 @@ export default async function Page() {
 
   const { data: weaponSpecialRules } = await supabase
     .from("weapon_special_rules")
-    .select("name, rule")
+    .select("name, rule, rules(name, rule_categories(slug))")
     .order("name");
 
   if (hero && weapons && weaponSpecialRules) {
@@ -297,10 +298,14 @@ export default async function Page() {
                         <th scope="col" className="p-2">
                           Rule
                         </th>
+                        <th scope="col" className="p-2">
+                          Related
+                        </th>
                       </tr>
                     </thead>
                     {weaponSpecialRules.map((rule) => {
                       const ruleId = `${rule.name.split(" ").join("_")}_rule`;
+                      const linkedRule = rule.rules;
 
                       return (
                         <tbody
@@ -322,6 +327,16 @@ export default async function Page() {
                             </th>
                             <td className="p-2">
                               <div>{rule.rule}</div>
+                            </td>
+                            <td className="p-2 min-w-32">
+                              {linkedRule && (
+                                <Link
+                                  className="underline underline-offset-4 text-sm"
+                                  href={`/rules/${linkedRule.rule_categories.slug}#${linkedRule.name.split(" ").join("_")}`}
+                                >
+                                  {linkedRule.name}
+                                </Link>
+                              )}
                             </td>
                           </tr>
                         </tbody>
