@@ -42,11 +42,11 @@ export default async function Page(props: {
   const { data: faction } = await supabase
     .from("factions")
     .select(
-      `slug, name, description, images(file_name, artist, title), army_lists(id, name, equipment_weapons(category, note, points, weapons(id, name)))`,
+      `slug, name, description, images(file_name, artist, title), army_lists(id, name, wargear_categories(category, note, wargear_items(id, points, items(name), weapons(name))))`,
     )
     .eq("slug", params.slug)
     .order("name", { referencedTable: "army_lists" })
-    .order("points", { referencedTable: "army_lists.equipment_weapons" })
+    // .order("points", { referencedTable: "army_lists.wargear_categories" })
     .single();
 
   if (faction) {
@@ -123,24 +123,6 @@ export default async function Page(props: {
             </nav>
             {faction.army_lists.map((list) => {
               const listId = list.name.split(" ").join("_");
-              const categories = new Map<
-                string,
-                typeof list.equipment_weapons
-              >();
-
-              for (const item of list.equipment_weapons) {
-                const bucket = categories.get(item.category) ?? [];
-                bucket.push(item);
-                categories.set(item.category, bucket);
-              }
-
-              const equipment = Array.from(categories.entries()).map(
-                ([category, items]) => ({
-                  category,
-                  note: items.find((item) => !!item.note)?.note ?? null,
-                  items,
-                }),
-              );
 
               return (
                 <section
@@ -154,44 +136,73 @@ export default async function Page(props: {
                       {list.name}
                     </h3>
                   </div>
-                  {!!equipment.length && (
+                  {!!list.wargear_categories.length && (
                     <>
                       <h3 className="font-subtitle text-3xl">Equipment</h3>
-                      <section className="grid md:grid-cols-2 gap-8">
-                        {equipment.map((section) => (
-                          <div
+                      <ul className="columns-3 gap-4 ">
+                        {list.wargear_categories.map((section) => (
+                          <li
                             key={section.category}
-                            className="flex flex-col gap-4"
+                            className="flex flex-col gap-2"
                           >
                             <h4 className="font-subtitle text-2xl capitalize">
                               {section.category}
                             </h4>
                             <p>{section.note}</p>
                             <ul>
-                              {section.items.map((item) => (
-                                <li
-                                  key={item.weapons.id}
-                                  className="flex items-baseline gap-2 text-lg"
-                                >
-                                  <Link
-                                    href={`/wargear/weapons#${item.weapons.name.split(" ").join("_")}`}
-                                    className="whitespace-nowrap underline underline-offset-4"
-                                  >
-                                    {item.weapons.name}
-                                  </Link>
-                                  <span
-                                    className="flex-1 border-b-2 border-dotted border-foreground"
-                                    aria-hidden="true"
-                                  />
-                                  <span className="whitespace-nowrap">
-                                    {item.points}pts
-                                  </span>
-                                </li>
-                              ))}
+                              {section.wargear_items.map((item) => {
+                                if (item.items) {
+                                  return (
+                                    <li
+                                      key={item.id}
+                                      className="flex items-baseline gap-2 text-lg"
+                                    >
+                                      <Link
+                                        href={`/wargear/items#${item.items.name.split(" ").join("_")}`}
+                                        className="whitespace-nowrap underline underline-offset-4"
+                                      >
+                                        {item.items.name}
+                                      </Link>
+                                      <span
+                                        className="flex-1 border-b-2 border-dotted border-foreground"
+                                        aria-hidden="true"
+                                      />
+                                      <span className="whitespace-nowrap">
+                                        {item.points}pts
+                                      </span>
+                                    </li>
+                                  );
+                                }
+
+                                if (item.weapons) {
+                                  return (
+                                    <li
+                                      key={item.id}
+                                      className="flex items-baseline gap-2 text-lg"
+                                    >
+                                      <Link
+                                        href={`/wargear/weapons#${item.weapons.name.split(" ").join("_")}`}
+                                        className="whitespace-nowrap underline underline-offset-4"
+                                      >
+                                        {item.weapons.name}
+                                      </Link>
+                                      <span
+                                        className="flex-1 border-b-2 border-dotted border-foreground"
+                                        aria-hidden="true"
+                                      />
+                                      <span className="whitespace-nowrap">
+                                        {item.points}pts
+                                      </span>
+                                    </li>
+                                  );
+                                }
+
+                                return <></>;
+                              })}
                             </ul>
-                          </div>
+                          </li>
                         ))}
-                      </section>
+                      </ul>
                     </>
                   )}
                 </section>

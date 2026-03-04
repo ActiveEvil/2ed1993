@@ -21,7 +21,7 @@ export default async function Page() {
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .eq("id", 7)
+    .eq("id", 28)
     .single();
 
   if (hero) {
