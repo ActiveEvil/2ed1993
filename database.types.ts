@@ -183,6 +183,33 @@ export type Database = {
         }
         Relationships: []
       }
+      items: {
+        Row: {
+          category: Database["public"]["Enums"]["item_categories"]
+          created_at: string
+          id: number
+          name: string
+          rule: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["item_categories"]
+          created_at?: string
+          id?: number
+          name: string
+          rule: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["item_categories"]
+          created_at?: string
+          id?: number
+          name?: string
+          rule?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       mission_cards: {
         Row: {
           created_at: string
@@ -341,6 +368,118 @@ export type Database = {
         }
         Relationships: []
       }
+      vehicles: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      wargear_categories: {
+        Row: {
+          army_list_id: number
+          category: string
+          id: number
+          note: string | null
+        }
+        Insert: {
+          army_list_id: number
+          category: string
+          id?: number
+          note?: string | null
+        }
+        Update: {
+          army_list_id?: number
+          category?: string
+          id?: number
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wargear_categories_army_list_id_fkey"
+            columns: ["army_list_id"]
+            isOneToOne: false
+            referencedRelation: "army_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wargear_items: {
+        Row: {
+          created_at: string
+          id: number
+          item_id: number | null
+          points: number
+          updated_at: string | null
+          vehicle_id: number | null
+          wargear_category_id: number
+          weapon_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          item_id?: number | null
+          points: number
+          updated_at?: string | null
+          vehicle_id?: number | null
+          wargear_category_id: number
+          weapon_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          item_id?: number | null
+          points?: number
+          updated_at?: string | null
+          vehicle_id?: number | null
+          wargear_category_id?: number
+          weapon_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wargear_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wargear_items_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wargear_items_wargear_category_id_fkey"
+            columns: ["wargear_category_id"]
+            isOneToOne: false
+            referencedRelation: "wargear_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wargear_items_weapon_id_fkey"
+            columns: ["weapon_id"]
+            isOneToOne: false
+            referencedRelation: "weapons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       weapon_profiles: {
         Row: {
           armour_penetration: string
@@ -494,6 +633,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      item_categories: "Armour" | "Grenades"
       weapon_categories:
         | "Basic"
         | "Close combat"
@@ -628,6 +768,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      item_categories: ["Armour", "Grenades"],
       weapon_categories: [
         "Basic",
         "Close combat",
