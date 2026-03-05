@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      armour: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          profile_description: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          profile_description: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          profile_description?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       army_lists: {
         Row: {
           created_at: string
@@ -179,33 +203,6 @@ export type Database = {
           file_name?: string
           id?: number
           title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      items: {
-        Row: {
-          category: Database["public"]["Enums"]["item_categories"]
-          created_at: string
-          id: number
-          name: string
-          rule: string
-          updated_at: string | null
-        }
-        Insert: {
-          category: Database["public"]["Enums"]["item_categories"]
-          created_at?: string
-          id?: number
-          name: string
-          rule: string
-          updated_at?: string | null
-        }
-        Update: {
-          category?: Database["public"]["Enums"]["item_categories"]
-          created_at?: string
-          id?: number
-          name?: string
-          rule?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -420,9 +417,9 @@ export type Database = {
       }
       wargear_items: {
         Row: {
+          armour_id: number | null
           created_at: string
           id: number
-          item_id: number | null
           points: number
           updated_at: string | null
           vehicle_id: number | null
@@ -430,9 +427,9 @@ export type Database = {
           weapon_id: number | null
         }
         Insert: {
+          armour_id?: number | null
           created_at?: string
           id?: number
-          item_id?: number | null
           points: number
           updated_at?: string | null
           vehicle_id?: number | null
@@ -440,9 +437,9 @@ export type Database = {
           weapon_id?: number | null
         }
         Update: {
+          armour_id?: number | null
           created_at?: string
           id?: number
-          item_id?: number | null
           points?: number
           updated_at?: string | null
           vehicle_id?: number | null
@@ -451,10 +448,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "wargear_items_item_id_fkey"
-            columns: ["item_id"]
+            foreignKeyName: "wargear_items_armour_id_fkey"
+            columns: ["armour_id"]
             isOneToOne: false
-            referencedRelation: "items"
+            referencedRelation: "armour"
             referencedColumns: ["id"]
           },
           {
@@ -607,6 +604,7 @@ export type Database = {
           created_at: string
           id: number
           name: string
+          profile_description: string | null
           updated_at: string | null
         }
         Insert: {
@@ -614,6 +612,7 @@ export type Database = {
           created_at?: string
           id?: number
           name: string
+          profile_description?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -621,6 +620,7 @@ export type Database = {
           created_at?: string
           id?: number
           name?: string
+          profile_description?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -633,12 +633,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      item_categories: "Armour" | "Grenades"
       weapon_categories:
         | "Basic"
         | "Close combat"
         | "Heavy"
         | "Pistol"
+        | "Grenades"
         | "Support"
         | "Wargear"
     }
@@ -768,12 +768,12 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      item_categories: ["Armour", "Grenades"],
       weapon_categories: [
         "Basic",
         "Close combat",
         "Heavy",
         "Pistol",
+        "Grenades",
         "Support",
         "Wargear",
       ],

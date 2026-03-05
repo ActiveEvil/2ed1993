@@ -58,6 +58,40 @@ export default async function Page() {
                 >
                   Weapons
                 </Link>
+                <ol className="flex flex-col gap-2 text-xl">
+                  {[
+                    "Basic",
+                    "Close combat",
+                    "Heavy",
+                    "Pistol",
+                    "Grenades",
+                    "Support",
+                    "Wargear",
+                    "General Weapon Special Rules",
+                    "Unique Weapon Special Rules",
+                  ].map((category) => {
+                    const categoryId = category.split(" ").join("_");
+
+                    return (
+                      <li key={categoryId}>
+                        <Link
+                          className="hover:underline underline-offset-4"
+                          href={`/wargear/weapons#${categoryId}`}
+                        >
+                          {category}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </li>
+              <li>
+                <Link
+                  className="font-subtitle hover:underline underline-offset-4"
+                  href="/wargear/equipment"
+                >
+                  Equipment
+                </Link>
               </li>
             </ol>
           </nav>

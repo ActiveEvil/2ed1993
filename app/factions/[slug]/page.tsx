@@ -42,7 +42,7 @@ export default async function Page(props: {
   const { data: faction } = await supabase
     .from("factions")
     .select(
-      `slug, name, description, images(file_name, artist, title), army_lists(id, name, wargear_categories(category, note, wargear_items(id, points, items(name), weapons(name))))`,
+      `slug, name, description, images(file_name, artist, title), army_lists(id, name, wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name))))`,
     )
     .eq("slug", params.slug)
     .order("name", { referencedTable: "army_lists" })
@@ -136,7 +136,7 @@ export default async function Page(props: {
                       {list.name}
                     </h3>
                   </div>
-                  {!!list.wargear_categories.length && (
+                  {Boolean(list.wargear_categories.length) && (
                     <>
                       <h3 className="font-subtitle text-3xl">Equipment</h3>
                       <ul className="columns-3 gap-4 ">
@@ -151,17 +151,17 @@ export default async function Page(props: {
                             <p>{section.note}</p>
                             <ul>
                               {section.wargear_items.map((item) => {
-                                if (item.items) {
+                                if (item.armour) {
                                   return (
                                     <li
                                       key={item.id}
                                       className="flex items-baseline gap-2 text-lg"
                                     >
                                       <Link
-                                        href={`/wargear/items#${item.items.name.split(" ").join("_")}`}
+                                        href={`/wargear/items#${item.armour.name.split(" ").join("_")}`}
                                         className="whitespace-nowrap underline underline-offset-4"
                                       >
-                                        {item.items.name}
+                                        {item.armour.name}
                                       </Link>
                                       <span
                                         className="flex-1 border-b-2 border-dotted border-foreground"
