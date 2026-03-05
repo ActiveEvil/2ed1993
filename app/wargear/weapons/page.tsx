@@ -29,7 +29,7 @@ export default async function Page() {
   const { data: weapons } = await supabase
     .from("weapons")
     .select(
-      "id, name, category, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
+      "id, name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
     )
     .order("name");
 
@@ -85,7 +85,7 @@ export default async function Page() {
               artist={hero.artist}
             />
           </div>
-          {!!weaponCategories.length && (
+          {Boolean(weaponCategories.length) && (
             <section className="flex flex-col gap-4 pt-4 border-t-4 border-black">
               {weaponCategories.map((section) => {
                 const categoryId = section.category.split(" ").join("_");
@@ -97,7 +97,7 @@ export default async function Page() {
                     className="flex flex-col gap-4"
                   >
                     <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                      {section.category} Weapons
+                      {section.category}
                     </h2>
                     <section className="relative overflow-x-auto">
                       <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
@@ -211,7 +211,7 @@ export default async function Page() {
                                     scope="row"
                                     className={clsx({
                                       "p-2 text-left whitespace-nowrap": true,
-                                      "pl-8": !!profile.name,
+                                      "pl-8": Boolean(profile.name),
                                     })}
                                   >
                                     <HighlighterButton
@@ -272,6 +272,14 @@ export default async function Page() {
                                           );
                                         },
                                       )}
+                                      {item.profile_description && (
+                                        <HighlighterButton
+                                          className="underline underline-offset-4"
+                                          href={`/wargear/weapons#${weaponId}_rules`}
+                                        >
+                                          See unique rules
+                                        </HighlighterButton>
+                                      )}
                                     </div>
                                   </td>
                                 </tr>
@@ -284,9 +292,12 @@ export default async function Page() {
                   </div>
                 );
               })}
-              <div className="flex flex-col gap-4">
+              <div
+                id="General_Weapon_Special_Rules"
+                className="flex flex-col gap-4"
+              >
                 <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                  Weapon Special Rules
+                  General Weapon Special Rules
                 </h2>
                 <section className="relative overflow-x-auto">
                   <table className="relative w-full table-auto bg-black border-collapse border-b-4 border-black text-left">
@@ -342,6 +353,65 @@ export default async function Page() {
                         </tbody>
                       );
                     })}
+                  </table>
+                </section>
+              </div>
+              <div
+                id="Unique_Weapon_Special_Rules"
+                className="flex flex-col gap-4"
+              >
+                <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
+                  Unique Weapon Special Rules
+                </h2>
+                <section className="relative overflow-x-auto">
+                  <table className="relative w-full table-auto bg-black border-collapse border-b-4 border-black text-left">
+                    <thead className="bg-black font-subtitle text-sm text-white">
+                      <tr>
+                        <th scope="col" className="p-2">
+                          Name
+                        </th>
+                        <th scope="col" className="p-2">
+                          Rule
+                        </th>
+                      </tr>
+                    </thead>
+                    {weapons
+                      .filter(({ profile_description }) =>
+                        Boolean(profile_description),
+                      )
+                      .map((weapon) => {
+                        const ruleId = `${weapon.name.split(" ").join("_")}_rules`;
+
+                        return (
+                          <tbody
+                            key={ruleId}
+                            id={ruleId}
+                            className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                          >
+                            <tr>
+                              <th
+                                scope="row"
+                                className="p-2 whitespace-nowrap font-semibold"
+                              >
+                                <HighlighterButton
+                                  href={`/wargear/weapons#${ruleId}`}
+                                  className="hover:underline underline-offset-4"
+                                >
+                                  {weapon.name}
+                                </HighlighterButton>
+                              </th>
+                              <td className="p-2">
+                                <div
+                                  className="dynamic-content flex flex-col justify-center gap-2"
+                                  dangerouslySetInnerHTML={{
+                                    __html: weapon.profile_description!,
+                                  }}
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        );
+                      })}
                   </table>
                 </section>
               </div>

@@ -22,7 +22,7 @@ export const _2ed1993: React.FC<{
     <div
       className={clsx({
         "relative aquilla-bars-black flex flex-col justify-center items-center gap-8": true,
-        grayscale: !!grayscale,
+        grayscale: Boolean(grayscale),
       })}
     >
       <div className="inline-flex flex-col justify-center items-center px-4 border-2ed-light-yellow border-t-[8rem] border-x-[3rem] border-x-transparent font-title tracking-widest leading-0">
@@ -44,7 +44,7 @@ export const Tiny2ed1993: React.FC<{
     <div
       className={clsx({
         "relative aquilla-bars-tiny flex flex-col justify-center items-center gap-8": true,
-        grayscale: !!grayscale,
+        grayscale: Boolean(grayscale),
       })}
     >
       <div className="inline-flex flex-col justify-center items-center px-1 border-2ed-light-yellow border-t-[3rem] border-x-[0.6rem] border-x-transparent font-title tracking-widest leading-0">
