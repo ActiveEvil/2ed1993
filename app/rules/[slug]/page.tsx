@@ -21,8 +21,8 @@ export async function generateMetadata(props: {
   if (category) {
     const { name } = category;
     return {
-      title: `Warhammer 40,000 2nd Edition ${category.name}  Rules | 2ed1993`,
-      description: `Warhammer 40,000 2nd Edition  ${category.name} Rules.`,
+      title: `Warhammer 40,000 2nd Edition ${category.name} | 2ed1993`,
+      description: `Warhammer 40,000 2nd Edition  ${category.name}.`,
     };
   }
 
