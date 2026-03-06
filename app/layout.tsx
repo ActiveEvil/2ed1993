@@ -73,7 +73,6 @@ export default async function RootLayout({
           ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
           digital record project). All rights reserved.
         </footer>
-        <InstallPrompt />
       </body>
     </html>
   );
