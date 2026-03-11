@@ -167,6 +167,18 @@
         margin-left: calc(var(--spacing) * -6);
       }
     }
+    &.small-markers {
+      ol {
+        > li {
+          counter-increment: item;
+          padding-left: calc(var(--spacing) * 4);
+        }
+        > li::before {
+          content: counters(item, ".") ". ";
+          margin-left: calc(var(--spacing) * -4);
+        }
+      }
+    }
   }
   .dynamic-content {
     h3 {
@@ -242,7 +254,14 @@
           line-height: var(--tw-leading, var(--text-2xl--line-height));
         }
       }
-
+      &.small-markers {
+        ol {
+          > li::before {
+            font-size: var(--text-lg);
+            line-height: var(--tw-leading, var(--text-lg--line-height));
+          }
+        }
+      }
       ul {
         list-style: disc;
         list-style-position: inside;
