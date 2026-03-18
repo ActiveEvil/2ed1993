@@ -2023,3 +2023,158 @@ of the shooter from 7&mdash;this can be a negative number&mdash;and then apply a
             href="/rules/movement#Charging">Charging</a> the shooter
     </div>
 </section>
+
+<p>
+    In the <strong>Hand-to-Hand Combat Phase</strong>, all models with a <a
+        href="/rules/general-rules#Weapon_Skill">Weapon Skill</a> value that are in base-to-base contact with an enemy
+    model fight in <strong>Hand-to-Hand Combat</strong>&mdash;combat is mandatory for every eligible model, unless
+    explicitly prevented by another rule. Both sides fight and can inflict casualties, regardless of which player&apos;s
+    turn it is. Models can fight in a 360&deg; arc, and there is no advantage to attacking a model from behind.
+</p>
+
+<p>
+    For every pair of opposing models in base-to-base contact, a <strong>Combat Round</strong> is resolved by the
+    following
+    steps:
+</p>
+<section class="ordered-list">
+    <ol>
+        <li>
+            <h3 id="Roll_Attack_Dice">
+                Roll Attack Dice
+            </h3>
+            <p>
+                Each player rolls a number of D6 equal to their model&apos;s <a
+                    href="/rules/general-rules#Attacks">Attacks</a> characteristic. If they have two or more weapons
+                with the <a href="/wargear/weapons#Close_Combat_rule">Close Combat</a> rule, they add 1 D6 to their
+                roll.
+            </p>
+        </li>
+        <li>
+            <h3 id="Calculate_Combat_Score">
+                Calculate Combat Score
+            </h3>
+            <p>
+                Each player picks their single highest scoring dice and adds the result to the model&apos;s <a
+                    href="/rules/general-rules#Weapon_Skill">Weapon Skill</a>. They then apply <a
+                    href="/rules/hand-to-hand-combat#Combat_Score_Modifiers">Combat Score
+                    Modifiers</a> to this total to determine their <strong>Combat Score</strong>.
+            </p>
+        </li>
+        <li>
+            <h3 id="Determine_the_Winner">
+                Determine the Winner
+            </h3>
+            <p>
+                The model with the highest <strong>Combat Score</strong> is declared the winner of the <strong>Combat
+                    Round</strong>. The winner scores a number of hits equal to the difference between
+                <strong>Combat Scores</strong>. If <strong>Combat Scores</strong> are tied, the model with the highest
+                <a href="/rules/general-rules#Initiative">Initiative</a> wins and scores a single hit. If <a
+                    href="/rules/general-rules#Initiative">Initiative</a> is also a tied, the <strong>Combat
+                    Round</strong> is a stalemate and no hits are scored.
+            </p>
+        </li>
+        <li>
+            <h3 id="Resolve_Hits_and_Damage">
+                Resolve Hits &amp; Damage
+            </h3>
+            <p>
+                The losing model sustains the number of hits scored by the winner. For each hit, <a
+                    href="/rules/weapon-rules#Damage">Damage</a> and <a href="/rules/weapon-rules#Armour_Saves">Armour
+                    Saves</a> are worked out as normal. When resolving damage, the winner may attack using any <a
+                    href="/wargear/weapons#Close_Combat_rule">Close Combat</a> weapon they are equipped with&mdash;if
+                they do not have any <a href="/wargear/weapons#Close_Combat_rule">Close Combat</a> weapons, they attack
+                using their own <a href="/rules/general-rules#Strength">Strength</a> instead.
+            </p>
+        </li>
+    </ol>
+</section>
+
+<p>
+    When calculating their <a href="/rules/hand-to-hand-combat#Calculate_Combat_Score">Combat Score</a>, each player
+    must apply the following cumulative modifiers:
+</p>
+<section class="chart" style="max-width: 36rem;grid-template-columns: repeat(6, minmax(0, 1fr));">
+    <h3 style="text-align: center;align-content: center;grid-column: span 1 / span 2;">Modifier</h3>
+    <h3 style="grid-column: span 5 / span 5;">Condition</h3>
+    <div style="text-align: center;align-content: center;grid-column: span 1 / span 1;">+1</div>
+    <div style="grid-column: span 5 / span 5;">
+        Each time the opponent&apos;s model <a href="/rules/hand-to-hand-combat#Fumbles">Fumbles</a>
+    </div>
+    <div style="text-align: center;align-content: center;grid-column: span 1 / span 1;">+1</div>
+    <div style="grid-column: span 5 / span 5;">
+        Each time the player&apos;s model scores a <a href="/rules/hand-to-hand-combat#Critical_Hits">Critical Hit</a>
+    </div>
+    <div style="text-align: center;align-content: center;grid-column: span 1 / span 1;">+1</div>
+    <div style="grid-column: span 5 / span 5;">
+        If the player&apos;s model <a href="/rules/movement#Charging">Charged</a> this turn
+    </div>
+    <div style="text-align: center;align-content: center;grid-column: span 1 / span 1;">+1</div>
+    <div style="grid-column: span 5 / span 5;">
+        If the player&apos;s model has the <strong>High Ground</strong>&mdash;they are on <strong>Terrain</strong> that
+        places them above their opponent
+    </div>
+    <div style="text-align: center;align-content: center;grid-column: span 1 / span 1;">-1</div>
+    <div style="grid-column: span 5 / span 5;">
+        If the model has a piece of <a href="/wargear">Wargear</a>&mdash;usually a <a
+            href="/wargear/weapons#Heavy">Heavy Weapon</a>&mdash;which makes them <strong>Encumbered</strong>
+    </div>
+    <div style="text-align: center;align-content: center;grid-column: span 1 / span 1;">-1</div>
+    <div style="grid-column: span 5 / span 5;">
+        If the player&apos;s model <a href="/rules/movement#Charging">Charged</a> an opponent behind an <a
+            href="/rules/movement#Obstacles">Obstacle</a> this turn
+    </div>
+</section>
+<h3 id="Fumbles">Fumbles</h3>
+<p>
+    When <a href="/rules/hand-to-hand-combat#Roll_Attack_Dice">Rolling Attack Dice</a>, each score of 1 represents a
+    <strong>Fumble</strong>.
+</p>
+<h3 id="Critical_Hits">Critical Hits</h3>
+<p>
+    When <a href="/rules/hand-to-hand-combat#Roll_Attack_Dice">Rolling Attack Dice</a>, the first score of 6 has no
+    special effect. Each additional 6 represents a <strong>Critical Hit</strong>.
+</p>
+<h3 id="Parrying">Parrying</h3>
+<p>
+    For every weapon a model has with the <a href="/wargear/weapons#Parry_rule">Parry</a> rule, it can turn aside
+    one attack during each <a href="/rules/hand-to-hand-combat#Combat_Rounds">Combat Round</a>&mdash;however, this is
+    always optional. Once both players have rolled their <strong>Attack Dice</strong>, the <strong>Parrying</strong>
+    player may force their opponent to re-roll their highest scoring dice&mdash;the re-rolled result stands, even if it
+    is better. If both combatants can <strong>Parry</strong>, they cancel out one for one&mdash;a model with two
+    <strong>Parries</strong> still retains one when fighting a model with one <strong>Parry</strong>.
+</p>
+
+Multiple Combat
+<p>
+    When two or more friendly models are in base-to-base contact with an enemy model during the <strong>Hand-to-Hand
+        Combat Phase</strong>, this is known as a <strong>Multiple Combat</strong>. A <strong>Multiple Combat</strong>
+    is resolved as a series of one-on-one duels. The player whose models outnumber the lone enemy may choose the order
+    in which the models fight. If the outnumbered model survives the first <a
+        href="/rules/hand-to-hand-combat#Combat_Rounds">Combat Round</a>, the opposing player gains +1 <a
+        href="/rules/hand-to-hand-combat#Roll_Attack_Dice">Attack Dice</a> for each subsequent <a
+        href="/rules/hand-to-hand-combat#Combat_Rounds">Combat Round</a>.
+</p>
+
+
+<p>
+    A model may attempt to disengage from <a href="/rules/hand-to-hand-combat">Hand-to-Hand Combat</a> and escape. This
+    must be declared before that models <a href="/rules/hand-to-hand-combat#Combat_Rounds">Combat Round</a>. During the
+    combat the model attempting to break off fights with a <a href="/rules/general-rules#Weapon_Skill">Weapon Skill</a>
+    of 0, and may not <a href="/rules/hand-to-hand-combat#Parrying">Parry</a>. If the escaping model survives, it moves
+    2D6&quot; directly away from its attacker. The retreating model and its squad are automatically <a
+        href="/rules/breaking-rallying">Broken</a> and may not attempt to <a href="/rules/breaking-rallying">Rally</a>
+    until the following turn.
+</p>
+<p>
+    Robots, Dreadnoughts, Greater Daemons, and Chaos Champions riding Juggernauts may move out of <a
+        href="/rules/hand-to-hand-combat">Hand-to-Hand Combat</a> in their <a href="/rules/movement">Movement
+        Phase</a>&mdash;and may then <a href="/rules/movement#Charging">Charge</a> or <a
+        href="/rules/shooting">Shoot</a> as normal. However, if they are engaged with another model in this category,
+    the standard <strong>Breaking Off</strong> rules apply.
+</p>
+
+
+Rapid fire
+
+Follow up move
