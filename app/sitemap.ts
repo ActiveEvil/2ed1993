@@ -80,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (rule_categories) {
       for (const category of rule_categories) {
         rulesPages.push({
-          url: `${baseUrl}/factions/${category.slug}`,
+          url: `${baseUrl}/rules/${category.slug}`,
           lastModified: new Date(category.updated_at || category.created_at),
           changeFrequency: "monthly",
           priority: 0.6,
