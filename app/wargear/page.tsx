@@ -24,7 +24,12 @@ export default async function Page() {
     .eq("id", 28)
     .single();
 
-  if (hero) {
+  const { data: armour } = await supabase
+    .from("armour")
+    .select("id, name")
+    .order("name");
+
+  if (hero && armour) {
     return (
       <>
         <Breadcrumbs
@@ -88,10 +93,26 @@ export default async function Page() {
               <li>
                 <Link
                   className="font-subtitle hover:underline underline-offset-4"
-                  href="/wargear/equipment"
+                  href="/wargear/armour"
                 >
-                  Equipment
+                  Armour
                 </Link>
+                <ol className="flex flex-col gap-2 text-xl">
+                  {armour.map((item) => {
+                    const itemId = item.name.split(" ").join("_");
+
+                    return (
+                      <li key={itemId}>
+                        <Link
+                          className="hover:underline underline-offset-4"
+                          href={`/wargear/armour#${itemId}`}
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ol>
               </li>
             </ol>
           </nav>
