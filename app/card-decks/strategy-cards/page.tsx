@@ -29,7 +29,6 @@ export default async function Page() {
     .order("id");
 
   if (hero && mission_cards) {
-    const ids = mission_cards.map(({ name }) => name.split(" ").join("_"));
     const origins = new Map<string, typeof mission_cards>();
 
     for (const item of mission_cards) {
@@ -74,7 +73,7 @@ export default async function Page() {
           />
 
           <StrategyCardRandomiser
-            baseHref="/rules/strategy-cards"
+            baseHref="/card-decks/strategy-cards"
             cards={cards.map(({ origin, items }) => ({
               origin,
               ids: items.map(({ name }) => name.split(" ").join("_")),
