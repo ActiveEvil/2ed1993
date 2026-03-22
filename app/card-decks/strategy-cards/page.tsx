@@ -53,8 +53,8 @@ export default async function Page() {
               anchor: "2ed1993",
             },
             {
-              href: "/rules",
-              anchor: "Rules",
+              href: "/card-decks",
+              anchor: "Card Decks",
             },
             {
               anchor: "Strategy Cards",
