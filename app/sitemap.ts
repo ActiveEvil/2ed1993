@@ -37,13 +37,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/rules/mission-cards`,
+      url: `${baseUrl}/card-decks`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/rules/strategy-cards`,
+      url: `${baseUrl}/card-decks/mission-cards`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/card-decks/strategy-cards`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
