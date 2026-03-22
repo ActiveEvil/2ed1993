@@ -74,7 +74,7 @@ export default async function Page() {
             artist={hero.artist}
           />
           <MissionCardRandomiser
-            baseHref="/rules/mission-cards"
+            baseHref="/card-decks/mission-cards"
             cards={cards.map(({ origin, items }) => ({
               origin,
               ids: items.map(({ name }) => name.split(" ").join("_")),
