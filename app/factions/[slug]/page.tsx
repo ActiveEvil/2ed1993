@@ -46,7 +46,10 @@ export default async function Page(props: {
     )
     .eq("slug", params.slug)
     .order("name", { referencedTable: "army_lists" })
-    // .order("points", { referencedTable: "army_lists.wargear_categories" })
+    .order("id", { referencedTable: "army_lists.wargear_categories" })
+    .order("points", {
+      referencedTable: "army_lists.wargear_categories.wargear_items",
+    })
     .single();
 
   if (faction) {
@@ -139,11 +142,11 @@ export default async function Page(props: {
                   {Boolean(list.wargear_categories.length) && (
                     <>
                       <h3 className="font-subtitle text-3xl">Equipment</h3>
-                      <ul className="columns-3 gap-4  [&>*:nth-child(n+2)]:mt-4">
+                      <ul className="md:columns-3 gap-4  [&>*:nth-child(n+2)]:mt-4">
                         {list.wargear_categories.map((section) => (
                           <li
                             key={section.category}
-                            className="flex flex-col gap-2"
+                            className="flex flex-col gap-2 break-inside-avoid-column"
                           >
                             <h4 className="font-subtitle text-2xl capitalize">
                               {section.category}
@@ -168,7 +171,8 @@ export default async function Page(props: {
                                         aria-hidden="true"
                                       />
                                       <span className="whitespace-nowrap">
-                                        {item.points}pts
+                                        {item.points}
+                                        {item.points === 1 ? "pt" : "pts"}
                                       </span>
                                     </li>
                                   );
@@ -191,7 +195,8 @@ export default async function Page(props: {
                                         aria-hidden="true"
                                       />
                                       <span className="whitespace-nowrap">
-                                        {item.points}pts
+                                        {item.points}
+                                        {item.points === 1 ? "pt" : "pts"}
                                       </span>
                                     </li>
                                   );
