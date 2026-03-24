@@ -6,8 +6,7 @@ import { useEffect } from "react";
 export const Highlighter: React.FC = (): null => {
   useEffect(() => {
     if (window.location.hash) {
-      const el = document.getElementById(window.location.hash.slice(1));
-      el?.scrollIntoView({ behavior: "smooth" });
+      window.location.replace(window.location.href);
     }
   }, []);
 
@@ -19,9 +18,8 @@ export const HighlighterButton: React.FC<
     id?: string | undefined;
     className?: string | undefined;
     href: string;
-    scroll?: boolean | undefined;
   } & React.PropsWithChildren
-> = ({ id, className, href, scroll, children }): React.JSX.Element => (
+> = ({ id, className, href, children }): React.JSX.Element => (
   <button
     id={id}
     className={clsx("cursor-pointer", className)}
