@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
         hostname: "**.supabase.co",
       },
     ],
+    qualities: [80, 75],
   },
   async headers() {
     return [

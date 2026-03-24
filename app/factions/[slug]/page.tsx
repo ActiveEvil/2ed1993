@@ -142,7 +142,7 @@ export default async function Page(props: {
                   {Boolean(list.wargear_categories.length) && (
                     <>
                       <h3 className="font-subtitle text-3xl">Equipment</h3>
-                      <ul className="md:columns-3 gap-4  [&>*:nth-child(n+2)]:mt-4">
+                      <ul className="md:columns-3 gap-8 [&>*:nth-child(n+2)]:mt-4">
                         {list.wargear_categories.map((section) => (
                           <li
                             key={section.category}
