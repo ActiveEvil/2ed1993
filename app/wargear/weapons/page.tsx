@@ -299,61 +299,46 @@ export default async function Page() {
                 <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
                   General Weapon Special Rules
                 </h2>
-                <section className="relative overflow-x-auto">
-                  <table className="relative w-full table-auto bg-black border-collapse border-b-4 border-black text-left">
-                    <thead className="bg-black font-subtitle text-sm text-white">
-                      <tr>
-                        <th scope="col" className="p-2">
-                          Name
-                        </th>
-                        <th scope="col" className="p-2">
-                          Rule
-                        </th>
-                        <th scope="col" className="p-2">
-                          Related
-                        </th>
-                      </tr>
-                    </thead>
-                    {weaponSpecialRules.map((rule) => {
-                      const ruleId = `${rule.name.split(" ").join("_")}_rule`;
-                      const linkedRule = rule.rules;
+                <section className="flex flex-col bg-black border-b-4 border-black">
+                  <section className="grid grid-cols-12 font-subtitle text-sm">
+                    <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
+                    <h3 className="col-span-6 md:col-span-8 p-2">Rule</h3>
+                    <h3 className="col-span-3 md:col-span-2 p-2">Related</h3>
+                  </section>
+                  {weaponSpecialRules.map((rule, index) => {
+                    const ruleId = `${rule.name.split(" ").join("_")}_rule`;
+                    const linkedRule = rule.rules;
 
-                      return (
-                        <tbody
-                          key={ruleId}
-                          id={ruleId}
-                          className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
-                        >
-                          <tr>
-                            <th
-                              scope="row"
-                              className="p-2 whitespace-nowrap font-semibold"
+                    return (
+                      <section
+                        key={ruleId}
+                        id={ruleId}
+                        className="grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                      >
+                        <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                          <HighlighterButton
+                            href={`/wargear/weapons#${ruleId}`}
+                            className="hover:underline underline-offset-4 text-left"
+                          >
+                            {rule.name}
+                          </HighlighterButton>
+                        </div>
+                        <div className="col-span-6 md:col-span-8 p-2 font-semibold">
+                          {rule.rule}
+                        </div>
+                        <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                          {linkedRule && (
+                            <Link
+                              className="underline underline-offset-4 text-sm"
+                              href={`/rules/${linkedRule.rule_categories.slug}#${linkedRule.name.split(" ").join("_")}`}
                             >
-                              <HighlighterButton
-                                href={`/wargear/weapons#${ruleId}`}
-                                className="hover:underline underline-offset-4"
-                              >
-                                {rule.name}
-                              </HighlighterButton>
-                            </th>
-                            <td className="p-2">
-                              <div>{rule.rule}</div>
-                            </td>
-                            <td className="p-2 min-w-32">
-                              {linkedRule && (
-                                <Link
-                                  className="underline underline-offset-4 text-sm"
-                                  href={`/rules/${linkedRule.rule_categories.slug}#${linkedRule.name.split(" ").join("_")}`}
-                                >
-                                  {linkedRule.name}
-                                </Link>
-                              )}
-                            </td>
-                          </tr>
-                        </tbody>
-                      );
-                    })}
-                  </table>
+                              {linkedRule.name}
+                            </Link>
+                          )}
+                        </div>
+                      </section>
+                    );
+                  })}
                 </section>
               </div>
               <div
@@ -363,56 +348,41 @@ export default async function Page() {
                 <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
                   Unique Weapon Special Rules
                 </h2>
-                <section className="relative overflow-x-auto">
-                  <table className="relative w-full table-auto bg-black border-collapse border-b-4 border-black text-left">
-                    <thead className="bg-black font-subtitle text-sm text-white">
-                      <tr>
-                        <th scope="col" className="p-2">
-                          Name
-                        </th>
-                        <th scope="col" className="p-2">
-                          Rule
-                        </th>
-                      </tr>
-                    </thead>
-                    {weapons
-                      .filter(({ profile_description }) =>
-                        Boolean(profile_description),
-                      )
-                      .map((weapon) => {
-                        const ruleId = `${weapon.name.split(" ").join("_")}_rules`;
+                <section className="flex flex-col bg-black border-b-4 border-black">
+                  <section className="grid grid-cols-12 font-subtitle text-sm">
+                    <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
+                    <h3 className="col-span-9 md:col-span-10 p-2">Rule</h3>
+                  </section>
+                  {weapons
+                    .filter(({ profile_description }) =>
+                      Boolean(profile_description),
+                    )
+                    .map((weapon) => {
+                      const ruleId = `${weapon.name.split(" ").join("_")}_rules`;
 
-                        return (
-                          <tbody
-                            key={ruleId}
-                            id={ruleId}
-                            className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
-                          >
-                            <tr>
-                              <th
-                                scope="row"
-                                className="p-2 whitespace-nowrap font-semibold"
-                              >
-                                <HighlighterButton
-                                  href={`/wargear/weapons#${ruleId}`}
-                                  className="hover:underline underline-offset-4"
-                                >
-                                  {weapon.name}
-                                </HighlighterButton>
-                              </th>
-                              <td className="p-2">
-                                <div
-                                  className="dynamic-content flex flex-col justify-center gap-2"
-                                  dangerouslySetInnerHTML={{
-                                    __html: weapon.profile_description!,
-                                  }}
-                                />
-                              </td>
-                            </tr>
-                          </tbody>
-                        );
-                      })}
-                  </table>
+                      return (
+                        <section
+                          key={ruleId}
+                          id={ruleId}
+                          className="grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                        >
+                          <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                            <HighlighterButton
+                              href={`/wargear/weapons#${ruleId}`}
+                              className="hover:underline underline-offset-4 text-left"
+                            >
+                              {weapon.name}
+                            </HighlighterButton>
+                          </div>
+                          <div
+                            className="dynamic-content col-span-9 md:col-span-10 p-2 flex flex-col justify-center gap-2 font-semibold"
+                            dangerouslySetInnerHTML={{
+                              __html: weapon.profile_description!,
+                            }}
+                          />
+                        </section>
+                      );
+                    })}
                 </section>
               </div>
             </section>
