@@ -249,7 +249,7 @@
           > *:first-child {
             display: inline;
           }
-          > section {
+          > section:not(.chart) {
             flex-direction: column;
             display: flex;
             gap: calc(var(--spacing) * 2);
@@ -305,6 +305,7 @@
           font-weight: var(--font-weight-semibold);
           font-size: var(--text-lg);
           line-height: var(--tw-leading, var(--text-lg--line-height));
+          /* color: var(--color-foreground); */
           tr:nth-child(odd) td {
             background-color: var(--background);
           }
@@ -348,6 +349,8 @@
       }
       div {
         padding: calc(var(--spacing) * 2);
+        /* background-color: var(--color-background);
+        color: var(--color-foreground); */
         font-size: var(--text-lg);
         line-height: var(--tw-leading, var(--text-lg--line-height));
         border-color: var(--color-black);
@@ -371,6 +374,25 @@ html {
 
 :target {
   scroll-margin-top: 4em;
+
+  > .dynamic-content {
+    .table-container {
+      table {
+        tbody {
+          tr:nth-child(odd) td {
+            background-color: var(--color-2ed-light-yellow);
+          }
+          tr:nth-child(even) td {
+            background-color: color-mix(
+              in oklab,
+              var(--color-2ed-light-yellow) 80%,
+              transparent
+            );
+          }
+        }
+      }
+    }
+  }
 }
 
 body {
