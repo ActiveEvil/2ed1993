@@ -1,6 +1,7 @@
 import "./globals.css";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { TopNav } from "@/components/TopNav";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Merriweather, IBM_Plex_Sans, Crimson_Text } from "next/font/google";
 
@@ -73,6 +74,7 @@ export default async function RootLayout({
           ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
           digital record project). All rights reserved.
         </footer>
+        <Analytics />
       </body>
     </html>
   );

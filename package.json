@@ -11,6 +11,7 @@
   "dependencies": {
     "@sindresorhus/slugify": "^3.0.0",
     "@supabase/supabase-js": "^2.95.3",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "js-cookie": "^3.0.5",
     "next": "16.1.6",
