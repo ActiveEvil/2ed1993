@@ -42,10 +42,11 @@ export default async function Page(props: {
   const { data: faction } = await supabase
     .from("factions")
     .select(
-      `slug, name, description, images(file_name, artist, title), army_lists(id, name, wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name))))`,
+      `slug, name, description, images(file_name, artist, title), army_lists(id, name, unit_categories(category, position, units(id, name)), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name))))`,
     )
     .eq("slug", params.slug)
     .order("name", { referencedTable: "army_lists" })
+    .order("position", { referencedTable: "army_lists.unit_categories" })
     .order("id", { referencedTable: "army_lists.wargear_categories" })
     .order("points", {
       referencedTable: "army_lists.wargear_categories.wargear_items",
@@ -139,6 +140,35 @@ export default async function Page(props: {
                       {list.name}
                     </h3>
                   </div>
+                  {Boolean(list.unit_categories.length) && (
+                    <>
+                      <h3 className="font-subtitle text-3xl">Units</h3>
+                      <ul className="md:columns-2 gap-8 [&>*:nth-child(n+2)]:mt-4">
+                        {list.unit_categories.map((section) => (
+                          <li
+                            key={section.category}
+                            className="flex flex-col gap-2 break-inside-avoid-column"
+                          >
+                            <h4 className="font-subtitle text-2xl capitalize">
+                              {section.category}
+                            </h4>
+                            <ul>
+                              {section.units.map((unit) => (
+                                <li
+                                  key={unit.id}
+                                  className="flex items-baseline gap-2 text-lg"
+                                >
+                                  <h5 className="font-subtitle text-xl">
+                                    {unit.name}
+                                  </h5>
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
                   {Boolean(list.wargear_categories.length) && (
                     <>
                       <h3 className="font-subtitle text-3xl">Equipment</h3>

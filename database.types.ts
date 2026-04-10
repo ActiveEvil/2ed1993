@@ -73,6 +73,54 @@ export type Database = {
           },
         ]
       }
+      characteristic_profiles: {
+        Row: {
+          a: number
+          bs: number
+          created_at: string
+          i: number
+          id: number
+          ld: number
+          m: number
+          name: string
+          s: number
+          t: number
+          updated_at: string | null
+          w: number
+          ws: number
+        }
+        Insert: {
+          a: number
+          bs: number
+          created_at?: string
+          i: number
+          id?: number
+          ld: number
+          m: number
+          name: string
+          s: number
+          t: number
+          updated_at?: string | null
+          w: number
+          ws: number
+        }
+        Update: {
+          a?: number
+          bs?: number
+          created_at?: string
+          i?: number
+          id?: number
+          ld?: number
+          m?: number
+          name?: string
+          s?: number
+          t?: number
+          updated_at?: string | null
+          w?: number
+          ws?: number
+        }
+        Relationships: []
+      }
       equipment_weapons: {
         Row: {
           army_list_id: number
@@ -365,6 +413,197 @@ export type Database = {
         }
         Relationships: []
       }
+      unit_categories: {
+        Row: {
+          army_list_id: number
+          category: string
+          id: number
+          position: number
+        }
+        Insert: {
+          army_list_id: number
+          category: string
+          id?: number
+          position: number
+        }
+        Update: {
+          army_list_id?: number
+          category?: string
+          id?: number
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_categories_army_list_id_fkey"
+            columns: ["army_list_id"]
+            isOneToOne: false
+            referencedRelation: "army_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      unit_profile_wargear: {
+        Row: {
+          profile_description: string | null
+          unit_profile_id: number
+          wargear_category_id: number
+        }
+        Insert: {
+          profile_description?: string | null
+          unit_profile_id: number
+          wargear_category_id: number
+        }
+        Update: {
+          profile_description?: string | null
+          unit_profile_id?: number
+          wargear_category_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_profile_wargear_unit_profile_id_fkey"
+            columns: ["unit_profile_id"]
+            isOneToOne: false
+            referencedRelation: "unit_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_profile_wargear_wargear_category_id_fkey"
+            columns: ["wargear_category_id"]
+            isOneToOne: false
+            referencedRelation: "wargear_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      unit_profile_weapons: {
+        Row: {
+          unit_profile_id: number
+          weapon_id: number
+        }
+        Insert: {
+          unit_profile_id: number
+          weapon_id: number
+        }
+        Update: {
+          unit_profile_id?: number
+          weapon_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_profile_weapons_unit_profile_id_fkey"
+            columns: ["unit_profile_id"]
+            isOneToOne: false
+            referencedRelation: "unit_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_profile_weapons_weapon_id_fkey"
+            columns: ["weapon_id"]
+            isOneToOne: false
+            referencedRelation: "weapons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      unit_profiles: {
+        Row: {
+          armour: number | null
+          characteristic_profile_id: number
+          id: number
+          mastery_level: number | null
+          max: number
+          min: number
+          name: string
+          points: number | null
+          unit_id: number
+        }
+        Insert: {
+          armour?: number | null
+          characteristic_profile_id: number
+          id?: number
+          mastery_level?: number | null
+          max: number
+          min: number
+          name: string
+          points?: number | null
+          unit_id: number
+        }
+        Update: {
+          armour?: number | null
+          characteristic_profile_id?: number
+          id?: number
+          mastery_level?: number | null
+          max?: number
+          min?: number
+          name?: string
+          points?: number | null
+          unit_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_profiles_armour_fkey"
+            columns: ["armour"]
+            isOneToOne: false
+            referencedRelation: "armour"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_profiles_characteristic_profile_id_fkey"
+            columns: ["characteristic_profile_id"]
+            isOneToOne: false
+            referencedRelation: "characteristic_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_profiles_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      units: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          points: number | null
+          profile_description: string | null
+          type: Database["public"]["Enums"]["unit_types"]
+          unit_category_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          points?: number | null
+          profile_description?: string | null
+          type: Database["public"]["Enums"]["unit_types"]
+          unit_category_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          points?: number | null
+          profile_description?: string | null
+          type?: Database["public"]["Enums"]["unit_types"]
+          unit_category_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "units_unit_category_id_fkey"
+            columns: ["unit_category_id"]
+            isOneToOne: false
+            referencedRelation: "unit_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           created_at: string
@@ -633,6 +872,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      unit_types: "Character" | "Squad"
       weapon_categories:
         | "Basic"
         | "Close combat"
@@ -768,6 +1008,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      unit_types: ["Character", "Squad"],
       weapon_categories: [
         "Basic",
         "Close combat",
