@@ -100,10 +100,17 @@ const StandardMenu: React.FC<{
   const pathname = usePathname();
   const list = items.map(({ href, anchor }) => (
     <li key={href} className="font-subtitle text-xl uppercase">
-      {pathname.startsWith(href) ? (
+      {pathname === href ? (
         <span className="p-1 bg-2ed-light-yellow text-black underline underline-offset-4">
           {anchor}
         </span>
+      ) : pathname.startsWith(href) ? (
+        <Link
+          className="hover:underline p-1 bg-2ed-light-yellow text-black underline-offset-4"
+          href={href}
+        >
+          {anchor}
+        </Link>
       ) : (
         <Link className="hover:underline underline-offset-4" href={href}>
           {anchor}

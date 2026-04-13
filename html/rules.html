@@ -1262,7 +1262,7 @@ than the roll that originally hit.
 
 <p>-1 to hit during the <a href="/rules/shooting">Shooting Phase</a>, in addition to any other to hit modifiers.</p>
 <p>Model can only be <strong>Detected</strong>, not <strong>Spotted</strong>, when <strong>Hidden</strong>.</p>
-<p>In <a href="/rules/hand-to-hand-combat">Hand-to-Hand Combat</a>, attackers my pass a <strong>Leadership
+<p>In <a href="/rules/hand-to-hand-combat">Hand-to-Hand Combat</a>, attackers must pass a <strong>Leadership
         Test</strong>, or receive a -1 penalty to their <strong>Weapon Skill</strong>.</p>
 
 <p>Attitional <strong>Unmodified</strong> 4+ save, taken before armour save.</p>
@@ -2387,3 +2387,89 @@ pnpm i @vercel/analytics
         href="/rules/hand-to-hand-combat">Hand-to-Hand
         Combat</a>.
 </p>
+
+
+Leadership Tests
+
+<p>
+    When a unit is required to make a <strong>Leadership Test</strong>, the player rolls 2D6 and compares the score
+    against the model in the unit with the highest <a href="/rules/general-rules#Leadership">Leadership</a>. If the
+    score is less than or equal to the model&apos;s <a href="/rules/general-rules#Leadership">Leadership</a>, the unit
+    passes. If, however, the score is higher, the unit fails the test and suffers the effect of whatever triggered it.
+</p>
+
+
+The Break Test
+
+<p>
+    As soon as a squad loses 25% of its <strong>Current Strength</strong><sup>†</sup> in a single turn, it must take a
+    <a href="/rules/psychology#Leadership_Tests">Leadership Test</a>. If the squad fails this test, it becomes <a
+        href="/rules/breaking-rallying#Broken_Troops">Broken</a>. Only one test is ever taken per
+    squad, per turn.
+</p>
+<p>
+    <small>
+        <sup>†</sup> <em><strong>Current Strength</strong> is the number of models a squad has at the start of the
+            turn.</em>
+    </small>
+</p>
+
+Broken troops
+
+<p>
+    When a squad becomes <strong>Broken</strong>, it is no longer able to participate in the standard <a
+        href="/rules/how-to-play#The_Turn_Sequence">Turn Sequence</a>. If the squad is in cover, it will remain
+    staionary and <a href="/rules/general-rules#Going_into_Hiding">Hide</a> at the start of its next turn. If not in
+    cover the squad will flee 2D6&quot; away from any enemy models and towrds the nearest peice of cover. Whilst
+    <strong>Broken</strong>, models will continue to move in this way until they can reach cover and <a
+        href="/rules/general-rules#Going_into_Hiding">Hide</a>. Fleeing troops ignore <a
+        href="/rules/movement#Terrain">Terrain</a> penalties but cannot enter <strong>Impassible Terrain</strong>.
+</p>
+<p>
+    If a model which causes <a href="/rules/psychology#Fear">Fear</a>> or <a href="/rules/psychology#Terror">Terror</a>
+    moves within 8&quot; of a a <strong>Broken</strong> squad, it will immediatly flee another 2D6&quot;.
+</p>
+<p>
+    When a squad <strong>Breaks</strong> during <a href="/rules/hand-to-hand-combat">Hand-to-Hand Combat</a>, or if it
+    is <a href="/rules/movement#Charging">Charged</a>, it will attempt to <a
+        href="/rules/hand-to-hand-combat#Breaking_Off">Break Off</a> from the combat and flee.
+</p>
+
+<p>
+    When a squad becomes <strong>Broken</strong>, it is no longer able to participate in the standard <a
+        href="/rules/how-to-play#The_Turn_Sequence">Turn Sequence</a>. If the squad is in cover, it will remain
+    stationary and <a href="/rules/general-rules#Going_into_Hiding">Hide</a> at the start of its next turn. If not in
+    cover, the squad will flee 2D6&quot; away from any enemy models and towards the nearest piece of cover. Whilst
+    <strong>Broken</strong>, models will continue to move in this way until they can reach cover and <a
+        href="/rules/general-rules#Going_into_Hiding">Hide</a>. Fleeing troops ignore <a
+        href="/rules/movement#Terrain">Terrain</a> penalties but cannot enter <strong>Impassable Terrain</strong>.
+</p>
+<p>
+    If a model which causes <a href="/rules/psychology#Fear">Fear</a> or <a href="/rules/psychology#Terror">Terror</a>
+    moves within 8&quot; of a <strong>Broken</strong> squad, it will immediately flee an additional 2D6&quot;.
+</p>
+<p>
+    When a squad <strong>Breaks</strong> during <a href="/rules/hand-to-hand-combat">Hand-to-Hand Combat</a>, or if it
+    is <a href="/rules/movement#Charging">Charged</a> while <strong>Broken</strong>, it will attempt to <a
+        href="/rules/hand-to-hand-combat#Breaking_Off">Break Off</a> from the combat and flee.
+</p>
+<h3>Heroic Characters</h3>
+<p>
+    If a <a href="/rules/general-rules#Heroic_Characters">Heroic Character</a> that is <a
+        href="/rules/psychology#Immunity_to_Psychology">Immune to Psychology</a> is attached to a squad which breaks,
+    it is not <strong>Broken</strong> and may act normally. However, if its rules require it to remain with the unit,
+    it must maintain <a href="/rules/general-rules#Squad_Coherency">Squad Coherency</a> with the fleeing squad,
+    though it may otherwise act freely.
+</p>
+
+<p>
+    If a <a href="/rules/general-rules#Heroic_Characters">Heroic Character</a> which is <a
+        href="/rules/psychology#Immunity_to_Psychology">Immune to Psychology</a> is attached to a squad that breaks,
+    the character is not <strong>Broken</strong> and acts normally. However, if its rules require it to remain with the
+    unit, it must maintain <a href="/rules/general-rules#Squad_Coherency">Squad Coherency</a> with the fleeing squad,
+    though it may otherwise act freely.
+</p>
+
+The Space Marine Shaken Rule
+
+The Space Marine Rapid Fire Rule
