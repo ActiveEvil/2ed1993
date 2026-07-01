@@ -419,6 +419,30 @@ export type Database = {
           },
         ]
       }
+      special_warp_cards: {
+        Row: {
+          created_at: string
+          description: string
+          id: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: number
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: number
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       strategy_cards: {
         Row: {
           created_at: string

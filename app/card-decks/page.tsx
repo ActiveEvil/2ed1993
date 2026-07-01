@@ -71,6 +71,14 @@ export default async function Page() {
                   Psychic Power Cards
                 </Link>
               </li>
+              <li>
+                <Link
+                  className="font-subtitle hover:underline underline-offset-4"
+                  href="/card-decks/special-warp-cards"
+                >
+                  Special Warp Cards
+                </Link>
+              </li>
             </ol>
           </nav>
           <ImageWithCredit
