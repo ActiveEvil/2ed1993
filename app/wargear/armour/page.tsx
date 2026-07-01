@@ -3,8 +3,6 @@ import { Highlighter, HighlighterButton } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
-import { clsx } from "clsx";
-import Link from "next/link";
 import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
