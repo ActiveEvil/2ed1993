@@ -4,12 +4,26 @@ import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
+import { clsx } from "clsx";
 import { Metadata } from "next/types";
+
+export const deckColors: Record<string, string> = {
+  Librarian: "bg-blue-600",
+  Inquisition: "bg-red-500",
+  Adeptus: "bg-blue-700",
+  "Ork Weirdboyz": "bg-green-600",
+  "Eldar Seers": "bg-sky-500",
+  Squat: "bg-orange-500",
+  Tyranid: "bg-purple-500",
+  Slaanesh: "bg-pink-400",
+  Tzeentch: "bg-cyan-500",
+  Nurgle: "bg-lime-400",
+};
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Warhammer 40,000 2nd Edition Strategy Cards | 2ed1993`,
-    description: `Warhammer 40,000 2nd Edition  Strategy Cards.`,
+    title: `Warhammer 40,000 2nd Edition Psychic Power Cards | 2ed1993`,
+    description: `Warhammer 40,000 2nd Edition Psychic Power Cards.`,
   };
 }
 
@@ -23,22 +37,22 @@ export default async function Page() {
     .select("file_name, artist, title")
     .eq("id", 27)
     .single();
-  const { data: strategy_cards } = await supabase
-    .from("strategy_cards")
-    .select("id, origin, name, description")
+  const { data: psychic_power_cards } = await supabase
+    .from("psychic_power_cards")
+    .select("id, deck, name, description, force, range")
     .order("id");
 
-  if (hero && strategy_cards) {
-    const origins = new Map<string, typeof strategy_cards>();
+  if (hero && psychic_power_cards) {
+    const decks = new Map<string, typeof psychic_power_cards>();
 
-    for (const item of strategy_cards) {
-      const bucket = origins.get(item.origin) ?? [];
+    for (const item of psychic_power_cards) {
+      const bucket = decks.get(item.deck) ?? [];
       bucket.push(item);
-      origins.set(item.origin, bucket);
+      decks.set(item.deck, bucket);
     }
 
-    const cards = Array.from(origins.entries()).map(([origin, items]) => ({
-      origin,
+    const cards = Array.from(decks.entries()).map(([deck, items]) => ({
+      deck,
       items,
     }));
 
@@ -56,14 +70,14 @@ export default async function Page() {
               anchor: "Card Decks",
             },
             {
-              anchor: "Strategy Cards",
+              anchor: "Psychic Power Cards",
             },
           ]}
         />
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
             <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Strategy Cards
+              Psychic Power Cards
             </h1>
           </header>
           <ImageWithCredit
@@ -71,26 +85,15 @@ export default async function Page() {
             title={hero.title}
             artist={hero.artist}
           />
-
-          <StrategyCardRandomiser
-            baseHref="/card-decks/strategy-cards"
-            cards={cards.map(({ origin, items }) => ({
-              origin,
-              ids: items.map(({ name }) => name.split(" ").join("_")),
-            }))}
-          />
           {cards.map((section) => {
-            const originId = section.origin.split(" ").join("_");
+            const deckId = section.deck.split(" ").join("_");
+
             return (
-              <section
-                id={originId}
-                key={originId}
-                className="flex flex-col gap-4"
-              >
+              <section id={deckId} key={deckId} className="flex flex-col gap-4">
                 <div className="relative flex flex-col items-center justify-center gap-4 w-full">
                   <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black shadow-lg" />
                   <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-                    {section.origin}
+                    {section.deck}
                   </h2>
                 </div>
                 <section className="grid md:grid-cols-2 gap-4">
@@ -101,18 +104,20 @@ export default async function Page() {
                       <div
                         key={cardId}
                         id={cardId}
-                        className="flex flex-col justify-start items-center gap-2 p-4 border-4 border-black bg-2ed-dark-red target:border-2ed-light-yellow shadow-xl"
+                        className={clsx(
+                          "flex flex-col justify-start items-center gap-2 p-4 border-4 border-black target:border-2ed-light-yellow shadow-xl",
+                          deckColors[section.deck],
+                        )}
                       >
                         <div className="flex flex-col justify-start items-center gap-4 p-4 h-full bg-2ed-white text-2ed-black">
-                          <h3 className="font-subtitle uppercase text-2xl text-2ed-dark-blue text-center">
+                          <div className="flex justify-between w-full font-subtitle text-lg">
+                            <div>Force {card.force}</div>
+                            <div>Range: {card.range}</div>
+                          </div>
+                          <h3 className="font-title uppercase text-2xl text-2ed-dark-blue text-center">
                             {card.name}
                           </h3>
-                          <div
-                            className="dynamic-content flex flex-col justify-center gap-2"
-                            dangerouslySetInnerHTML={{
-                              __html: card.description,
-                            }}
-                          />
+                          <p className="ftext-lg">{card.description}</p>
                         </div>
                       </div>
                     );

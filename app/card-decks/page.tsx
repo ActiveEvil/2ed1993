@@ -63,6 +63,14 @@ export default async function Page() {
                   Strategy Cards
                 </Link>
               </li>
+              <li>
+                <Link
+                  className="font-subtitle hover:underline underline-offset-4"
+                  href="/card-decks/psychic-power-cards"
+                >
+                  Psychic Power Cards
+                </Link>
+              </li>
             </ol>
           </nav>
           <ImageWithCredit

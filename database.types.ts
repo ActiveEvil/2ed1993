@@ -291,6 +291,39 @@ export type Database = {
         }
         Relationships: []
       }
+      psychic_power_cards: {
+        Row: {
+          created_at: string
+          deck: Database["public"]["Enums"]["psychic_power_decks"]
+          description: string
+          force: string
+          id: number
+          name: string
+          range: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          deck: Database["public"]["Enums"]["psychic_power_decks"]
+          description: string
+          force: string
+          id?: number
+          name: string
+          range: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          deck?: Database["public"]["Enums"]["psychic_power_decks"]
+          description?: string
+          force?: string
+          id?: number
+          name?: string
+          range?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       rule_categories: {
         Row: {
           created_at: string
@@ -872,6 +905,17 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      psychic_power_decks:
+        | "Librarian"
+        | "Inquisition"
+        | "Adeptus"
+        | "Ork Weirdboyz"
+        | "Eldar Seers"
+        | "Squat"
+        | "Tyranid"
+        | "Slaanesh"
+        | "Tzeentch"
+        | "Nurgle"
       unit_types: "Character" | "Squad"
       weapon_categories:
         | "Basic"
@@ -1008,6 +1052,18 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      psychic_power_decks: [
+        "Librarian",
+        "Inquisition",
+        "Adeptus",
+        "Ork Weirdboyz",
+        "Eldar Seers",
+        "Squat",
+        "Tyranid",
+        "Slaanesh",
+        "Tzeentch",
+        "Nurgle",
+      ],
       unit_types: ["Character", "Squad"],
       weapon_categories: [
         "Basic",
