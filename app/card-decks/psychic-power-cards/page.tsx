@@ -32,17 +32,16 @@ export default async function Page() {
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
   );
-  const { data: hero } = await supabase
+  const { data: heros } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .eq("id", 27)
-    .single();
+    .in("id", [31, 32]);
   const { data: psychic_power_cards } = await supabase
     .from("psychic_power_cards")
     .select("id, deck, name, description, force, range")
     .order("id");
 
-  if (hero && psychic_power_cards) {
+  if (heros?.length && psychic_power_cards) {
     const decks = new Map<string, typeof psychic_power_cards>();
 
     for (const item of psychic_power_cards) {
@@ -80,11 +79,18 @@ export default async function Page() {
               Psychic Power Cards
             </h1>
           </header>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            {heros.map((hero, index) => (
+              <div key={hero.file_name}>
+                <ImageWithCredit
+                  src={`images/${hero.file_name}`}
+                  title={hero.title}
+                  artist={hero.artist}
+                  aspect="aspect-portrait"
+                />
+              </div>
+            ))}
+          </div>
           {cards.map((section) => {
             const deckId = section.deck.split(" ").join("_");
 
