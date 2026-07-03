@@ -24,18 +24,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.9,
     },
-    {
-      url: `${baseUrl}/wargear`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/wargear/weapons`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
+    // {
+    //   url: `${baseUrl}/wargear`,
+    //   lastModified: new Date(),
+    //   changeFrequency: "monthly",
+    //   priority: 0.9,
+    // },
+    // {
+    //   url: `${baseUrl}/wargear/weapons`,
+    //   lastModified: new Date(),
+    //   changeFrequency: "monthly",
+    //   priority: 0.9,
+    // },
+    // {
+    //   url: `${baseUrl}/wargear/armour`,
+    //   lastModified: new Date(),
+    //   changeFrequency: "monthly",
+    //   priority: 0.9,
+    // },
+    // {
+    //   url: `${baseUrl}/wargear/wargear-cards`,
+    //   lastModified: new Date(),
+    //   changeFrequency: "monthly",
+    //   priority: 0.9,
+    // },
     {
       url: `${baseUrl}/card-decks`,
       lastModified: new Date(),

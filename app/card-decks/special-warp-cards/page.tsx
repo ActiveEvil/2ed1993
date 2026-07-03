@@ -19,16 +19,17 @@ export default async function Page() {
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
   );
-  const { data: heros } = await supabase
+  const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .in("id", [31, 32]);
+    .eq("id", 33)
+    .single();
   const { data: special_warp_cards } = await supabase
     .from("special_warp_cards")
     .select("id, name, description")
     .order("id");
 
-  if (heros?.length && special_warp_cards) {
+  if (hero && special_warp_cards) {
     return (
       <>
         <Highlighter />
@@ -53,18 +54,11 @@ export default async function Page() {
               Special Warp Cards
             </h1>
           </header>
-          <div className="grid grid-cols-2 gap-4">
-            {heros.map((hero, index) => (
-              <div key={hero.file_name}>
-                <ImageWithCredit
-                  src={`images/${hero.file_name}`}
-                  title={hero.title}
-                  artist={hero.artist}
-                  aspect="aspect-portrait"
-                />
-              </div>
-            ))}
-          </div>
+          <ImageWithCredit
+            src={`images/${hero.file_name}`}
+            title={hero.title}
+            artist={hero.artist}
+          />
           {/* <div className="relative flex flex-col items-center justify-center gap-4 w-full">
             <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black shadow-lg" />
             <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
