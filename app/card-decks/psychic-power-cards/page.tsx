@@ -144,7 +144,7 @@ export default async function Page() {
                         <div className="flex flex-col justify-start items-center gap-4 p-4 h-full bg-2ed-white text-2ed-black">
                           <div className="flex justify-between w-full font-subtitle text-lg">
                             <div>Force {card.force}</div>
-                            <div>Range: {card.range}</div>
+                            {card.range && <div>Range: {card.range}</div>}
                           </div>
                           <h3 className="font-title uppercase text-2xl text-2ed-dark-blue text-center">
                             {card.name}
