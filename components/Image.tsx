@@ -5,7 +5,11 @@ export const ImageWithCredit: React.FC<{
   src: string;
   title: string;
   artist: string;
-  aspect?: "aspect-video" | "aspect-portrait" | "aspect-retro";
+  aspect?:
+    | "aspect-video"
+    | "aspect-portrait"
+    | "aspect-retro"
+    | "aspect-square";
 }> = ({ src, title, artist, aspect = "aspect-video" }): React.JSX.Element => (
   <figure
     className={`${aspect} relative w-full border-4 border-black shadow-lg`}
