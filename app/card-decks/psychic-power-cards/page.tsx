@@ -38,7 +38,7 @@ export default async function Page() {
     .in("id", [31, 32]);
   const { data: psychic_power_cards } = await supabase
     .from("psychic_power_cards")
-    .select("id, deck, name, description, force, range")
+    .select("id, deck, name, description, force, range, note")
     .order("id");
 
   if (heros?.length && psychic_power_cards) {
@@ -150,6 +150,11 @@ export default async function Page() {
                             {card.name}
                           </h3>
                           <p className="ftext-lg">{card.description}</p>
+                          {card.note && (
+                            <div className="mt-auto font-subtitle uppercase text-2ed-dark-blue text-center">
+                              {card.note}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

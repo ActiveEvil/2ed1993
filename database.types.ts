@@ -299,7 +299,8 @@ export type Database = {
           force: string
           id: number
           name: string
-          range: string
+          note: string | null
+          range: string | null
           updated_at: string | null
         }
         Insert: {
@@ -309,7 +310,8 @@ export type Database = {
           force: string
           id?: number
           name: string
-          range: string
+          note?: string | null
+          range?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -319,7 +321,8 @@ export type Database = {
           force?: string
           id?: number
           name?: string
-          range?: string
+          note?: string | null
+          range?: string | null
           updated_at?: string | null
         }
         Relationships: []
