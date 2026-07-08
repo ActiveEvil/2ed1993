@@ -133,7 +133,7 @@ export default async function Page() {
                   />
                 </div>
               ))}
-              <figcaption className="col-span-3 font-bold text-right text-sm">
+              <figcaption className="col-span-2 md:col-span-3 font-bold text-right text-sm">
                 &mdash;Examples of the Warhammer 40,000 2nd Edition style
               </figcaption>
             </figure>
