@@ -376,7 +376,7 @@ html {
 :target {
   scroll-margin-top: 4em;
 
-  /* > .dynamic-content {
+  > .dynamic-content {
     .table-container {
       table {
         tbody {
@@ -393,7 +393,7 @@ html {
         }
       }
     }
-  } */
+  }
 }
 
 body {

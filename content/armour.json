@@ -1,0 +1,154 @@
+[
+  {
+    "idx": 0,
+    "id": 1,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Primitive Armour",
+    "profile_description": "<p>6+ armour save.</p><p>5+ armour save against <strong>Primitive Weapons</strong>.</p>"
+  },
+  {
+    "idx": 1,
+    "id": 2,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": "2026-03-22 20:16:14.924645+00",
+    "name": "Flak Armour",
+    "profile_description": "<p>6+ armour save.</p><p>5+ armour save against <a href=\"/rules/weapon-rules#Blast_Weapons\">Blast</a>/<a href=\"/rules/weapon-rules#Template_Weapons\">Template</a> Weapons.</p>"
+  },
+  {
+    "idx": 2,
+    "id": 3,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Mesh Armour",
+    "profile_description": "<p>5+ armour save.</p>"
+  },
+  {
+    "idx": 3,
+    "id": 4,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Carapace Armour",
+    "profile_description": "<p>4+ armour save.</p>"
+  },
+  {
+    "idx": 4,
+    "id": 5,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": "2026-03-22 20:50:00.866113+00",
+    "name": "'Eavy Armour",
+    "profile_description": "<p>4+ armour save.</p>"
+  },
+  {
+    "idx": 5,
+    "id": 6,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Aspect Armour ",
+    "profile_description": "<p>3+ armour save.</p>"
+  },
+  {
+    "idx": 6,
+    "id": 7,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Rune armour",
+    "profile_description": "<p>4+ <strong>Unmodified</strong> armour save.</p>"
+  },
+  {
+    "idx": 7,
+    "id": 8,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Power Armour",
+    "profile_description": "<p>3+ armour save.</p>"
+  },
+  {
+    "idx": 8,
+    "id": 9,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": "2026-04-12 20:46:16.753279+00",
+    "name": "Holo-Suit",
+    "profile_description": "<p>-1 to hit during the <a href=\"/rules/shooting\">Shooting Phase</a>, in addition to any other to hit modifiers.</p>\n<p>Model can only be <a href=\"/rules/general-rules#Detecting_Hidden_Models\">Detected</a>, not <a href=\"/rules/general-rules#Spotting_Hidden_Models\">Spotted</a>, when <a href=\"/rules/general-rules#Hiding\">Hidden</a>.</p>\n<p>In <a href=\"/rules/hand-to-hand-combat\">Hand-to-Hand Combat</a>, attackers my pass a <a href=\"/rules/psychology#Leadership_Tests\">Leadership\n        Test</a>, or receive a -1 penalty to their <a href=\"/rules/general-rules#Weapon_Skill\">Weapon Skill</a>.</p>"
+  },
+  {
+    "idx": 9,
+    "id": 10,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": "2026-03-22 21:35:59.7501+00",
+    "name": "Terminator Armour",
+    "profile_description": "<p>3+ armour save on 2D6</p>\n<p>Includes a <a href=\"/wargear/weapons#Storm_Bolter\">Storm Bolter</a>, <a href=\"/wargear/weapons#Power_Fist\">PowerFist</a> and <strong>Targeter</strong>.</p>"
+  },
+  {
+    "idx": 10,
+    "id": 11,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Exo-Armour",
+    "profile_description": "<p>4+ armour save on 2D6</p>"
+  },
+  {
+    "idx": 11,
+    "id": 12,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": "2026-03-22 20:19:43.832943+00",
+    "name": "Refractor Field ",
+    "profile_description": "<p>5+ <strong>Unmodified</strong> save, taken before armour save.</p>\n<p>Wearer cannot <a href=\"/rules/general-rules#Hiding\">Hide</a>.</p>"
+  },
+  {
+    "idx": 12,
+    "id": 13,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Conversion Field",
+    "profile_description": "<p>4+ <strong>Unmodified</strong> save, taken before armour save.</p>\n<p>On a successful save, blinds models without eye protection on a D6 roll of 4+. Reaches all models in a radius equal\n    to the strength of the attack in inches.</p>"
+  },
+  {
+    "idx": 13,
+    "id": 14,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Rosarius",
+    "profile_description": "<p>4+ <strong>Unmodified</strong> save, taken before armour save.</p>\n<p>On a successful save, blinds models without eye protection on a D6 roll of 4+. Reaches all models in a radius equal\n    to the strength of the attack in inches.</p>"
+  },
+  {
+    "idx": 14,
+    "id": 15,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Displacer Field",
+    "profile_description": "<p>3+ <strong>Unmodified</strong> save, taken before armour save.</p>\n<p>On a successful save, shifts the model D6&quot; in a random direction</p>\n<p><strong>Blast/Template Weapons</strong> still hit if displaced model remains within their area of effect.</p>\n<p>Cannot save against <strong>Vortex Grenades</strong>.</p>"
+  },
+  {
+    "idx": 15,
+    "id": 16,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": null,
+    "name": "Primitive Shield",
+    "profile_description": "<p>6+ armour save against <strong>Primitive Weapons</strong>.</p>\n<p>Or +1 to armour saves against <strong>Primitive Weapons</strong> if other armour is worn.</p>\n<p>Only protects against attacks to the models forward 90° arc.</p>"
+  },
+  {
+    "idx": 16,
+    "id": 17,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": "2026-03-22 20:37:38.610987+00",
+    "name": "Storm Shield",
+    "profile_description": "<p>4+ <strong>Unmodified</strong> save, taken before armour save.</p>\n<p>Only protects against attacks to the models forward 90° arc.</p>"
+  },
+  {
+    "idx": 17,
+    "id": 18,
+    "created_at": "2026-03-04 11:21:00.856567+00",
+    "updated_at": "2026-03-22 20:39:47.841439+00",
+    "name": "Suppression Shield",
+    "profile_description": "<p>+2 to armour saves.</p>\n<p>Inflicts a strength 3 hit to one opponent when charging, which deals 1 damage if it <a href=\"/rules/weapon-rules#Damage\">Wounds</a>.</p>"
+  },
+  {
+    "idx": 18,
+    "id": 19,
+    "created_at": "2026-03-24 07:03:24.862977+00",
+    "updated_at": "2026-03-24 07:04:25.858954+00",
+    "name": "Power Field",
+    "profile_description": "<p>2+ <strong>Unmodified</strong> save, taken before armour save.</p>\n<p>Wearer counts as <a href=\"/rules/hand-to-hand-combat#Combat_Score_Modifiers\">Encumbered</a>.</p>"
+  }
+]

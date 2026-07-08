@@ -323,9 +323,12 @@ export default async function Page() {
                             {rule.name}
                           </HighlighterButton>
                         </div>
-                        <div className="col-span-6 md:col-span-8 p-2 font-semibold">
-                          {rule.rule}
-                        </div>
+                        <div
+                          className="dynamic-content col-span-6 md:col-span-8 p-2 flex flex-col justify-center gap-2 font-semibold"
+                          dangerouslySetInnerHTML={{
+                            __html: rule.rule,
+                          }}
+                        />
                         <div className="col-span-3 md:col-span-2 p-2 font-semibold">
                           {linkedRule && (
                             <Link
