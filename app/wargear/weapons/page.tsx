@@ -210,12 +210,12 @@ export default async function Page() {
                                   <th
                                     scope="row"
                                     className={clsx({
-                                      "p-2 text-left whitespace-nowrap": true,
+                                      "p-2 text-left max-w-44": true,
                                       "pl-8": Boolean(profile.name),
                                     })}
                                   >
                                     <HighlighterButton
-                                      className="hover:underline underline-offset-4"
+                                      className="hover:underline underline-offset-4 text-left"
                                       href={`/wargear/weapons#${weaponId}`}
                                     >
                                       {profile.name || item.name}
@@ -305,7 +305,7 @@ export default async function Page() {
                     <h3 className="col-span-6 md:col-span-8 p-2">Rule</h3>
                     <h3 className="col-span-3 md:col-span-2 p-2">Related</h3>
                   </section>
-                  {weaponSpecialRules.map((rule, index) => {
+                  {weaponSpecialRules.map((rule) => {
                     const ruleId = `${rule.name.split(" ").join("_")}_rule`;
                     const linkedRule = rule.rules;
 

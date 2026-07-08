@@ -119,7 +119,10 @@ export default async function Page() {
                 included in supplements like Dark Millennium.
               </p>
             </section>
-            <figure role="group" className="grid grid-cols-3 gap-2">
+            <figure
+              role="group"
+              className="grid grid-cols-2 md:grid-cols-3 gap-2"
+            >
               {showcase.map((image) => (
                 <div key={image.file_name}>
                   <ImageWithCredit
