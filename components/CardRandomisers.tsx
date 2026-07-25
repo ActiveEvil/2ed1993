@@ -165,7 +165,7 @@ export const MissionCardRandomiser: React.FC<{
   }
 
   if (fightingAsOrks) {
-    ids = allIds.filter((id) => !["The Assasins", "Witch Hunt"].includes(id));
+    ids = ids.filter((id) => !["The_Assassins", "Witch_Hunt"].includes(id));
   }
 
   return (

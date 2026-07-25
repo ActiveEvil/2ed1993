@@ -1,5 +1,5 @@
 import "./globals.css";
-import { InstallPrompt } from "@/components/InstallPrompt";
+// import { InstallPrompt } from "@/components/InstallPrompt";
 import { TopNav } from "@/components/TopNav";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
@@ -24,6 +24,10 @@ const crimsonText = Crimson_Text({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://2ed1993.com"),
+  alternates: {
+    canonical: "./",
+  },
   title: "2ed1993",
   description: "The Warhammer 40,000 2nd Edition digital record project.",
   icons: [
@@ -47,8 +51,6 @@ export const viewport: Viewport = {
   width: "device-width",
   height: "device-height",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
   themeColor: "#2d2d2d",
 };
