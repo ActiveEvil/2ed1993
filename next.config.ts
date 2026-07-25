@@ -13,6 +13,21 @@ const nextConfig: NextConfig = {
     ],
     qualities: [80, 75],
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.2ed1993.com",
+          },
+        ],
+        destination: "https://2ed1993.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
