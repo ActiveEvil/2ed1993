@@ -1,7 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -16,24 +16,32 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
+  const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "weapons")
     .single();
   const hero = heroImage?.images ?? null;
 
-  const { data: weapons } = await supabase
+  const { data: weapons, error: weaponsError } = await supabase
     .from("weapons")
     .select(
       "id, name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
     )
     .order("name");
 
-  const { data: weaponSpecialRules } = await supabase
-    .from("weapon_special_rules")
-    .select("name, rule, rules(name, rule_categories(slug))")
-    .order("name");
+  const { data: weaponSpecialRules, error: weaponSpecialRulesError } =
+    await supabase
+      .from("weapon_special_rules")
+      .select("name, rule, rules(name, rule_categories(slug))")
+      .order("name");
+
+  assertNoQueryErrors(
+    "/wargear/weapons",
+    heroImageError,
+    weaponsError,
+    weaponSpecialRulesError,
+  );
 
   if (hero && weapons && weaponSpecialRules) {
     const categories = new Map<string, typeof weapons>();
@@ -391,4 +399,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/wargear/weapons: rendered with no data");
 }

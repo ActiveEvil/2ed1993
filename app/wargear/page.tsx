@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
 
@@ -14,17 +14,19 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
+  const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "wargear")
     .single();
   const hero = heroImage?.images ?? null;
 
-  const { data: armour } = await supabase
+  const { data: armour, error: armourError } = await supabase
     .from("armour")
     .select("id, name")
     .order("name");
+
+  assertNoQueryErrors("/wargear", heroImageError, armourError);
 
   if (hero && armour) {
     return (
@@ -117,4 +119,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/wargear: rendered with no data");
 }

@@ -1,7 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -29,16 +29,23 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImages } = await supabase
+  const { data: heroImages, error: heroImagesError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "psychic-power-cards")
     .order("position");
   const heros = heroImages?.map(({ images }) => images);
-  const { data: psychic_power_cards } = await supabase
-    .from("psychic_power_cards")
-    .select("id, deck, name, description, force, range, note")
-    .order("id");
+  const { data: psychic_power_cards, error: psychicPowerCardsError } =
+    await supabase
+      .from("psychic_power_cards")
+      .select("id, deck, name, description, force, range, note")
+      .order("id");
+
+  assertNoQueryErrors(
+    "/card-decks/psychic-power-cards",
+    heroImagesError,
+    psychicPowerCardsError,
+  );
 
   if (heros?.length && psychic_power_cards) {
     const cards = new Map<string, typeof psychic_power_cards>();
@@ -166,4 +173,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/card-decks/psychic-power-cards: rendered with no data");
 }

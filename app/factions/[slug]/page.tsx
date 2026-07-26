@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
@@ -11,11 +11,13 @@ export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
-  const { data: faction } = await supabase
+  const { data: faction, error: factionError } = await supabase
     .from("factions")
     .select("name, description")
     .eq("slug", params.slug)
     .single();
+
+  assertNoQueryErrors("/factions/[slug]", factionError);
 
   if (faction) {
     const { name, description } = faction;
@@ -32,7 +34,7 @@ export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
   const params = await props.params;
-  const { data: faction } = await supabase
+  const { data: faction, error: factionError } = await supabase
     .from("factions")
     .select(
       `slug, name, description, images(file_name, artist, title), army_lists(id, name, unit_categories(category, position, units(id, name)), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name))))`,
@@ -45,6 +47,8 @@ export default async function Page(props: {
       referencedTable: "army_lists.wargear_categories.wargear_items",
     })
     .single();
+
+  assertNoQueryErrors("/factions/[slug]", factionError);
 
   if (faction) {
     const heros = faction.images.slice(0, 2);

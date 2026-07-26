@@ -1,7 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import { Metadata } from "next/types";
 
@@ -15,16 +15,23 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
+  const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "special-warp-cards")
     .single();
   const hero = heroImage?.images ?? null;
-  const { data: special_warp_cards } = await supabase
-    .from("special_warp_cards")
-    .select("id, name, description")
-    .order("id");
+  const { data: special_warp_cards, error: specialWarpCardsError } =
+    await supabase
+      .from("special_warp_cards")
+      .select("id, name, description")
+      .order("id");
+
+  assertNoQueryErrors(
+    "/card-decks/special-warp-cards",
+    heroImageError,
+    specialWarpCardsError,
+  );
 
   if (hero && special_warp_cards) {
     return (
@@ -105,4 +112,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/card-decks/special-warp-cards: rendered with no data");
 }

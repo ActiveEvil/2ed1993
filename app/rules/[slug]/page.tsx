@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
@@ -10,11 +10,13 @@ export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
-  const { data: category } = await supabase
+  const { data: category, error: categoryError } = await supabase
     .from("rule_categories")
     .select("name")
     .eq("slug", params.slug)
     .single();
+
+  assertNoQueryErrors("/rules/[slug]", categoryError);
 
   if (category) {
     return {
@@ -30,7 +32,7 @@ export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
   const params = await props.params;
-  const { data: category } = await supabase
+  const { data: category, error: categoryError } = await supabase
     .from("rule_categories")
     .select(
       "name, images(file_name, artist, title), rules(name, rule, position)",
@@ -38,6 +40,8 @@ export default async function Page(props: {
     .eq("slug", params.slug)
     .order("position", { referencedTable: "rules" })
     .single();
+
+  assertNoQueryErrors("/rules/[slug]", categoryError);
 
   if (category) {
     const heros = category.images.slice(0, 2);

@@ -2,7 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { StrategyCardRandomiser } from "@/components/CardRandomisers";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
@@ -15,16 +15,22 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
+  const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "strategy-cards")
     .single();
   const hero = heroImage?.images ?? null;
-  const { data: strategy_cards } = await supabase
+  const { data: strategy_cards, error: strategyCardsError } = await supabase
     .from("strategy_cards")
     .select("id, origin, name, description")
     .order("id");
+
+  assertNoQueryErrors(
+    "/card-decks/strategy-cards",
+    heroImageError,
+    strategyCardsError,
+  );
 
   if (hero && strategy_cards) {
     const origins = new Map<string, typeof strategy_cards>();
@@ -123,4 +129,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/card-decks/strategy-cards: rendered with no data");
 }

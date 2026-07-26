@@ -15,7 +15,7 @@ export default async function Page() {
     .select("images(file_name, artist, title)")
     .eq("slug", "not-found")
     .order("position");
-  const heros = heroImages?.map(({ images }) => images);
+  const heros = heroImages?.map(({ images }) => images) ?? [];
 
   if (heros) {
     return (

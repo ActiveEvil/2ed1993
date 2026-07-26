@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
 
@@ -14,17 +14,19 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
+  const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "factions")
     .single();
   const hero = heroImage?.images ?? null;
 
-  const { data: factions } = await supabase
+  const { data: factions, error: factionsError } = await supabase
     .from("factions")
     .select("slug, name")
     .order("name");
+
+  assertNoQueryErrors("/factions", heroImageError, factionsError);
 
   if (hero && factions) {
     return (
@@ -69,4 +71,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/factions: rendered with no data");
 }
