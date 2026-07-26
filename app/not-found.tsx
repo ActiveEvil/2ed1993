@@ -10,13 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const { data: hero } = await supabase
+  const { data: heros } = await supabase
     .from("images")
     .select("file_name, artist, title")
-    .eq("id", 44)
-    .single();
+    .in("id", [44, 45])
 
-  if (hero) {
+  if (heros) {
     return (
       <>
         <Breadcrumbs
@@ -62,12 +61,19 @@ export default async function Page() {
               .
             </p>
           </section>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
-            aspect="aspect-retro"
-          />
+
+          <div className="grid grid-cols-2 gap-4">
+              {heros.map((hero) => (
+                <div key={hero.file_name}>
+                  <ImageWithCredit
+                    src={`images/${hero.file_name}`}
+                    title={hero.title}
+                    artist={hero.artist}
+                    aspect="aspect-portrait"
+                  />
+                </div>
+              ))}
+            </div>
         </main>
       </>
     );
