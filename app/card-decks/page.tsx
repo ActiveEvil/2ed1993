@@ -1,10 +1,11 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { Database } from "@/database.types";
+import { supabase } from "@/lib/supabase";
 import slugify from "@sindresorhus/slugify";
-import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { Metadata } from "next/types";
+
+export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
@@ -14,11 +15,6 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const supabase = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-  );
-
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")

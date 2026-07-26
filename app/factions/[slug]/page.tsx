@@ -1,19 +1,16 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { _2ed1993 } from "@/components/Logos";
-import { Database } from "@/database.types";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
+export const revalidate = 3600;
+
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const supabase = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-  );
   const params = await props.params;
   const { data: faction } = await supabase
     .from("factions")
@@ -35,10 +32,6 @@ export async function generateMetadata(props: {
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
-  const supabase = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-  );
   const params = await props.params;
   const { data: faction } = await supabase
     .from("factions")
