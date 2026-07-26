@@ -1,6 +1,5 @@
 "use client";
 
-import { clsx } from "clsx";
 import { useEffect } from "react";
 
 export const Highlighter: React.FC = (): null => {
@@ -13,17 +12,23 @@ export const Highlighter: React.FC = (): null => {
   return null;
 };
 
-export const HighlighterButton: React.FC<
+export const HighlighterLink: React.FC<
   {
     id?: string | undefined;
     className?: string | undefined;
     href: string;
   } & React.PropsWithChildren
 > = ({ id, className, href, children }): React.JSX.Element => (
-  <button
+  <a
     id={id}
-    className={clsx("cursor-pointer", className)}
+    href={href}
+    className={className}
     onClick={(e) => {
+      // Let modified clicks behave like a normal link (new tab, etc.).
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+        return;
+      }
+
       e.preventDefault();
 
       const previous = encodeURI(href);
@@ -42,5 +47,5 @@ export const HighlighterButton: React.FC<
     }}
   >
     {children}
-  </button>
+  </a>
 );

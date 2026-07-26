@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { Highlighter, HighlighterButton } from "@/components/Highlighter";
+import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
@@ -7,8 +7,8 @@ import { Metadata } from "next/types";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Weapons | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Weapons.",
+    title: "Warhammer 40,000 2nd Edition Armour | 2ed1993",
+    description: "Warhammer 40,000 2nd Edition Armour.",
   };
 }
 
@@ -71,14 +71,14 @@ export default async function Page() {
                   id={itemId}
                   className="flex flex-col gap-4 py-8 px-4 md:px-8 border-t-4 border-black target:bg-2ed-light-yellow target:text-black target:font-bold"
                 >
-                  <HighlighterButton
+                  <HighlighterLink
                     className="flex hover:underline underline-offset-4"
                     href={`/wargear/armour#${itemId}`}
                   >
                     <h2 className="font-subtitle text-2xl capitalize">
                       {item.name}
                     </h2>
-                  </HighlighterButton>
+                  </HighlighterLink>
 
                   <section
                     className="dynamic-content flex flex-col justify-center gap-4"
