@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { Warhammer, _2ed1993 } from "@/components/Logos";
+import { Warhammer } from "@/components/Logos";
 import { supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 

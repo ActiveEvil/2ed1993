@@ -79,7 +79,7 @@ export default async function Page() {
             </h1>
           </header>
           <div className="grid grid-cols-2 gap-4">
-            {heros.map((hero, index) => (
+            {heros.map((hero) => (
               <div key={hero.file_name}>
                 <ImageWithCredit
                   src={`images/${hero.file_name}`}

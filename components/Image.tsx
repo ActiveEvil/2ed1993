@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import NextImage from "next/image";
 
 export const ImageWithCredit: React.FC<{
@@ -6,10 +5,7 @@ export const ImageWithCredit: React.FC<{
   title: string;
   artist: string;
   aspect?:
-    | "aspect-video"
-    | "aspect-portrait"
-    | "aspect-retro"
-    | "aspect-square";
+    "aspect-video" | "aspect-portrait" | "aspect-retro" | "aspect-square";
 }> = ({ src, title, artist, aspect = "aspect-video" }): React.JSX.Element => (
   <figure
     className={`${aspect} relative w-full border-4 border-black shadow-lg`}

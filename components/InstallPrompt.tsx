@@ -3,32 +3,32 @@
 import c from "js-cookie";
 import { useEffect, useRef, useState } from "react";
 
+const installCookie = "install2ed1993";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+}
+
 export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
   const ref = useRef<HTMLDialogElement>(null);
-  const [deferredPrompt, setDeferredPrompt] = useState<Event | undefined>(
-    undefined,
-  );
-  const installCookie = "install2ed1993";
-  const installStatus = c.get(installCookie);
+  const [deferredPrompt, setDeferredPrompt] = useState<
+    BeforeInstallPromptEvent | undefined
+  >(undefined);
 
   useEffect(() => {
     const showInstallPrompt = (): boolean => {
-      if (
-        // @ts-ignore
-        window.navigator.standalone ||
-        window.matchMedia("(display-mode: standalone)").matches ||
-        installStatus !== undefined
-      ) {
-        return false;
-      }
+      const isStandalone =
+        (window.navigator as Navigator & { standalone?: boolean }).standalone ||
+        window.matchMedia("(display-mode: standalone)").matches;
 
-      return true;
+      return !isStandalone && c.get(installCookie) === undefined;
     };
 
     if (showInstallPrompt()) {
       window.addEventListener("beforeinstallprompt", (event: Event) => {
         event.preventDefault();
-        setDeferredPrompt(event);
+        setDeferredPrompt(event as BeforeInstallPromptEvent);
       });
 
       window.addEventListener("appinstalled", () => {
@@ -65,9 +65,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
             </button>
             <button
               onClick={async () => {
-                // @ts-ignore
                 deferredPrompt.prompt();
-                // @ts-ignore
                 const { outcome } = await deferredPrompt.userChoice;
                 c.set(installCookie, outcome, { expires: 56 });
                 setDeferredPrompt(undefined);
