@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
+import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
 export async function generateMetadata(props: {
@@ -19,14 +20,13 @@ export async function generateMetadata(props: {
     .single();
 
   if (category) {
-    const { name } = category;
     return {
       title: `Warhammer 40,000 2nd Edition ${category.name} | 2ed1993`,
-      description: `Warhammer 40,000 2nd Edition  ${category.name}.`,
+      description: `Warhammer 40,000 2nd Edition ${category.name}.`,
     };
   }
 
-  throw new Error("No data");
+  notFound();
 }
 
 export default async function Page(props: {
@@ -120,4 +120,6 @@ export default async function Page(props: {
       </>
     );
   }
+
+  notFound();
 }

@@ -6,26 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const useIsSmallScreen = (): boolean | undefined => {
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.matchMedia("(width < 48rem)").matches);
-    };
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return isSmallScreen;
-};
-
 const BurgerMenu: React.FC<{
   items: {
     href: string;
@@ -66,11 +46,12 @@ const BurgerMenu: React.FC<{
   }, [ref, open]);
 
   return (
-    <div className="relative flex justify-end items-center w-full">
+    <div className="relative flex md:hidden justify-end items-center w-full">
       <div>
         <button
           className="flex flex-col gap-1 w-8 h-6"
-          onClick={(e) => setOpen(true)}
+          aria-expanded={open}
+          onClick={() => setOpen(true)}
         >
           <span className="sr-only">Menu</span>
           <div className="w-8 h-1 bg-2ed-light-yellow"></div>
@@ -119,12 +100,15 @@ const StandardMenu: React.FC<{
     </li>
   ));
 
-  return <ul className="flex justify-end items-center gap-8 w-full">{list}</ul>;
+  return (
+    <ul className="hidden md:flex justify-end items-center gap-8 w-full">
+      {list}
+    </ul>
+  );
 };
 
 export const TopNav: React.FC = (): React.JSX.Element => {
   const pathname = usePathname();
-  const isSmallScreen = useIsSmallScreen();
 
   const items = [
     {
@@ -156,11 +140,8 @@ export const TopNav: React.FC = (): React.JSX.Element => {
           </Link>
         )}
 
-        {isSmallScreen ? (
-          <BurgerMenu items={items} />
-        ) : (
-          <StandardMenu items={items} />
-        )}
+        <BurgerMenu items={items} />
+        <StandardMenu items={items} />
       </nav>
     </header>
   );

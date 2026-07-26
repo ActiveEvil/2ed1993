@@ -4,6 +4,7 @@ import { _2ed1993 } from "@/components/Logos";
 import { Database } from "@/database.types";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
 export async function generateMetadata(props: {
@@ -28,7 +29,7 @@ export async function generateMetadata(props: {
     };
   }
 
-  throw new Error("No data");
+  notFound();
 }
 
 export default async function Page(props: {
@@ -248,4 +249,6 @@ export default async function Page(props: {
       </>
     );
   }
+
+  notFound();
 }
