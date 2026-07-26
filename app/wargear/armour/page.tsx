@@ -1,7 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
@@ -14,17 +14,19 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
+  const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "armour")
     .single();
   const hero = heroImage?.images ?? null;
 
-  const { data: armour } = await supabase
+  const { data: armour, error: armourError } = await supabase
     .from("armour")
     .select("id, name, profile_description")
     .order("name");
+
+  assertNoQueryErrors("/wargear/armour", heroImageError, armourError);
 
   if (hero && armour) {
     return (
@@ -91,4 +93,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/wargear/armour: rendered with no data");
 }

@@ -1,7 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { Warhammer } from "@/components/Logos";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 
 export const revalidate = 3600;
@@ -15,19 +15,21 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
+  const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "home")
     .single();
   const hero = heroImage?.images ?? null;
 
-  const { data: showcaseImages } = await supabase
+  const { data: showcaseImages, error: showcaseImagesError } = await supabase
     .from("image_galleries")
     .select("images(file_name, artist, title)")
     .eq("name", "home-showcase")
     .order("position");
   const showcase = showcaseImages?.map(({ images }) => images);
+
+  assertNoQueryErrors("/", heroImageError, showcaseImagesError);
 
   if (hero && showcase) {
     return (
@@ -140,4 +142,6 @@ export default async function Page() {
       </>
     );
   }
+
+  throw new Error("/: rendered with no data");
 }
