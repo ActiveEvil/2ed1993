@@ -15,17 +15,19 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: hero } = await supabase
-    .from("images")
-    .select("file_name, artist, title")
-    .eq("id", 1)
+  const { data: heroImage } = await supabase
+    .from("hero_images")
+    .select("images(file_name, artist, title)")
+    .eq("slug", "home")
     .single();
+  const hero = heroImage?.images ?? null;
 
-  const { data: showcase } = await supabase
-    .from("images")
-    .select("file_name, artist, title")
-    .in("id", [35, 36, 37, 38, 39, 40, 41, 42, 43])
-    .order("id");
+  const { data: showcaseImages } = await supabase
+    .from("image_galleries")
+    .select("images(file_name, artist, title)")
+    .eq("name", "home-showcase")
+    .order("position");
+  const showcase = showcaseImages?.map(({ images }) => images);
 
   if (hero && showcase) {
     return (

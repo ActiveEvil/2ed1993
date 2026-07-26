@@ -29,10 +29,12 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heros } = await supabase
-    .from("images")
-    .select("file_name, artist, title")
-    .in("id", [31, 32]);
+  const { data: heroImages } = await supabase
+    .from("hero_images")
+    .select("images(file_name, artist, title)")
+    .eq("slug", "psychic-power-cards")
+    .order("position");
+  const heros = heroImages?.map(({ images }) => images);
   const { data: psychic_power_cards } = await supabase
     .from("psychic_power_cards")
     .select("id, deck, name, description, force, range, note")
