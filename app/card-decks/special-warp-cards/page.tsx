@@ -16,11 +16,12 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: hero } = await supabase
-    .from("images")
-    .select("file_name, artist, title")
-    .eq("id", 33)
+  const { data: heroImage } = await supabase
+    .from("hero_images")
+    .select("images(file_name, artist, title)")
+    .eq("slug", "special-warp-cards")
     .single();
+  const hero = heroImage?.images ?? null;
   const { data: special_warp_cards } = await supabase
     .from("special_warp_cards")
     .select("id, name, description")

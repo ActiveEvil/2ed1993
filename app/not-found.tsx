@@ -10,10 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const { data: heros } = await supabase
-    .from("images")
-    .select("file_name, artist, title")
-    .in("id", [44, 45])
+  const { data: heroImages } = await supabase
+    .from("hero_images")
+    .select("images(file_name, artist, title)")
+    .eq("slug", "not-found")
+    .order("position");
+  const heros = heroImages?.map(({ images }) => images);
 
   if (heros) {
     return (
@@ -63,17 +65,17 @@ export default async function Page() {
           </section>
 
           <div className="grid grid-cols-2 gap-4">
-              {heros.map((hero) => (
-                <div key={hero.file_name}>
-                  <ImageWithCredit
-                    src={`images/${hero.file_name}`}
-                    title={hero.title}
-                    artist={hero.artist}
-                    aspect="aspect-portrait"
-                  />
-                </div>
-              ))}
-            </div>
+            {heros.map((hero) => (
+              <div key={hero.file_name}>
+                <ImageWithCredit
+                  src={`images/${hero.file_name}`}
+                  title={hero.title}
+                  artist={hero.artist}
+                  aspect="aspect-portrait"
+                />
+              </div>
+            ))}
+          </div>
         </main>
       </>
     );
