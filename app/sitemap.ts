@@ -1,6 +1,7 @@
-import { Database } from "@/database.types";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import { MetadataRoute } from "next";
+
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://2ed1993.com";
@@ -81,11 +82,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const supabase = createClient<Database>(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-    );
-
     const factionsPages: MetadataRoute.Sitemap = [];
     const { data: factions } = await supabase
       .from("factions")

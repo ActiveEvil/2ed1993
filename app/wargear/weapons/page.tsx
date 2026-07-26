@@ -1,11 +1,12 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { Database } from "@/database.types";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Metadata } from "next/types";
+
+export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
@@ -15,11 +16,6 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const supabase = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-  );
-
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")

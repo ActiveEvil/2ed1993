@@ -2,6 +2,7 @@
   "name": "2ed1993",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.34.4",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,27 +11,27 @@
   },
   "dependencies": {
     "@sindresorhus/slugify": "^3.0.0",
-    "@supabase/supabase-js": "^2.95.3",
+    "@supabase/supabase-js": "^2.110.8",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
-    "js-cookie": "^3.0.5",
+    "js-cookie": "^3.0.8",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.3",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/js-cookie": "^3.0.6",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.5",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
-    "prettier": "^3.8.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "prettier": "^3.9.6",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
   },
   "prettier": {
     "plugins": [

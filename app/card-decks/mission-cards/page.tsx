@@ -2,9 +2,10 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { MissionCardRandomiser } from "@/components/CardRandomisers";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
-import { Database } from "@/database.types";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
+
+export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
@@ -14,10 +15,6 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const supabase = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-  );
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")

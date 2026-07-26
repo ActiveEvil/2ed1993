@@ -1,7 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
-import { Database } from "@/database.types";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
 
@@ -11,11 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const supabase = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
-  );
-
   const { data: hero } = await supabase
     .from("images")
     .select("file_name, artist, title")
