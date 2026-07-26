@@ -1,7 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
 import { supabase } from "@/lib/supabase";
-import slugify from "@sindresorhus/slugify";
 import Link from "next/link";
 import { Metadata } from "next/types";
 

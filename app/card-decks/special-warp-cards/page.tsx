@@ -3,7 +3,6 @@ import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
 import { supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
-import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
