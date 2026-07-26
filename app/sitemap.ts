@@ -13,12 +13,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 1.0,
     },
-    {
-      url: `${baseUrl}/factions`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
+    // {
+    //   url: `${baseUrl}/factions`,
+    //   lastModified: new Date(),
+    //   changeFrequency: "monthly",
+    //   priority: 0.9,
+    // },
     {
       url: `${baseUrl}/rules`,
       lastModified: new Date(),
@@ -82,21 +82,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const factionsPages: MetadataRoute.Sitemap = [];
-    const { data: factions } = await supabase
-      .from("factions")
-      .select("slug, created_at, updated_at");
+    // const factionsPages: MetadataRoute.Sitemap = [];
+    // const { data: factions } = await supabase
+    //   .from("factions")
+    //   .select("slug, created_at, updated_at");
 
-    if (factions) {
-      for (const faction of factions) {
-        factionsPages.push({
-          url: `${baseUrl}/factions/${faction.slug}`,
-          lastModified: new Date(faction.updated_at || faction.created_at),
-          changeFrequency: "monthly",
-          priority: 0.6,
-        });
-      }
-    }
+    // if (factions) {
+    //   for (const faction of factions) {
+    //     factionsPages.push({
+    //       url: `${baseUrl}/factions/${faction.slug}`,
+    //       lastModified: new Date(faction.updated_at || faction.created_at),
+    //       changeFrequency: "monthly",
+    //       priority: 0.6,
+    //     });
+    //   }
+    // }
 
     const rulesPages: MetadataRoute.Sitemap = [];
     const { data: rule_categories } = await supabase
@@ -114,7 +114,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
 
-    return [...staticPages, ...factionsPages, ...rulesPages];
+    return [...staticPages, ...rulesPages];
   } catch (error) {
     console.log("Error generating sitemap:", error);
     return staticPages;
