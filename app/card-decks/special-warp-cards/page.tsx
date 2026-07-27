@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import { Metadata } from "next/types";
@@ -72,7 +73,7 @@ export default async function Page() {
 
           <section className="grid md:grid-cols-2 gap-4">
             {special_warp_cards.map((card) => {
-              const cardId = card.name.split(" ").join("_");
+              const cardId = generateAnchorId(card.name);
 
               return (
                 <div
@@ -94,7 +95,7 @@ export default async function Page() {
           </section>
 
           {/* {decks.map((deck) => {
-            const deckId = deck.name.split(" ").join("_");
+            const deckId = generateAnchorId(deck.name);
 
             return (
               <section id={deckId} key={deckId} className="flex flex-col gap-4">

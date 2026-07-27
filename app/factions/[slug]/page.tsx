@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -107,7 +108,7 @@ export default async function Page(props: {
             <nav className="ordered-list">
               <ol className="flex flex-col gap-2 text-2xl">
                 {faction.army_lists.map((list) => {
-                  const href = `/factions/${faction.slug}#${list.name.split(" ").join("_")}`;
+                  const href = `/factions/${faction.slug}#${generateAnchorId(list.name)}`;
 
                   return (
                     <li key={list.id}>
@@ -123,7 +124,7 @@ export default async function Page(props: {
               </ol>
             </nav>
             {faction.army_lists.map((list) => {
-              const listId = list.name.split(" ").join("_");
+              const listId = generateAnchorId(list.name);
 
               return (
                 <section
@@ -188,7 +189,7 @@ export default async function Page(props: {
                                       className="flex items-baseline gap-2 text-lg"
                                     >
                                       <Link
-                                        href={`/wargear/armour#${item.armour.name.split(" ").join("_")}`}
+                                        href={`/wargear/armour#${generateAnchorId(item.armour.name)}`}
                                         className="whitespace-nowrap underline underline-offset-4"
                                       >
                                         {item.armour.name}
@@ -212,7 +213,7 @@ export default async function Page(props: {
                                       className="flex items-baseline gap-2 text-lg"
                                     >
                                       <Link
-                                        href={`/wargear/weapons#${item.weapons.name.split(" ").join("_")}`}
+                                        href={`/wargear/weapons#${generateAnchorId(item.weapons.name)}`}
                                         className="whitespace-nowrap underline underline-offset-4"
                                       >
                                         {item.weapons.name}

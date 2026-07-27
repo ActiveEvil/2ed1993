@@ -1,5 +1,6 @@
 "use client";
 
+import { generateAnchorId } from "@/lib/anchors";
 import Link from "next/link";
 
 export const Breadcrumbs: React.FC<{
@@ -9,7 +10,7 @@ export const Breadcrumbs: React.FC<{
   }[];
 }> = ({ crumbs }): React.JSX.Element => {
   const list = crumbs.map((crumb) => {
-    const key = crumb.anchor.split(" ").join("_");
+    const key = generateAnchorId(crumb.anchor);
 
     if (!crumb.href) {
       return (

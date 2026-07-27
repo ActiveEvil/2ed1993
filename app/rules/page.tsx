@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -68,7 +69,7 @@ export default async function Page() {
                     </Link>
                     <ol className="flex flex-col gap-2 text-xl">
                       {rules.map(({ name }) => {
-                        const ruleId = name.split(" ").join("_");
+                        const ruleId = generateAnchorId(name);
 
                         return (
                           <li key={ruleId}>

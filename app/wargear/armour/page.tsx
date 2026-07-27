@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -62,7 +63,7 @@ export default async function Page() {
           </div>
           <section className="flex flex-col ">
             {armour.map((item) => {
-              const itemId = item.name.split(" ").join("_");
+              const itemId = generateAnchorId(item.name);
 
               return (
                 <section

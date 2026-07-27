@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import Link from "next/link";
@@ -106,7 +107,7 @@ export default async function Page() {
           <nav className="ordered-list">
             <ol className="flex flex-col gap-2 text-2xl">
               {decks.map(({ name }) => {
-                const deckId = name.split(" ").join("_");
+                const deckId = generateAnchorId(name);
                 const href = `/card-decks/psychic-power-cards#${deckId}`;
 
                 return (
@@ -124,7 +125,7 @@ export default async function Page() {
           </nav>
 
           {decks.map((deck) => {
-            const deckId = deck.name.split(" ").join("_");
+            const deckId = generateAnchorId(deck.name);
 
             return (
               <section id={deckId} key={deckId} className="flex flex-col gap-4">
@@ -136,7 +137,7 @@ export default async function Page() {
                 </div>
                 <section className="grid md:grid-cols-2 gap-4">
                   {deck.cards.map((card) => {
-                    const cardId = card.name.split(" ").join("_");
+                    const cardId = generateAnchorId(card.name);
 
                     return (
                       <div
