@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { StrategyCardRandomiser } from "@/components/CardRandomisers";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -80,11 +81,11 @@ export default async function Page() {
             baseHref="/card-decks/strategy-cards"
             cards={cards.map(({ origin, items }) => ({
               origin,
-              ids: items.map(({ name }) => name.split(" ").join("_")),
+              ids: items.map(({ name }) => generateAnchorId(name)),
             }))}
           />
           {cards.map((section) => {
-            const originId = section.origin.split(" ").join("_");
+            const originId = generateAnchorId(section.origin);
             return (
               <section
                 id={originId}
@@ -99,7 +100,7 @@ export default async function Page() {
                 </div>
                 <section className="grid md:grid-cols-2 gap-4">
                   {section.items.map((card) => {
-                    const cardId = card.name.split(" ").join("_");
+                    const cardId = generateAnchorId(card.name);
 
                     return (
                       <div

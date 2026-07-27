@@ -1,5 +1,6 @@
 "use client";
 
+import { generateAnchorId } from "@/lib/anchors";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -39,7 +40,7 @@ export const StrategyCardRandomiser: React.FC<{
         </p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           {cards.map((group) => {
-            const originId = group.origin.split(" ").join("_");
+            const originId = generateAnchorId(group.origin);
             return (
               <div key={originId} className="flex gap-2">
                 <input
@@ -177,7 +178,7 @@ export const MissionCardRandomiser: React.FC<{
         </p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           {cards.map((group) => {
-            const originId = group.origin.split(" ").join("_");
+            const originId = generateAnchorId(group.origin);
             return (
               <div key={originId} className="flex gap-2">
                 <input

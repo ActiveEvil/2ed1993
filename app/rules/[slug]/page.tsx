@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
@@ -92,7 +93,7 @@ export default async function Page(props: {
           )}
           <section className="flex flex-col justify-center gap-8 md:gap-16 md:mt-8">
             {category.rules.map((item) => {
-              const ruleId = item.name.split(" ").join("_");
+              const ruleId = generateAnchorId(item.name);
               return (
                 <section
                   key={ruleId}

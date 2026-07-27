@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import Link from "next/link";
@@ -93,7 +94,7 @@ export default async function Page() {
           {Boolean(weaponCategories.length) && (
             <section className="flex flex-col gap-4 pt-4 border-t-4 border-black">
               {weaponCategories.map((section) => {
-                const categoryId = section.category.split(" ").join("_");
+                const categoryId = generateAnchorId(section.category);
 
                 return (
                   <div
@@ -187,7 +188,7 @@ export default async function Page() {
                           )}
                         </thead>
                         {section.items.map((item) => {
-                          const weaponId = item.name.split(" ").join("_");
+                          const weaponId = generateAnchorId(item.name);
 
                           return (
                             <tbody
@@ -264,7 +265,9 @@ export default async function Page() {
                                     <div className="flex flex-col">
                                       {profile.weapon_special_rules.map(
                                         (rule) => {
-                                          const ruleId = `${rule.name.split(" ").join("_")}_rule`;
+                                          // Suffix disambiguates weapon special rules from same-named rules elsewhere
+                                          // (Parry, Overheats and Guess Range exist in both places). Do not remove.
+                                          const ruleId = `${generateAnchorId(rule.name)}_Rule`;
 
                                           return (
                                             <HighlighterLink
@@ -280,7 +283,7 @@ export default async function Page() {
                                       {item.profile_description && (
                                         <HighlighterLink
                                           className="underline underline-offset-4"
-                                          href={`/wargear/weapons#${weaponId}_rules`}
+                                          href={`/wargear/weapons#${weaponId}_Rules`}
                                         >
                                           See unique rules
                                         </HighlighterLink>
@@ -311,7 +314,9 @@ export default async function Page() {
                     <h3 className="col-span-3 md:col-span-2 p-2">Related</h3>
                   </section>
                   {weaponSpecialRules.map((rule) => {
-                    const ruleId = `${rule.name.split(" ").join("_")}_rule`;
+                    // Suffix disambiguates weapon special rules from same-named rules elsewhere
+                    // (Parry, Overheats and Guess Range exist in both places). Do not remove.
+                    const ruleId = `${generateAnchorId(rule.name)}_Rule`;
                     const linkedRule = rule.rules;
 
                     return (
@@ -338,7 +343,7 @@ export default async function Page() {
                           {linkedRule && (
                             <Link
                               className="underline underline-offset-4 text-sm"
-                              href={`/rules/${linkedRule.rule_categories.slug}#${linkedRule.name.split(" ").join("_")}`}
+                              href={`/rules/${linkedRule.rule_categories.slug}#${generateAnchorId(linkedRule.name)}`}
                             >
                               {linkedRule.name}
                             </Link>
@@ -366,7 +371,7 @@ export default async function Page() {
                       Boolean(profile_description),
                     )
                     .map((weapon) => {
-                      const ruleId = `${weapon.name.split(" ").join("_")}_rules`;
+                      const ruleId = `${generateAnchorId(weapon.name)}_Rules`;
 
                       return (
                         <section

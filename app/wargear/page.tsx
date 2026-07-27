@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/Image";
+import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -74,7 +75,7 @@ export default async function Page() {
                     "General Weapon Special Rules",
                     "Unique Weapon Special Rules",
                   ].map((category) => {
-                    const categoryId = category.split(" ").join("_");
+                    const categoryId = generateAnchorId(category);
 
                     return (
                       <li key={categoryId}>
@@ -98,7 +99,7 @@ export default async function Page() {
                 </Link>
                 <ol className="flex flex-col gap-2 text-xl">
                   {armour.map((item) => {
-                    const itemId = item.name.split(" ").join("_");
+                    const itemId = generateAnchorId(item.name);
 
                     return (
                       <li key={itemId}>
