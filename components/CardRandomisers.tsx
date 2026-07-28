@@ -171,7 +171,7 @@ export const MissionCardRandomiser: React.FC<{
 
   return (
     <>
-      <div className="-mx-4 md:-mx-8 flex flex-col items-start gap-4 pt-4 px-4 md:px-8 bg-2ed-mid-blue border-t-4 border-black shadow-lg">
+      <div className="-mx-4 md:-mx-8 flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-mid-blue border-t-4 border-black shadow-lg">
         <p className="text-xl">
           Select which card decks you wish to include and randomly draw one
           card:
