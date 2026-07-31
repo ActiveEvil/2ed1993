@@ -45,8 +45,8 @@ export default function GlobalError({
             <div className="flex flex-col gap-8 items-start">
               <button
                 onClick={reset}
-                className="px-4 py-1 rounded-none bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
-                >
+                className="px-4 py-1 rounded-none  bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
+              >
                 Try again
               </button>
               {error.digest ? (

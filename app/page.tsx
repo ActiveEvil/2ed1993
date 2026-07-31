@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ImageWithCredit } from "@/components/Image";
+import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Warhammer } from "@/components/Logos";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next";
