@@ -22,16 +22,9 @@ export default async function Page() {
     .single();
   const hero = heroImage?.images ?? null;
 
-  const { data: showcaseImages, error: showcaseImagesError } = await supabase
-    .from("image_galleries")
-    .select("images(file_name, artist, title)")
-    .eq("name", "home-showcase")
-    .order("position");
-  const showcase = showcaseImages?.map(({ images }) => images);
+  assertNoQueryErrors("/", heroImageError);
 
-  assertNoQueryErrors("/", heroImageError, showcaseImagesError);
-
-  if (hero && showcase) {
+  if (hero) {
     return (
       <>
         <Breadcrumbs
@@ -126,25 +119,4 @@ export default async function Page() {
   }
 
   throw new Error("/: rendered with no data");
-}
-
-{
-  /* <figure
-              role="group"
-              className="grid grid-cols-2 md:grid-cols-3 gap-2"
-            >
-              {showcase.map((image) => (
-                <div key={image.file_name}>
-                  <ImageWithCredit
-                    src={`images/${image.file_name}`}
-                    title={image.title}
-                    artist={image.artist}
-                    aspect="aspect-square"
-                  />
-                </div>
-              ))}
-              <figcaption className="col-span-2 md:col-span-3 font-bold text-right text-sm">
-                &mdash;Examples of the Warhammer 40,000 2nd Edition style
-              </figcaption>
-            </figure> */
 }
