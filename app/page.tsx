@@ -119,7 +119,17 @@ export default async function Page() {
                 included in supplements like Dark Millennium.
               </p>
             </section>
-            <figure
+          </article>
+        </main>
+      </>
+    );
+  }
+
+  throw new Error("/: rendered with no data");
+}
+
+{
+  /* <figure
               role="group"
               className="grid grid-cols-2 md:grid-cols-3 gap-2"
             >
@@ -136,12 +146,5 @@ export default async function Page() {
               <figcaption className="col-span-2 md:col-span-3 font-bold text-right text-sm">
                 &mdash;Examples of the Warhammer 40,000 2nd Edition style
               </figcaption>
-            </figure>
-          </article>
-        </main>
-      </>
-    );
-  }
-
-  throw new Error("/: rendered with no data");
+            </figure> */
 }
