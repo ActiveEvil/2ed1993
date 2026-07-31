@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
-import { ImageWithCredit } from "@/components/Image";
+import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";

@@ -59,7 +59,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
                 c.set(installCookie, "dismissed", { expires: 56 });
                 ref.current?.hidePopover();
               }}
-              className="px-4 py-1 rounded-none bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
+              className="px-4 py-1 rounded-none  bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
             >
               <span className="text-xl">&#9746;</span> No, thank you
             </button>
@@ -71,7 +71,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
                 setDeferredPrompt(undefined);
                 ref.current?.hidePopover();
               }}
-              className="px-4 py-1 rounded-none bg-2ed-black border-4 border-black outline-0 font-subtitle text-white shadow-lg"
+              className="px-4 py-1 rounded-none  bg-2ed-black border-4 border-black outline-0 font-subtitle text-white shadow-lg"
             >
               <span className="text-xl">&#9745;</span> Install 2ed1993
             </button>
@@ -187,7 +187,7 @@ export const InstallPrompt: React.FC = (): React.JSX.Element | null => {
                   c.set(installCookie, "dismissed", { expires: 56 });
                   ref.current?.hidePopover();
                 }}
-                className="px-4 py-1 rounded-none bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
+                className="px-4 py-1 rounded-none  bg-tranparent border-4 border-black outline-0 font-subtitle shadow-lg"
               >
                 <span className="text-xl">&#9746;</span> No, thank you
               </button>

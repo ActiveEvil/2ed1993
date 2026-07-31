@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { GalleryImage } from "@/components/Image";
+import { GalleryImage } from "@/components/GalleryImage";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 
@@ -40,7 +40,7 @@ export default async function Page() {
         <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
           <header>
             <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              2nd Edition Model Showcase
+              Miniature Showcase
             </h1>
           </header>
           <section className="grid grid-cols-2 md:grid-cols-3 gap-2">
