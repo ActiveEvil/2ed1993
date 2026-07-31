@@ -282,7 +282,7 @@ export type Database = {
       };
       images: {
         Row: {
-          artist: string;
+          artist: string | null;
           created_at: string;
           file_name: string;
           id: number;
@@ -290,7 +290,7 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
-          artist: string;
+          artist?: string | null;
           created_at?: string;
           file_name: string;
           id?: number;
@@ -298,7 +298,7 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
-          artist?: string;
+          artist?: string | null;
           created_at?: string;
           file_name?: string;
           id?: number;

@@ -127,6 +127,10 @@ export const TopNav: React.FC = (): React.JSX.Element => {
       href: "/card-decks",
       anchor: "Card Decks",
     },
+    {
+      href: "/gallery",
+      anchor: "Gallery",
+    },
   ];
 
   return (
