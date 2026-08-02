@@ -84,6 +84,7 @@ export default async function Page(props: {
                 src={`images/${heros[0].file_name}`}
                 title={heros[0].title}
                 artist={heros[0].artist}
+                width="half-from-md"
               />
             ) : (
               <div className="grid grid-cols-2 gap-4">
@@ -94,6 +95,7 @@ export default async function Page(props: {
                       title={hero.title}
                       artist={hero.artist}
                       aspect="aspect-portrait"
+                      width="half"
                     />
                   </div>
                 ))}

@@ -86,6 +86,7 @@ export default async function Page(props: {
                     title={hero.title}
                     artist={hero.artist}
                     aspect="aspect-portrait"
+                    width="half"
                   />
                 </div>
               ))}

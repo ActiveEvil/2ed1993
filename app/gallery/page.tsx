@@ -16,7 +16,7 @@ export function generateMetadata(): Metadata {
 export default async function Page() {
   const { data: galleryImages, error: galleryImagesError } = await supabase
     .from("image_galleries")
-    .select("images(file_name, title)")
+    .select("images(file_name, title, width, height)")
     .eq("name", "model-showcase")
     .order("position");
   const gallery = galleryImages?.map(({ images }) => images);
@@ -49,6 +49,8 @@ export default async function Page() {
                 key={image.file_name}
                 src={`images/${image.file_name}`}
                 title={image.title}
+                width={image.width}
+                height={image.height}
                 aspect="aspect-square"
               />
             ))}

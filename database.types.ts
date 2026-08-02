@@ -285,25 +285,31 @@ export type Database = {
           artist: string | null;
           created_at: string;
           file_name: string;
+          height: number | null;
           id: number;
           title: string;
           updated_at: string | null;
+          width: number | null;
         };
         Insert: {
           artist?: string | null;
           created_at?: string;
           file_name: string;
+          height?: number | null;
           id?: number;
           title: string;
           updated_at?: string | null;
+          width?: number | null;
         };
         Update: {
           artist?: string | null;
           created_at?: string;
           file_name?: string;
+          height?: number | null;
           id?: number;
           title?: string;
           updated_at?: string | null;
+          width?: number | null;
         };
         Relationships: [];
       };

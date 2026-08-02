@@ -94,6 +94,7 @@ export default async function Page() {
                   title={hero.title}
                   artist={hero.artist}
                   aspect="aspect-portrait"
+                  width="half"
                 />
               </div>
             ))}
