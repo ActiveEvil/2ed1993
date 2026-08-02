@@ -7,9 +7,18 @@ import { useRef } from "react";
 export const GalleryImage: React.FC<{
   src: string;
   title: string;
+  width: number | null;
+  height: number | null;
   aspect?: Aspect;
-}> = ({ src, title, aspect = "aspect-square" }): React.JSX.Element => {
+}> = ({
+  src,
+  title,
+  width,
+  height,
+  aspect = "aspect-square",
+}): React.JSX.Element => {
   const ref = useRef<HTMLDialogElement>(null);
+  const ratio = width && height ? width / height : 1;
 
   return (
     <>
@@ -26,6 +35,7 @@ export const GalleryImage: React.FC<{
             alt={title}
             quality={80}
             loading="lazy"
+            sizes="(min-width: 1024px) 320px, (min-width: 768px) 33vw, 50vw"
             placeholder="blur"
             blurDataURL={BLUR_DATA_URL}
             className="w-full h-auto object-cover object-center"
@@ -45,13 +55,20 @@ export const GalleryImage: React.FC<{
         }}
         className="m-auto shadow-lg backdrop:bg-black/75"
       >
-        <div className="flex flex-col w-screen max-w-[80vh]">
-          <figure className={`${aspect} relative w-full border-4 border-black`}>
+        <div
+          className="flex flex-col w-screen"
+          style={{ maxWidth: `calc(80vh * ${ratio})` }}
+        >
+          <figure
+            className="relative w-full border-4 border-black"
+            style={{ aspectRatio: `${ratio}` }}
+          >
             <NextImage
               src={src}
               alt={title}
               quality={80}
               loading="lazy"
+              sizes="(min-width: 768px) 80vh, 100vw"
               placeholder="blur"
               blurDataURL={BLUR_DATA_URL}
               className="w-full h-auto object-cover object-center"

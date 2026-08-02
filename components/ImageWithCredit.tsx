@@ -3,15 +3,30 @@ import NextImage from "next/image";
 export type Aspect =
   "aspect-video" | "aspect-portrait" | "aspect-retro" | "aspect-square";
 
+export type Width = "full" | "half" | "half-from-md";
+
 export const BLUR_DATA_URL =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPMPff9PwAHFQMzdqydyAAAAABJRU5ErkJggg==";
+
+const SIZES: Record<Width, string> = {
+  full: "(min-width: 1024px) 960px, 100vw",
+  half: "(min-width: 1024px) 480px, 50vw",
+  "half-from-md": "(min-width: 1024px) 480px, (min-width: 768px) 50vw, 100vw",
+};
 
 export const ImageWithCredit: React.FC<{
   src: string;
   title: string;
   artist: string | null;
   aspect?: Aspect;
-}> = ({ src, title, artist, aspect = "aspect-video" }): React.JSX.Element => (
+  width?: Width;
+}> = ({
+  src,
+  title,
+  artist,
+  aspect = "aspect-video",
+  width = "full",
+}): React.JSX.Element => (
   <figure
     className={`${aspect} relative w-full border-4 border-black shadow-lg`}
   >
@@ -20,6 +35,7 @@ export const ImageWithCredit: React.FC<{
       alt={artist ? `${title} by ${artist}` : title}
       quality={80}
       loading="lazy"
+      sizes={SIZES[width]}
       placeholder="blur"
       blurDataURL={BLUR_DATA_URL}
       className="w-full h-auto object-cover object-center"

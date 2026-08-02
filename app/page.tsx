@@ -67,6 +67,7 @@ export default async function Page() {
                 title={hero.title}
                 artist={hero.artist}
                 aspect="aspect-retro"
+                width="half-from-md"
               />
               <section className="flex flex-col gap-4 w-full text-lg">
                 <p>
