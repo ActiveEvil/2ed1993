@@ -375,7 +375,9 @@ html {
 
 :target {
   scroll-margin-top: 4em;
+}
 
+.highlight-target:target {
   > .dynamic-content {
     .table-container {
       table {

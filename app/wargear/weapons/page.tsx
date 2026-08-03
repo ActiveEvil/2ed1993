@@ -323,7 +323,7 @@ export default async function Page() {
                       <section
                         key={ruleId}
                         id={ruleId}
-                        className="grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                        className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
                       >
                         <div className="col-span-3 md:col-span-2 p-2 font-semibold">
                           <HighlighterLink
@@ -377,7 +377,7 @@ export default async function Page() {
                         <section
                           key={ruleId}
                           id={ruleId}
-                          className="grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                          className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
                         >
                           <div className="col-span-3 md:col-span-2 p-2 font-semibold">
                             <HighlighterLink
