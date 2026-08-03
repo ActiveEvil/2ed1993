@@ -1003,12 +1003,12 @@ export type Database = {
         | "Nurgle";
       unit_types: "Character" | "Squad";
       weapon_categories:
-        | "Basic"
         | "Close combat"
-        | "Heavy"
         | "Pistol"
-        | "Grenades"
+        | "Basic"
+        | "Heavy"
         | "Support"
+        | "Grenades"
         | "Wargear";
     };
     CompositeTypes: {
@@ -1151,12 +1151,12 @@ export const Constants = {
       ],
       unit_types: ["Character", "Squad"],
       weapon_categories: [
-        "Basic",
         "Close combat",
-        "Heavy",
         "Pistol",
-        "Grenades",
+        "Basic",
+        "Heavy",
         "Support",
+        "Grenades",
         "Wargear",
       ],
     },
