@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { Constants } from "@/database.types";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -65,13 +66,7 @@ export default async function Page() {
                 </Link>
                 <ol className="flex flex-col gap-2 text-xl">
                   {[
-                    "Basic",
-                    "Close combat",
-                    "Heavy",
-                    "Pistol",
-                    "Grenades",
-                    "Support",
-                    "Wargear",
+                    ...Constants.public.Enums.weapon_categories,
                     "General Weapon Special Rules",
                     "Unique Weapon Special Rules",
                   ].map((category) => {

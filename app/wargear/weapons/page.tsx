@@ -29,6 +29,7 @@ export default async function Page() {
     .select(
       "id, name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
     )
+    .order("category")
     .order("name");
 
   const { data: weaponSpecialRules, error: weaponSpecialRulesError } =
@@ -53,12 +54,13 @@ export default async function Page() {
       categories.set(item.category, bucket);
     }
 
-    const weaponCategories = Array.from(categories.entries())
-      .map(([category, items]) => ({
+    // Insertion order follows the query, which sorts by the weapon_categories enum.
+    const weaponCategories = Array.from(categories.entries()).map(
+      ([category, items]) => ({
         category,
         items,
-      }))
-      .sort((a, b) => a.category.localeCompare(b.category));
+      }),
+    );
 
     return (
       <>
