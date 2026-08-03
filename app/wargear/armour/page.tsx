@@ -69,7 +69,7 @@ export default async function Page() {
                 <section
                   key={itemId}
                   id={itemId}
-                  className="flex flex-col gap-4 py-8 px-4 md:px-8 border-t-4 border-black target:bg-2ed-light-yellow target:text-black target:font-bold"
+                  className="highlight-target flex flex-col gap-4 py-8 px-4 md:px-8 border-t-4 border-black target:bg-2ed-light-yellow target:text-black target:font-bold"
                 >
                   <HighlighterLink
                     className="flex hover:underline underline-offset-4"

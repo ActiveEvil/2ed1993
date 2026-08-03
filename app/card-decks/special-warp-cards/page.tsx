@@ -64,12 +64,6 @@ export default async function Page() {
             title={hero.title}
             artist={hero.artist}
           />
-          {/* <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-            <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black shadow-lg" />
-            <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-              Psychic Disciplines
-            </h2>
-          </div> */}
 
           <section className="grid md:grid-cols-2 gap-4">
             {special_warp_cards.map((card) => {
@@ -93,22 +87,6 @@ export default async function Page() {
               );
             })}
           </section>
-
-          {/* {decks.map((deck) => {
-            const deckId = generateAnchorId(deck.name);
-
-            return (
-              <section id={deckId} key={deckId} className="flex flex-col gap-4">
-                <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                  <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black shadow-lg" />
-                  <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-                    {deck.name}
-                  </h2>
-                </div>
-               
-              </section>
-            );
-          })} */}
         </main>
       </>
     );

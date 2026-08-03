@@ -31,9 +31,6 @@ export default function GlobalError({
                 yours&mdash;a second attempt may well succeed.
               </p>
               <p>
-                {/* A plain anchor, not next/link: the root layout has
-                    already failed, so a full document load is a real
-                    retry where client-side navigation would not be. */}
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a className="underline underline-offset-4" href="/">
                   Return to the home page
