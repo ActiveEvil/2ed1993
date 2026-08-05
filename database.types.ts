@@ -937,6 +937,69 @@ export type Database = {
           },
         ];
       };
+      wargear_cards: {
+        Row: {
+          armour_id: number | null;
+          availability: string;
+          created_at: string;
+          description: string | null;
+          discard_after_use: boolean;
+          id: number;
+          name: string;
+          origin: string;
+          points: string | null;
+          rarity: Database["public"]["Enums"]["wargear_rarities"];
+          restriction: string | null;
+          updated_at: string | null;
+          weapon_id: number | null;
+        };
+        Insert: {
+          armour_id?: number | null;
+          availability: string;
+          created_at?: string;
+          description?: string | null;
+          discard_after_use?: boolean;
+          id?: number;
+          name: string;
+          origin: string;
+          points?: string | null;
+          rarity: Database["public"]["Enums"]["wargear_rarities"];
+          restriction?: string | null;
+          updated_at?: string | null;
+          weapon_id?: number | null;
+        };
+        Update: {
+          armour_id?: number | null;
+          availability?: string;
+          created_at?: string;
+          description?: string | null;
+          discard_after_use?: boolean;
+          id?: number;
+          name?: string;
+          origin?: string;
+          points?: string | null;
+          rarity?: Database["public"]["Enums"]["wargear_rarities"];
+          restriction?: string | null;
+          updated_at?: string | null;
+          weapon_id?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wargear_cards_armour_id_fkey";
+            columns: ["armour_id"];
+            isOneToOne: false;
+            referencedRelation: "armour";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_cards_weapon_id_fkey";
+            columns: ["weapon_id"];
+            isOneToOne: false;
+            referencedRelation: "weapons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       weapon_profiles: {
         Row: {
           armour_penetration: string;
@@ -1107,6 +1170,7 @@ export type Database = {
         | "Tzeentch"
         | "Nurgle";
       unit_types: "Character" | "Squad";
+      wargear_rarities: "Uncommon" | "Rare" | "Unique";
       weapon_categories:
         "Close combat" | "Pistol" | "Basic" | "Heavy" | "Support" | "Grenades";
     };
@@ -1254,6 +1318,7 @@ export const Constants = {
         "Nurgle",
       ],
       unit_types: ["Character", "Squad"],
+      wargear_rarities: ["Uncommon", "Rare", "Unique"],
       weapon_categories: [
         "Close combat",
         "Pistol",
