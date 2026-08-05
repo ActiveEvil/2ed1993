@@ -16,27 +16,130 @@ export type Database = {
     Tables: {
       armour: {
         Row: {
+          category: Database["public"]["Enums"]["armour_categories"];
           created_at: string;
           id: number;
           name: string;
-          profile_description: string;
+          profile_description: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          category: Database["public"]["Enums"]["armour_categories"];
+          created_at?: string;
+          id?: number;
+          name: string;
+          profile_description?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          category?: Database["public"]["Enums"]["armour_categories"];
+          created_at?: string;
+          id?: number;
+          name?: string;
+          profile_description?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+      armour_profiles: {
+        Row: {
+          armour_id: number;
+          condition: string | null;
+          created_at: string;
+          id: number;
+          save: string;
+          updated_at: string | null;
+        };
+        Insert: {
+          armour_id: number;
+          condition?: string | null;
+          created_at?: string;
+          id?: number;
+          save: string;
+          updated_at?: string | null;
+        };
+        Update: {
+          armour_id?: number;
+          condition?: string | null;
+          created_at?: string;
+          id?: number;
+          save?: string;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "armour_profiles_armour_id_fkey";
+            columns: ["armour_id"];
+            isOneToOne: false;
+            referencedRelation: "armour";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      armour_special_rule_assignments: {
+        Row: {
+          armour_id: number;
+          special_rule_id: number;
+        };
+        Insert: {
+          armour_id: number;
+          special_rule_id: number;
+        };
+        Update: {
+          armour_id?: number;
+          special_rule_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "armour_special_rule_assignments_armour_id_fkey";
+            columns: ["armour_id"];
+            isOneToOne: false;
+            referencedRelation: "armour";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "armour_special_rule_assignments_special_rule_id_fkey";
+            columns: ["special_rule_id"];
+            isOneToOne: false;
+            referencedRelation: "armour_special_rules";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      armour_special_rules: {
+        Row: {
+          created_at: string;
+          id: number;
+          name: string;
+          rule: string;
+          rule_id: number | null;
           updated_at: string | null;
         };
         Insert: {
           created_at?: string;
           id?: number;
           name: string;
-          profile_description: string;
+          rule: string;
+          rule_id?: number | null;
           updated_at?: string | null;
         };
         Update: {
           created_at?: string;
           id?: number;
           name?: string;
-          profile_description?: string;
+          rule?: string;
+          rule_id?: number | null;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "armour_special_rules_rule_id_fkey";
+            columns: ["rule_id"];
+            isOneToOne: false;
+            referencedRelation: "rules";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       army_lists: {
         Row: {
@@ -990,6 +1093,8 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
+      armour_categories:
+        "Physical Armour" | "Personal Force Fields" | "Shields";
       psychic_power_decks:
         | "Librarian"
         | "Inquisition"
@@ -1003,13 +1108,7 @@ export type Database = {
         | "Nurgle";
       unit_types: "Character" | "Squad";
       weapon_categories:
-        | "Close combat"
-        | "Pistol"
-        | "Basic"
-        | "Heavy"
-        | "Support"
-        | "Grenades"
-        | "Wargear";
+        "Close combat" | "Pistol" | "Basic" | "Heavy" | "Support" | "Grenades";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -1137,6 +1236,11 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      armour_categories: [
+        "Physical Armour",
+        "Personal Force Fields",
+        "Shields",
+      ],
       psychic_power_decks: [
         "Librarian",
         "Inquisition",
@@ -1157,7 +1261,6 @@ export const Constants = {
         "Heavy",
         "Support",
         "Grenades",
-        "Wargear",
       ],
     },
   },
