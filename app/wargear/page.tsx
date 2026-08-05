@@ -26,6 +26,11 @@ export default async function Page() {
   const { data: armourCategoryRows, error: armourCategoryError } =
     await supabase.from("armour").select("category").order("category");
 
+  const { data: availabilityRows, error: availabilityError } = await supabase
+    .from("wargear_cards")
+    .select("availability")
+    .order("availability");
+
   // Ordered by the weapon_categories enum, so the list matches the weapons page.
   const { data: weaponCategoryRows, error: weaponCategoryError } =
     await supabase.from("weapons").select("category").order("category");
@@ -34,15 +39,19 @@ export default async function Page() {
     "/wargear",
     heroImageError,
     armourCategoryError,
+    availabilityError,
     weaponCategoryError,
   );
 
-  if (hero && armourCategoryRows && weaponCategoryRows) {
+  if (hero && armourCategoryRows && availabilityRows && weaponCategoryRows) {
     const weaponCategories = [
       ...new Set(weaponCategoryRows.map(({ category }) => category)),
     ];
     const armourCategories = [
       ...new Set(armourCategoryRows.map(({ category }) => category)),
+    ];
+    const availabilities = [
+      ...new Set(availabilityRows.map(({ availability }) => availability)),
     ];
 
     return (
@@ -121,6 +130,30 @@ export default async function Page() {
                           href={`/wargear/armour#${categoryId}`}
                         >
                           {category}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </li>
+              <li>
+                <Link
+                  className="font-subtitle hover:underline underline-offset-4"
+                  href="/wargear/wargear-cards"
+                >
+                  Wargear Cards
+                </Link>
+                <ol className="flex flex-col gap-2 text-xl">
+                  {availabilities.map((availability) => {
+                    const availabilityId = generateAnchorId(availability);
+
+                    return (
+                      <li key={availabilityId}>
+                        <Link
+                          className="hover:underline underline-offset-4"
+                          href={`/wargear/wargear-cards#${availabilityId}`}
+                        >
+                          {availability}
                         </Link>
                       </li>
                     );
