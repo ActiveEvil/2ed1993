@@ -1,6 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
-import { Constants } from "@/database.types";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -23,14 +22,29 @@ export default async function Page() {
     .single();
   const hero = heroImage?.images ?? null;
 
-  const { data: armour, error: armourError } = await supabase
-    .from("armour")
-    .select("id, name")
-    .order("name");
+  // Ordered by the armour_categories enum, so the list matches the armour page.
+  const { data: armourCategoryRows, error: armourCategoryError } =
+    await supabase.from("armour").select("category").order("category");
 
-  assertNoQueryErrors("/wargear", heroImageError, armourError);
+  // Ordered by the weapon_categories enum, so the list matches the weapons page.
+  const { data: weaponCategoryRows, error: weaponCategoryError } =
+    await supabase.from("weapons").select("category").order("category");
 
-  if (hero && armour) {
+  assertNoQueryErrors(
+    "/wargear",
+    heroImageError,
+    armourCategoryError,
+    weaponCategoryError,
+  );
+
+  if (hero && armourCategoryRows && weaponCategoryRows) {
+    const weaponCategories = [
+      ...new Set(weaponCategoryRows.map(({ category }) => category)),
+    ];
+    const armourCategories = [
+      ...new Set(armourCategoryRows.map(({ category }) => category)),
+    ];
+
     return (
       <>
         <Breadcrumbs
@@ -66,7 +80,7 @@ export default async function Page() {
                 </Link>
                 <ol className="flex flex-col gap-2 text-xl">
                   {[
-                    ...Constants.public.Enums.weapon_categories,
+                    ...weaponCategories,
                     "General Weapon Special Rules",
                     "Unique Weapon Special Rules",
                   ].map((category) => {
@@ -93,16 +107,20 @@ export default async function Page() {
                   Armour
                 </Link>
                 <ol className="flex flex-col gap-2 text-xl">
-                  {armour.map((item) => {
-                    const itemId = generateAnchorId(item.name);
+                  {[
+                    ...armourCategories,
+                    "General Armour Special Rules",
+                    "Unique Armour Special Rules",
+                  ].map((category) => {
+                    const categoryId = generateAnchorId(category);
 
                     return (
-                      <li key={itemId}>
+                      <li key={categoryId}>
                         <Link
                           className="hover:underline underline-offset-4"
-                          href={`/wargear/armour#${itemId}`}
+                          href={`/wargear/armour#${categoryId}`}
                         >
-                          {item.name}
+                          {category}
                         </Link>
                       </li>
                     );
