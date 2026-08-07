@@ -28,22 +28,14 @@ function ProfileTable({
   children: ReactNode;
 }) {
   return (
-    <table className="w-full table-fixed bg-black border-4 border-black border-collapse text-center">
-      <tbody>
-        {caption && (
-          <tr>
-            <th
-              scope="col"
-              colSpan={4}
-              className="p-2 font-subtitle text-xs text-left text-white"
-            >
-              {caption}
-            </th>
-          </tr>
-        )}
-        {children}
-      </tbody>
-    </table>
+    <div className="flex flex-col gap-2">
+      {/* The profile name sits above the table rather than in it: a caption
+          row inside the bands makes an already dense block denser. */}
+      {caption && <h3 className="font-subtitle text-sm">{caption}</h3>}
+      <table className="w-full table-fixed bg-black border-4 border-black border-collapse text-center">
+        <tbody>{children}</tbody>
+      </table>
+    </div>
   );
 }
 
@@ -331,6 +323,24 @@ export default async function Page() {
                           </span>
                         </div>
                         <div className="flex flex-col justify-start gap-4 p-4 h-full bg-2ed-white text-2ed-black">
+                          {/* Both, not one or the other: a card may carry its
+                              own words as well as a linked item. The printed
+                              card leads with flavour and follows with the
+                              rules the profile cannot express. */}
+                          {card.description && (
+                            <div
+                              className="dynamic-content flex flex-col gap-2"
+                              dangerouslySetInnerHTML={{
+                                __html: card.description,
+                              }}
+                            />
+                          )}
+                          {rules && (
+                            <div
+                              className="dynamic-content flex flex-col gap-2"
+                              dangerouslySetInnerHTML={{ __html: rules }}
+                            />
+                          )}
                           {weapon?.weapon_profiles.map((profile, index) =>
                             closeCombat ? (
                               <CloseCombatProfile
@@ -401,14 +411,6 @@ export default async function Page() {
                                   rules={armour.armour_special_rules}
                                 />
                               }
-                            />
-                          )}
-                          {(card.description || rules) && (
-                            <div
-                              className="dynamic-content flex flex-col gap-2"
-                              dangerouslySetInnerHTML={{
-                                __html: card.description ?? rules!,
-                              }}
                             />
                           )}
                           {href && (
