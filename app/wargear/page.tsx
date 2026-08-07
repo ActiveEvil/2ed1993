@@ -21,17 +21,12 @@ export default async function Page() {
     .eq("slug", "wargear")
     .single();
   const hero = heroImage?.images ?? null;
-
-  // Ordered by the armour_categories enum, so the list matches the armour page.
   const { data: armourCategoryRows, error: armourCategoryError } =
     await supabase.from("armour").select("category").order("category");
-
   const { data: availabilityRows, error: availabilityError } = await supabase
     .from("wargear_cards")
     .select("availability")
     .order("availability");
-
-  // Ordered by the weapon_categories enum, so the list matches the weapons page.
   const { data: weaponCategoryRows, error: weaponCategoryError } =
     await supabase.from("weapons").select("category").order("category");
 

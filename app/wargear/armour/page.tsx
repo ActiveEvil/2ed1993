@@ -30,7 +30,6 @@ export default async function Page() {
     )
     .order("category")
     .order("name")
-    // Unconditional save first; the insert order of armour_profiles does not guarantee it.
     .order("condition", {
       referencedTable: "armour_profiles",
       nullsFirst: true,
@@ -58,7 +57,6 @@ export default async function Page() {
       categories.set(item.category, bucket);
     }
 
-    // Insertion order follows the query, which sorts by the armour_categories enum.
     const armourCategories = Array.from(categories.entries()).map(
       ([category, items]) => ({
         category,
@@ -155,9 +153,6 @@ export default async function Page() {
                             </div>
                             <div className="col-span-3 md:col-span-2 p-2 flex flex-col text-sm font-semibold">
                               {item.armour_special_rules.map((rule) => {
-                                // Suffix disambiguates armour special rules from same-named
-                                // rules elsewhere (Parry and Targeter exist in both places).
-                                // Do not remove.
                                 const ruleId = `${generateAnchorId(rule.name)}_Rule`;
 
                                 return (
@@ -200,8 +195,6 @@ export default async function Page() {
                     <h3 className="col-span-3 md:col-span-2 p-2">Related</h3>
                   </section>
                   {armourSpecialRules.map((rule) => {
-                    // Suffix disambiguates armour special rules from same-named rules
-                    // elsewhere (Parry and Targeter exist in both places). Do not remove.
                     const ruleId = `${generateAnchorId(rule.name)}_Rule`;
                     const linkedRule = rule.rules;
 

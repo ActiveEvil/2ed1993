@@ -24,7 +24,6 @@ export const HighlighterLink: React.FC<
     href={href}
     className={className}
     onClick={(e) => {
-      // Let modified clicks behave like a normal link (new tab, etc.).
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
         return;
       }
