@@ -54,7 +54,6 @@ export default async function Page() {
       categories.set(item.category, bucket);
     }
 
-    // Insertion order follows the query, which sorts by the weapon_categories enum.
     const weaponCategories = Array.from(categories.entries()).map(
       ([category, items]) => ({
         category,
@@ -267,8 +266,6 @@ export default async function Page() {
                                     <div className="flex flex-col">
                                       {profile.weapon_special_rules.map(
                                         (rule) => {
-                                          // Suffix disambiguates weapon special rules from same-named rules elsewhere
-                                          // (Parry, Overheats and Guess Range exist in both places). Do not remove.
                                           const ruleId = `${generateAnchorId(rule.name)}_Rule`;
 
                                           return (
@@ -316,8 +313,6 @@ export default async function Page() {
                     <h3 className="col-span-3 md:col-span-2 p-2">Related</h3>
                   </section>
                   {weaponSpecialRules.map((rule) => {
-                    // Suffix disambiguates weapon special rules from same-named rules elsewhere
-                    // (Parry, Overheats and Guess Range exist in both places). Do not remove.
                     const ruleId = `${generateAnchorId(rule.name)}_Rule`;
                     const linkedRule = rule.rules;
 

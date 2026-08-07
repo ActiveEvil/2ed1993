@@ -16,10 +16,6 @@ export function generateMetadata(): Metadata {
   };
 }
 
-// A card face cannot carry a profile as one row of columns the way
-// /wargear/weapons does, so it wraps into bands of four: a black heading strip
-// with its values beneath, and the next band under that. There are only three
-// shapes, so all three are written out.
 function ProfileTable({
   caption,
   children,
@@ -29,8 +25,6 @@ function ProfileTable({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      {/* The profile name sits above the table rather than in it: a caption
-          row inside the bands makes an already dense block denser. */}
       {caption && <h3 className="font-subtitle text-sm">{caption}</h3>}
       <table className="w-full table-fixed bg-black border-4 border-black border-collapse text-center">
         <tbody>{children}</tbody>
@@ -319,7 +313,9 @@ export default async function Page() {
                             {card.name}
                           </HighlighterLink>
                           <span className="font-subtitle whitespace-nowrap text-lg text-2ed-light-yellow">
-                            {card.points ? `${card.points} Points` : "Special"}
+                            {card.points
+                              ? `${card.points} Point${card.points === "1" ? "" : "s"}`
+                              : "Special"}
                           </span>
                         </div>
                         <div className="flex flex-col justify-start gap-4 p-4 h-full bg-2ed-white text-2ed-black">
@@ -361,8 +357,6 @@ export default async function Page() {
                               <RangedProfile
                                 key={`${cardId}_${index}`}
                                 caption={multiProfile ? profile.name : null}
-                                // A weapon with no long range prints one
-                                // figure, not "6 / –".
                                 range={
                                   profile.long_range === "–"
                                     ? profile.short_range
