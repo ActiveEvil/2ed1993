@@ -5,6 +5,7 @@ import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
+import { ReactNode } from "react";
 
 export const revalidate = 3600;
 
@@ -15,18 +16,228 @@ export function generateMetadata(): Metadata {
   };
 }
 
+// A card face cannot carry a profile as one row of columns the way
+// /wargear/weapons does, so it wraps into bands of four: a black heading strip
+// with its values beneath, and the next band under that. There are only three
+// shapes, so all three are written out.
+function ProfileTable({
+  caption,
+  children,
+}: {
+  caption?: string | null;
+  children: ReactNode;
+}) {
+  return (
+    <table className="w-full table-fixed bg-black border-4 border-black border-collapse text-center">
+      <tbody>
+        {caption && (
+          <tr>
+            <th
+              scope="col"
+              colSpan={4}
+              className="p-2 font-subtitle text-xs text-left text-white"
+            >
+              {caption}
+            </th>
+          </tr>
+        )}
+        {children}
+      </tbody>
+    </table>
+  );
+}
+
+function RangedProfile({
+  caption,
+  range,
+  toHit,
+  strength,
+  damage,
+  saveModifier,
+  armourPenetration,
+  special,
+}: {
+  caption?: string | null;
+  range: string;
+  toHit: string;
+  strength: string;
+  damage: string;
+  saveModifier: string;
+  armourPenetration: string;
+  special: ReactNode;
+}) {
+  return (
+    <ProfileTable caption={caption}>
+      <tr>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          Range
+        </th>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          To Hit
+        </th>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          Str
+        </th>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          Dam
+        </th>
+      </tr>
+      <tr className="bg-2ed-white text-2ed-black text-sm">
+        <td className="p-1 bg-2ed-white">{range}</td>
+        <td className="p-1 bg-2ed-white">{toHit}</td>
+        <td className="p-1 bg-2ed-white">{strength}</td>
+        <td className="p-1 bg-2ed-white">{damage}</td>
+      </tr>
+      <tr>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          Save Mod
+        </th>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          AP
+        </th>
+        <th
+          scope="col"
+          colSpan={2}
+          className="p-1 font-subtitle text-xs text-white"
+        >
+          Special
+        </th>
+      </tr>
+      <tr className="bg-2ed-white text-2ed-black text-sm">
+        <td className="p-1 bg-2ed-white">{saveModifier}</td>
+        <td className="p-1 bg-2ed-white">{armourPenetration}</td>
+        <td colSpan={2} className="p-1 bg-2ed-white">
+          {special}
+        </td>
+      </tr>
+    </ProfileTable>
+  );
+}
+
+function CloseCombatProfile({
+  caption,
+  strength,
+  damage,
+  saveModifier,
+  armourPenetration,
+  special,
+}: {
+  caption?: string | null;
+  strength: string;
+  damage: string;
+  saveModifier: string;
+  armourPenetration: string;
+  special: ReactNode;
+}) {
+  return (
+    <ProfileTable caption={caption}>
+      <tr>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          Str
+        </th>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          Dam
+        </th>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          Save Mod
+        </th>
+        <th scope="col" className="p-1 font-subtitle text-xs text-white">
+          AP
+        </th>
+      </tr>
+      <tr className="bg-2ed-white text-2ed-black text-sm">
+        <td className="p-1 bg-2ed-white">{strength}</td>
+        <td className="p-1 bg-2ed-white">{damage}</td>
+        <td className="p-1 bg-2ed-white">{saveModifier}</td>
+        <td className="p-1 bg-2ed-white">{armourPenetration}</td>
+      </tr>
+      <tr>
+        <th
+          scope="col"
+          colSpan={4}
+          className="p-1 font-subtitle text-xs text-white"
+        >
+          Special
+        </th>
+      </tr>
+      <tr className="bg-2ed-white text-2ed-black text-sm">
+        <td colSpan={4} className="p-1 bg-2ed-white">
+          {special}
+        </td>
+      </tr>
+    </ProfileTable>
+  );
+}
+
+function ArmourProfile({
+  save,
+  special,
+}: {
+  save: ReactNode;
+  special: ReactNode;
+}) {
+  return (
+    <ProfileTable>
+      <tr>
+        <th scope="col" className="p-2 font-subtitle text-xs text-white">
+          Save
+        </th>
+        <th
+          scope="col"
+          colSpan={3}
+          className="p-2 font-subtitle text-xs text-white"
+        >
+          Special
+        </th>
+      </tr>
+      <tr className="bg-2ed-white text-2ed-black text-lg">
+        <td className="p-2 bg-2ed-white">{save}</td>
+        <td colSpan={3} className="p-2 bg-2ed-white">
+          {special}
+        </td>
+      </tr>
+    </ProfileTable>
+  );
+}
+
+function SpecialRuleLinks({
+  href,
+  rules,
+}: {
+  href: string;
+  rules: { name: string }[];
+}) {
+  if (!rules.length) {
+    return <>&ndash;</>;
+  }
+
+  return (
+    <span className="flex flex-col">
+      {rules.map((rule) => (
+        <Link
+          key={rule.name}
+          className="underline underline-offset-4"
+          href={`${href}#${generateAnchorId(rule.name)}_Rule`}
+        >
+          {rule.name}
+        </Link>
+      ))}
+    </span>
+  );
+}
+
 export default async function Page() {
   const { data: heroImage } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "wargear-cards")
-    .single();
+    .maybeSingle();
   const hero = heroImage?.images ?? null;
 
   const { data: cards, error: cardsError } = await supabase
     .from("wargear_cards")
     .select(
-      "id, name, availability, rarity, points, restriction, discard_after_use, description, weapons(name, category), armour(name, category)",
+      "id, name, availability, rarity, points, restriction, discard_after_use, description, weapons(name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))), armour(name, category, profile_description, armour_profiles(save, condition), armour_special_rules(name))",
     )
     .order("availability")
     .order("name");
@@ -87,12 +298,20 @@ export default async function Page() {
                 <section className="grid md:grid-cols-2 gap-4">
                   {section.items.map((card) => {
                     const cardId = generateAnchorId(card.name);
-                    const item = card.weapons ?? card.armour ?? null;
-                    const href = card.weapons
-                      ? `/wargear/weapons#${generateAnchorId(card.weapons.name)}`
-                      : card.armour
-                        ? `/wargear/armour#${generateAnchorId(card.armour.name)}`
+                    const weapon = card.weapons;
+                    const armour = card.armour;
+                    const rules =
+                      weapon?.profile_description ??
+                      armour?.profile_description ??
+                      null;
+                    const href = weapon
+                      ? `/wargear/weapons#${generateAnchorId(weapon.name)}`
+                      : armour
+                        ? `/wargear/armour#${generateAnchorId(armour.name)}`
                         : null;
+                    const closeCombat = weapon?.category === "Close combat";
+                    const multiProfile =
+                      (weapon?.weapon_profiles.length ?? 0) > 1;
 
                     return (
                       <div
@@ -112,27 +331,97 @@ export default async function Page() {
                           </span>
                         </div>
                         <div className="flex flex-col justify-start gap-4 p-4 h-full bg-2ed-white text-2ed-black">
-                          {card.description ? (
+                          {weapon?.weapon_profiles.map((profile, index) =>
+                            closeCombat ? (
+                              <CloseCombatProfile
+                                key={`${cardId}_${index}`}
+                                caption={multiProfile ? profile.name : null}
+                                strength={profile.strength}
+                                damage={profile.damage}
+                                saveModifier={profile.save_modifier}
+                                armourPenetration={profile.armour_penetration}
+                                special={
+                                  <SpecialRuleLinks
+                                    href="/wargear/weapons"
+                                    rules={profile.weapon_special_rules}
+                                  />
+                                }
+                              />
+                            ) : (
+                              <RangedProfile
+                                key={`${cardId}_${index}`}
+                                caption={multiProfile ? profile.name : null}
+                                // A weapon with no long range prints one
+                                // figure, not "6 / –".
+                                range={
+                                  profile.long_range === "–"
+                                    ? profile.short_range
+                                    : `${profile.short_range} / ${profile.long_range}`
+                                }
+                                toHit={`${profile.short_to_hit} / ${profile.long_to_hit}`}
+                                strength={profile.strength}
+                                damage={profile.damage}
+                                saveModifier={profile.save_modifier}
+                                armourPenetration={profile.armour_penetration}
+                                special={
+                                  <SpecialRuleLinks
+                                    href="/wargear/weapons"
+                                    rules={profile.weapon_special_rules}
+                                  />
+                                }
+                              />
+                            ),
+                          )}
+                          {armour && (
+                            <ArmourProfile
+                              save={
+                                armour.armour_profiles.length ? (
+                                  <span className="flex flex-col">
+                                    {armour.armour_profiles.map(
+                                      (profile, index) => (
+                                        <span key={`${cardId}_${index}`}>
+                                          {profile.save}
+                                          {profile.condition && (
+                                            <span className="text-sm">
+                                              {" "}
+                                              {profile.condition}
+                                            </span>
+                                          )}
+                                        </span>
+                                      ),
+                                    )}
+                                  </span>
+                                ) : (
+                                  <>&ndash;</>
+                                )
+                              }
+                              special={
+                                <SpecialRuleLinks
+                                  href="/wargear/armour"
+                                  rules={armour.armour_special_rules}
+                                />
+                              }
+                            />
+                          )}
+                          {(card.description || rules) && (
                             <div
                               className="dynamic-content flex flex-col gap-2"
                               dangerouslySetInnerHTML={{
-                                __html: card.description,
+                                __html: card.description ?? rules!,
                               }}
                             />
-                          ) : (
-                            item &&
-                            href && (
-                              <p className="dynamic-content">
-                                The rules for this card are published with{" "}
-                                <Link
-                                  className="underline underline-offset-4"
-                                  href={href}
-                                >
-                                  {item.name}
-                                </Link>
-                                .
-                              </p>
-                            )
+                          )}
+                          {href && (
+                            <p className="text-sm">
+                              See the full entry in{" "}
+                              <Link
+                                className="underline underline-offset-4"
+                                href={href}
+                              >
+                                {weapon ? "Weapons" : "Armour"}
+                              </Link>
+                              .
+                            </p>
                           )}
                           {(card.restriction || card.discard_after_use) && (
                             <p className="mt-auto font-subtitle uppercase text-2ed-dark-red text-center">
@@ -147,7 +436,7 @@ export default async function Page() {
                             </p>
                           )}
                         </div>
-                        <p className="w-full text-sm text-2ed-white">
+                        <p className="w-full font-bold text-2ed-white">
                           {card.rarity}
                         </p>
                       </div>
