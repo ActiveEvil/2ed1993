@@ -76,7 +76,7 @@ export default async function RootLayout({
           digital record project). All rights reserved.
           <br />
           Credited images are the property of their respective copyright
-          holders&mdash;either the named individual or Games Workshop&mdash;and
+          holders&mdash;such as the named individual or Games Workshop&mdash;and
           are reproduced for reference only.
         </footer>
         <Analytics />
