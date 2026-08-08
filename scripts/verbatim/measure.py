@@ -21,7 +21,21 @@ NGRAM = 5
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+BLOCKQUOTES_STRIPPED = 0
+
+
 def words(text):
+    """Tokenise, dropping markup — and attributed quotations entirely.
+
+    A <blockquote> on this site is verbatim source text BY INTENTION, always
+    closed by a <p class="credit"> naming the authors. Measuring it would flag
+    deliberate, credited quotation; exempting whole texts instead would hide any
+    real copying elsewhere in the same rule. The count is logged so stripping
+    cannot quietly grow."""
+    global BLOCKQUOTES_STRIPPED
+    text, stripped = re.subn(r"<blockquote\b.*?</blockquote>", " ", text,
+                             flags=re.S | re.I)
+    BLOCKQUOTES_STRIPPED += stripped
     text = re.sub(r"<[^>]+>", " ", text)
     for entity, char in (("&apos;", "'"), ("&mdash;", " "), ("&ndash;", " "),
                          ("&quot;", '"'), ("&amp;", "&"), ("&deg;", " ")):
@@ -173,6 +187,8 @@ def main():
     flagged = sum(1 for r in results if r[4])
     print(f"\nclean {len(results) - flagged}/{len(results)} | flagged {flagged} | "
           f"unexempt failures {len(failures)} across {total_runs} runs")
+    if BLOCKQUOTES_STRIPPED:
+        print(f"({BLOCKQUOTES_STRIPPED} attributed blockquote(s) stripped before measuring)")
     if args.gate and failures:
         sys.exit(1)
 
