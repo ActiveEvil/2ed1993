@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Longest-common-word-run check between site text and the source library.
+"""Common-word-run check between site text and the source library.
 
 The site's standing rule is "mechanics exact, expression new". This measures
-compliance: for each stored text, the longest run of consecutive words it shares
-with any source. See claude/style-conventions.md and
-claude/verbatim-audit-2026-08-08.md.
+compliance: for each stored text, EVERY run of consecutive words at or over the
+threshold that it shares with any source — not merely the longest. See
+claude/style-conventions.md and claude/verbatim-audit-2026-08-08.md.
 
   python3 measure.py texts.json                 # audit, ranked worst first
   python3 measure.py texts.json --gate          # exit 1 if anything unexempt fails
@@ -49,19 +49,45 @@ class Corpus:
                 return name
         return "-"
 
+    def _match_at(self, draft, i):
+        """Longest corpus run starting at draft position i, and where it sits."""
+        best, at = 0, -1
+        for j in self.index.get(tuple(draft[i:i + NGRAM]), ()):
+            length = NGRAM
+            while (i + length < len(draft) and j + length < len(self.tokens)
+                   and draft[i + length] == self.tokens[j + length]):
+                length += 1
+            if length > best:
+                best, at = length, j
+        return best, at
+
     def longest_run(self, draft):
         best, at = 0, -1
         for i in range(len(draft) - NGRAM + 1):
-            for j in self.index.get(tuple(draft[i:i + NGRAM]), ()):
-                length = NGRAM
-                while (i + length < len(draft) and j + length < len(self.tokens)
-                       and draft[i + length] == self.tokens[j + length]):
-                    length += 1
-                if length > best:
-                    best, at = length, j
+            length, j = self._match_at(draft, i)
+            if length > best:
+                best, at = length, j
         if at < 0:
             return 0, "-", ""
         return best, self.source(at), " ".join(self.tokens[at:at + best])
+
+    def runs_over(self, draft, threshold):
+        """Every run at or over threshold, left to right, non-overlapping.
+
+        Reporting only the longest run per text is how a patched text passes
+        while still carrying copied spans: fixing the worst run of 10 left
+        Cyclone Missile Launcher with three more at 8, 9 and 10, one of them in
+        a chart cell nobody had looked at. 8 August."""
+        found, i = [], 0
+        while i <= len(draft) - NGRAM:
+            length, j = self._match_at(draft, i)
+            if length >= threshold:
+                found.append((length, self.source(j),
+                              " ".join(self.tokens[j:j + length])))
+                i += length
+            else:
+                i += 1
+        return found
 
 
 def load_exemptions():
@@ -117,30 +143,36 @@ def main():
     results = []
     for row in rows:
         draft = mask(words(row["t"]), formulas)
-        g, gsrc, grun = gw.longest_run(draft)
-        f, fsrc, _ = fan.longest_run(draft)
-        results.append((g, f, row["k"], row["n"], len(draft), gsrc, fsrc, grun))
-    results.sort(reverse=True)
+        runs = ([("gw",) + r for r in gw.runs_over(draft, args.threshold)]
+                + [("fan",) + r for r in fan.runs_over(draft, args.threshold)])
+        runs.sort(key=lambda r: -r[1])
+        worst = runs[0][1] if runs else 0
+        results.append((worst, row["k"], row["n"], len(draft), runs))
+    results.sort(reverse=True, key=lambda r: (r[0], r[1], r[2]))
 
     print(f"gw corpus {len(gw.tokens):,}w over {len(gw.spans)} sources | "
           f"fan corpus {len(fan.tokens):,}w over {len(fan.spans)} sources")
-    print(f"{len(results)} texts, {sum(r[4] for r in results):,} words, threshold {args.threshold}\n")
+    print(f"{len(results)} texts, {sum(r[3] for r in results):,} words, threshold {args.threshold}\n")
 
-    failures = []
-    for g, f, kind, name, length, gsrc, fsrc, grun in results:
-        reason = exempt.get((kind, name))
-        flagged = g >= args.threshold or f >= args.threshold
-        if not flagged:
+    failures, total_runs = [], 0
+    for worst, kind, name, length, runs in results:
+        if not runs:
             continue
+        reason = exempt.get((kind, name))
         mark = f"exempt: {reason}" if reason else "FAIL"
         if not reason:
             failures.append((kind, name))
-        print(f"  gw{g:3} fan{f:3}  {kind:20} {name[:30]:30} {mark}")
-        if grun and not reason:
-            print(f'{"":26}<- {gsrc}  "{grun[:78]}"')
+            total_runs += len(runs)
+        plural = "" if len(runs) == 1 else f", {len(runs)} runs"
+        print(f"  worst {worst:3}  {kind:20} {name[:30]:30} {mark}{plural}")
+        if not reason:
+            # Every run, not just the worst: a text is only clean when they all go.
+            for which, n, src, run in runs:
+                print(f'{"":14}{which:3}{n:3}  {src[:22]:22} "{run[:64]}"')
 
-    clean = len(results) - sum(1 for r in results if r[0] >= args.threshold or r[1] >= args.threshold)
-    print(f"\nclean {clean}/{len(results)} | flagged {len(results) - clean} | unexempt failures {len(failures)}")
+    flagged = sum(1 for r in results if r[4])
+    print(f"\nclean {len(results) - flagged}/{len(results)} | flagged {flagged} | "
+          f"unexempt failures {len(failures)} across {total_runs} runs")
     if args.gate and failures:
         sys.exit(1)
 
