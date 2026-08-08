@@ -223,10 +223,13 @@ export default async function Page() {
   const { data: cards, error: cardsError } = await supabase
     .from("wargear_cards")
     .select(
-      "id, name, availability, rarity, points, restriction, discard_after_use, description, weapons(name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))), armour(name, category, profile_description, armour_profiles(save, condition), armour_special_rules(name))",
+      "id, name, availability, rarity, points, restriction, discard_after_use, description, wargear_cards_weapons(position, weapons(name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), armour(name, category, profile_description, armour_profiles(save, condition), armour_special_rules(name))",
     )
     .order("availability")
-    .order("name");
+    .order("name")
+    // A card may grant more than one weapon; the sources print the primary
+    // one first, which is what position records.
+    .order("position", { referencedTable: "wargear_cards_weapons" });
 
   assertNoQueryErrors("/wargear/wargear-cards", cardsError);
 
@@ -284,20 +287,26 @@ export default async function Page() {
                 <section className="grid md:grid-cols-2 gap-4">
                   {section.items.map((card) => {
                     const cardId = generateAnchorId(card.name);
-                    const weapon = card.weapons;
+                    const weapons = card.wargear_cards_weapons.map(
+                      ({ weapons }) => weapons,
+                    );
                     const armour = card.armour;
-                    const rules =
-                      weapon?.profile_description ??
-                      armour?.profile_description ??
-                      null;
-                    const href = weapon
-                      ? `/wargear/weapons#${generateAnchorId(weapon.name)}`
-                      : armour
-                        ? `/wargear/armour#${generateAnchorId(armour.name)}`
-                        : null;
-                    const closeCombat = weapon?.category === "Close combat";
-                    const multiProfile =
-                      (weapon?.weapon_profiles.length ?? 0) > 1;
+                    // Every linked item may carry rules the profile cannot
+                    // express, so each renders its own block.
+                    const rules = [
+                      ...weapons.map(
+                        ({ profile_description }) => profile_description,
+                      ),
+                      armour?.profile_description ?? null,
+                    ].filter((rule): rule is string => rule !== null);
+                    const href =
+                      weapons.length === 1
+                        ? `/wargear/weapons#${generateAnchorId(weapons[0].name)}`
+                        : weapons.length
+                          ? "/wargear/weapons"
+                          : armour
+                            ? `/wargear/armour#${generateAnchorId(armour.name)}`
+                            : null;
 
                     return (
                       <div
@@ -331,50 +340,65 @@ export default async function Page() {
                               }}
                             />
                           )}
-                          {rules && (
+                          {rules.map((rule, index) => (
                             <div
+                              key={`${cardId}_rule_${index}`}
                               className="dynamic-content flex flex-col gap-2"
-                              dangerouslySetInnerHTML={{ __html: rules }}
+                              dangerouslySetInnerHTML={{ __html: rule }}
                             />
-                          )}
-                          {weapon?.weapon_profiles.map((profile, index) =>
-                            closeCombat ? (
-                              <CloseCombatProfile
-                                key={`${cardId}_${index}`}
-                                caption={multiProfile ? profile.name : null}
-                                strength={profile.strength}
-                                damage={profile.damage}
-                                saveModifier={profile.save_modifier}
-                                armourPenetration={profile.armour_penetration}
-                                special={
-                                  <SpecialRuleLinks
-                                    href="/wargear/weapons"
-                                    rules={profile.weapon_special_rules}
-                                  />
-                                }
-                              />
-                            ) : (
-                              <RangedProfile
-                                key={`${cardId}_${index}`}
-                                caption={multiProfile ? profile.name : null}
-                                range={
-                                  profile.long_range === "–"
-                                    ? profile.short_range
-                                    : `${profile.short_range} / ${profile.long_range}`
-                                }
-                                toHit={`${profile.short_to_hit} / ${profile.long_to_hit}`}
-                                strength={profile.strength}
-                                damage={profile.damage}
-                                saveModifier={profile.save_modifier}
-                                armourPenetration={profile.armour_penetration}
-                                special={
-                                  <SpecialRuleLinks
-                                    href="/wargear/weapons"
-                                    rules={profile.weapon_special_rules}
-                                  />
-                                }
-                              />
-                            ),
+                          ))}
+                          {weapons.map((weapon, weaponIndex) =>
+                            weapon.weapon_profiles.map((profile, index) => {
+                              // With one weapon the caption names the profile;
+                              // with several it names the weapon, and both when
+                              // a multi-profile weapon shares a card.
+                              const caption =
+                                [
+                                  weapons.length > 1 ? weapon.name : null,
+                                  weapon.weapon_profiles.length > 1
+                                    ? profile.name
+                                    : null,
+                                ]
+                                  .filter(Boolean)
+                                  .join(" \u2014 ") || null;
+                              const key = `${cardId}_${weaponIndex}_${index}`;
+                              const special = (
+                                <SpecialRuleLinks
+                                  href="/wargear/weapons"
+                                  rules={profile.weapon_special_rules}
+                                />
+                              );
+
+                              return weapon.category === "Close combat" ? (
+                                <CloseCombatProfile
+                                  key={key}
+                                  caption={caption}
+                                  strength={profile.strength}
+                                  damage={profile.damage}
+                                  saveModifier={profile.save_modifier}
+                                  armourPenetration={profile.armour_penetration}
+                                  special={special}
+                                />
+                              ) : (
+                                <RangedProfile
+                                  key={key}
+                                  caption={caption}
+                                  // A weapon with no long range prints one
+                                  // figure, not "6 / \u2013".
+                                  range={
+                                    profile.long_range === "\u2013"
+                                      ? profile.short_range
+                                      : `${profile.short_range} / ${profile.long_range}`
+                                  }
+                                  toHit={`${profile.short_to_hit} / ${profile.long_to_hit}`}
+                                  strength={profile.strength}
+                                  damage={profile.damage}
+                                  saveModifier={profile.save_modifier}
+                                  armourPenetration={profile.armour_penetration}
+                                  special={special}
+                                />
+                              );
+                            }),
                           )}
                           {armour && (
                             <ArmourProfile
@@ -414,7 +438,7 @@ export default async function Page() {
                                 className="underline underline-offset-4"
                                 href={href}
                               >
-                                {weapon ? "Weapons" : "Armour"}
+                                {weapons.length ? "Weapons" : "Armour"}
                               </Link>
                               .
                             </p>

@@ -949,7 +949,6 @@ export type Database = {
           rarity: Database["public"]["Enums"]["wargear_rarities"];
           restriction: string | null;
           updated_at: string | null;
-          weapon_id: number | null;
         };
         Insert: {
           armour_id?: number | null;
@@ -964,7 +963,6 @@ export type Database = {
           rarity: Database["public"]["Enums"]["wargear_rarities"];
           restriction?: string | null;
           updated_at?: string | null;
-          weapon_id?: number | null;
         };
         Update: {
           armour_id?: number | null;
@@ -979,7 +977,6 @@ export type Database = {
           rarity?: Database["public"]["Enums"]["wargear_rarities"];
           restriction?: string | null;
           updated_at?: string | null;
-          weapon_id?: number | null;
         };
         Relationships: [
           {
@@ -989,8 +986,34 @@ export type Database = {
             referencedRelation: "armour";
             referencedColumns: ["id"];
           },
+        ];
+      };
+      wargear_cards_weapons: {
+        Row: {
+          position: number;
+          wargear_card_id: number;
+          weapon_id: number;
+        };
+        Insert: {
+          position?: number;
+          wargear_card_id: number;
+          weapon_id: number;
+        };
+        Update: {
+          position?: number;
+          wargear_card_id?: number;
+          weapon_id?: number;
+        };
+        Relationships: [
           {
-            foreignKeyName: "wargear_cards_weapon_id_fkey";
+            foreignKeyName: "wargear_cards_weapons_wargear_card_id_fkey";
+            columns: ["wargear_card_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_cards_weapons_weapon_id_fkey";
             columns: ["weapon_id"];
             isOneToOne: false;
             referencedRelation: "weapons";
