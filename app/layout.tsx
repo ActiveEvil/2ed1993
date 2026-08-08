@@ -72,7 +72,7 @@ export default async function RootLayout({
           {children}
         </div>
         <footer className="p-4 mb-4 font-title text-xs text-center">
-          ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
+          © {new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
           digital record project). All rights reserved.
           <br />
           Credited images are the property of their respective copyright
