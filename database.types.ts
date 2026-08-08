@@ -937,7 +937,6 @@ export type Database = {
       };
       wargear_cards: {
         Row: {
-          armour_id: number | null;
           availability: string;
           created_at: string;
           description: string | null;
@@ -951,7 +950,6 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
-          armour_id?: number | null;
           availability: string;
           created_at?: string;
           description?: string | null;
@@ -965,7 +963,6 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
-          armour_id?: number | null;
           availability?: string;
           created_at?: string;
           description?: string | null;
@@ -978,15 +975,7 @@ export type Database = {
           restriction?: string | null;
           updated_at?: string | null;
         };
-        Relationships: [
-          {
-            foreignKeyName: "wargear_cards_armour_id_fkey";
-            columns: ["armour_id"];
-            isOneToOne: false;
-            referencedRelation: "armour";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       wargear_cards_armour: {
         Row: {
