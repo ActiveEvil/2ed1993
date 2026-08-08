@@ -77,6 +77,14 @@ the content.
 Keep the formula list short and strictly formulaic. Masking is powerful and cuts
 both ways — an over-broad phrase hides real copying, and nothing will tell you.
 
+**Every time you add a formula, re-measure the untouched originals.** Tuning the
+mask until your own drafts pass is the obvious way to fake a clean result. The
+check: with the new formula in place, texts you have *not* rewritten should still
+be flagged at the same counts. If the flagged count drops, the phrase is too
+broad — it is hiding copying rather than mechanics. This caught nothing when the
+mission-card scoring formulas were added (originals still scored 18, 18 and 24),
+which is what made those additions safe.
+
 **Never exempt prose.** Flavour carries no mechanics, so there is always another
 way to write it, and it is the most exposed thing on the site.
 
