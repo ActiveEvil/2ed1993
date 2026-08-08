@@ -1,0 +1,30 @@
+{
+  "_comment": "formulas are masked out of both draft and corpus before matching, so a run made only of them cannot score. Keep this list short and strictly formulaic — the words must BE the rule. Never add prose.",
+
+  "formulas": [
+    "saving throw of 4 5 or 6 on a d6",
+    "saving throw of 5 or 6 on a d6",
+    "on a d6 roll of 4 5 or 6",
+    "on a roll of 4 5 or 6 on a d6",
+    "on a roll of 5 or 6 on a d6",
+    "are hit on a d6 roll of",
+    "hit on a d6 roll of",
+    "may only be chosen for character models",
+    "may not be chosen for character models",
+    "any number per model",
+    "one item per model",
+    "one per model",
+    "m ws bs s t w i a ld",
+    "for the rest of the battle",
+    "for the rest of the game"
+  ],
+
+  "texts": [
+    { "kind": "rule:weapon-rules",  "name": "Damage",              "reason": "chart digits — the damage table has no other wording" },
+    { "kind": "rule:general-rules", "name": "Buildings",           "reason": "chart digits — armour value table" },
+    { "kind": "rule:vehicle-rules", "name": "Bikes & Trikes",      "reason": "chart digits — speed/strength table" },
+    { "kind": "rule:vehicle-rules", "name": "Transporting Troops", "reason": "chart digits — speed/strength table" },
+    { "kind": "rule:general-rules", "name": "Characteristics",     "reason": "characteristic abbreviations and chart digits" },
+    { "kind": "wargear_card",       "name": "Night Wing the Psyber Raven", "reason": "characteristic line — digits and abbreviations" }
+  ]
+}
