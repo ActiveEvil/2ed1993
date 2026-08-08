@@ -988,6 +988,39 @@ export type Database = {
           },
         ];
       };
+      wargear_cards_armour: {
+        Row: {
+          armour_id: number;
+          position: number;
+          wargear_card_id: number;
+        };
+        Insert: {
+          armour_id: number;
+          position?: number;
+          wargear_card_id: number;
+        };
+        Update: {
+          armour_id?: number;
+          position?: number;
+          wargear_card_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wargear_cards_armour_armour_id_fkey";
+            columns: ["armour_id"];
+            isOneToOne: false;
+            referencedRelation: "armour";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_cards_armour_wargear_card_id_fkey";
+            columns: ["wargear_card_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_cards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       wargear_cards_weapons: {
         Row: {
           position: number;

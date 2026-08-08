@@ -156,14 +156,16 @@ function CloseCombatProfile({
 }
 
 function ArmourProfile({
+  caption,
   save,
   special,
 }: {
+  caption?: string | null;
   save: ReactNode;
   special: ReactNode;
 }) {
   return (
-    <ProfileTable>
+    <ProfileTable caption={caption}>
       <tr>
         <th scope="col" className="p-2 font-subtitle text-xs text-white">
           Save
@@ -223,13 +225,14 @@ export default async function Page() {
   const { data: cards, error: cardsError } = await supabase
     .from("wargear_cards")
     .select(
-      "id, name, availability, rarity, points, restriction, discard_after_use, description, wargear_cards_weapons(position, weapons(name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), armour(name, category, profile_description, armour_profiles(save, condition), armour_special_rules(name))",
+      "id, name, availability, rarity, points, restriction, discard_after_use, description, wargear_cards_weapons(position, weapons(name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), wargear_cards_armour(position, armour(name, category, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
     )
     .order("availability")
     .order("name")
     // A card may grant more than one weapon; the sources print the primary
     // one first, which is what position records.
-    .order("position", { referencedTable: "wargear_cards_weapons" });
+    .order("position", { referencedTable: "wargear_cards_weapons" })
+    .order("position", { referencedTable: "wargear_cards_armour" });
 
   assertNoQueryErrors("/wargear/wargear-cards", cardsError);
 
@@ -290,23 +293,29 @@ export default async function Page() {
                     const weapons = card.wargear_cards_weapons.map(
                       ({ weapons }) => weapons,
                     );
-                    const armour = card.armour;
+                    const armourItems = card.wargear_cards_armour.map(
+                      ({ armour }) => armour,
+                    );
                     // Every linked item may carry rules the profile cannot
                     // express, so each renders its own block.
                     const rules = [
                       ...weapons.map(
                         ({ profile_description }) => profile_description,
                       ),
-                      armour?.profile_description ?? null,
+                      ...armourItems.map(
+                        ({ profile_description }) => profile_description,
+                      ),
                     ].filter((rule): rule is string => rule !== null);
                     const href =
                       weapons.length === 1
                         ? `/wargear/weapons#${generateAnchorId(weapons[0].name)}`
                         : weapons.length
                           ? "/wargear/weapons"
-                          : armour
-                            ? `/wargear/armour#${generateAnchorId(armour.name)}`
-                            : null;
+                          : armourItems.length === 1
+                            ? `/wargear/armour#${generateAnchorId(armourItems[0].name)}`
+                            : armourItems.length
+                              ? "/wargear/armour"
+                              : null;
 
                     return (
                       <div
@@ -400,14 +409,22 @@ export default async function Page() {
                               );
                             }),
                           )}
-                          {armour && (
+                          {armourItems.map((armour, armourIndex) => (
                             <ArmourProfile
+                              key={`${cardId}_armour_${armourIndex}`}
+                              // As with weapons: the caption only earns its
+                              // place when there is more than one to tell apart.
+                              caption={
+                                armourItems.length > 1 ? armour.name : null
+                              }
                               save={
                                 armour.armour_profiles.length ? (
                                   <span className="flex flex-col">
                                     {armour.armour_profiles.map(
                                       (profile, index) => (
-                                        <span key={`${cardId}_${index}`}>
+                                        <span
+                                          key={`${cardId}_${armourIndex}_${index}`}
+                                        >
                                           {profile.save}
                                           {profile.condition && (
                                             <span className="text-sm">
@@ -430,7 +447,7 @@ export default async function Page() {
                                 />
                               }
                             />
-                          )}
+                          ))}
                           {href && (
                             <p className="text-sm">
                               See the full entry in{" "}
