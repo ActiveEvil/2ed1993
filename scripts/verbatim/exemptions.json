@@ -1,6 +1,5 @@
 {
-  "_comment": "formulas are masked out of both draft and corpus before matching, so a run made only of them cannot score. Keep this list short and strictly formulaic — the words must BE the rule. Never add prose.",
-
+  "_comment": "formulas are masked out of both draft and corpus before matching, so a run made only of them cannot score. Keep this list short and strictly formulaic — the words must BE the rule. Never add prose. WHENEVER YOU ADD ONE, re-measure the untouched originals: if the count of flagged texts drops, the mask is hiding copying, not mechanics.",
   "formulas": [
     "saving throw of 4 5 or 6 on a d6",
     "saving throw of 5 or 6 on a d6",
@@ -16,15 +15,43 @@
     "one per model",
     "m ws bs s t w i a ld",
     "for the rest of the battle",
-    "for the rest of the game"
+    "for the rest of the game",
+    "victory points",
+    "victory point",
+    "at the end of the game",
+    "at the end of the battle",
+    "destroyed or disabled"
   ],
-
   "texts": [
-    { "kind": "rule:weapon-rules",  "name": "Damage",              "reason": "chart digits — the damage table has no other wording" },
-    { "kind": "rule:general-rules", "name": "Buildings",           "reason": "chart digits — armour value table" },
-    { "kind": "rule:vehicle-rules", "name": "Bikes & Trikes",      "reason": "chart digits — speed/strength table" },
-    { "kind": "rule:vehicle-rules", "name": "Transporting Troops", "reason": "chart digits — speed/strength table" },
-    { "kind": "rule:general-rules", "name": "Characteristics",     "reason": "characteristic abbreviations and chart digits" },
-    { "kind": "wargear_card",       "name": "Night Wing the Psyber Raven", "reason": "characteristic line — digits and abbreviations" }
+    {
+      "kind": "rule:weapon-rules",
+      "name": "Damage",
+      "reason": "chart digits — the damage table has no other wording"
+    },
+    {
+      "kind": "rule:general-rules",
+      "name": "Buildings",
+      "reason": "chart digits — armour value table"
+    },
+    {
+      "kind": "rule:vehicle-rules",
+      "name": "Bikes & Trikes",
+      "reason": "chart digits — speed/strength table"
+    },
+    {
+      "kind": "rule:vehicle-rules",
+      "name": "Transporting Troops",
+      "reason": "chart digits — speed/strength table"
+    },
+    {
+      "kind": "rule:general-rules",
+      "name": "Characteristics",
+      "reason": "characteristic abbreviations and chart digits"
+    },
+    {
+      "kind": "wargear_card",
+      "name": "Night Wing the Psyber Raven",
+      "reason": "characteristic line — digits and abbreviations"
+    }
   ]
 }

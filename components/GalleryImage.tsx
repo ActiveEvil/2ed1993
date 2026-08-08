@@ -65,10 +65,10 @@ export const GalleryImage: React.FC<{
           }
         }}
         onClose={() => setZoomed(false)}
-        className="m-auto shadow-lg backdrop:bg-black/75"
+        className="m-auto p-0 max-w-[100vw] shadow-lg backdrop:bg-black/75"
       >
         <div
-          className="flex flex-col w-screen"
+          className="relative mx-auto flex flex-col w-screen"
           style={{ maxWidth: `calc(80vh * ${ratio})` }}
         >
           <figure

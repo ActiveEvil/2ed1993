@@ -75,8 +75,9 @@ export default async function RootLayout({
           ©{new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
           digital record project). All rights reserved.
           <br />
-          Credited images are the property of their respective copyright holders
-          and are reproduced for reference only..
+          Credited images are the property of their respective copyright
+          holders&mdash;either the named individual or Games Workshop&mdash;and
+          are reproduced for reference only.
         </footer>
         <Analytics />
       </body>
