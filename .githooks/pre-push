@@ -1,0 +1,24 @@
+#!/bin/bash
+# Repo-versioned pre-push hook. Install once per clone:
+#
+#   git config core.hooksPath .githooks
+#
+# Runs the verbatim gate before every push. The corpus is gitignored and lives
+# only on machines that have built it; where it is absent the hook says so and
+# lets the push through rather than blocking work on a corpus-less clone.
+#
+# Skip deliberately (offline, emergency):  GATE_SKIP=1 git push
+ROOT="$(git rev-parse --show-toplevel)"
+
+if [ -n "$GATE_SKIP" ]; then
+  echo "verbatim gate: skipped (GATE_SKIP set)"
+  exit 0
+fi
+
+if ! ls "$ROOT/scripts/verbatim/corpus/gw/"*.txt >/dev/null 2>&1; then
+  echo "verbatim gate: no corpus on this machine — skipping"
+  exit 0
+fi
+
+echo "verbatim gate: running (skip with GATE_SKIP=1)"
+bash "$ROOT/scripts/verbatim/gate.sh"
