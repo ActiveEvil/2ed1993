@@ -3,6 +3,7 @@
 :root {
   --background: #fafafa;
   --foreground: #2d2d2d;
+  --house-rule-accent: #008cc1;
 }
 @theme inline {
   --aspect-retro: 4 / 3;
@@ -277,6 +278,30 @@
       justify-content: center;
       gap: calc(var(--spacing) * 2);
     }
+    .house-rule {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing) * 2);
+      border-left: 8px solid var(--house-rule-accent);
+      padding: calc(var(--spacing) * 1) 0 calc(var(--spacing) * 1)
+        calc(var(--spacing) * 5);
+      .label {
+        font-family: var(--ibm-plex-sans);
+        font-size: var(--text-xs);
+        line-height: var(--tw-leading, var(--text-xs--line-height));
+        --tw-font-weight: var(--font-weight-bold);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--house-rule-accent);
+      }
+      p {
+        font-style: italic;
+        strong {
+          font-style: normal;
+        }
+      }
+    }
     .text-vertical {
       writing-mode: sideways-lr;
     }
@@ -366,6 +391,7 @@
   :root {
     --background: #2d2d2d;
     --foreground: #fafafa;
+    --house-rule-accent: #6dcef7;
   }
 }
 
