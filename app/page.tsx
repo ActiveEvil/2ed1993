@@ -3,6 +3,7 @@ import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Warhammer } from "@/components/Logos";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const revalidate = 3600;
 
@@ -15,16 +16,81 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
+  const { data: heroImages, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "home")
-    .single();
-  const hero = heroImage?.images ?? null;
+    .order("position");
+  const heros = heroImages?.map(({ images }) => images) ?? [];
+  const [hero, secondImage] = heros;
+  const { data: chapters, error: chaptersError } = await supabase
+    .from("rule_categories")
+    .select("id");
+  const { data: sections, error: sectionsError } = await supabase
+    .from("rules")
+    .select("id");
+  const wargear = await Promise.all(
+    (["weapons", "armour", "wargear_cards"] as const).map((table) =>
+      supabase.from(table).select("id"),
+    ),
+  );
+  const decks = await Promise.all(
+    (
+      [
+        "mission_cards",
+        "strategy_cards",
+        "psychic_power_cards",
+        "special_warp_cards",
+      ] as const
+    ).map((table) => supabase.from(table).select("id")),
+  );
 
-  assertNoQueryErrors("/", heroImageError);
+  assertNoQueryErrors(
+    "/",
+    heroImageError,
+    chaptersError,
+    sectionsError,
+    ...wargear.map(({ error }) => error),
+    ...decks.map(({ error }) => error),
+  );
 
-  if (hero) {
+  if (
+    hero &&
+    chapters &&
+    sections &&
+    wargear.every(({ data }) => data) &&
+    decks.every(({ data }) => data)
+  ) {
+    const [weaponCount, armourCount, wargearCardCount] = wargear.map(
+      ({ data }) => data?.length ?? 0,
+    );
+    const cardCount = decks.reduce(
+      (total, { data }) => total + (data?.length ?? 0),
+      0,
+    );
+    const record = [
+      {
+        href: "/rules",
+        title: "Rules",
+        stat: `${chapters.length} chapters \u00b7 ${sections.length} sections`,
+      },
+      {
+        href: "/wargear",
+        title: "Wargear",
+        stat: `${weaponCount} weapons \u00b7 ${armourCount} armour \u00b7 ${wargearCardCount} wargear cards`,
+      },
+      {
+        href: "/card-decks",
+        title: "Card Decks",
+        stat: `${decks.length} decks \u00b7 ${cardCount} cards`,
+      },
+      {
+        href: "/gallery",
+        title: "Gallery",
+        stat: "Classic Oldhammer Painting",
+      },
+    ];
+
     return (
       <>
         <Breadcrumbs
@@ -53,9 +119,34 @@ export default async function Page() {
             </p>
           </section>
 
+          <section className="flex flex-col gap-4 w-full">
+            <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+              <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
+              <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                The Record
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              {record.map(({ href, title, stat }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="group flex flex-col gap-2 p-4 border-4 border-black shadow-lg"
+                >
+                  <span className="font-subtitle text-2xl group-hover:underline underline-offset-4">
+                    {title}
+                  </span>
+                  <span className="font-subtitle text-xs uppercase tracking-[0.14em] text-accent">
+                    {stat}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+
           <article className="flex flex-col gap-4 w-full">
             <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-              <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black" />
+              <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
               <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
                 A Brief History
               </h2>
@@ -90,28 +181,40 @@ export default async function Page() {
                 </p>
               </section>
             </section>
-            <section className="flex flex-col gap-4 w-full text-lg">
-              <p>
-                Although mechanically complex by today&apos;s standards, 2nd
-                Edition significantly streamlined the game. It introduced
-                structured gameplay without the need for a gamemaster. It was
-                the first edition to introduce Codex army books, expanding
-                individual factions with unit profiles, wargear, special
-                characters, and bespoke army lists. The edition also established
-                the foundational lore of the Warhammer 40,000 universe as we
-                would recognise it today.
-              </p>
-              <p>
-                Games were intended to be played on a smaller scale than modern
-                Warhammer 40,000, typically ranging from 500 to 2,000 points per
-                side&mdash;but with a significantly lower model count. This
-                encouraged narrative-driven skirmishes built around mission
-                cards and story hooks rather than strict match-play objectives.
-                Although tournaments did exist, competitive matched play was not
-                yet the default. Games were more likely to revolve around
-                personal campaigns, custom missions, and the scenario cards
-                included in supplements like Dark Millennium.
-              </p>
+            <section className="grid md:grid-cols-2 gap-4">
+              <section className="flex flex-col gap-4 w-full text-lg">
+                <p>
+                  Although mechanically complex by today&apos;s standards, 2nd
+                  Edition significantly streamlined the game. It introduced
+                  structured gameplay without the need for a gamemaster. It was
+                  the first edition to introduce Codex army books, expanding
+                  individual factions with unit profiles, wargear, special
+                  characters, and bespoke army lists. The edition also
+                  established the foundational lore of the Warhammer 40,000
+                  universe as we would recognise it today.
+                </p>
+                <p>
+                  Games were intended to be played on a smaller scale than
+                  modern Warhammer 40,000, typically ranging from 500 to 2,000
+                  points per side&mdash;but with a significantly lower model
+                  count. This encouraged narrative-driven skirmishes built
+                  around mission cards and story hooks rather than strict
+                  match-play objectives. Although tournaments did exist,
+                  competitive matched play was not yet the default. Games were
+                  more likely to revolve around personal campaigns, custom
+                  missions, and the scenario cards included in supplements like
+                  Dark Millennium.
+                </p>
+              </section>
+              {secondImage && (
+                <ImageWithCredit
+                  src={`images/${secondImage.file_name}`}
+                  title={secondImage.title}
+                  artist={secondImage.artist}
+                  aspect="aspect-retro"
+                  width="half-from-md"
+                />
+              )}
             </section>
           </article>
         </main>

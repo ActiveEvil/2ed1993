@@ -14,7 +14,8 @@ export type Database = {
     Tables: {
       armour: {
         Row: {
-          category: Database["public"]["Enums"]["armour_categories"];
+          category: Database["public"]["Enums"]["armour_categories_enum"];
+          category_id: number;
           created_at: string;
           id: number;
           name: string;
@@ -22,7 +23,8 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
-          category: Database["public"]["Enums"]["armour_categories"];
+          category: Database["public"]["Enums"]["armour_categories_enum"];
+          category_id: number;
           created_at?: string;
           id?: number;
           name: string;
@@ -30,11 +32,44 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
-          category?: Database["public"]["Enums"]["armour_categories"];
+          category?: Database["public"]["Enums"]["armour_categories_enum"];
+          category_id?: number;
           created_at?: string;
           id?: number;
           name?: string;
           profile_description?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "armour_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "armour_categories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      armour_categories: {
+        Row: {
+          created_at: string;
+          id: number;
+          name: string;
+          position: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          name: string;
+          position: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          name?: string;
+          position?: number;
           updated_at?: string | null;
         };
         Relationships: [];
@@ -1043,6 +1078,30 @@ export type Database = {
           },
         ];
       };
+      weapon_categories: {
+        Row: {
+          created_at: string;
+          id: number;
+          name: string;
+          position: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          name: string;
+          position: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          name?: string;
+          position?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
       weapon_profiles: {
         Row: {
           armour_penetration: string;
@@ -1166,7 +1225,8 @@ export type Database = {
       };
       weapons: {
         Row: {
-          category: Database["public"]["Enums"]["weapon_categories"];
+          category: Database["public"]["Enums"]["weapon_categories_enum"];
+          category_id: number;
           created_at: string;
           id: number;
           name: string;
@@ -1174,7 +1234,8 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
-          category: Database["public"]["Enums"]["weapon_categories"];
+          category: Database["public"]["Enums"]["weapon_categories_enum"];
+          category_id: number;
           created_at?: string;
           id?: number;
           name: string;
@@ -1182,14 +1243,23 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
-          category?: Database["public"]["Enums"]["weapon_categories"];
+          category?: Database["public"]["Enums"]["weapon_categories_enum"];
+          category_id?: number;
           created_at?: string;
           id?: number;
           name?: string;
           profile_description?: string | null;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "weapons_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "weapon_categories";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: {
@@ -1199,7 +1269,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      armour_categories:
+      armour_categories_enum:
         "Physical Armour" | "Personal Force Fields" | "Shields";
       psychic_power_decks:
         | "Librarian"
@@ -1214,7 +1284,7 @@ export type Database = {
         | "Nurgle";
       unit_types: "Character" | "Squad";
       wargear_rarities: "Uncommon" | "Rare" | "Unique";
-      weapon_categories:
+      weapon_categories_enum:
         "Close combat" | "Pistol" | "Basic" | "Heavy" | "Support" | "Grenades";
     };
     CompositeTypes: {
@@ -1343,7 +1413,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      armour_categories: [
+      armour_categories_enum: [
         "Physical Armour",
         "Personal Force Fields",
         "Shields",
@@ -1362,7 +1432,7 @@ export const Constants = {
       ],
       unit_types: ["Character", "Squad"],
       wargear_rarities: ["Uncommon", "Rare", "Unique"],
-      weapon_categories: [
+      weapon_categories_enum: [
         "Close combat",
         "Pistol",
         "Basic",

@@ -45,8 +45,8 @@ export default async function Page() {
           </header>
           <section className="flex flex-col gap-4 w-full text-center text-xl">
             <p>
-              Miniatures I&apos;ve painted, from my Warhammer 40,000 2nd
-              Edition collection.
+              Miniatures I&apos;ve painted, from my Warhammer 40,000 2nd Edition
+              collection.
             </p>
           </section>
           <Gallery images={gallery} aspect="aspect-square" />

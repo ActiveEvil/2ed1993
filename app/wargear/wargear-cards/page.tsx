@@ -225,7 +225,7 @@ export default async function Page() {
   const { data: cards, error: cardsError } = await supabase
     .from("wargear_cards")
     .select(
-      "id, name, availability, rarity, points, restriction, discard_after_use, description, wargear_cards_weapons(position, weapons(name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), wargear_cards_armour(position, armour(name, category, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
+      "id, name, availability, rarity, points, restriction, discard_after_use, description, wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
     )
     .order("availability")
     .order("name")
@@ -282,7 +282,7 @@ export default async function Page() {
                 className="flex flex-col gap-4"
               >
                 <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                  <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black shadow-lg" />
+                  <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black shadow-lg" />
                   <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
                     {section.availability}
                   </h2>
@@ -378,7 +378,8 @@ export default async function Page() {
                                 />
                               );
 
-                              return weapon.category === "Close combat" ? (
+                              return weapon.weapon_categories.name ===
+                                "Close combat" ? (
                                 <CloseCombatProfile
                                   key={key}
                                   caption={caption}

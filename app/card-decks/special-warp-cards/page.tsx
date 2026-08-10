@@ -1,6 +1,9 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { CHIP_CLASS } from "@/components/Chip";
 import { Highlighter } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { Panel } from "@/components/Panel";
+import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
@@ -53,40 +56,63 @@ export default async function Page() {
             },
           ]}
         />
-        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Special Warp Cards
-            </h1>
-          </header>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
-          />
+        <main className="flex flex-col items-center gap-4 w-full">
+          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
+            <header>
+              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
+                Special Warp Cards
+              </h1>
+            </header>
+            <ImageWithCredit
+              src={`images/${hero.file_name}`}
+              title={hero.title}
+              artist={hero.artist}
+            />
+            <section className="border-4 border-black">
+              <SectionBar
+                title="The deck"
+                note={`${special_warp_cards.length} cards`}
+              />
+              <div className="flex flex-wrap gap-2 p-3">
+                {special_warp_cards.map((card) => (
+                  <a
+                    key={generateAnchorId(card.name)}
+                    href={`#${generateAnchorId(card.name)}`}
+                    className={CHIP_CLASS}
+                  >
+                    {card.name}
+                  </a>
+                ))}
+              </div>
+            </section>
+          </Panel>
+          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
+            <section className="grid md:grid-cols-2 gap-4">
+              {special_warp_cards.map((card) => {
+                const cardId = generateAnchorId(card.name);
 
-          <section className="grid md:grid-cols-2 gap-4">
-            {special_warp_cards.map((card) => {
-              const cardId = generateAnchorId(card.name);
-
-              return (
-                <div
-                  key={cardId}
-                  id={cardId}
-                  className={clsx(
-                    "flex flex-col justify-start items-center gap-2 p-4 bg-2ed-mid-blue border-4 border-black target:border-2ed-light-yellow shadow-xl",
-                  )}
-                >
-                  <div className="flex flex-col justify-start items-center gap-4 p-4 h-full bg-2ed-white text-2ed-black">
-                    <h3 className="font-title uppercase text-2xl text-2ed-mid-blue text-center">
-                      {card.name}
-                    </h3>
-                    <p className="ftext-lg">{card.description}</p>
+                return (
+                  <div
+                    key={cardId}
+                    id={cardId}
+                    className={clsx(
+                      "flex flex-col justify-start items-center gap-2 p-4 bg-2ed-mid-blue border-4 border-black target:border-2ed-light-yellow shadow-xl",
+                    )}
+                  >
+                    <div className="flex flex-col justify-start items-center gap-4 p-4 h-full bg-2ed-white text-2ed-black">
+                      <h3 className="font-title uppercase text-2xl text-2ed-mid-blue text-center">
+                        {card.name}
+                      </h3>
+                      <p
+                        className="text-lg"
+                        dangerouslySetInnerHTML={{ __html: card.description }}
+                      />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </section>
+                );
+              })}
+            </section>
+          </Panel>
         </main>
       </>
     );

@@ -101,7 +101,10 @@ export default async function Page(props: {
                 ))}
               </div>
             )}
-            <p className="text-lg">{faction.description}</p>
+            <p
+              className="text-lg"
+              dangerouslySetInnerHTML={{ __html: faction.description }}
+            />
           </section>
           <section className="flex flex-col gap-8">
             <h2 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
@@ -135,7 +138,7 @@ export default async function Page(props: {
                   className="flex flex-col gap-4"
                 >
                   <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                    <hr className="md:absolute -z-10 max-w-5xl w-[calc(100vw-var(--spacing)*4)] md:w-[calc(100vw-var(--spacing)*8)] h-1 bg-black border border-black" />
+                    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
                     <h3 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
                       {list.name}
                     </h3>
@@ -197,7 +200,7 @@ export default async function Page(props: {
                                         {item.armour.name}
                                       </Link>
                                       <span
-                                        className="flex-1 border-b-2 border-dotted border-foreground"
+                                        className="flex-1 border-b-2 border-dotted border-black"
                                         aria-hidden="true"
                                       />
                                       <span className="whitespace-nowrap">
@@ -221,7 +224,7 @@ export default async function Page(props: {
                                         {item.weapons.name}
                                       </Link>
                                       <span
-                                        className="flex-1 border-b-2 border-dotted border-foreground"
+                                        className="flex-1 border-b-2 border-dotted border-black"
                                         aria-hidden="true"
                                       />
                                       <span className="whitespace-nowrap">
