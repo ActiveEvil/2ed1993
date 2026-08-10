@@ -9,7 +9,7 @@ export function generateMetadata(): Metadata {
   return {
     title: "Warhammer 40,000 2nd Edition Gallery | 2ed1993",
     description:
-      "A gallery of miniatures painted in the style of Warhammer 40,000 2nd Edition.",
+      "Miniatures I've painted, from my Warhammer 40,000 2nd Edition collection.",
   };
 }
 
@@ -43,6 +43,12 @@ export default async function Page() {
               Miniature Showcase
             </h1>
           </header>
+          <section className="flex flex-col gap-4 w-full text-center text-xl">
+            <p>
+              Miniatures I've painted, from my Warhammer 40,000 2nd Edition
+              collection.
+            </p>
+          </section>
           <section className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {gallery.map((image) => (
               <GalleryImage
