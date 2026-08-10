@@ -1,5 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { IndexCard } from "@/components/IndexCard";
+import { Panel } from "@/components/Panel";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -14,6 +16,24 @@ export function generateMetadata(): Metadata {
   };
 }
 
+const SectionList: React.FC<{ href: string; items: string[] }> = ({
+  href,
+  items,
+}): React.JSX.Element => (
+  <ol className="pl-6 space-y-0.5 text-lg list-decimal">
+    {items.map((item) => (
+      <li key={item}>
+        <Link
+          className="hover:underline underline-offset-4"
+          href={`${href}#${generateAnchorId(item)}`}
+        >
+          {item}
+        </Link>
+      </li>
+    ))}
+  </ol>
+);
+
 export default async function Page() {
   const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
@@ -22,13 +42,13 @@ export default async function Page() {
     .single();
   const hero = heroImage?.images ?? null;
   const { data: armourCategoryRows, error: armourCategoryError } =
-    await supabase.from("armour").select("category").order("category");
+    await supabase.from("armour_categories").select("name").order("position");
   const { data: availabilityRows, error: availabilityError } = await supabase
     .from("wargear_cards")
     .select("availability")
     .order("availability");
   const { data: weaponCategoryRows, error: weaponCategoryError } =
-    await supabase.from("weapons").select("category").order("category");
+    await supabase.from("weapon_categories").select("name").order("position");
 
   assertNoQueryErrors(
     "/wargear",
@@ -39,12 +59,8 @@ export default async function Page() {
   );
 
   if (hero && armourCategoryRows && availabilityRows && weaponCategoryRows) {
-    const weaponCategories = [
-      ...new Set(weaponCategoryRows.map(({ category }) => category)),
-    ];
-    const armourCategories = [
-      ...new Set(armourCategoryRows.map(({ category }) => category)),
-    ];
+    const weaponCategories = weaponCategoryRows.map(({ name }) => name);
+    const armourCategories = armourCategoryRows.map(({ name }) => name);
     const availabilities = [
       ...new Set(availabilityRows.map(({ availability }) => availability)),
     ];
@@ -52,17 +68,12 @@ export default async function Page() {
     return (
       <>
         <Breadcrumbs
-          crumbs={[
-            {
-              href: "/",
-              anchor: "2ed1993",
-            },
-            {
-              anchor: "Wargear",
-            },
-          ]}
+          crumbs={[{ href: "/", anchor: "2ed1993" }, { anchor: "Wargear" }]}
         />
-        <main className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
+        <Panel
+          as="main"
+          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
+        >
           <header>
             <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               Wargear
@@ -73,91 +84,35 @@ export default async function Page() {
             title={hero.title}
             artist={hero.artist}
           />
-          <nav className="ordered-list">
-            <ol className="flex flex-col gap-2 text-2xl">
-              <li>
-                <Link
-                  className="font-subtitle hover:underline underline-offset-4"
-                  href="/wargear/weapons"
-                >
-                  Weapons
-                </Link>
-                <ol className="flex flex-col gap-2 text-xl">
-                  {[
-                    ...weaponCategories,
-                    "General Weapon Special Rules",
-                    "Unique Weapon Special Rules",
-                  ].map((category) => {
-                    const categoryId = generateAnchorId(category);
-
-                    return (
-                      <li key={categoryId}>
-                        <Link
-                          className="hover:underline underline-offset-4"
-                          href={`/wargear/weapons#${categoryId}`}
-                        >
-                          {category}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </li>
-              <li>
-                <Link
-                  className="font-subtitle hover:underline underline-offset-4"
-                  href="/wargear/armour"
-                >
-                  Armour
-                </Link>
-                <ol className="flex flex-col gap-2 text-xl">
-                  {[
-                    ...armourCategories,
-                    "General Armour Special Rules",
-                    "Unique Armour Special Rules",
-                  ].map((category) => {
-                    const categoryId = generateAnchorId(category);
-
-                    return (
-                      <li key={categoryId}>
-                        <Link
-                          className="hover:underline underline-offset-4"
-                          href={`/wargear/armour#${categoryId}`}
-                        >
-                          {category}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </li>
-              <li>
-                <Link
-                  className="font-subtitle hover:underline underline-offset-4"
-                  href="/wargear/wargear-cards"
-                >
-                  Wargear Cards
-                </Link>
-                <ol className="flex flex-col gap-2 text-xl">
-                  {availabilities.map((availability) => {
-                    const availabilityId = generateAnchorId(availability);
-
-                    return (
-                      <li key={availabilityId}>
-                        <Link
-                          className="hover:underline underline-offset-4"
-                          href={`/wargear/wargear-cards#${availabilityId}`}
-                        >
-                          {availability}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </li>
-            </ol>
-          </nav>
-        </main>
+          <div className="grid md:grid-cols-3 gap-4">
+            <IndexCard href="/wargear/weapons" title="1. Weapons">
+              <SectionList
+                href="/wargear/weapons"
+                items={[
+                  ...weaponCategories,
+                  "General Weapon Special Rules",
+                  "Unique Weapon Special Rules",
+                ]}
+              />
+            </IndexCard>
+            <IndexCard href="/wargear/armour" title="2. Armour">
+              <SectionList
+                href="/wargear/armour"
+                items={[
+                  ...armourCategories,
+                  "General Armour Special Rules",
+                  "Unique Armour Special Rules",
+                ]}
+              />
+            </IndexCard>
+            <IndexCard href="/wargear/wargear-cards" title="3. Wargear Cards">
+              <SectionList
+                href="/wargear/wargear-cards"
+                items={availabilities}
+              />
+            </IndexCard>
+          </div>
+        </Panel>
       </>
     );
   }

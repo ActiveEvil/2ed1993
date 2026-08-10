@@ -1,7 +1,13 @@
 import NextImage from "next/image";
 
 export type Aspect =
-  "aspect-video" | "aspect-portrait" | "aspect-retro" | "aspect-square";
+  | "aspect-video"
+  | "aspect-portrait"
+  | "aspect-retro"
+  | "aspect-square"
+  // Sizes from the image instead of cropping to a ratio. For scans, where a
+  // fixed aspect cuts page margins and printed captions.
+  | "natural";
 
 export type Width = "full" | "half" | "half-from-md";
 
@@ -28,7 +34,7 @@ export const ImageWithCredit: React.FC<{
   width = "full",
 }): React.JSX.Element => (
   <figure
-    className={`${aspect} relative w-full border-4 border-black shadow-lg`}
+    className={`${aspect === "natural" ? "" : aspect} relative w-full border-4 border-black shadow-lg`}
   >
     <NextImage
       src={src}
@@ -38,8 +44,14 @@ export const ImageWithCredit: React.FC<{
       sizes={SIZES[width]}
       placeholder="blur"
       blurDataURL={BLUR_DATA_URL}
-      className="w-full h-auto object-cover object-center"
-      fill
+      className={
+        aspect === "natural"
+          ? "w-full h-auto"
+          : "w-full h-auto object-cover object-center"
+      }
+      {...(aspect === "natural"
+        ? { width: 0, height: 0 }
+        : { fill: true as const })}
     />
     {artist && (
       <figcaption className="absolute bottom-2 right-2 ml-2 p-1 border-2 border-black bg-2ed-light-blue font-bold text-black text-xs text-center">

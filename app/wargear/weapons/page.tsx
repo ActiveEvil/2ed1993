@@ -1,6 +1,10 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { CHIP_CLASS } from "@/components/Chip";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { JumpBar } from "@/components/JumpBar";
+import { Panel } from "@/components/Panel";
+import { RowFilter } from "@/components/RowFilter";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
@@ -8,6 +12,12 @@ import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
+
+// Cancels the padding on the layout wrapper so the bar spans the viewport.
+// self-stretch rather than a width calc: the parent centres its children, so
+// the bar needs to be told to fill the cross axis before negative margins can
+// widen it past the padding.
+const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
 
 export function generateMetadata(): Metadata {
   return {
@@ -24,12 +34,16 @@ export default async function Page() {
     .single();
   const hero = heroImage?.images ?? null;
 
+  const { data: categoryRows, error: categoryRowsError } = await supabase
+    .from("weapon_categories")
+    .select("id, name")
+    .order("position");
+
   const { data: weapons, error: weaponsError } = await supabase
     .from("weapons")
     .select(
-      "id, name, category, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
+      "id, name, category_id, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
     )
-    .order("category")
     .order("name");
 
   const { data: weaponSpecialRules, error: weaponSpecialRulesError } =
@@ -41,25 +55,41 @@ export default async function Page() {
   assertNoQueryErrors(
     "/wargear/weapons",
     heroImageError,
+    categoryRowsError,
     weaponsError,
     weaponSpecialRulesError,
   );
 
-  if (hero && weapons && weaponSpecialRules) {
-    const categories = new Map<string, typeof weapons>();
+  if (hero && categoryRows && weapons && weaponSpecialRules) {
+    const byCategory = new Map<number, typeof weapons>();
 
     for (const item of weapons) {
-      const bucket = categories.get(item.category) ?? [];
+      const bucket = byCategory.get(item.category_id) ?? [];
       bucket.push(item);
-      categories.set(item.category, bucket);
+      byCategory.set(item.category_id, bucket);
     }
 
-    const weaponCategories = Array.from(categories.entries()).map(
-      ([category, items]) => ({
-        category,
-        items,
-      }),
-    );
+    // Section order comes from the category table, not the query.
+    const weaponCategories = categoryRows
+      .map(({ id, name }) => ({
+        category: name,
+        items: byCategory.get(id) ?? [],
+      }))
+      .filter(({ items }) => items.length > 0);
+
+    const filterableRows =
+      weapons.length +
+      weaponSpecialRules.length +
+      weapons.filter(({ profile_description }) => profile_description).length;
+
+    const jumpItems = [
+      ...weaponCategories.map(({ category }) => ({
+        id: generateAnchorId(category),
+        label: category,
+      })),
+      { id: "General_Weapon_Special_Rules", label: "General rules" },
+      { id: "Unique_Weapon_Special_Rules", label: "Unique rules" },
+    ];
 
     return (
       <>
@@ -79,21 +109,29 @@ export default async function Page() {
             },
           ]}
         />
-        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl pt-4 md:pt-8 border-4 border-black shadow-lg">
-          <header className="px-4 md:px-8">
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Weapons
-            </h1>
-          </header>
-          <div className="px-4 md:px-8">
+        <main className="flex flex-col items-center gap-4 w-full">
+          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
+            <header>
+              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
+                Weapons
+              </h1>
+            </header>
             <ImageWithCredit
               src={`images/${hero.file_name}`}
               title={hero.title}
               artist={hero.artist}
             />
-          </div>
+          </Panel>
+          <JumpBar className={FULL_BLEED} items={jumpItems} label="Jump to">
+            <RowFilter
+              label="Filter"
+              unit="entries"
+              total={filterableRows}
+              placeholder="e.g. boltgun, plasma, sustained fire"
+            />
+          </JumpBar>
           {Boolean(weaponCategories.length) && (
-            <section className="flex flex-col gap-4 pt-4 border-t-4 border-black">
+            <Panel className="flex flex-col gap-4 w-full max-w-5xl">
               {weaponCategories.map((section) => {
                 const categoryId = generateAnchorId(section.category);
 
@@ -101,11 +139,17 @@ export default async function Page() {
                   <div
                     key={categoryId}
                     id={categoryId}
-                    className="flex flex-col gap-4"
+                    data-group
+                    className="flex flex-col gap-4 mt-4 md:mt-8"
                   >
-                    <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                      {section.category}
-                    </h2>
+                    <div className="px-4 md:px-8">
+                      <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+                        <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
+                        <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                          {section.category}
+                        </h2>
+                      </div>
+                    </div>
                     <section className="relative overflow-x-auto">
                       <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
                         <thead className="bg-black font-subtitle text-sm text-white">
@@ -166,7 +210,7 @@ export default async function Page() {
                             <th
                               scope="col"
                               rowSpan={2}
-                              className="p-2 max-w-24"
+                              className="p-2 w-52 text-left"
                             >
                               Special
                             </th>
@@ -190,12 +234,25 @@ export default async function Page() {
                         </thead>
                         {section.items.map((item) => {
                           const weaponId = generateAnchorId(item.name);
+                          const search = [
+                            item.name,
+                            ...item.weapon_profiles.flatMap((profile) => [
+                              profile.name ?? "",
+                              ...profile.weapon_special_rules.map(
+                                ({ name }) => name,
+                              ),
+                            ]),
+                            item.profile_description ? "unique rules" : "",
+                          ]
+                            .join(" ")
+                            .toLowerCase();
 
                           return (
                             <tbody
                               key={weaponId}
                               id={weaponId}
-                              className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold"
+                              data-search={search}
+                              className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
                             >
                               {item.weapon_profiles.length > 1 && (
                                 <tr>
@@ -217,7 +274,7 @@ export default async function Page() {
                                   <th
                                     scope="row"
                                     className={clsx({
-                                      "p-2 text-left max-w-44": true,
+                                      "sticky left-0 z-10 bg-inherit p-2 text-left max-w-44": true,
                                       "pl-8": Boolean(profile.name),
                                     })}
                                   >
@@ -262,8 +319,8 @@ export default async function Page() {
                                   <td className="p-2 max-w-24">
                                     {profile.armour_penetration}
                                   </td>
-                                  <td className="p-2 max-w-24 text-sm">
-                                    <div className="flex flex-col">
+                                  <td className="p-2 w-52 text-sm text-left">
+                                    <div className="flex flex-wrap gap-1">
                                       {profile.weapon_special_rules.map(
                                         (rule) => {
                                           const ruleId = `${generateAnchorId(rule.name)}_Rule`;
@@ -271,7 +328,7 @@ export default async function Page() {
                                           return (
                                             <HighlighterLink
                                               key={ruleId}
-                                              className="underline underline-offset-4"
+                                              className={CHIP_CLASS}
                                               href={`/wargear/weapons#${ruleId}`}
                                             >
                                               {rule.name}
@@ -281,10 +338,10 @@ export default async function Page() {
                                       )}
                                       {item.profile_description && (
                                         <HighlighterLink
-                                          className="underline underline-offset-4"
+                                          className={CHIP_CLASS}
                                           href={`/wargear/weapons#${weaponId}_Rules`}
                                         >
-                                          See unique rules
+                                          Unique rules
                                         </HighlighterLink>
                                       )}
                                     </div>
@@ -301,11 +358,17 @@ export default async function Page() {
               })}
               <div
                 id="General_Weapon_Special_Rules"
-                className="flex flex-col gap-4"
+                data-group
+                className="flex flex-col gap-4 mt-4 md:mt-8"
               >
-                <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                  General Weapon Special Rules
-                </h2>
+                <div className="px-4 md:px-8">
+                  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+                    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
+                    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                      General Weapon Special Rules
+                    </h2>
+                  </div>
+                </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
                   <section className="grid grid-cols-12 font-subtitle text-sm">
                     <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
@@ -320,6 +383,7 @@ export default async function Page() {
                       <section
                         key={ruleId}
                         id={ruleId}
+                        data-search={rule.name.toLowerCase()}
                         className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
                       >
                         <div className="col-span-3 md:col-span-2 p-2 font-semibold">
@@ -353,11 +417,17 @@ export default async function Page() {
               </div>
               <div
                 id="Unique_Weapon_Special_Rules"
-                className="flex flex-col gap-4"
+                data-group
+                className="flex flex-col gap-4 mt-4 md:mt-8"
               >
-                <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                  Unique Weapon Special Rules
-                </h2>
+                <div className="px-4 md:px-8">
+                  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+                    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
+                    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                      Unique Weapon Special Rules
+                    </h2>
+                  </div>
+                </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
                   <section className="grid grid-cols-12 font-subtitle text-sm">
                     <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
@@ -374,6 +444,7 @@ export default async function Page() {
                         <section
                           key={ruleId}
                           id={ruleId}
+                          data-search={weapon.name.toLowerCase()}
                           className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
                         >
                           <div className="col-span-3 md:col-span-2 p-2 font-semibold">
@@ -395,7 +466,14 @@ export default async function Page() {
                     })}
                 </section>
               </div>
-            </section>
+              <p
+                data-empty
+                hidden
+                className="mx-4 md:mx-8 p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg"
+              >
+                Nothing matches that filter.
+              </p>
+            </Panel>
           )}
         </main>
       </>

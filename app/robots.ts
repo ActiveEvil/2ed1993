@@ -5,6 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: "/design",
     },
     sitemap: "https://2ed1993.com/sitemap.xml",
   };

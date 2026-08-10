@@ -1,12 +1,22 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { CHIP_CLASS } from "@/components/Chip";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { JumpBar } from "@/components/JumpBar";
+import { Panel } from "@/components/Panel";
+import { RowFilter } from "@/components/RowFilter";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
+
+// Cancels the padding on the layout wrapper so the bar spans the viewport.
+// self-stretch rather than a width calc: the parent centres its children, so
+// the bar needs to be told to fill the cross axis before negative margins can
+// widen it past the padding.
+const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
 
 export function generateMetadata(): Metadata {
   return {
@@ -23,12 +33,16 @@ export default async function Page() {
     .single();
   const hero = heroImage?.images ?? null;
 
+  const { data: categoryRows, error: categoryRowsError } = await supabase
+    .from("armour_categories")
+    .select("id, name")
+    .order("position");
+
   const { data: armour, error: armourError } = await supabase
     .from("armour")
     .select(
-      "id, name, category, profile_description, armour_profiles(save, condition), armour_special_rules(name)",
+      "id, name, category_id, profile_description, armour_profiles(save, condition), armour_special_rules(name)",
     )
-    .order("category")
     .order("name")
     .order("condition", {
       referencedTable: "armour_profiles",
@@ -44,25 +58,41 @@ export default async function Page() {
   assertNoQueryErrors(
     "/wargear/armour",
     heroImageError,
+    categoryRowsError,
     armourError,
     armourSpecialRulesError,
   );
 
-  if (hero && armour && armourSpecialRules) {
-    const categories = new Map<string, typeof armour>();
+  if (hero && categoryRows && armour && armourSpecialRules) {
+    const byCategory = new Map<number, typeof armour>();
 
     for (const item of armour) {
-      const bucket = categories.get(item.category) ?? [];
+      const bucket = byCategory.get(item.category_id) ?? [];
       bucket.push(item);
-      categories.set(item.category, bucket);
+      byCategory.set(item.category_id, bucket);
     }
 
-    const armourCategories = Array.from(categories.entries()).map(
-      ([category, items]) => ({
-        category,
-        items,
-      }),
-    );
+    // Section order comes from the category table, not the query.
+    const armourCategories = categoryRows
+      .map(({ id, name }) => ({
+        category: name,
+        items: byCategory.get(id) ?? [],
+      }))
+      .filter(({ items }) => items.length > 0);
+
+    const filterableRows =
+      armour.length +
+      armourSpecialRules.length +
+      armour.filter(({ profile_description }) => profile_description).length;
+
+    const jumpItems = [
+      ...armourCategories.map(({ category }) => ({
+        id: generateAnchorId(category),
+        label: category,
+      })),
+      { id: "General_Armour_Special_Rules", label: "General rules" },
+      { id: "Unique_Armour_Special_Rules", label: "Unique rules" },
+    ];
 
     return (
       <>
@@ -82,21 +112,29 @@ export default async function Page() {
             },
           ]}
         />
-        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl pt-4 md:pt-8 border-4 border-black shadow-lg">
-          <header className="px-4 md:px-8">
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Armour
-            </h1>
-          </header>
-          <div className="px-4 md:px-8">
+        <main className="flex flex-col items-center gap-4 w-full">
+          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
+            <header>
+              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
+                Armour
+              </h1>
+            </header>
             <ImageWithCredit
               src={`images/${hero.file_name}`}
               title={hero.title}
               artist={hero.artist}
             />
-          </div>
+          </Panel>
+          <JumpBar className={FULL_BLEED} items={jumpItems} label="Jump to">
+            <RowFilter
+              label="Filter"
+              unit="entries"
+              total={filterableRows}
+              placeholder="e.g. terminator, 4+, parry"
+            />
+          </JumpBar>
           {Boolean(armourCategories.length) && (
-            <section className="flex flex-col gap-4 pt-4 border-t-4 border-black">
+            <Panel className="flex flex-col gap-4 w-full max-w-5xl">
               {armourCategories.map((section) => {
                 const categoryId = generateAnchorId(section.category);
 
@@ -104,90 +142,135 @@ export default async function Page() {
                   <div
                     key={categoryId}
                     id={categoryId}
-                    className="flex flex-col gap-4"
+                    data-group
+                    className="flex flex-col gap-4 mt-4 md:mt-8"
                   >
-                    <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                      {section.category}
-                    </h2>
-                    <section className="flex flex-col bg-black border-b-4 border-black">
-                      <section className="grid grid-cols-12 font-subtitle text-sm">
-                        <h3 className="col-span-3 md:col-span-2 p-2">Armour</h3>
-                        <h3 className="col-span-6 md:col-span-8 p-2">Save</h3>
-                        <h3 className="col-span-3 md:col-span-2 p-2">
-                          Special
-                        </h3>
-                      </section>
-                      {section.items.map((item) => {
-                        const armourId = generateAnchorId(item.name);
+                    <div className="mt-4 px-4 md:px-8">
+                      <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+                        <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
+                        <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                          {section.category}
+                        </h2>
+                      </div>
+                    </div>
+                    <section className="relative overflow-x-auto">
+                      <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
+                        <thead className="bg-black font-subtitle text-sm text-white">
+                          <tr>
+                            <th scope="col" className="p-2 text-left">
+                              Armour
+                            </th>
+                            <th scope="col" className="p-2">
+                              Save
+                            </th>
+                            <th scope="col" className="p-2 w-52 text-left">
+                              Special
+                            </th>
+                          </tr>
+                        </thead>
+                        {section.items.map((item) => {
+                          const armourId = generateAnchorId(item.name);
+                          const search = [
+                            item.name,
+                            ...item.armour_profiles.flatMap((profile) => [
+                              profile.save,
+                              profile.condition ?? "",
+                            ]),
+                            ...item.armour_special_rules.map(
+                              ({ name }) => name,
+                            ),
+                            item.profile_description ? "unique rules" : "",
+                          ]
+                            .join(" ")
+                            .toLowerCase();
 
-                        return (
-                          <section
-                            key={armourId}
-                            id={armourId}
-                            className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
-                          >
-                            <div className="col-span-3 md:col-span-2 p-2 font-semibold">
-                              <HighlighterLink
-                                className="hover:underline underline-offset-4 text-left"
-                                href={`/wargear/armour#${armourId}`}
-                              >
-                                {item.name}
-                              </HighlighterLink>
-                            </div>
-                            <div className="col-span-6 md:col-span-8 p-2 flex flex-col font-semibold">
-                              {item.armour_profiles.length ? (
-                                item.armour_profiles.map((profile, index) => (
-                                  <span key={`${armourId}_${index}`}>
-                                    {profile.save}
-                                    {profile.condition && (
-                                      <span className="text-sm font-normal">
-                                        {" "}
-                                        {profile.condition}
-                                      </span>
-                                    )}
-                                  </span>
-                                ))
-                              ) : (
-                                <span>&ndash;</span>
-                              )}
-                            </div>
-                            <div className="col-span-3 md:col-span-2 p-2 flex flex-col text-sm font-semibold">
-                              {item.armour_special_rules.map((rule) => {
-                                const ruleId = `${generateAnchorId(rule.name)}_Rule`;
-
-                                return (
-                                  <HighlighterLink
-                                    key={ruleId}
-                                    className="underline underline-offset-4"
-                                    href={`/wargear/armour#${ruleId}`}
-                                  >
-                                    {rule.name}
-                                  </HighlighterLink>
-                                );
-                              })}
-                              {item.profile_description && (
-                                <HighlighterLink
-                                  className="underline underline-offset-4"
-                                  href={`/wargear/armour#${armourId}_Rules`}
+                          return (
+                            <tbody
+                              key={armourId}
+                              id={armourId}
+                              data-search={search}
+                              className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
+                            >
+                              <tr>
+                                <th
+                                  scope="row"
+                                  className="sticky left-0 z-10 bg-inherit p-2 text-left max-w-44"
                                 >
-                                  See unique rules
-                                </HighlighterLink>
-                              )}
-                            </div>
-                          </section>
-                        );
-                      })}
+                                  <HighlighterLink
+                                    className="hover:underline underline-offset-4"
+                                    href={`/wargear/armour#${armourId}`}
+                                  >
+                                    {item.name}
+                                  </HighlighterLink>
+                                </th>
+                                <td className="p-2 text-left">
+                                  {item.armour_profiles.length ? (
+                                    <div className="flex flex-col">
+                                      {item.armour_profiles.map(
+                                        (profile, index) => (
+                                          <span key={`${armourId}_${index}`}>
+                                            {profile.save}
+                                            {profile.condition && (
+                                              <span className="text-sm font-normal">
+                                                {" "}
+                                                {profile.condition}
+                                              </span>
+                                            )}
+                                          </span>
+                                        ),
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <span>&ndash;</span>
+                                  )}
+                                </td>
+                                <td className="p-2 w-52 text-sm text-left">
+                                  <div className="flex flex-wrap gap-1">
+                                    {item.armour_special_rules.map((rule) => {
+                                      const ruleId = `${generateAnchorId(rule.name)}_Rule`;
+
+                                      return (
+                                        <HighlighterLink
+                                          key={ruleId}
+                                          className={CHIP_CLASS}
+                                          href={`/wargear/armour#${ruleId}`}
+                                        >
+                                          {rule.name}
+                                        </HighlighterLink>
+                                      );
+                                    })}
+                                    {item.profile_description && (
+                                      <HighlighterLink
+                                        className={CHIP_CLASS}
+                                        href={`/wargear/armour#${armourId}_Rules`}
+                                      >
+                                        Unique rules
+                                      </HighlighterLink>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          );
+                        })}
+                      </table>
                     </section>
                   </div>
                 );
               })}
               <div
                 id="General_Armour_Special_Rules"
-                className="flex flex-col gap-4"
+                data-group
+                className="flex flex-col gap-4 mt-4 md:mt-8"
               >
-                <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                  General Armour Special Rules
-                </h2>
+                <div className="px-4 md:px-8">
+                  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+                    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
+                    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                      General Armour Special Rules
+                    </h2>
+                  </div>
+                </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
                   <section className="grid grid-cols-12 font-subtitle text-sm">
                     <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
@@ -202,6 +285,7 @@ export default async function Page() {
                       <section
                         key={ruleId}
                         id={ruleId}
+                        data-search={rule.name.toLowerCase()}
                         className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
                       >
                         <div className="col-span-3 md:col-span-2 p-2 font-semibold">
@@ -235,11 +319,17 @@ export default async function Page() {
               </div>
               <div
                 id="Unique_Armour_Special_Rules"
-                className="flex flex-col gap-4"
+                data-group
+                className="flex flex-col gap-4 mt-4 md:mt-8"
               >
-                <h2 className="px-4 md:px-8 font-subtitle text-3xl capitalize">
-                  Unique Armour Special Rules
-                </h2>
+                <div className="px-4 md:px-8">
+                  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
+                    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
+                    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
+                      Unique Armour Special Rules
+                    </h2>
+                  </div>
+                </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
                   <section className="grid grid-cols-12 font-subtitle text-sm">
                     <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
@@ -256,6 +346,7 @@ export default async function Page() {
                         <section
                           key={ruleId}
                           id={ruleId}
+                          data-search={item.name.toLowerCase()}
                           className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
                         >
                           <div className="col-span-3 md:col-span-2 p-2 font-semibold">
@@ -277,7 +368,14 @@ export default async function Page() {
                     })}
                 </section>
               </div>
-            </section>
+              <p
+                data-empty
+                hidden
+                className="mx-4 md:mx-8 p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg"
+              >
+                Nothing matches that filter.
+              </p>
+            </Panel>
           )}
         </main>
       </>

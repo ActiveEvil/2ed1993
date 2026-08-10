@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-:root {
+:root,
+[data-theme="light"] {
   --background: #fafafa;
   --foreground: #2d2d2d;
   --house-rule-accent: #008cc1;
@@ -11,6 +12,7 @@
   --aspect-square: 1 / 1;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--house-rule-accent);
   --color-2ed-black: #2d2d2d;
   --color-2ed-white: #fafafa;
   --color-2ed-light-yellow: #fff20b;
@@ -338,8 +340,8 @@
           tr:nth-child(even) td {
             background-color: color-mix(
               in oklab,
-              var(--background) 80%,
-              transparent
+              var(--background) 85%,
+              var(--foreground)
             );
           }
         }
@@ -387,12 +389,19 @@
   }
 }
 
+/* Follows the OS unless a [data-theme] ancestor says otherwise. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --background: #2d2d2d;
     --foreground: #fafafa;
     --house-rule-accent: #6dcef7;
   }
+}
+
+[data-theme="dark"] {
+  --background: #2d2d2d;
+  --foreground: #fafafa;
+  --house-rule-accent: #6dcef7;
 }
 
 html {
@@ -400,7 +409,7 @@ html {
 }
 
 :target {
-  scroll-margin-top: 4em;
+  scroll-margin-top: calc(var(--jump-bar-height, 0px) + 4em);
 }
 
 .highlight-target:target {

@@ -135,7 +135,7 @@ export const TopNav: React.FC = (): React.JSX.Element => {
 
   return (
     <header className="flex justify-center items-center w-full bg-black text-white">
-      <nav className="flex justify-center items-center gap-8 w-full max-w-5xl p-4 box-content">
+      <nav className="flex justify-center items-center gap-8 w-full max-w-5xl p-4">
         {pathname === "/" ? (
           <Tiny2ed1993 grayscale />
         ) : (
