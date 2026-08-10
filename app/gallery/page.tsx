@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { GalleryImage } from "@/components/GalleryImage";
+import { Gallery } from "@/components/Gallery";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 
@@ -45,22 +45,11 @@ export default async function Page() {
           </header>
           <section className="flex flex-col gap-4 w-full text-center text-xl">
             <p>
-              Miniatures I've painted, from my Warhammer 40,000 2nd Edition
-              collection.
+              Miniatures I&apos;ve painted, from my Warhammer 40,000 2nd
+              Edition collection.
             </p>
           </section>
-          <section className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {gallery.map((image) => (
-              <GalleryImage
-                key={image.file_name}
-                src={`images/${image.file_name}`}
-                title={image.title}
-                width={image.width}
-                height={image.height}
-                aspect="aspect-square"
-              />
-            ))}
-          </section>
+          <Gallery images={gallery} aspect="aspect-square" />
         </main>
       </>
     );
