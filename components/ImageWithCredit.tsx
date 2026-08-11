@@ -54,7 +54,7 @@ export const ImageWithCredit: React.FC<{
         : { fill: true as const })}
     />
     {artist && (
-      <figcaption className="absolute bottom-2 right-2 ml-2 p-1 border-2 border-black bg-2ed-light-blue font-bold text-black text-xs text-center">
+      <figcaption className="absolute bottom-2 right-2 ml-2 p-1 border-2 border-black bg-2ed-light-blue font-bold text-black text-xs text-right">
         &mdash;{artist}, <cite>{title}</cite>
       </figcaption>
     )}

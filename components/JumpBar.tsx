@@ -1,5 +1,6 @@
 "use client";
 
+import { FILTER_EVENT } from "./RowFilter";
 import { clsx } from "clsx";
 import { useEffect, useRef, useState } from "react";
 
@@ -35,6 +36,7 @@ export const JumpBar: React.FC<
   const ref = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const [active, setActive] = useState<string | null>(items[0]?.id ?? null);
+  const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
 
   const heightRef = useRef(0);
 
@@ -72,9 +74,29 @@ export const JumpBar: React.FC<
     let queued = false;
     const update = () => {
       queued = false;
-      const line = (sticky ? heightRef.current : 0) + 8;
-      let current = sections[0];
-      for (const section of sections) {
+
+      // The last section is usually shorter than the viewport left below it,
+      // so the page runs out of scroll before its top reaches the line. At the
+      // bottom of the page it is the section you are in, by definition.
+      // A hidden section reports a zero rect, and zero has always passed the
+      // line below — so filtered-out sections have to be excluded outright.
+      const onPage = sections.filter(
+        (section) => section.offsetParent !== null,
+      );
+      const live = onPage.length ? onPage : sections;
+
+      const root = document.documentElement;
+      if (window.scrollY + window.innerHeight >= root.scrollHeight - 4) {
+        setActive(live[live.length - 1].id);
+        return;
+      }
+
+      // Must match --jump-offset: clicking a chip parks the section's top
+      // exactly there, so a smaller line would leave the target just below it
+      // and hand the active state back to the previous section.
+      const line = (sticky ? heightRef.current : 0) + 16 + 2;
+      let current = live[0];
+      for (const section of live) {
         if (section.getBoundingClientRect().top <= line) current = section;
       }
       setActive(current.id);
@@ -94,6 +116,32 @@ export const JumpBar: React.FC<
       window.removeEventListener("resize", onScroll);
     };
   }, [items, sticky]);
+
+  useEffect(() => {
+    const sync = () => {
+      const next = new Set(
+        items
+          .filter(({ id }) => {
+            const section = document.getElementById(id);
+            return section !== null && section.offsetParent === null;
+          })
+          .map(({ id }) => id),
+      );
+      setHidden((previous) =>
+        previous.size === next.size && [...next].every((id) => previous.has(id))
+          ? previous
+          : next,
+      );
+    };
+
+    const frame = requestAnimationFrame(sync);
+    window.addEventListener(FILTER_EVENT, sync);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener(FILTER_EVENT, sync);
+    };
+  }, [items]);
 
   const activeLabel =
     items.find(({ id }) => id === active)?.label ?? items[0]?.label ?? "";
@@ -123,8 +171,10 @@ export const JumpBar: React.FC<
                 key={id}
                 href={`#${id}`}
                 aria-current={active === id ? "true" : undefined}
+                onClick={() => setActive(id)}
                 className={clsx(
                   "shrink-0 px-2 py-0.5 border-2 font-subtitle text-sm whitespace-nowrap",
+                  hidden.has(id) && "opacity-40",
                   active === id
                     ? "bg-2ed-light-yellow border-2ed-light-yellow text-black"
                     : "border-2ed-white text-2ed-white hover:bg-2ed-white hover:text-black",
@@ -157,10 +207,12 @@ export const JumpBar: React.FC<
                 href={`#${id}`}
                 aria-current={active === id ? "true" : undefined}
                 onClick={() => {
+                  setActive(id);
                   if (detailsRef.current) detailsRef.current.open = false;
                 }}
                 className={clsx(
                   "flex items-center min-h-13 px-4 py-2 border-b-2 border-white/15 last:border-b-0 font-subtitle text-sm",
+                  hidden.has(id) && "opacity-40",
                   active === id
                     ? "bg-2ed-light-yellow text-black"
                     : "text-2ed-white",
