@@ -141,8 +141,6 @@ export const JumpBar: React.FC<
           className="hidden md:flex items-baseline gap-2 px-4 py-2"
         >
           <span className={clsx(EYEBROW, "pr-1")}>{label}</span>
-          {/* Chips wrap in their own column so a second row lines up with the
-              first rather than starting under the label. */}
           <div className="flex flex-wrap gap-2">
             {items.map(({ id, label: text }) => (
               <a
@@ -170,7 +168,7 @@ export const JumpBar: React.FC<
             <span className="grow min-w-0 font-subtitle text-base text-2ed-white truncate">
               {activeLabel}
             </span>
-            <span className="shrink-0 px-2.5 py-1 bg-2ed-light-yellow font-subtitle text-xs uppercase tracking-[0.1em] text-black">
+            <span className="shrink-0 px-2.5 py-1 bg-2ed-light-yellow font-subtitle text-xs uppercase tracking-widest text-black">
               <span className="group-open:hidden">Jump</span>
               <span className="hidden group-open:inline">Close</span>
             </span>
