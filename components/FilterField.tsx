@@ -38,7 +38,7 @@ export const FilterField: React.FC<{
     <span
       ref={countRef}
       aria-live="polite"
-      className="shrink-0 font-subtitle text-[11px] text-white uppercase tracking-[0.1em]"
+      className="shrink-0 font-subtitle text-[11px] text-white uppercase tracking-widest"
     >
       {count}
     </span>
