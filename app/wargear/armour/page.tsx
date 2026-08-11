@@ -183,12 +183,23 @@ export default async function Page() {
                           ]
                             .join(" ")
                             .toLowerCase();
+                          // Ids of the special rules this row's chips link to,
+                          // so the filter can keep them on the page.
+                          const refs = [
+                            ...item.armour_special_rules.map(
+                              ({ name }) => `${generateAnchorId(name)}_Rule`,
+                            ),
+                            ...(item.profile_description
+                              ? [`${armourId}_Rules`]
+                              : []),
+                          ].join(" ");
 
                           return (
                             <tbody
                               key={armourId}
                               id={armourId}
                               data-search={search}
+                              data-refs={refs}
                               className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
                             >
                               <tr>

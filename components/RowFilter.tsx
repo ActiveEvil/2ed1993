@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from "react";
 
 const ROW = "[data-search]";
 
+/** Fired after a filter pass, so the jump bar can re-read what is on screen. */
+export const FILTER_EVENT = "2ed:filter";
+
 /**
  * Filters server-rendered rows by hiding them, rather than re-rendering a
  * client-side copy of the data. Every row stays in the HTML, so the page is
@@ -28,12 +31,27 @@ export const RowFilter: React.FC<{
     const rows = Array.from(document.querySelectorAll<HTMLElement>(ROW));
 
     let shown = 0;
+    const matched: HTMLElement[] = [];
     for (const row of rows) {
       const match = terms.every((term) =>
         (row.dataset.search ?? "").includes(term),
       );
       row.hidden = !match;
-      if (match) shown += 1;
+      if (match) {
+        shown += 1;
+        matched.push(row);
+      }
+    }
+
+    // A matched row's chips point at special rules that the same filter may
+    // have just hidden, leaving a link to nothing. Pull those back in. They
+    // are context, not results, so they do not count towards the total.
+    for (const row of matched) {
+      for (const id of (row.dataset.refs ?? "").split(" ")) {
+        if (!id) continue;
+        const referenced = document.getElementById(id);
+        if (referenced?.hasAttribute("data-search")) referenced.hidden = false;
+      }
     }
 
     for (const group of document.querySelectorAll<HTMLElement>(
@@ -45,6 +63,8 @@ export const RowFilter: React.FC<{
     const empty = document.querySelector<HTMLElement>("[data-empty]");
     if (empty) empty.hidden = shown > 0;
 
+    window.dispatchEvent(new Event(FILTER_EVENT));
+
     if (countRef.current) {
       countRef.current.textContent = terms.length
         ? `${shown} of ${rows.length}`
@@ -52,14 +72,27 @@ export const RowFilter: React.FC<{
     }
   }, [query, unit]);
 
-  // A permalink into a filtered-out row would land on nothing.
+  // Clear only when the thing being jumped to is actually hidden — otherwise
+  // every jump chip would wipe a filter that is still showing its target.
   useEffect(() => {
-    const clear = () => {
-      if (window.location.hash) setQuery("");
+    const onHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (!id) return;
+
+      const target = document.getElementById(id);
+      if (!target || target.offsetParent !== null) return;
+
+      setQuery("");
+      // The rows around it have just reappeared, so the browser's scroll no
+      // longer points at it.
+      requestAnimationFrame(() =>
+        document.getElementById(id)?.scrollIntoView(),
+      );
     };
-    clear();
-    window.addEventListener("hashchange", clear);
-    return () => window.removeEventListener("hashchange", clear);
+
+    onHash();
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
   useEffect(() => {

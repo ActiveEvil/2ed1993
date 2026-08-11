@@ -408,8 +408,13 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  /* Falls back to 3em so pages with no jump bar keep their original offset. */
+  --jump-offset: calc(var(--jump-bar-height, 3em) + 1rem);
+}
+
 :target {
-  scroll-margin-top: calc(var(--jump-bar-height, 0px) + 4em);
+  scroll-margin-top: var(--jump-offset);
 }
 
 .highlight-target:target {
