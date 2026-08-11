@@ -9,16 +9,6 @@ export type JumpItem = { id: string; label: string };
 const EYEBROW =
   "shrink-0 font-subtitle text-[10px] uppercase tracking-[0.14em] text-2ed-light-yellow";
 
-/**
- * Sticky in-page nav. A row of chips on desktop; below md a disclosure showing
- * the section you are currently in, opening into a list of full-width targets.
- *
- * Built on <details> so the toggle works without JavaScript — only the active
- * section needs it, and that degrades to the first item.
- *
- * Publishes its own height as --jump-bar-height so :target scroll offsets
- * follow the bar instead of a hard-coded figure.
- */
 export const JumpBar: React.FC<
   {
     items: JumpItem[];
@@ -46,7 +36,6 @@ export const JumpBar: React.FC<
 
     const root = document.documentElement;
     const publish = () => {
-      // Border box, not contentRect: the bar has a 4px border top and bottom.
       const height = Math.round(element.getBoundingClientRect().height);
       heightRef.current = height;
       if (sticky) root.style.setProperty("--jump-bar-height", `${height}px`);
@@ -68,18 +57,10 @@ export const JumpBar: React.FC<
       .filter((section): section is HTMLElement => section !== null);
     if (!sections.length) return;
 
-    // The section you are in is the last one whose top has passed under the
-    // bar. Measured against the bar rather than a guessed offset, so it stays
-    // right when the chips wrap onto a second row.
     let queued = false;
     const update = () => {
       queued = false;
 
-      // The last section is usually shorter than the viewport left below it,
-      // so the page runs out of scroll before its top reaches the line. At the
-      // bottom of the page it is the section you are in, by definition.
-      // A hidden section reports a zero rect, and zero has always passed the
-      // line below — so filtered-out sections have to be excluded outright.
       const onPage = sections.filter(
         (section) => section.offsetParent !== null,
       );
@@ -91,9 +72,6 @@ export const JumpBar: React.FC<
         return;
       }
 
-      // Must match --jump-offset: clicking a chip parks the section's top
-      // exactly there, so a smaller line would leave the target just below it
-      // and hand the active state back to the previous section.
       const line = (sticky ? heightRef.current : 0) + 16 + 2;
       let current = live[0];
       for (const section of live) {

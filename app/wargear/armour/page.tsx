@@ -12,10 +12,6 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-// Cancels the padding on the layout wrapper so the bar spans the viewport.
-// self-stretch rather than a width calc: the parent centres its children, so
-// the bar needs to be told to fill the cross axis before negative margins can
-// widen it past the padding.
 const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
 
 export function generateMetadata(): Metadata {
@@ -72,7 +68,6 @@ export default async function Page() {
       byCategory.set(item.category_id, bucket);
     }
 
-    // Section order comes from the category table, not the query.
     const armourCategories = categoryRows
       .map(({ id, name }) => ({
         category: name,
@@ -183,8 +178,7 @@ export default async function Page() {
                           ]
                             .join(" ")
                             .toLowerCase();
-                          // Ids of the special rules this row's chips link to,
-                          // so the filter can keep them on the page.
+
                           const refs = [
                             ...item.armour_special_rules.map(
                               ({ name }) => `${generateAnchorId(name)}_Rule`,

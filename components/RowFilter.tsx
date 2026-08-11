@@ -43,9 +43,6 @@ export const RowFilter: React.FC<{
       }
     }
 
-    // A matched row's chips point at special rules that the same filter may
-    // have just hidden, leaving a link to nothing. Pull those back in. They
-    // are context, not results, so they do not count towards the total.
     for (const row of matched) {
       for (const id of (row.dataset.refs ?? "").split(" ")) {
         if (!id) continue;
@@ -72,8 +69,6 @@ export const RowFilter: React.FC<{
     }
   }, [query, unit]);
 
-  // Clear only when the thing being jumped to is actually hidden — otherwise
-  // every jump chip would wipe a filter that is still showing its target.
   useEffect(() => {
     const onHash = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));
@@ -83,8 +78,7 @@ export const RowFilter: React.FC<{
       if (!target || target.offsetParent !== null) return;
 
       setQuery("");
-      // The rows around it have just reappeared, so the browser's scroll no
-      // longer points at it.
+
       requestAnimationFrame(() =>
         document.getElementById(id)?.scrollIntoView(),
       );
@@ -109,7 +103,6 @@ export const RowFilter: React.FC<{
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Leave nothing hidden behind on client navigation.
   useEffect(
     () => () => {
       for (const row of document.querySelectorAll<HTMLElement>(ROW)) {
