@@ -1,7 +1,6 @@
 import { PrimitiveShowcase } from "@/components/PrimitiveShowcase";
 import { Metadata } from "next/types";
 
-// Not public content: kept out of robots.ts and absent from sitemap.ts.
 export const metadata: Metadata = {
   title: "Primitives | 2ed1993",
   robots: { index: false, follow: false },

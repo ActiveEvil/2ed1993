@@ -12,10 +12,6 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-// Cancels the padding on the layout wrapper so the bar spans the viewport.
-// self-stretch rather than a width calc: the parent centres its children, so
-// the bar needs to be told to fill the cross axis before negative margins can
-// widen it past the padding.
 const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
 
 export async function generateMetadata(props: {

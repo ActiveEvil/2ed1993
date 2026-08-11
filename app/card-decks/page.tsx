@@ -8,7 +8,6 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-// Hard-coded by decision: card decks have no table behind them yet.
 const DECKS = [
   {
     slug: "mission-cards",

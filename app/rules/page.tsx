@@ -10,9 +10,6 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-// Keyed by slug, not by position: a reorder must not quietly move a chapter
-// into the wrong band. Anything unlisted falls into a trailing band rather
-// than disappearing.
 const BANDS: { title: string; slugs: string[] }[] = [
   { title: "Before the game", slugs: ["the-golden-rule", "how-to-play"] },
   {

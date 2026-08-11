@@ -229,8 +229,6 @@ export default async function Page() {
     )
     .order("availability")
     .order("name")
-    // A card may grant more than one weapon; the sources print the primary
-    // one first, which is what position records.
     .order("position", { referencedTable: "wargear_cards_weapons" })
     .order("position", { referencedTable: "wargear_cards_armour" });
 
@@ -296,8 +294,6 @@ export default async function Page() {
                     const armourItems = card.wargear_cards_armour.map(
                       ({ armour }) => armour,
                     );
-                    // Every linked item may carry rules the profile cannot
-                    // express, so each renders its own block.
                     const rules = [
                       ...weapons.map(
                         ({ profile_description }) => profile_description,
@@ -337,10 +333,6 @@ export default async function Page() {
                           </span>
                         </div>
                         <div className="flex flex-col justify-start gap-4 p-4 h-full bg-2ed-white text-2ed-black">
-                          {/* Both, not one or the other: a card may carry its
-                              own words as well as a linked item. The printed
-                              card leads with flavour and follows with the
-                              rules the profile cannot express. */}
                           {card.description && (
                             <div
                               className="dynamic-content flex flex-col gap-2"
@@ -358,9 +350,6 @@ export default async function Page() {
                           ))}
                           {weapons.map((weapon, weaponIndex) =>
                             weapon.weapon_profiles.map((profile, index) => {
-                              // With one weapon the caption names the profile;
-                              // with several it names the weapon, and both when
-                              // a multi-profile weapon shares a card.
                               const caption =
                                 [
                                   weapons.length > 1 ? weapon.name : null,
@@ -393,8 +382,6 @@ export default async function Page() {
                                 <RangedProfile
                                   key={key}
                                   caption={caption}
-                                  // A weapon with no long range prints one
-                                  // figure, not "6 / \u2013".
                                   range={
                                     profile.long_range === "\u2013"
                                       ? profile.short_range
@@ -413,8 +400,6 @@ export default async function Page() {
                           {armourItems.map((armour, armourIndex) => (
                             <ArmourProfile
                               key={`${cardId}_armour_${armourIndex}`}
-                              // As with weapons: the caption only earns its
-                              // place when there is more than one to tell apart.
                               caption={
                                 armourItems.length > 1 ? armour.name : null
                               }
