@@ -14,7 +14,6 @@ export type Database = {
     Tables: {
       armour: {
         Row: {
-          category: Database["public"]["Enums"]["armour_categories_enum"];
           category_id: number;
           created_at: string;
           id: number;
@@ -23,7 +22,6 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
-          category: Database["public"]["Enums"]["armour_categories_enum"];
           category_id: number;
           created_at?: string;
           id?: number;
@@ -32,7 +30,6 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
-          category?: Database["public"]["Enums"]["armour_categories_enum"];
           category_id?: number;
           created_at?: string;
           id?: number;
@@ -1225,7 +1222,6 @@ export type Database = {
       };
       weapons: {
         Row: {
-          category: Database["public"]["Enums"]["weapon_categories_enum"];
           category_id: number;
           created_at: string;
           id: number;
@@ -1234,7 +1230,6 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
-          category: Database["public"]["Enums"]["weapon_categories_enum"];
           category_id: number;
           created_at?: string;
           id?: number;
@@ -1243,7 +1238,6 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
-          category?: Database["public"]["Enums"]["weapon_categories_enum"];
           category_id?: number;
           created_at?: string;
           id?: number;
@@ -1269,8 +1263,6 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      armour_categories_enum:
-        "Physical Armour" | "Personal Force Fields" | "Shields";
       psychic_power_decks:
         | "Librarian"
         | "Inquisition"
@@ -1284,8 +1276,6 @@ export type Database = {
         | "Nurgle";
       unit_types: "Character" | "Squad";
       wargear_rarities: "Uncommon" | "Rare" | "Unique";
-      weapon_categories_enum:
-        "Close combat" | "Pistol" | "Basic" | "Heavy" | "Support" | "Grenades";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -1413,11 +1403,6 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      armour_categories_enum: [
-        "Physical Armour",
-        "Personal Force Fields",
-        "Shields",
-      ],
       psychic_power_decks: [
         "Librarian",
         "Inquisition",
@@ -1432,14 +1417,6 @@ export const Constants = {
       ],
       unit_types: ["Character", "Squad"],
       wargear_rarities: ["Uncommon", "Rare", "Unique"],
-      weapon_categories_enum: [
-        "Close combat",
-        "Pistol",
-        "Basic",
-        "Heavy",
-        "Support",
-        "Grenades",
-      ],
     },
   },
 } as const;
