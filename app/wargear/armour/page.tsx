@@ -149,10 +149,13 @@ export default async function Page() {
                       </div>
                     </div>
                     <section className="relative overflow-x-auto">
-                      <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
+                      <table className="relative w-full min-w-max table-auto bg-background border-collapse border-b-4 border-black text-center">
                         <thead className="bg-black font-subtitle text-sm text-white">
                           <tr>
-                            <th scope="col" className="p-2 text-left">
+                            <th
+                              scope="col"
+                              className="sticky left-0 z-20 bg-black/80 p-2 text-left"
+                            >
                               Armour
                             </th>
                             <th scope="col" className="p-2">
@@ -194,7 +197,7 @@ export default async function Page() {
                               id={armourId}
                               data-search={search}
                               data-refs={refs}
-                              className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
+                              className="bg-background/80 even:bg-[var(--stripe)]/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
                             >
                               <tr>
                                 <th
@@ -277,10 +280,10 @@ export default async function Page() {
                   </div>
                 </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
-                  <section className="grid grid-cols-12 font-subtitle text-sm">
-                    <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
-                    <h3 className="col-span-6 md:col-span-8 p-2">Rule</h3>
-                    <h3 className="col-span-3 md:col-span-2 p-2">Related</h3>
+                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm">
+                    <h3 className="md:col-span-2 p-2">Name</h3>
+                    <h3 className="md:col-span-8 p-2">Rule</h3>
+                    <h3 className="md:col-span-2 p-2">Related</h3>
                   </section>
                   {armourSpecialRules.map((rule) => {
                     const ruleId = `${generateAnchorId(rule.name)}_Rule`;
@@ -291,9 +294,9 @@ export default async function Page() {
                         key={ruleId}
                         id={ruleId}
                         data-search={rule.name.toLowerCase()}
-                        className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                        className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-[var(--stripe)] target:bg-2ed-light-yellow target:text-black text-lg"
                       >
-                        <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                        <div className="md:col-span-2 p-2 font-bold">
                           <HighlighterLink
                             href={`/wargear/armour#${ruleId}`}
                             className="hover:underline underline-offset-4 text-left"
@@ -302,12 +305,12 @@ export default async function Page() {
                           </HighlighterLink>
                         </div>
                         <div
-                          className="dynamic-content col-span-6 md:col-span-8 p-2 flex flex-col justify-center gap-2 font-semibold"
+                          className="dynamic-content md:col-span-8 p-2 flex flex-col justify-center gap-2 font-semibold"
                           dangerouslySetInnerHTML={{
                             __html: rule.rule,
                           }}
                         />
-                        <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                        <div className="md:col-span-2 p-2 font-semibold empty:hidden">
                           {linkedRule && (
                             <Link
                               className="underline underline-offset-4 text-sm"
@@ -336,9 +339,9 @@ export default async function Page() {
                   </div>
                 </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
-                  <section className="grid grid-cols-12 font-subtitle text-sm">
-                    <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
-                    <h3 className="col-span-9 md:col-span-10 p-2">Rule</h3>
+                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm">
+                    <h3 className="md:col-span-2 p-2">Name</h3>
+                    <h3 className="md:col-span-10 p-2">Rule</h3>
                   </section>
                   {armour
                     .filter(({ profile_description }) =>
@@ -352,9 +355,9 @@ export default async function Page() {
                           key={ruleId}
                           id={ruleId}
                           data-search={item.name.toLowerCase()}
-                          className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                          className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-[var(--stripe)] target:bg-2ed-light-yellow target:text-black text-lg"
                         >
-                          <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                          <div className="md:col-span-2 p-2 font-bold">
                             <HighlighterLink
                               href={`/wargear/armour#${ruleId}`}
                               className="hover:underline underline-offset-4 text-left"
@@ -363,7 +366,7 @@ export default async function Page() {
                             </HighlighterLink>
                           </div>
                           <div
-                            className="dynamic-content col-span-9 md:col-span-10 p-2 flex flex-col justify-center gap-2 font-semibold"
+                            className="dynamic-content md:col-span-10 p-2 flex flex-col justify-center gap-2 font-semibold"
                             dangerouslySetInnerHTML={{
                               __html: item.profile_description!,
                             }}

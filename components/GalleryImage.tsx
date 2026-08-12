@@ -29,7 +29,7 @@ export const GalleryImage: React.FC<{
           className="w-full h-auto object-cover object-center"
           fill
         />
-        <figcaption className="absolute bottom-2 right-2 p-1 border-2 border-black bg-2ed-light-blue font-bold text-black text-xs text-center">
+        <figcaption className="absolute bottom-2 right-2 ml-2 p-1 border-2 border-black bg-2ed-light-blue font-bold text-black text-xs text-right">
           {title}
         </figcaption>
       </figure>

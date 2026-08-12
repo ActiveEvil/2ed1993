@@ -5,6 +5,9 @@
   --background: #fafafa;
   --foreground: #2d2d2d;
   --house-rule-accent: #008cc1;
+  /* Card faces are printed card stock rather than page background: they keep
+     their dark ink in both schemes and only lose the glare in dark mode. */
+  --card-face: #fafafa;
 }
 @theme inline {
   --aspect-retro: 4 / 3;
@@ -13,6 +16,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--house-rule-accent);
+  --color-card-face: var(--card-face);
   --color-2ed-black: #2d2d2d;
   --color-2ed-white: #fafafa;
   --color-2ed-light-yellow: #fff20b;
@@ -338,11 +342,7 @@
             background-color: var(--background);
           }
           tr:nth-child(even) td {
-            background-color: color-mix(
-              in oklab,
-              var(--background) 85%,
-              var(--foreground)
-            );
+            background-color: var(--stripe);
           }
         }
         th {
@@ -395,6 +395,7 @@
     --background: #2d2d2d;
     --foreground: #fafafa;
     --house-rule-accent: #6dcef7;
+    --card-face: #d8d8d8;
   }
 }
 
@@ -402,6 +403,7 @@
   --background: #2d2d2d;
   --foreground: #fafafa;
   --house-rule-accent: #6dcef7;
+  --card-face: #d8d8d8;
 }
 
 html {
@@ -411,6 +413,10 @@ html {
 :root {
   /* Falls back to 3em so pages with no jump bar keep their original offset. */
   --jump-offset: calc(var(--jump-bar-height, 3em) + 1rem);
+  /* Zebra stripe. Defined once here rather than at each striped table: it
+     resolves per colour scheme because --background and --foreground are
+     substituted at use. */
+  --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
 }
 
 :target {
