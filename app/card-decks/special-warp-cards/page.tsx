@@ -99,7 +99,7 @@ export default async function Page() {
                       "flex flex-col justify-start items-center gap-2 p-4 bg-2ed-mid-blue border-4 border-black target:border-2ed-light-yellow shadow-xl",
                     )}
                   >
-                    <div className="flex flex-col justify-start items-center gap-4 p-4 h-full bg-2ed-white text-2ed-black">
+                    <div className="flex flex-col justify-start items-center gap-4 p-4 h-full bg-card-face text-2ed-black">
                       <h3 className="font-title uppercase text-2xl text-2ed-mid-blue text-center">
                         {card.name}
                       </h3>

@@ -146,13 +146,13 @@ export default async function Page() {
                       </div>
                     </div>
                     <section className="relative overflow-x-auto">
-                      <table className="relative w-full min-w-max table-auto bg-black border-collapse border-b-4 border-black text-center">
+                      <table className="relative w-full min-w-max table-auto bg-background border-collapse border-b-4 border-black text-center">
                         <thead className="bg-black font-subtitle text-sm text-white">
                           <tr>
                             <th
                               scope="col"
                               rowSpan={2}
-                              className="p-2 text-left"
+                              className="sticky left-0 z-20 bg-black/80 p-2 text-left"
                             >
                               Weapon
                             </th>
@@ -262,13 +262,13 @@ export default async function Page() {
                               id={weaponId}
                               data-search={search}
                               data-refs={refs}
-                              className="bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
+                              className="bg-background/80 even:bg-[var(--stripe)]/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
                             >
                               {item.weapon_profiles.length > 1 && (
                                 <tr>
                                   <th
-                                    colSpan={10}
-                                    className="pt-2 px-2 text-left whitespace-nowrap"
+                                    scope="rowgroup"
+                                    className="sticky left-0 z-10 bg-inherit pt-2 px-2 text-left max-w-44"
                                   >
                                     <HighlighterLink
                                       className="hover:underline underline-offset-4"
@@ -277,6 +277,12 @@ export default async function Page() {
                                       {item.name}
                                     </HighlighterLink>
                                   </th>
+                                  {/* Filler. The name needs to be a cell in the
+                                      first column to pin like the profile names
+                                      under it, so the rest of the row is one
+                                      empty span. colSpan clamps to the table's
+                                      real width, so close combat is fine. */}
+                                  <td colSpan={9} />
                                 </tr>
                               )}
                               {item.weapon_profiles.map((profile, index) => (
@@ -380,10 +386,10 @@ export default async function Page() {
                   </div>
                 </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
-                  <section className="grid grid-cols-12 font-subtitle text-sm">
-                    <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
-                    <h3 className="col-span-6 md:col-span-8 p-2">Rule</h3>
-                    <h3 className="col-span-3 md:col-span-2 p-2">Related</h3>
+                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm">
+                    <h3 className="md:col-span-2 p-2">Name</h3>
+                    <h3 className="md:col-span-8 p-2">Rule</h3>
+                    <h3 className="md:col-span-2 p-2">Related</h3>
                   </section>
                   {weaponSpecialRules.map((rule) => {
                     const ruleId = `${generateAnchorId(rule.name)}_Rule`;
@@ -394,9 +400,9 @@ export default async function Page() {
                         key={ruleId}
                         id={ruleId}
                         data-search={rule.name.toLowerCase()}
-                        className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                        className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-[var(--stripe)] target:bg-2ed-light-yellow target:text-black text-lg"
                       >
-                        <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                        <div className="md:col-span-2 p-2 font-bold">
                           <HighlighterLink
                             href={`/wargear/weapons#${ruleId}`}
                             className="hover:underline underline-offset-4 text-left"
@@ -405,12 +411,12 @@ export default async function Page() {
                           </HighlighterLink>
                         </div>
                         <div
-                          className="dynamic-content col-span-6 md:col-span-8 p-2 flex flex-col justify-center gap-2 font-semibold"
+                          className="dynamic-content md:col-span-8 p-2 flex flex-col justify-center gap-2 font-semibold"
                           dangerouslySetInnerHTML={{
                             __html: rule.rule,
                           }}
                         />
-                        <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                        <div className="md:col-span-2 p-2 font-semibold empty:hidden">
                           {linkedRule && (
                             <Link
                               className="underline underline-offset-4 text-sm"
@@ -439,9 +445,9 @@ export default async function Page() {
                   </div>
                 </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
-                  <section className="grid grid-cols-12 font-subtitle text-sm">
-                    <h3 className="col-span-3 md:col-span-2 p-2">Name</h3>
-                    <h3 className="col-span-9 md:col-span-10 p-2">Rule</h3>
+                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm">
+                    <h3 className="md:col-span-2 p-2">Name</h3>
+                    <h3 className="md:col-span-10 p-2">Rule</h3>
                   </section>
                   {weapons
                     .filter(({ profile_description }) =>
@@ -455,9 +461,9 @@ export default async function Page() {
                           key={ruleId}
                           id={ruleId}
                           data-search={weapon.name.toLowerCase()}
-                          className="highlight-target grid grid-cols-12 bg-background even:bg-background/80 target:bg-2ed-light-yellow target:text-black text-lg"
+                          className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-[var(--stripe)] target:bg-2ed-light-yellow target:text-black text-lg"
                         >
-                          <div className="col-span-3 md:col-span-2 p-2 font-semibold">
+                          <div className="md:col-span-2 p-2 font-bold">
                             <HighlighterLink
                               href={`/wargear/weapons#${ruleId}`}
                               className="hover:underline underline-offset-4 text-left"
@@ -466,7 +472,7 @@ export default async function Page() {
                             </HighlighterLink>
                           </div>
                           <div
-                            className="dynamic-content col-span-9 md:col-span-10 p-2 flex flex-col justify-center gap-2 font-semibold"
+                            className="dynamic-content md:col-span-10 p-2 flex flex-col justify-center gap-2 font-semibold"
                             dangerouslySetInnerHTML={{
                               __html: weapon.profile_description!,
                             }}

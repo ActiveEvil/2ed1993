@@ -35,7 +35,7 @@ export const StrategyCardRandomiser: React.FC<{
   return (
     <>
       <SectionBar title="Draw a card" note={`${ids.length} in play`} />
-      <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 bg-2ed-mid-blue shadow-lg">
+      <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-mid-blue shadow-lg">
         <p className="text-xl">
           Select which card decks you wish to include and randomly draw one
           card:

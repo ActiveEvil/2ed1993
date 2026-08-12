@@ -68,11 +68,11 @@ function RangedProfile({
           Dam
         </th>
       </tr>
-      <tr className="bg-2ed-white text-2ed-black text-sm">
-        <td className="p-1 bg-2ed-white">{range}</td>
-        <td className="p-1 bg-2ed-white">{toHit}</td>
-        <td className="p-1 bg-2ed-white">{strength}</td>
-        <td className="p-1 bg-2ed-white">{damage}</td>
+      <tr className="bg-card-face text-2ed-black text-sm">
+        <td className="p-1 bg-card-face">{range}</td>
+        <td className="p-1 bg-card-face">{toHit}</td>
+        <td className="p-1 bg-card-face">{strength}</td>
+        <td className="p-1 bg-card-face">{damage}</td>
       </tr>
       <tr>
         <th scope="col" className="p-1 font-subtitle text-xs text-white">
@@ -89,10 +89,10 @@ function RangedProfile({
           Special
         </th>
       </tr>
-      <tr className="bg-2ed-white text-2ed-black text-sm">
-        <td className="p-1 bg-2ed-white">{saveModifier}</td>
-        <td className="p-1 bg-2ed-white">{armourPenetration}</td>
-        <td colSpan={2} className="p-1 bg-2ed-white">
+      <tr className="bg-card-face text-2ed-black text-sm">
+        <td className="p-1 bg-card-face">{saveModifier}</td>
+        <td className="p-1 bg-card-face">{armourPenetration}</td>
+        <td colSpan={2} className="p-1 bg-card-face">
           {special}
         </td>
       </tr>
@@ -131,11 +131,11 @@ function CloseCombatProfile({
           AP
         </th>
       </tr>
-      <tr className="bg-2ed-white text-2ed-black text-sm">
-        <td className="p-1 bg-2ed-white">{strength}</td>
-        <td className="p-1 bg-2ed-white">{damage}</td>
-        <td className="p-1 bg-2ed-white">{saveModifier}</td>
-        <td className="p-1 bg-2ed-white">{armourPenetration}</td>
+      <tr className="bg-card-face text-2ed-black text-sm">
+        <td className="p-1 bg-card-face">{strength}</td>
+        <td className="p-1 bg-card-face">{damage}</td>
+        <td className="p-1 bg-card-face">{saveModifier}</td>
+        <td className="p-1 bg-card-face">{armourPenetration}</td>
       </tr>
       <tr>
         <th
@@ -146,8 +146,8 @@ function CloseCombatProfile({
           Special
         </th>
       </tr>
-      <tr className="bg-2ed-white text-2ed-black text-sm">
-        <td colSpan={4} className="p-1 bg-2ed-white">
+      <tr className="bg-card-face text-2ed-black text-sm">
+        <td colSpan={4} className="p-1 bg-card-face">
           {special}
         </td>
       </tr>
@@ -178,9 +178,9 @@ function ArmourProfile({
           Special
         </th>
       </tr>
-      <tr className="bg-2ed-white text-2ed-black text-lg">
-        <td className="p-2 bg-2ed-white">{save}</td>
-        <td colSpan={3} className="p-2 bg-2ed-white">
+      <tr className="bg-card-face text-2ed-black text-lg">
+        <td className="p-2 bg-card-face">{save}</td>
+        <td colSpan={3} className="p-2 bg-card-face">
           {special}
         </td>
       </tr>
@@ -332,7 +332,7 @@ export default async function Page() {
                               : "Special"}
                           </span>
                         </div>
-                        <div className="flex flex-col justify-start gap-4 p-4 h-full bg-2ed-white text-2ed-black">
+                        <div className="flex flex-col justify-start gap-4 p-4 h-full bg-card-face text-2ed-black">
                           {card.description && (
                             <div
                               className="dynamic-content flex flex-col gap-2"
