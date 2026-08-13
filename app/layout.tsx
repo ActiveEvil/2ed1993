@@ -67,6 +67,12 @@ export default async function RootLayout({
       <body
         className={`${merriweather.variable} ${ibmPlexSans.variable} ${crimsonText.variable} font-block text-base antialiased flex flex-col justify-center items-center w-full min-w-10`}
       >
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:m-2 focus:p-2 focus:bg-2ed-light-yellow focus:text-black focus:font-subtitle"
+        >
+          Skip to content
+        </a>
         <TopNav />
         <div className="flex flex-col justify-center items-center w-full p-2 md:p-4">
           {children}

@@ -128,7 +128,7 @@ export const JumpBar: React.FC<
     <div
       ref={ref}
       className={clsx(
-        "z-30 bg-black border-y-4 border-black",
+        "z-30 bg-black border-y-4 border-black print:hidden",
         sticky && "sticky top-0",
         className,
       )}
@@ -150,7 +150,7 @@ export const JumpBar: React.FC<
                 onClick={() => setActive(id)}
                 className={clsx(
                   "shrink-0 px-2 py-0.5 border-2 font-subtitle text-sm whitespace-nowrap",
-                  hidden.has(id) && "opacity-40",
+                  hidden.has(id) && "opacity-60 line-through",
                   active === id
                     ? "bg-2ed-light-yellow border-2ed-light-yellow text-black"
                     : "border-2ed-white text-2ed-white hover:bg-2ed-white hover:text-black",
@@ -184,11 +184,19 @@ export const JumpBar: React.FC<
                 aria-current={active === id ? "true" : undefined}
                 onClick={() => {
                   setActive(id);
-                  if (detailsRef.current) detailsRef.current.open = false;
+                  const details = detailsRef.current;
+                  if (!details) return;
+                  details.open = false;
+                  // The row that had focus has just been un-rendered. Without
+                  // this, focus falls back to <body> and tabbing restarts at
+                  // the top of the page.
+                  details
+                    .querySelector<HTMLElement>("summary")
+                    ?.focus({ preventScroll: true });
                 }}
                 className={clsx(
                   "flex items-center min-h-13 px-4 py-2 border-b-2 border-white/15 last:border-b-0 font-subtitle text-sm",
-                  hidden.has(id) && "opacity-40",
+                  hidden.has(id) && "opacity-60 line-through",
                   active === id
                     ? "bg-2ed-light-yellow text-black"
                     : "text-2ed-white",

@@ -28,7 +28,10 @@ export default function Error({
           },
         ]}
       />
-      <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
+      <main
+        id="main"
+        className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg"
+      >
         <header>
           <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
             The Machine Spirit Falters
@@ -53,7 +56,7 @@ export default function Error({
         <div className="flex flex-col gap-8 items-start">
           <button
             onClick={reset}
-            className="px-4 py-1 rounded-none border-4 border-black outline-0 font-subtitle shadow-lg"
+            className="px-4 py-1 rounded-none border-4 border-black font-subtitle shadow-lg"
           >
             Try again
           </button>

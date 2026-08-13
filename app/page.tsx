@@ -100,7 +100,10 @@ export default async function Page() {
             },
           ]}
         />
-        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
+        <main
+          id="main"
+          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg"
+        >
           <header className="flex justify-center items-center">
             <Warhammer />
           </header>

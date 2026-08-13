@@ -70,7 +70,7 @@ export default async function Page() {
             },
           ]}
         />
-        <main className="flex flex-col items-center gap-4 w-full">
+        <main id="main" className="flex flex-col items-center gap-4 w-full">
           <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
             <header>
               <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">

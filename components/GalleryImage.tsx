@@ -11,8 +11,10 @@ export const GalleryImage: React.FC<{
 }> = ({ src, title, aspect = "aspect-square", onOpen }): React.JSX.Element => {
   return (
     <button
+      type="button"
       className="block w-full cursor-zoom-in"
       aria-haspopup="dialog"
+      aria-label={`Open ${title}`}
       onClick={onOpen}
     >
       <figure

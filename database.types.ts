@@ -206,6 +206,30 @@ export type Database = {
           },
         ];
       };
+      availabilities: {
+        Row: {
+          created_at: string;
+          id: number;
+          name: string;
+          position: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: never;
+          name: string;
+          position: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: never;
+          name?: string;
+          position?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
       characteristic_profiles: {
         Row: {
           a: number;
@@ -1008,6 +1032,36 @@ export type Database = {
           updated_at?: string | null;
         };
         Relationships: [];
+      };
+      wargear_cards_availabilities: {
+        Row: {
+          availability_id: number;
+          wargear_card_id: number;
+        };
+        Insert: {
+          availability_id: number;
+          wargear_card_id: number;
+        };
+        Update: {
+          availability_id?: number;
+          wargear_card_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wargear_cards_availabilities_availability_id_fkey";
+            columns: ["availability_id"];
+            isOneToOne: false;
+            referencedRelation: "availabilities";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_cards_availabilities_wargear_card_id_fkey";
+            columns: ["wargear_card_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_cards";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       wargear_cards_armour: {
         Row: {

@@ -406,8 +406,10 @@
   --card-face: #d8d8d8;
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 :root {
@@ -419,7 +421,8 @@ html {
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
 }
 
-:target {
+:target,
+:focus-visible {
   scroll-margin-top: var(--jump-offset);
 }
 
@@ -447,4 +450,64 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Printing. Two things go wrong without this: sticky bars get stamped across
+   page one and appear nowhere else, and browsers drop background colours by
+   default, so a black-backed block prints its white text onto nothing. */
+@media print {
+  /* Paper is light whatever scheme the reader is in. */
+  :root,
+  :root:not([data-theme="light"]),
+  [data-theme="dark"] {
+    --background: #fafafa;
+    --foreground: #2d2d2d;
+    --house-rule-accent: #008cc1;
+    --card-face: #fafafa;
+  }
+
+  /* Light text takes ink. Unconditional on purpose: browsers drop backgrounds
+     by default, so any pale text is otherwise printing onto nothing, and a
+     surface this rule does not know about still comes out legible. */
+  .text-white,
+  .text-2ed-white,
+  .text-2ed-light-yellow,
+  .text-2ed-light-blue {
+    color: var(--color-black) !important;
+  }
+
+  /* And the dark surfaces themselves give up their background, for anyone who
+     has "print backgrounds" switched on — otherwise they would be black bars
+     with black text. `hr` is excluded: its rule *is* the background. */
+  .bg-black:not(hr),
+  /* catches the alpha variants too — bg-black/80 is a different class */
+  [class*="bg-black/"],
+  .bg-2ed-dark-blue,
+  .bg-2ed-mid-blue,
+  .bg-2ed-dark-red,
+  .bg-2ed-dark-green {
+    background-color: transparent !important;
+    color: var(--color-black) !important;
+  }
+
+  .sticky {
+    position: static !important;
+  }
+
+  /* A scroll container prints only what is in view; let the table run. */
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+  }
+
+  .chart,
+  tr,
+  article {
+    break-inside: avoid;
+  }
 }

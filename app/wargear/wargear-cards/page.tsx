@@ -1,13 +1,19 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Chip } from "@/components/Chip";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
-import { generateAnchorId } from "@/lib/anchors";
+import { JumpBar } from "@/components/JumpBar";
+import { Panel } from "@/components/Panel";
+import { RowFilter } from "@/components/RowFilter";
+import { facetHref, generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
 import { ReactNode } from "react";
 
 export const revalidate = 3600;
+
+const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
 
 export function generateMetadata(): Metadata {
   return {
@@ -225,27 +231,27 @@ export default async function Page() {
   const { data: cards, error: cardsError } = await supabase
     .from("wargear_cards")
     .select(
-      "id, name, availability, rarity, points, restriction, discard_after_use, description, wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
+      "id, name, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
     )
-    .order("availability")
     .order("name")
     .order("position", { referencedTable: "wargear_cards_weapons" })
     .order("position", { referencedTable: "wargear_cards_armour" });
 
-  assertNoQueryErrors("/wargear/wargear-cards", cardsError);
+  const { data: availabilityRows, error: availabilityError } = await supabase
+    .from("availabilities")
+    .select("name")
+    .order("position");
 
-  if (cards) {
-    const availabilities = new Map<string, typeof cards>();
+  assertNoQueryErrors("/wargear/wargear-cards", cardsError, availabilityError);
 
-    for (const card of cards) {
-      const bucket = availabilities.get(card.availability) ?? [];
-      bucket.push(card);
-      availabilities.set(card.availability, bucket);
-    }
-
-    const sections = Array.from(availabilities.entries()).map(
-      ([availability, items]) => ({ availability, items }),
-    );
+  if (cards && availabilityRows) {
+    const jumpItems = [
+      { id: facetHref("").slice(1), label: "All" },
+      ...availabilityRows.map(({ name }) => ({
+        id: facetHref(name).slice(1),
+        label: name,
+      })),
+    ];
 
     return (
       <>
@@ -257,218 +263,249 @@ export default async function Page() {
             { anchor: "Wargear Cards" },
           ]}
         />
-        <main className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg">
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Wargear Cards
-            </h1>
-          </header>
-          {hero && (
-            <ImageWithCredit
-              src={`images/${hero.file_name}`}
-              title={hero.title}
-              artist={hero.artist}
+        <main id="main" className="flex flex-col items-center gap-4 w-full">
+          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
+            <header>
+              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
+                Wargear Cards
+              </h1>
+            </header>
+            {hero && (
+              <ImageWithCredit
+                src={`images/${hero.file_name}`}
+                title={hero.title}
+                artist={hero.artist}
+              />
+            )}
+          </Panel>
+          <JumpBar
+            className={FULL_BLEED}
+            items={jumpItems}
+            label="Available to"
+          >
+            <RowFilter
+              label="Filter"
+              unit="cards"
+              total={cards.length}
+              placeholder="e.g. force sword, psycannon"
+              facetAttribute="availability"
             />
-          )}
-          {sections.map((section) => {
-            const sectionId = generateAnchorId(section.availability);
+          </JumpBar>
+          <Panel className="flex flex-col gap-4 w-full max-w-5xl p-4 md:p-8">
+            <section className="grid md:grid-cols-2 gap-4">
+              {cards.map((card) => {
+                const cardId = generateAnchorId(card.name);
+                const weapons = card.wargear_cards_weapons.map(
+                  ({ weapons }) => weapons,
+                );
+                const armourItems = card.wargear_cards_armour.map(
+                  ({ armour }) => armour,
+                );
+                const rules = [
+                  ...weapons.map(
+                    ({ profile_description }) => profile_description,
+                  ),
+                  ...armourItems.map(
+                    ({ profile_description }) => profile_description,
+                  ),
+                ].filter((rule): rule is string => rule !== null);
+                const href =
+                  weapons.length === 1
+                    ? `/wargear/weapons#${generateAnchorId(weapons[0].name)}`
+                    : weapons.length
+                      ? "/wargear/weapons"
+                      : armourItems.length === 1
+                        ? `/wargear/armour#${generateAnchorId(armourItems[0].name)}`
+                        : armourItems.length
+                          ? "/wargear/armour"
+                          : null;
+                const availabilities = card.wargear_cards_availabilities
+                  .map(({ availabilities }) => availabilities)
+                  .filter((row) => row !== null)
+                  .sort((a, b) => a.position - b.position);
+                const search = [
+                  card.name,
+                  card.rarity,
+                  card.restriction ?? "",
+                  card.discard_after_use ? "discard after use" : "",
+                  ...weapons.map(({ name }) => name),
+                  ...armourItems.map(({ name }) => name),
+                ]
+                  .join(" ")
+                  .toLowerCase();
 
-            return (
-              <section
-                id={sectionId}
-                key={sectionId}
-                className="flex flex-col gap-4"
-              >
-                <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                  <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black shadow-lg" />
-                  <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-                    {section.availability}
-                  </h2>
-                </div>
-                <section className="grid md:grid-cols-2 gap-4">
-                  {section.items.map((card) => {
-                    const cardId = generateAnchorId(card.name);
-                    const weapons = card.wargear_cards_weapons.map(
-                      ({ weapons }) => weapons,
-                    );
-                    const armourItems = card.wargear_cards_armour.map(
-                      ({ armour }) => armour,
-                    );
-                    const rules = [
-                      ...weapons.map(
-                        ({ profile_description }) => profile_description,
-                      ),
-                      ...armourItems.map(
-                        ({ profile_description }) => profile_description,
-                      ),
-                    ].filter((rule): rule is string => rule !== null);
-                    const href =
-                      weapons.length === 1
-                        ? `/wargear/weapons#${generateAnchorId(weapons[0].name)}`
-                        : weapons.length
-                          ? "/wargear/weapons"
-                          : armourItems.length === 1
-                            ? `/wargear/armour#${generateAnchorId(armourItems[0].name)}`
-                            : armourItems.length
-                              ? "/wargear/armour"
-                              : null;
-
-                    return (
-                      <div
-                        key={cardId}
-                        id={cardId}
-                        className="flex flex-col justify-start gap-2 p-4 border-4 border-black bg-2ed-dark-blue target:border-2ed-light-yellow shadow-xl"
+                return (
+                  <div
+                    key={cardId}
+                    id={cardId}
+                    data-search={search}
+                    data-availability={availabilities
+                      .map(({ name }) => name.toLowerCase())
+                      .join(" ")}
+                    className="flex flex-col justify-start gap-2 p-4 border-4 border-black bg-2ed-dark-blue target:border-2ed-light-yellow shadow-xl"
+                  >
+                    <div className="flex justify-between items-baseline gap-4 w-full">
+                      <HighlighterLink
+                        className="font-subtitle uppercase text-2xl text-2ed-white hover:underline underline-offset-4"
+                        href={`/wargear/wargear-cards#${cardId}`}
                       >
-                        <div className="flex justify-between items-baseline gap-4 w-full">
-                          <HighlighterLink
-                            className="font-subtitle uppercase text-2xl text-2ed-white hover:underline underline-offset-4"
-                            href={`/wargear/wargear-cards#${cardId}`}
-                          >
-                            {card.name}
-                          </HighlighterLink>
-                          <span className="font-subtitle whitespace-nowrap text-lg text-2ed-light-yellow">
-                            {card.points
-                              ? `${card.points} Point${card.points === "1" ? "" : "s"}`
-                              : "Special"}
-                          </span>
-                        </div>
-                        <div className="flex flex-col justify-start gap-4 p-4 h-full bg-card-face text-2ed-black">
-                          {card.description && (
-                            <div
-                              className="dynamic-content flex flex-col gap-2"
-                              dangerouslySetInnerHTML={{
-                                __html: card.description,
-                              }}
+                        {card.name}
+                      </HighlighterLink>
+                      <span className="font-subtitle whitespace-nowrap text-lg text-2ed-light-yellow">
+                        {card.points
+                          ? `${card.points} Point${card.points === "1" ? "" : "s"}`
+                          : "Special"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col justify-start gap-4 p-4 h-full bg-card-face text-2ed-black">
+                      {card.description && (
+                        <div
+                          className="dynamic-content flex flex-col gap-2"
+                          dangerouslySetInnerHTML={{
+                            __html: card.description,
+                          }}
+                        />
+                      )}
+                      {rules.map((rule, index) => (
+                        <div
+                          key={`${cardId}_rule_${index}`}
+                          className="dynamic-content flex flex-col gap-2"
+                          dangerouslySetInnerHTML={{ __html: rule }}
+                        />
+                      ))}
+                      {weapons.map((weapon, weaponIndex) =>
+                        weapon.weapon_profiles.map((profile, index) => {
+                          const caption =
+                            [
+                              weapons.length > 1 ? weapon.name : null,
+                              weapon.weapon_profiles.length > 1
+                                ? profile.name
+                                : null,
+                            ]
+                              .filter(Boolean)
+                              .join(" \u2014 ") || null;
+                          const key = `${cardId}_${weaponIndex}_${index}`;
+                          const special = (
+                            <SpecialRuleLinks
+                              href="/wargear/weapons"
+                              rules={profile.weapon_special_rules}
                             />
-                          )}
-                          {rules.map((rule, index) => (
-                            <div
-                              key={`${cardId}_rule_${index}`}
-                              className="dynamic-content flex flex-col gap-2"
-                              dangerouslySetInnerHTML={{ __html: rule }}
-                            />
-                          ))}
-                          {weapons.map((weapon, weaponIndex) =>
-                            weapon.weapon_profiles.map((profile, index) => {
-                              const caption =
-                                [
-                                  weapons.length > 1 ? weapon.name : null,
-                                  weapon.weapon_profiles.length > 1
-                                    ? profile.name
-                                    : null,
-                                ]
-                                  .filter(Boolean)
-                                  .join(" \u2014 ") || null;
-                              const key = `${cardId}_${weaponIndex}_${index}`;
-                              const special = (
-                                <SpecialRuleLinks
-                                  href="/wargear/weapons"
-                                  rules={profile.weapon_special_rules}
-                                />
-                              );
+                          );
 
-                              return weapon.weapon_categories.name ===
-                                "Close combat" ? (
-                                <CloseCombatProfile
-                                  key={key}
-                                  caption={caption}
-                                  strength={profile.strength}
-                                  damage={profile.damage}
-                                  saveModifier={profile.save_modifier}
-                                  armourPenetration={profile.armour_penetration}
-                                  special={special}
-                                />
-                              ) : (
-                                <RangedProfile
-                                  key={key}
-                                  caption={caption}
-                                  range={
-                                    profile.long_range === "\u2013"
-                                      ? profile.short_range
-                                      : `${profile.short_range} / ${profile.long_range}`
-                                  }
-                                  toHit={`${profile.short_to_hit} / ${profile.long_to_hit}`}
-                                  strength={profile.strength}
-                                  damage={profile.damage}
-                                  saveModifier={profile.save_modifier}
-                                  armourPenetration={profile.armour_penetration}
-                                  special={special}
-                                />
-                              );
-                            }),
-                          )}
-                          {armourItems.map((armour, armourIndex) => (
-                            <ArmourProfile
-                              key={`${cardId}_armour_${armourIndex}`}
-                              caption={
-                                armourItems.length > 1 ? armour.name : null
-                              }
-                              save={
-                                armour.armour_profiles.length ? (
-                                  <span className="flex flex-col">
-                                    {armour.armour_profiles.map(
-                                      (profile, index) => (
-                                        <span
-                                          key={`${cardId}_${armourIndex}_${index}`}
-                                        >
-                                          {profile.save}
-                                          {profile.condition && (
-                                            <span className="text-sm">
-                                              {" "}
-                                              {profile.condition}
-                                            </span>
-                                          )}
-                                        </span>
-                                      ),
-                                    )}
-                                  </span>
-                                ) : (
-                                  <>&ndash;</>
-                                )
-                              }
-                              special={
-                                <SpecialRuleLinks
-                                  href="/wargear/armour"
-                                  rules={armour.armour_special_rules}
-                                />
-                              }
+                          return weapon.weapon_categories.name ===
+                            "Close combat" ? (
+                            <CloseCombatProfile
+                              key={key}
+                              caption={caption}
+                              strength={profile.strength}
+                              damage={profile.damage}
+                              saveModifier={profile.save_modifier}
+                              armourPenetration={profile.armour_penetration}
+                              special={special}
                             />
-                          ))}
-                          {href && (
-                            <p className="text-sm">
-                              See the full entry in{" "}
-                              <Link
-                                className="underline underline-offset-4"
-                                href={href}
-                              >
-                                {weapons.length ? "Weapons" : "Armour"}
-                              </Link>
-                              .
-                            </p>
-                          )}
-                          {(card.restriction || card.discard_after_use) && (
-                            <p className="mt-auto font-subtitle uppercase text-2ed-dark-red text-center">
-                              {[
-                                card.restriction,
-                                card.discard_after_use
-                                  ? "Discard after use"
-                                  : null,
-                              ]
-                                .filter(Boolean)
-                                .join(", ")}
-                            </p>
-                          )}
-                        </div>
-                        <p className="w-full font-bold text-2ed-white">
-                          {card.rarity}
+                          ) : (
+                            <RangedProfile
+                              key={key}
+                              caption={caption}
+                              range={
+                                profile.long_range === "\u2013"
+                                  ? profile.short_range
+                                  : `${profile.short_range} / ${profile.long_range}`
+                              }
+                              toHit={`${profile.short_to_hit} / ${profile.long_to_hit}`}
+                              strength={profile.strength}
+                              damage={profile.damage}
+                              saveModifier={profile.save_modifier}
+                              armourPenetration={profile.armour_penetration}
+                              special={special}
+                            />
+                          );
+                        }),
+                      )}
+                      {armourItems.map((armour, armourIndex) => (
+                        <ArmourProfile
+                          key={`${cardId}_armour_${armourIndex}`}
+                          caption={armourItems.length > 1 ? armour.name : null}
+                          save={
+                            armour.armour_profiles.length ? (
+                              <span className="flex flex-col">
+                                {armour.armour_profiles.map(
+                                  (profile, index) => (
+                                    <span
+                                      key={`${cardId}_${armourIndex}_${index}`}
+                                    >
+                                      {profile.save}
+                                      {profile.condition && (
+                                        <span className="text-sm">
+                                          {" "}
+                                          {profile.condition}
+                                        </span>
+                                      )}
+                                    </span>
+                                  ),
+                                )}
+                              </span>
+                            ) : (
+                              <>&ndash;</>
+                            )
+                          }
+                          special={
+                            <SpecialRuleLinks
+                              href="/wargear/armour"
+                              rules={armour.armour_special_rules}
+                            />
+                          }
+                        />
+                      ))}
+                      {href && (
+                        <p className="text-sm">
+                          See the full entry in{" "}
+                          <Link
+                            className="underline underline-offset-4"
+                            href={href}
+                          >
+                            {weapons.length ? "Weapons" : "Armour"}
+                          </Link>
+                          .
                         </p>
+                      )}
+                      {(card.restriction || card.discard_after_use) && (
+                        <p className="mt-auto font-subtitle uppercase text-2ed-dark-red text-center">
+                          {[
+                            card.restriction,
+                            card.discard_after_use ? "Discard after use" : null,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-4 w-full">
+                      <p className="font-bold text-2ed-white">{card.rarity}</p>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-4">
+                        {availabilities.map(({ name }) => (
+                          <Chip
+                            key={name}
+                            href={facetHref(name)}
+                            className="border-2ed-white text-2ed-white"
+                          >
+                            {name}
+                          </Chip>
+                        ))}
                       </div>
-                    );
-                  })}
-                </section>
-              </section>
-            );
-          })}
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+            <p
+              data-empty
+              hidden
+              className="p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg"
+            >
+              Nothing matches that filter.
+            </p>
+          </Panel>
         </main>
       </>
     );
