@@ -33,7 +33,7 @@ export const StrategyCardRandomiser: React.FC<{
   }
 
   return (
-    <>
+    <div className="contents print:hidden">
       <SectionBar title="Draw a card" note={`${ids.length} in play`} />
       <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-mid-blue shadow-lg">
         <p className="text-xl">
@@ -44,7 +44,7 @@ export const StrategyCardRandomiser: React.FC<{
           {cards.map((group) => {
             const originId = generateAnchorId(group.origin);
             return (
-              <div key={originId} className="flex gap-2">
+              <div key={originId} className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id={originId}
@@ -62,15 +62,18 @@ export const StrategyCardRandomiser: React.FC<{
                       return next;
                     });
                   }}
-                  className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+                  className="rounded-none size-6 accent-2ed-light-yellow dark:scheme-only-dark"
                 />
-                <label htmlFor={originId} className="text-lg">
+                <label
+                  htmlFor={originId}
+                  className="flex flex-1 items-center min-h-11 text-lg"
+                >
                   {group.origin}
                 </label>
               </div>
             );
           })}
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="Exclude_Virus_Outbreak"
@@ -78,16 +81,19 @@ export const StrategyCardRandomiser: React.FC<{
               onChange={() => {
                 setExcludeVirusOutbreak(!excludeVirusOutbreak);
               }}
-              className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+              className="rounded-none size-6 accent-2ed-light-yellow dark:scheme-only-dark"
             />
-            <label htmlFor="Exclude_Virus_Outbreak" className="text-lg">
+            <label
+              htmlFor="Exclude_Virus_Outbreak"
+              className="flex flex-1 items-center min-h-11 text-lg"
+            >
               Exclude Virus Outbreak
             </label>
           </div>
         </div>
         <p className="text-xl">Faction specific options:</p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="Fighting_Tyranids"
@@ -95,9 +101,12 @@ export const StrategyCardRandomiser: React.FC<{
               onChange={() => {
                 setFightingTyranids(!fightingTyranids);
               }}
-              className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+              className="rounded-none size-6 accent-2ed-light-yellow dark:scheme-only-dark"
             />
-            <label htmlFor="Fighting_Tyranids" className="text-lg">
+            <label
+              htmlFor="Fighting_Tyranids"
+              className="flex flex-1 items-center min-h-11 text-lg"
+            >
               Fighting Tyranids?
             </label>
           </div>
@@ -106,7 +115,7 @@ export const StrategyCardRandomiser: React.FC<{
       <div className="sticky top-0 z-10 bg-background shadow-lg">
         <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue">
           <Link
-            className="px-4 py-1 rounded-none  bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg"
+            className="px-4 py-1 rounded-none  bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
             href={baseHref}
             onNavigate={(e) => {
               e.preventDefault();
@@ -124,7 +133,7 @@ export const StrategyCardRandomiser: React.FC<{
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -172,7 +181,7 @@ export const MissionCardRandomiser: React.FC<{
   }
 
   return (
-    <>
+    <div className="contents print:hidden">
       <SectionBar title="Draw a card" note={`${ids.length} in play`} />
       <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-mid-blue shadow-lg">
         <p className="text-xl">
@@ -183,7 +192,7 @@ export const MissionCardRandomiser: React.FC<{
           {cards.map((group) => {
             const originId = generateAnchorId(group.origin);
             return (
-              <div key={originId} className="flex gap-2">
+              <div key={originId} className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id={originId}
@@ -201,9 +210,12 @@ export const MissionCardRandomiser: React.FC<{
                       return next;
                     });
                   }}
-                  className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+                  className="rounded-none size-6 accent-2ed-light-yellow dark:scheme-only-dark"
                 />
-                <label htmlFor={originId} className="text-lg">
+                <label
+                  htmlFor={originId}
+                  className="flex flex-1 items-center min-h-11 text-lg"
+                >
                   {group.origin}
                 </label>
               </div>
@@ -212,7 +224,7 @@ export const MissionCardRandomiser: React.FC<{
         </div>
         <p className="text-xl">Faction specific options:</p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="Fighting_As_Tyranids"
@@ -231,13 +243,16 @@ export const MissionCardRandomiser: React.FC<{
                   return next;
                 });
               }}
-              className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+              className="rounded-none size-6 accent-2ed-light-yellow dark:scheme-only-dark"
             />
-            <label htmlFor="Fighting_As_Tyranids" className="text-lg">
+            <label
+              htmlFor="Fighting_As_Tyranids"
+              className="flex flex-1 items-center min-h-11 text-lg"
+            >
               Fighting as Tyranids?
             </label>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="Fighting_As_Orks"
@@ -245,9 +260,12 @@ export const MissionCardRandomiser: React.FC<{
               onChange={() => {
                 setFightingAsOrks(!fightingAsOrks);
               }}
-              className="rounded-none size-6 accent-2ed-mid-blue dark:scheme-only-dark"
+              className="rounded-none size-6 accent-2ed-light-yellow dark:scheme-only-dark"
             />
-            <label htmlFor="Fighting_As_Orks" className="text-lg">
+            <label
+              htmlFor="Fighting_As_Orks"
+              className="flex flex-1 items-center min-h-11 text-lg"
+            >
               Fighting as Orks?
             </label>
           </div>
@@ -256,7 +274,7 @@ export const MissionCardRandomiser: React.FC<{
       <div className="sticky top-0 z-10 bg-background shadow-lg">
         <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue">
           <Link
-            className="px-4 py-1 rounded-none  bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg"
+            className="px-4 py-1 rounded-none  bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
             href={baseHref}
             onNavigate={(e) => {
               e.preventDefault();
@@ -274,6 +292,6 @@ export const MissionCardRandomiser: React.FC<{
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 };

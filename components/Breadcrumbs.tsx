@@ -14,7 +14,7 @@ export const Breadcrumbs: React.FC<{
 
     if (!crumb.href) {
       return (
-        <li key={key} className="font-subtitle">
+        <li key={key} aria-current="page" className="font-subtitle">
           {crumb.anchor}
         </li>
       );
@@ -30,7 +30,7 @@ export const Breadcrumbs: React.FC<{
   });
 
   return (
-    <nav className="w-full max-w-5xl">
+    <nav aria-label="Breadcrumb" className="w-full max-w-5xl">
       <ul className="flex gap-2 w-full max-w-5xl mb-2">{list}</ul>
     </nav>
   );

@@ -14,7 +14,7 @@ export type GalleryEntry = {
 };
 
 const CONTROL =
-  "px-2 leading-2 rounded-none bg-2ed-light-blue border-4 border-black outline-0 text-black font-subtitle shadow-lg";
+  "px-2 leading-2 rounded-none bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg";
 
 export const Gallery: React.FC<{
   images: GalleryEntry[];
@@ -204,7 +204,9 @@ export const Gallery: React.FC<{
               onClick={() => ref.current?.close()}
               className={`absolute bottom-2 right-2 ${CONTROL}`}
             >
-              <span className="text-xl">&#9746;</span>
+              <span aria-hidden="true" className="text-xl">
+                &#9746;
+              </span>
               <span className="sr-only sm:not-sr-only"> Close</span>
             </button>
           </div>

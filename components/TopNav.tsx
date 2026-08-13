@@ -18,7 +18,10 @@ const BurgerMenu: React.FC<{
   const list = items.map(({ href, anchor }) => (
     <li key={href} className="font-subtitle text-xl uppercase">
       {pathname === href ? (
-        <span className="p-1 bg-2ed-light-yellow text-black underline underline-offset-4">
+        <span
+          aria-current="page"
+          className="p-1 bg-2ed-light-yellow text-black underline underline-offset-4"
+        >
           {anchor}
         </span>
       ) : (
@@ -49,9 +52,9 @@ const BurgerMenu: React.FC<{
     <div className="relative flex md:hidden justify-end items-center w-full">
       <div>
         <button
-          className="flex flex-col gap-1 w-8 h-6"
+          className="flex flex-col justify-center items-center gap-1 w-11 h-11"
           aria-expanded={open}
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen((isOpen) => !isOpen)}
         >
           <span className="sr-only">Menu</span>
           <div className="w-8 h-1 bg-2ed-light-yellow"></div>
@@ -82,11 +85,15 @@ const StandardMenu: React.FC<{
   const list = items.map(({ href, anchor }) => (
     <li key={href} className="font-subtitle text-xl uppercase">
       {pathname === href ? (
-        <span className="p-1 bg-2ed-light-yellow text-black underline underline-offset-4">
+        <span
+          aria-current="page"
+          className="p-1 bg-2ed-light-yellow text-black underline underline-offset-4"
+        >
           {anchor}
         </span>
       ) : pathname.startsWith(href) ? (
         <Link
+          aria-current="true"
           className="hover:underline p-1 bg-2ed-light-yellow text-black underline-offset-4"
           href={href}
         >
@@ -134,8 +141,11 @@ export const TopNav: React.FC = (): React.JSX.Element => {
   ];
 
   return (
-    <header className="flex justify-center items-center w-full bg-black text-white">
-      <nav className="flex justify-center items-center gap-8 w-full max-w-5xl p-4">
+    <header className="flex justify-center items-center w-full bg-black text-white print:hidden">
+      <nav
+        aria-label="Main"
+        className="flex justify-center items-center gap-8 w-full max-w-5xl p-4"
+      >
         {pathname === "/" ? (
           <Tiny2ed1993 grayscale />
         ) : (

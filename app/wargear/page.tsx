@@ -2,7 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { IndexCard } from "@/components/IndexCard";
 import { Panel } from "@/components/Panel";
-import { generateAnchorId } from "@/lib/anchors";
+import { facetHref, generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -16,16 +16,19 @@ export function generateMetadata(): Metadata {
   };
 }
 
-const SectionList: React.FC<{ href: string; items: string[] }> = ({
-  href,
-  items,
-}): React.JSX.Element => (
+const anchorHref = (item: string) => `#${generateAnchorId(item)}`;
+
+const SectionList: React.FC<{
+  href: string;
+  items: string[];
+  fragment?: (item: string) => string;
+}> = ({ href, items, fragment = anchorHref }): React.JSX.Element => (
   <ol className="pl-6 space-y-0.5 text-lg list-decimal">
     {items.map((item) => (
       <li key={item}>
         <Link
           className="hover:underline underline-offset-4"
-          href={`${href}#${generateAnchorId(item)}`}
+          href={`${href}${fragment(item)}`}
         >
           {item}
         </Link>
@@ -44,9 +47,9 @@ export default async function Page() {
   const { data: armourCategoryRows, error: armourCategoryError } =
     await supabase.from("armour_categories").select("name").order("position");
   const { data: availabilityRows, error: availabilityError } = await supabase
-    .from("wargear_cards")
-    .select("availability")
-    .order("availability");
+    .from("availabilities")
+    .select("name")
+    .order("position");
   const { data: weaponCategoryRows, error: weaponCategoryError } =
     await supabase.from("weapon_categories").select("name").order("position");
 
@@ -61,9 +64,7 @@ export default async function Page() {
   if (hero && armourCategoryRows && availabilityRows && weaponCategoryRows) {
     const weaponCategories = weaponCategoryRows.map(({ name }) => name);
     const armourCategories = armourCategoryRows.map(({ name }) => name);
-    const availabilities = [
-      ...new Set(availabilityRows.map(({ availability }) => availability)),
-    ];
+    const availabilities = availabilityRows.map(({ name }) => name);
 
     return (
       <>
@@ -109,6 +110,7 @@ export default async function Page() {
               <SectionList
                 href="/wargear/wargear-cards"
                 items={availabilities}
+                fragment={facetHref}
               />
             </IndexCard>
           </div>

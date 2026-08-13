@@ -1,6 +1,7 @@
 "use client";
 
 import { FilterField } from "./FilterField";
+import { FACET_HASH } from "@/lib/anchors";
 import { useEffect, useRef, useState } from "react";
 
 const ROW = "[data-search]";
@@ -21,8 +22,17 @@ export const RowFilter: React.FC<{
   unit: string;
   total: number;
   placeholder?: string;
-}> = ({ label, unit, total, placeholder }): React.JSX.Element => {
+  /** data-* attribute a #available- hash narrows on, e.g. "availability". */
+  facetAttribute?: string;
+}> = ({
+  label,
+  unit,
+  total,
+  placeholder,
+  facetAttribute,
+}): React.JSX.Element => {
   const [query, setQuery] = useState("");
+  const [facet, setFacet] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
 
@@ -33,9 +43,11 @@ export const RowFilter: React.FC<{
     let shown = 0;
     const matched: HTMLElement[] = [];
     for (const row of rows) {
-      const match = terms.every((term) =>
-        (row.dataset.search ?? "").includes(term),
-      );
+      const match =
+        terms.every((term) => (row.dataset.search ?? "").includes(term)) &&
+        (!facet ||
+          !facetAttribute ||
+          (row.dataset[facetAttribute] ?? "").includes(facet));
       row.hidden = !match;
       if (match) {
         shown += 1;
@@ -67,12 +79,28 @@ export const RowFilter: React.FC<{
         ? `${shown} of ${rows.length}`
         : `${rows.length} ${unit}`;
     }
-  }, [query, unit]);
+  }, [query, facet, facetAttribute, unit]);
 
   useEffect(() => {
     const onHash = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));
       if (!id) return;
+
+      if (id.startsWith(FACET_HASH)) {
+        const selected = id.slice(FACET_HASH.length).replace(/-/g, " ");
+        setFacet(selected);
+        // "All" is the absence of a facet, so it leaves nothing in the address
+        // bar. Clearing it also lets the same chip be clicked twice, which a
+        // hash that never changes would swallow.
+        if (!selected) {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname + window.location.search,
+          );
+        }
+        return;
+      }
 
       const target = document.getElementById(id);
       if (!target || target.offsetParent !== null) return;
@@ -92,7 +120,8 @@ export const RowFilter: React.FC<{
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const input = inputRef.current;
-      if (e.key === "/" && document.activeElement !== input) {
+      const plain = !e.ctrlKey && !e.metaKey && !e.altKey;
+      if (e.key === "/" && plain && document.activeElement !== input) {
         e.preventDefault();
         input?.focus();
       } else if (e.key === "Escape") {

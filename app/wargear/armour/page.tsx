@@ -107,7 +107,7 @@ export default async function Page() {
             },
           ]}
         />
-        <main className="flex flex-col items-center gap-4 w-full">
+        <main id="main" className="flex flex-col items-center gap-4 w-full">
           <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
             <header>
               <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
@@ -150,6 +150,9 @@ export default async function Page() {
                     </div>
                     <section className="relative overflow-x-auto">
                       <table className="relative w-full min-w-max table-auto bg-background border-collapse border-b-4 border-black text-center">
+                        <caption className="sr-only">
+                          {section.category} armour
+                        </caption>
                         <thead className="bg-black font-subtitle text-sm text-white">
                           <tr>
                             <th
@@ -233,7 +236,7 @@ export default async function Page() {
                                   )}
                                 </td>
                                 <td className="p-2 w-52 text-sm text-left">
-                                  <div className="flex flex-wrap gap-1">
+                                  <div className="flex flex-wrap gap-x-1 gap-y-4">
                                     {item.armour_special_rules.map((rule) => {
                                       const ruleId = `${generateAnchorId(rule.name)}_Rule`;
 
@@ -280,10 +283,10 @@ export default async function Page() {
                   </div>
                 </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
-                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm">
-                    <h3 className="md:col-span-2 p-2">Name</h3>
-                    <h3 className="md:col-span-8 p-2">Rule</h3>
-                    <h3 className="md:col-span-2 p-2">Related</h3>
+                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm text-white">
+                    <span className="md:col-span-2 p-2">Name</span>
+                    <span className="md:col-span-8 p-2">Rule</span>
+                    <span className="md:col-span-2 p-2">Related</span>
                   </section>
                   {armourSpecialRules.map((rule) => {
                     const ruleId = `${generateAnchorId(rule.name)}_Rule`;
@@ -339,9 +342,9 @@ export default async function Page() {
                   </div>
                 </div>
                 <section className="flex flex-col bg-black border-b-4 border-black">
-                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm">
-                    <h3 className="md:col-span-2 p-2">Name</h3>
-                    <h3 className="md:col-span-10 p-2">Rule</h3>
+                  <section className="hidden md:grid md:grid-cols-12 font-subtitle text-sm text-white">
+                    <span className="md:col-span-2 p-2">Name</span>
+                    <span className="md:col-span-10 p-2">Rule</span>
                   </section>
                   {armour
                     .filter(({ profile_description }) =>

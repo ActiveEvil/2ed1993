@@ -1,0 +1,14 @@
+{
+  "second_person": [
+    {"key": "rule:general-rules:Psykers", "reason": "vetted aside, second-person pass of 8 August"},
+    {"key": "rule:movement:Running", "reason": "vetted aside, second-person pass of 8 August"},
+    {"key": "rule:shooting:To Hit The Target", "reason": "vetted aside, second-person pass of 8 August"}
+  ],
+  "non_ascii": [
+    {"key": "rule:how-to-play:The Game Steps", "reason": "the chart arrows ⭤/⭥, the standing exception"}
+  ],
+  "dup_paragraph": [
+    {"key": "rule:psychology:Frenzy", "reason": "Frenzy and Stupidity share a paragraph deliberately, the standing exception"},
+    {"key": "mission:Dawn Raid", "reason": "the standard secondary objective, identical on four missions by design"}
+  ]
+}
