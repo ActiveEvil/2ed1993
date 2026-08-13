@@ -1,4 +1,5 @@
 import "./globals.css";
+import { BackToTop } from "@/components/BackToTop";
 import { TopNav } from "@/components/TopNav";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
@@ -87,6 +88,7 @@ export default async function RootLayout({
           <br />
           All rights reserved.
         </footer>
+        <BackToTop />
         <Analytics />
       </body>
     </html>
