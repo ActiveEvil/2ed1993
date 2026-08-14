@@ -7,6 +7,11 @@ import { clsx } from "clsx";
 export const CHIP_CLASS =
   "relative inline-block px-1.5 border-2 border-foreground font-subtitle " +
   "text-xs whitespace-nowrap hover:bg-2ed-light-yellow hover:text-black " +
+  // border-foreground is white in dark mode, which vanishes on a highlighted
+  // row. Scoped to the two things that actually turn yellow: a bare :target
+  // also matches the category wrapper a jump chip points at, which would black
+  // out every border in the section.
+  "[tbody:target_&]:border-black [.highlight-target:target_&]:border-black " +
   "after:absolute after:inset-x-0 after:-inset-y-2 after:content-['']";
 
 export const Chip: React.FC<
