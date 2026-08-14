@@ -309,16 +309,16 @@ export default async function Page() {
                     ({ profile_description }) => profile_description,
                   ),
                 ].filter((rule): rule is string => rule !== null);
-                const href =
-                  weapons.length === 1
-                    ? `/wargear/weapons#${generateAnchorId(weapons[0].name)}`
-                    : weapons.length
-                      ? "/wargear/weapons"
-                      : armourItems.length === 1
-                        ? `/wargear/armour#${generateAnchorId(armourItems[0].name)}`
-                        : armourItems.length
-                          ? "/wargear/armour"
-                          : null;
+                const entries = [
+                  ...weapons.map(({ name }) => ({
+                    name,
+                    href: `/wargear/weapons#${generateAnchorId(name)}`,
+                  })),
+                  ...armourItems.map(({ name }) => ({
+                    name,
+                    href: `/wargear/armour#${generateAnchorId(name)}`,
+                  })),
+                ];
                 const availabilities = card.wargear_cards_availabilities
                   .map(({ availabilities }) => availabilities)
                   .filter((row) => row !== null)
@@ -457,15 +457,32 @@ export default async function Page() {
                           }
                         />
                       ))}
-                      {href && (
+                      {entries.length === 1 && (
                         <p className="text-sm">
                           See the full entry in{" "}
                           <Link
                             className="underline underline-offset-4"
-                            href={href}
+                            href={entries[0].href}
                           >
                             {weapons.length ? "Weapons" : "Armour"}
                           </Link>
+                          .
+                        </p>
+                      )}
+                      {entries.length > 1 && (
+                        <p className="text-sm">
+                          See the full entries:{" "}
+                          {entries.map(({ name, href }, index) => (
+                            <span key={name}>
+                              {index > 0 && ", "}
+                              <Link
+                                className="underline underline-offset-4"
+                                href={href}
+                              >
+                                {name}
+                              </Link>
+                            </span>
+                          ))}
                           .
                         </p>
                       )}
