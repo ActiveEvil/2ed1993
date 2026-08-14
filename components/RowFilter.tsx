@@ -75,9 +75,13 @@ export const RowFilter: React.FC<{
     window.dispatchEvent(new Event(FILTER_EVENT));
 
     if (countRef.current) {
-      countRef.current.textContent = terms.length
-        ? `${shown} of ${rows.length}`
-        : `${rows.length} ${unit}`;
+      // A facet narrows the page exactly as a typed term does, so it has to
+      // move the count. Without this, selecting Imperium still reads
+      // "56 cards" while a third of them are hidden.
+      countRef.current.textContent =
+        terms.length || facet
+          ? `${shown} of ${rows.length}`
+          : `${rows.length} ${unit}`;
     }
   }, [query, facet, facetAttribute, unit]);
 

@@ -993,7 +993,6 @@ export type Database = {
       };
       wargear_cards: {
         Row: {
-          availability: string;
           created_at: string;
           description: string | null;
           discard_after_use: boolean;
@@ -1006,7 +1005,6 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
-          availability: string;
           created_at?: string;
           description?: string | null;
           discard_after_use?: boolean;
@@ -1019,7 +1017,6 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
-          availability?: string;
           created_at?: string;
           description?: string | null;
           discard_after_use?: boolean;

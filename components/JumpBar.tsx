@@ -51,6 +51,22 @@ export const JumpBar: React.FC<
     };
   }, [sticky]);
 
+  // On a facet bar the items are not sections, so the scrollspy below never
+  // runs and the active chip would only ever move when one of these chips is
+  // clicked. A facet set from anywhere else — a pill on a card — arrives as a
+  // hash change and has to be reflected here.
+  useEffect(() => {
+    const ids = new Set(items.map(({ id }) => id));
+    const onHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (ids.has(id)) setActive(id);
+    };
+
+    requestAnimationFrame(onHash);
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, [items]);
+
   useEffect(() => {
     const sections = items
       .map(({ id }) => document.getElementById(id))
