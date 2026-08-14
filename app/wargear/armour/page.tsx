@@ -200,7 +200,7 @@ export default async function Page() {
                               id={armourId}
                               data-search={search}
                               data-refs={refs}
-                              className="bg-background/80 even:bg-[var(--stripe)]/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
+                              className="bg-background/80 even:bg-(--stripe)/80 target:bg-2ed-light-yellow target:text-black target:font-bold text-lg font-semibold [&>tr]:bg-inherit"
                             >
                               <tr>
                                 <th
@@ -297,7 +297,7 @@ export default async function Page() {
                         key={ruleId}
                         id={ruleId}
                         data-search={rule.name.toLowerCase()}
-                        className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-[var(--stripe)] target:bg-2ed-light-yellow target:text-black text-lg"
+                        className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-(--stripe) target:bg-2ed-light-yellow target:text-black text-lg"
                       >
                         <div className="md:col-span-2 p-2 font-bold">
                           <HighlighterLink
@@ -358,7 +358,7 @@ export default async function Page() {
                           key={ruleId}
                           id={ruleId}
                           data-search={item.name.toLowerCase()}
-                          className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-[var(--stripe)] target:bg-2ed-light-yellow target:text-black text-lg"
+                          className="highlight-target grid grid-cols-1 md:grid-cols-12 bg-background even:bg-(--stripe) target:bg-2ed-light-yellow target:text-black text-lg"
                         >
                           <div className="md:col-span-2 p-2 font-bold">
                             <HighlighterLink
