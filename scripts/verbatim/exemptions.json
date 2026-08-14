@@ -1,11 +1,13 @@
 {
-  "_comment": "formulas are masked out of both draft and corpus before matching, so a run made only of them cannot score. Keep this list short and strictly formulaic \u2014 the words must BE the rule. Never add prose.",
+  "_comment": "formulas are masked out of both draft and corpus before matching, so a run made only of them cannot score. Keep this list short and strictly formulaic — the words must BE the rule. Never add prose.",
+
   "formulas": [
     "saving throw of 4 5 or 6 on a d6",
     "saving throw of 5 or 6 on a d6",
     "on a d6 roll of 4 5 or 6",
     "on a roll of 4 5 or 6 on a d6",
     "on a roll of 5 or 6 on a d6",
+    "on a d6 roll of 5 or 6",
     "are hit on a d6 roll of",
     "hit on a d6 roll of",
     "may only be chosen for character models",
@@ -16,78 +18,23 @@
     "m ws bs s t w i a ld",
     "for the rest of the battle",
     "for the rest of the game",
-    "victory points",
-    "victory point",
     "at the end of the game",
-    "at the end of the battle",
-    "destroyed or disabled",
-    "3 or less 0 4 -1 5 -2 6 -3 7 -4 8 -5"
+    "+1 victory point",
+    "destroyed or disabled"
   ],
+
   "texts": [
-    {
-      "kind": "rule:weapon-rules",
-      "name": "Damage",
-      "reason": "chart digits \u2014 the damage table has no other wording"
-    },
-    {
-      "kind": "rule:general-rules",
-      "name": "Buildings",
-      "reason": "chart digits \u2014 armour value table"
-    },
-    {
-      "kind": "rule:vehicle-rules",
-      "name": "Bikes & Trikes",
-      "reason": "chart digits \u2014 speed/strength table"
-    },
-    {
-      "kind": "rule:vehicle-rules",
-      "name": "Transporting Troops",
-      "reason": "chart digits \u2014 speed/strength table"
-    },
-    {
-      "kind": "rule:general-rules",
-      "name": "Characteristics",
-      "reason": "characteristic abbreviations and chart digits"
-    },
-    {
-      "kind": "wargear_card",
-      "name": "Night Wing the Psyber Raven",
-      "reason": "characteristic line \u2014 digits and abbreviations"
-    },
-    {
-      "kind": "rule:general-rules",
-      "name": "Victory Points",
-      "reason": "chart digits \u2014 points-to-VP table"
-    },
-    {
-      "kind": "rule:movement",
-      "name": "Terrain",
-      "reason": "chart content \u2014 the terrain type lists ARE the chart"
-    },
-    {
-      "kind": "rule:vehicle-rules",
-      "name": "Collisions, Ramming & Overruns",
-      "reason": "chart digits and a dice formula \u2014 toughness/damage row"
-    },
-    {
-      "kind": "rule:how-to-play",
-      "name": "The Game Steps",
-      "reason": "chart digits \u2014 default strategy ratings list"
-    },
-    {
-      "kind": "weapon",
-      "name": "Mole Mortar",
-      "reason": "chart digits \u2014 accuracy chart result names"
-    },
-    {
-      "kind": "rule:shooting",
-      "name": "Choosing a Target",
-      "reason": "target-category table \u2014 unit-name lists cannot be reworded; prose runs fixed 8 Aug"
-    },
-    {
-      "kind": "rule:general-rules",
-      "name": "Psykers",
-      "reason": "disciplines table \u2014 psyker and discipline names cannot be reworded; prose runs fixed 8 Aug"
-    }
+    { "kind": "rule:weapon-rules",  "name": "Damage",              "reason": "chart digits — the damage table has no other wording" },
+    { "kind": "rule:general-rules", "name": "Buildings",           "reason": "chart digits — armour value table" },
+    { "kind": "rule:vehicle-rules", "name": "Bikes & Trikes",      "reason": "chart digits — speed/strength table" },
+    { "kind": "rule:vehicle-rules", "name": "Transporting Troops", "reason": "chart digits — speed/strength table" },
+    { "kind": "rule:general-rules", "name": "Characteristics",     "reason": "characteristic abbreviations and chart digits" },
+    { "kind": "rule:hand-to-hand-combat", "name": "Save Modifiers", "reason": "chart digits — the Strength/Save Modifier table has no other wording" },
+    { "kind": "rule:psychic",       "name": "Resolving Psychic Powers", "reason": "chart digits — the same Strength/Save Modifier table" },
+    { "kind": "rule:general-rules", "name": "Victory Points",      "reason": "chart digits — the points-bracket table" },
+    { "kind": "rule:how-to-play",   "name": "The Game Steps",      "reason": "chart digits — strategy rating table" },
+    { "kind": "rule:vehicle-rules", "name": "Collisions, Ramming & Overruns", "reason": "chart digits — toughness/damage table" },
+    { "kind": "weapon",             "name": "Mole Mortar",         "reason": "chart digits — the scatter table" },
+    { "kind": "wargear_card",       "name": "Night Wing the Psyber Raven", "reason": "characteristic line — digits and abbreviations" }
   ]
 }

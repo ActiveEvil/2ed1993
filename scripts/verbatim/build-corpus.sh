@@ -58,7 +58,7 @@ SKIP=("Basegame Wargear book_compressed")
 contains() { local n="$1"; shift; for x in "$@"; do [ "$x" = "$n" ] && return 0; done; return 1; }
 
 one() {
-  local pdf="$1" base out pages tmp img
+  local pdf="$1" base out pages tmp img dpi
   base="$(basename "$pdf" .pdf)"
   local dir="gw"; contains "$base" "${FAN[@]}" && dir="fan"
   out="$HERE/corpus/$dir/$(echo "$base" | tr -cd 'A-Za-z0-9').txt"
@@ -69,9 +69,18 @@ one() {
     pdftotext -layout "$pdf" - > "$tmp/out.txt" 2>"$tmp/err"
   else
     pages="$(pdfinfo "$pdf" | awk '/^Pages/{print $2}')"
+    # Resolution from the declared page size, not a flat 150dpi. Nine White
+    # Dwarf USA issues declare a 202x261pt page holding a 600ppi image: at
+    # 150dpi they rendered 421px wide and tesseract read ten words a page.
+    # Only pages that would come out under 1200px are scaled up, so every
+    # source already in the corpus renders exactly as before. 14 August.
+    dpi="$(pdfinfo "$pdf" | awk '/^Page size/{h=$5}
+      END {d = 150
+           if (h > 0 && h / 72 * 150 < 1200) { d = int(1700 / (h / 72)); if (d > 600) d = 600 }
+           print d}')"
     : > "$tmp/out.txt"
     for p in $(seq 1 "${pages:-0}"); do
-      pdftoppm -r 150 -gray -png -f "$p" -l "$p" "$pdf" "$tmp/pg" 2>>"$tmp/err"
+      pdftoppm -r "${dpi:-150}" -gray -png -f "$p" -l "$p" "$pdf" "$tmp/pg" 2>>"$tmp/err"
       img="$(ls "$tmp"/pg-*.png 2>/dev/null | head -1)"
       [ -n "$img" ] && tesseract "$img" - --psm 6 2>>"$tmp/err" >> "$tmp/out.txt"
       rm -f "$tmp"/pg-*.png
@@ -85,6 +94,11 @@ one() {
   else
     mv "$tmp/out.txt" "$out"
     printf '  %-8s %-42s %8s words\n' "$dir" "$base" "$words"
+    # A book that OCRs to almost nothing is not caught by the zero-word test:
+    # the nine thin issues each landed around a thousand words and looked fine.
+    if [ -n "${pages:-}" ] && [ "$pages" -gt 0 ] && [ "$((words / pages))" -lt 100 ]; then
+      printf '  THIN   %-42s %s words/page — delete and re-run\n' "$base" "$((words / pages))"
+    fi
   fi
   rm -rf "$tmp"
 }
