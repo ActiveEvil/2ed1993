@@ -10,9 +10,6 @@ export const BackToTop: React.FC = (): React.JSX.Element | null => {
 
     const update = () => {
       queued = false;
-      // One screenful of page behind you is the point at which scrolling back
-      // by hand starts to be a chore. Measured rather than a fixed pixel count,
-      // so it holds on a phone and on a desktop.
       setShow(window.scrollY > window.innerHeight);
     };
 
@@ -23,7 +20,6 @@ export const BackToTop: React.FC = (): React.JSX.Element | null => {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    // Covers landing part-way down the page on a hash link.
     onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
@@ -35,12 +31,7 @@ export const BackToTop: React.FC = (): React.JSX.Element | null => {
     <button
       type="button"
       onClick={() => {
-        // No `behavior`, so this inherits scroll-behavior from `html`, which is
-        // already behind a prefers-reduced-motion guard. One definition, not two.
         window.scrollTo({ top: 0 });
-        // The button unmounts the moment the scroll passes the threshold, and a
-        // focused element that unmounts drops focus to <body>. Hand it to the
-        // skip link instead, which is the first thing on the page anyway.
         document
           .querySelector<HTMLElement>('a[href="#main"]')
           ?.focus({ preventScroll: true });

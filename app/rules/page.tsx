@@ -34,7 +34,6 @@ export default async function Page() {
   assertNoQueryErrors("/rules", heroImageError, sectionsError);
 
   if (hero && sectionRows) {
-    // PostgREST orders one level of nesting; the rules sit two levels down.
     const byPosition = <T extends { position: number }>(a: T, b: T) =>
       a.position - b.position;
 

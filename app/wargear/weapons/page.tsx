@@ -280,11 +280,6 @@ export default async function Page() {
                                       {item.name}
                                     </HighlighterLink>
                                   </th>
-                                  {/* Filler. The name needs to be a cell in the
-                                      first column to pin like the profile names
-                                      under it, so the rest of the row is one
-                                      empty span. colSpan clamps to the table's
-                                      real width, so close combat is fine. */}
                                   <td colSpan={9} />
                                 </tr>
                               )}
