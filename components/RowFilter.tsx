@@ -6,23 +6,13 @@ import { useEffect, useRef, useState } from "react";
 
 const ROW = "[data-search]";
 
-/** Fired after a filter pass, so the jump bar can re-read what is on screen. */
 export const FILTER_EVENT = "2ed:filter";
 
-/**
- * Filters server-rendered rows by hiding them, rather than re-rendering a
- * client-side copy of the data. Every row stays in the HTML, so the page is
- * complete without JavaScript and to a crawler.
- *
- * Rows carry data-search (lowercased haystack), section wrappers carry
- * data-group, and the no-matches message carries data-empty.
- */
 export const RowFilter: React.FC<{
   label: string;
   unit: string;
   total: number;
   placeholder?: string;
-  /** data-* attribute a #available- hash narrows on, e.g. "availability". */
   facetAttribute?: string;
 }> = ({
   label,
@@ -75,9 +65,6 @@ export const RowFilter: React.FC<{
     window.dispatchEvent(new Event(FILTER_EVENT));
 
     if (countRef.current) {
-      // A facet narrows the page exactly as a typed term does, so it has to
-      // move the count. Without this, selecting Imperium still reads
-      // "56 cards" while a third of them are hidden.
       countRef.current.textContent =
         terms.length || facet
           ? `${shown} of ${rows.length}`
@@ -93,9 +80,6 @@ export const RowFilter: React.FC<{
       if (id.startsWith(FACET_HASH)) {
         const selected = id.slice(FACET_HASH.length).replace(/-/g, " ");
         setFacet(selected);
-        // "All" is the absence of a facet, so it leaves nothing in the address
-        // bar. Clearing it also lets the same chip be clicked twice, which a
-        // hash that never changes would swallow.
         if (!selected) {
           window.history.replaceState(
             null,

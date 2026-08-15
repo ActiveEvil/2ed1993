@@ -2,13 +2,6 @@ import { parse } from "node-html-parser";
 
 export type Subsection = { id: string; name: string };
 
-/**
- * Subsection headings inside a rule's stored HTML.
- *
- * Chart titles are <h3 id> as well, so they are collected first and excluded
- * by id. Parsed rather than matched: the site wraps prose mid-tag, so a
- * pattern over this markup is unreliable.
- */
 export const extractSubsections = (html: string): Subsection[] => {
   const root = parse(html);
 

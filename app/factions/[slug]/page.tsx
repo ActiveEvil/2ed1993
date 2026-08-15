@@ -8,6 +8,17 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
+const toPlainText = (html: string) =>
+  html
+    .replace(/<[^>]*>/g, "")
+    .replace(/&mdash;/g, "\u2014")
+    .replace(/&ndash;/g, "\u2013")
+    .replace(/&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
@@ -24,7 +35,7 @@ export async function generateMetadata(props: {
     const { name, description } = faction;
     return {
       title: name + " in Warhammer 40,000 2nd Edition | 2ed1993",
-      description,
+      description: toPlainText(description),
     };
   }
 

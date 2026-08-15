@@ -51,10 +51,6 @@ export const JumpBar: React.FC<
     };
   }, [sticky]);
 
-  // On a facet bar the items are not sections, so the scrollspy below never
-  // runs and the active chip would only ever move when one of these chips is
-  // clicked. A facet set from anywhere else — a pill on a card — arrives as a
-  // hash change and has to be reflected here.
   useEffect(() => {
     const ids = new Set(items.map(({ id }) => id));
     const onHash = () => {
@@ -203,9 +199,6 @@ export const JumpBar: React.FC<
                   const details = detailsRef.current;
                   if (!details) return;
                   details.open = false;
-                  // The row that had focus has just been un-rendered. Without
-                  // this, focus falls back to <body> and tabbing restarts at
-                  // the top of the page.
                   details
                     .querySelector<HTMLElement>("summary")
                     ?.focus({ preventScroll: true });
