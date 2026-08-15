@@ -545,29 +545,50 @@ export type Database = {
       rule_categories: {
         Row: {
           created_at: string;
+          faction_id: number | null;
           id: number;
           name: string;
           position: number;
+          section_id: number;
           slug: string;
           updated_at: string | null;
         };
         Insert: {
           created_at?: string;
+          faction_id?: number | null;
           id?: number;
           name: string;
           position: number;
+          section_id: number;
           slug: string;
           updated_at?: string | null;
         };
         Update: {
           created_at?: string;
+          faction_id?: number | null;
           id?: number;
           name?: string;
           position?: number;
+          section_id?: number;
           slug?: string;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "rule_categories_faction_id_fkey";
+            columns: ["faction_id"];
+            isOneToOne: false;
+            referencedRelation: "factions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "rule_categories_section_id_fkey";
+            columns: ["section_id"];
+            isOneToOne: false;
+            referencedRelation: "rule_sections";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       rule_category_images: {
         Row: {
@@ -599,10 +620,38 @@ export type Database = {
           },
         ];
       };
+      rule_sections: {
+        Row: {
+          created_at: string;
+          id: number;
+          name: string;
+          numbered: boolean;
+          position: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: never;
+          name: string;
+          numbered?: boolean;
+          position: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: never;
+          name?: string;
+          numbered?: boolean;
+          position?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
       rules: {
         Row: {
           category_id: number;
           created_at: string;
+          faction_id: number | null;
           id: number;
           name: string;
           position: number;
@@ -612,6 +661,7 @@ export type Database = {
         Insert: {
           category_id: number;
           created_at?: string;
+          faction_id?: number | null;
           id?: number;
           name: string;
           position: number;
@@ -621,6 +671,7 @@ export type Database = {
         Update: {
           category_id?: number;
           created_at?: string;
+          faction_id?: number | null;
           id?: number;
           name?: string;
           position?: number;
@@ -633,6 +684,13 @@ export type Database = {
             columns: ["category_id"];
             isOneToOne: false;
             referencedRelation: "rule_categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "rules_faction_id_fkey";
+            columns: ["faction_id"];
+            isOneToOne: false;
+            referencedRelation: "factions";
             referencedColumns: ["id"];
           },
         ];

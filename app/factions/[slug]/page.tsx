@@ -80,35 +80,33 @@ export default async function Page(props: {
               {faction.name}
             </h1>
           </header>
-          <section className="grid md:grid-cols-2 gap-4">
-            {heros.length === 1 ? (
-              <ImageWithCredit
-                key={heros[0].file_name}
-                src={`images/${heros[0].file_name}`}
-                title={heros[0].title}
-                artist={heros[0].artist}
-                width="half-from-md"
-              />
-            ) : (
-              <div className="grid grid-cols-2 gap-4">
-                {heros.map((hero) => (
-                  <div key={hero.file_name}>
-                    <ImageWithCredit
-                      src={`images/${hero.file_name}`}
-                      title={hero.title}
-                      artist={hero.artist}
-                      aspect="aspect-portrait"
-                      width="half"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-            <p
-              className="text-lg"
-              dangerouslySetInnerHTML={{ __html: faction.description }}
+          {heros.length === 1 ? (
+            <ImageWithCredit
+              key={heros[0].file_name}
+              src={`images/${heros[0].file_name}`}
+              title={heros[0].title}
+              artist={heros[0].artist}
+              width="half-from-md"
             />
-          </section>
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              {heros.map((hero) => (
+                <div key={hero.file_name}>
+                  <ImageWithCredit
+                    src={`images/${hero.file_name}`}
+                    title={hero.title}
+                    artist={hero.artist}
+                    aspect="aspect-portrait"
+                    width="half"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+          <section
+            className="dynamic-content flex flex-col justify-center gap-4"
+            dangerouslySetInnerHTML={{ __html: faction.description }}
+          />
           <section className="flex flex-col gap-8">
             <h2 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               Army Lists
