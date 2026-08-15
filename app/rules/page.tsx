@@ -10,24 +10,6 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-const BANDS: { title: string; slugs: string[] }[] = [
-  { title: "Before the game", slugs: ["the-golden-rule", "how-to-play"] },
-  {
-    title: "The turn sequence",
-    slugs: [
-      "movement",
-      "shooting",
-      "hand-to-hand-combat",
-      "psychic",
-      "breaking-rallying",
-    ],
-  },
-  {
-    title: "General rules, weapons, psychology & vehicles",
-    slugs: ["general-rules", "weapon-rules", "psychology", "vehicle-rules"],
-  },
-];
-
 export function generateMetadata(): Metadata {
   return {
     title: "Warhammer 40,000 2nd Edition Rules | 2ed1993",
@@ -42,32 +24,29 @@ export default async function Page() {
     .eq("slug", "rules")
     .single();
   const hero = heroImage?.images ?? null;
-  const { data: rule_categories, error: ruleCategoriesError } = await supabase
-    .from("rule_categories")
-    .select("slug, name, position, rules(name)")
-    .order("position", { referencedTable: "rules" })
+  const { data: sectionRows, error: sectionsError } = await supabase
+    .from("rule_sections")
+    .select(
+      "name, numbered, rule_categories(slug, name, position, rules(name, position))",
+    )
     .order("position");
 
-  assertNoQueryErrors("/rules", heroImageError, ruleCategoriesError);
+  assertNoQueryErrors("/rules", heroImageError, sectionsError);
 
-  if (hero && rule_categories) {
-    type Category = (typeof rule_categories)[number];
+  if (hero && sectionRows) {
+    // PostgREST orders one level of nesting; the rules sit two levels down.
+    const byPosition = <T extends { position: number }>(a: T, b: T) =>
+      a.position - b.position;
 
-    const bySlug = new Map<string, Category>(
-      rule_categories.map((c) => [c.slug, c]),
-    );
-    const banded = new Set(BANDS.flatMap(({ slugs }) => slugs));
-    const leftovers = rule_categories.filter((c) => !banded.has(c.slug));
-
-    const bands = [
-      ...BANDS.map(({ title, slugs }) => ({
-        title,
-        categories: slugs
-          .map((slug) => bySlug.get(slug))
-          .filter((c): c is Category => c !== undefined),
-      })),
-      ...(leftovers.length ? [{ title: "Other", categories: leftovers }] : []),
-    ].filter(({ categories }) => categories.length > 0);
+    const sections = sectionRows
+      .map((section) => ({
+        ...section,
+        categories: [...section.rule_categories].sort(byPosition).map((c) => ({
+          ...c,
+          rules: [...c.rules].sort(byPosition),
+        })),
+      }))
+      .filter(({ categories }) => categories.length > 0);
 
     return (
       <>
@@ -89,28 +68,29 @@ export default async function Page() {
             artist={hero.artist}
           />
           <div className="flex flex-col gap-7">
-            {bands.map((band) => {
-              const first = band.categories[0].position + 1;
-              const last =
-                band.categories[band.categories.length - 1].position + 1;
+            {sections.map(({ name: title, numbered, categories }) => {
+              const first = categories[0].position + 1;
+              const last = categories[categories.length - 1].position + 1;
 
               return (
-                <section key={band.title} className="flex flex-col gap-4">
+                <section key={title} className="flex flex-col gap-4">
                   <SectionBar
                     as="h2"
-                    title={band.title}
+                    title={title}
                     note={
-                      first === last
-                        ? `Chapter ${first}`
-                        : `Chapters ${first}\u2013${last}`
+                      !numbered
+                        ? null
+                        : first === last
+                          ? `Chapter ${first}`
+                          : `Chapters ${first}\u2013${last}`
                     }
                   />
                   <div className="grid md:grid-cols-2 gap-4">
-                    {band.categories.map(({ slug, name, position, rules }) => (
+                    {categories.map(({ slug, name, position, rules }) => (
                       <IndexCard
                         key={slug}
                         href={`/rules/${slug}`}
-                        title={`${position + 1}. ${name}`}
+                        title={numbered ? `${position + 1}. ${name}` : name}
                       >
                         <ol className="pl-6 space-y-0.5 text-lg list-decimal">
                           {rules.map((rule) => (
