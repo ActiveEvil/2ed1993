@@ -5,7 +5,7 @@ import type { Image } from "./ImageWithCredit";
 import NextImage from "next/image";
 
 export const GalleryImage: React.FC<
-  Image & {
+  Omit<Image, "artist"> & {
     onOpen: () => void;
   }
 > = ({ src, title, aspect = "aspect-square", onOpen }): React.JSX.Element => {

@@ -27,6 +27,7 @@ export default async function Page() {
   const { data: factions, error: factionsError } = await supabase
     .from("factions")
     .select("slug, name, images(file_name, artist, title)")
+    .is("parent_faction_id", null)
     .order("name");
 
   assertNoQueryErrors("/factions", heroImageError, factionsError);
@@ -76,20 +77,6 @@ export default async function Page() {
               );
             })}
           </div>
-          <nav className="ordered-list">
-            <ol className="flex flex-col gap-2 text-2xl">
-              {factions.map(({ slug, name }) => (
-                <li key={slug}>
-                  <Link
-                    className="font-subtitle hover:underline underline-offset-4"
-                    href={`/factions/${slug}`}
-                  >
-                    {name}
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </nav>
         </Panel>
       </>
     );
