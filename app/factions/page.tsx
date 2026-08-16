@@ -18,7 +18,7 @@ export default async function Page() {
   const { data: factions, error: factionsError } = await supabase
     .from("factions")
     .select("slug, name, images(file_name, artist, title)")
-    // .is("parent_faction_id", null)
+    .is("parent_faction_id", null)
     .order("name");
 
   assertNoQueryErrors("/factions", factionsError);
