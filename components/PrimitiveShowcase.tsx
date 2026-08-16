@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageCard, IndexCard } from "./Cards";
+import { FactionCard, IndexCard } from "./Cards";
 import { CHIP_CLASS, Chip } from "./Chip";
 import { FilterField } from "./FilterField";
 import { JumpBar } from "./JumpBar";
@@ -118,19 +118,19 @@ export const PrimitiveShowcase: React.FC<{ scheme: string }> = ({ scheme }) => {
 
       <Row
         title="ImageCard"
-        note="The title and the image are one link. Used on the factions index."
+        note="The name and the image are one link. Used on the factions index."
       >
         <div className="grid md:grid-cols-2 gap-4">
-          <ImageCard
+          <FactionCard
             href="/rules/eldar"
-            title="Eldar"
+            name="Eldar"
             image={{
-              src: "images/Eldar-vs-Orks.jpg",
-              title: "Eldar vs Orks",
-              artist: "David Gallagher",
+              src: "images/Eldar.jpg",
+              title: "Codex Eldar",
+              artist: "Geoff Taylor",
             }}
           />
-          <ImageCard href="/rules/eldar" title="No image" />
+          <FactionCard href="/rules/eldar" name="No image" />
         </div>
       </Row>
 
@@ -160,7 +160,7 @@ export const PrimitiveShowcase: React.FC<{ scheme: string }> = ({ scheme }) => {
             (name) => (
               <div
                 key={name}
-                className="p-2 bg-background/80 even:bg-[var(--stripe)]/80 text-lg font-semibold"
+                className="p-2 bg-background/80 even:bg-(--stripe)/80 text-lg font-semibold"
               >
                 {name}
               </div>
