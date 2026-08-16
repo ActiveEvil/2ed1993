@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { IndexCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
-import { IndexCard } from "@/components/IndexCard";
 import { Panel } from "@/components/Panel";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";

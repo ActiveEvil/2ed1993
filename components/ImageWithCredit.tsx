@@ -5,6 +5,14 @@ export type Aspect =
 
 export type Width = "full" | "half" | "half-from-md";
 
+export type Image = {
+  src: string;
+  title: string;
+  artist: string | null;
+  aspect?: Aspect;
+  width?: Width;
+};
+
 export const BLUR_DATA_URL =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPMPff9PwAHFQMzdqydyAAAAABJRU5ErkJggg==";
 
@@ -14,13 +22,7 @@ const SIZES: Record<Width, string> = {
   "half-from-md": "(min-width: 1024px) 480px, (min-width: 768px) 50vw, 100vw",
 };
 
-export const ImageWithCredit: React.FC<{
-  src: string;
-  title: string;
-  artist: string | null;
-  aspect?: Aspect;
-  width?: Width;
-}> = ({
+export const ImageWithCredit: React.FC<Image> = ({
   src,
   title,
   artist,

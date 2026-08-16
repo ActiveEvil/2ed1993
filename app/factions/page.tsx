@@ -1,5 +1,8 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ImageCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
+import type { Image } from "@/components/ImageWithCredit";
+import { Panel } from "@/components/Panel";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -23,7 +26,7 @@ export default async function Page() {
 
   const { data: factions, error: factionsError } = await supabase
     .from("factions")
-    .select("slug, name")
+    .select("slug, name, images(file_name, artist, title)")
     .order("name");
 
   assertNoQueryErrors("/factions", heroImageError, factionsError);
@@ -42,9 +45,9 @@ export default async function Page() {
             },
           ]}
         />
-        <main
-          id="main"
-          className="flex flex-col justify-center  gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg"
+        <Panel
+          as="main"
+          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
         >
           <header>
             <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
@@ -56,6 +59,23 @@ export default async function Page() {
             title={hero.title}
             artist={hero.artist}
           />
+          <div className="grid md:grid-cols-2 gap-4">
+            {factions.map(({ slug, name, images }) => {
+              const image: Image | undefined = images[0] && {
+                src: `images/${images[0].file_name}`,
+                title: images[0].title,
+                artist: images[0].artist,
+              };
+              return (
+                <ImageCard
+                  key={slug}
+                  href={`/rules/${slug}`}
+                  title={name}
+                  image={image}
+                />
+              );
+            })}
+          </div>
           <nav className="ordered-list">
             <ol className="flex flex-col gap-2 text-2xl">
               {factions.map(({ slug, name }) => (
@@ -70,7 +90,7 @@ export default async function Page() {
               ))}
             </ol>
           </nav>
-        </main>
+        </Panel>
       </>
     );
   }

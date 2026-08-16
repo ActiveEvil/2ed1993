@@ -120,7 +120,7 @@ export default async function Page(props: {
                     </h2>
                   </div>
                   {item.subsections.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-1.5">
+                    <div className="flex flex-wrap justify-center gap-2">
                       {item.subsections.map((subsection) => (
                         <HighlighterLink
                           key={subsection.id}

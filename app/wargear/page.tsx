@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { IndexCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
-import { IndexCard } from "@/components/IndexCard";
 import { Panel } from "@/components/Panel";
 import { facetHref, generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
@@ -23,7 +23,7 @@ const SectionList: React.FC<{
   items: string[];
   fragment?: (item: string) => string;
 }> = ({ href, items, fragment = anchorHref }): React.JSX.Element => (
-  <ol className="pl-6 space-y-0.5 text-lg list-decimal">
+  <ol className="pl-6 text-lg list-decimal">
     {items.map((item) => (
       <li key={item}>
         <Link

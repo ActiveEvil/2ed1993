@@ -8,7 +8,7 @@ export const SectionBar: React.FC<{
 }> = ({ as: Tag = "div", title, note, className }): React.JSX.Element => (
   <Tag
     className={clsx(
-      "flex justify-between items-baseline gap-4 m-0 px-2.5 py-1.5",
+      "flex justify-between items-baseline gap-4 m-0 px-3 py-2",
       "bg-black font-subtitle text-sm text-white uppercase tracking-[0.14em]",
       className,
     )}

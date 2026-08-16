@@ -150,7 +150,7 @@ export const JumpBar: React.FC<
 
         <nav
           aria-label={label}
-          className="hidden md:flex items-baseline gap-2 px-4 py-2"
+          className="hidden md:flex items-baseline gap-3 px-4 py-2"
         >
           <span className={clsx(EYEBROW, "pr-1")}>{label}</span>
           <div className="flex flex-wrap gap-2">
@@ -161,7 +161,7 @@ export const JumpBar: React.FC<
                 aria-current={active === id ? "true" : undefined}
                 onClick={() => setActive(id)}
                 className={clsx(
-                  "shrink-0 px-2 py-0.5 border-2 font-subtitle text-sm whitespace-nowrap",
+                  "shrink-0 px-2 py-1 border-2 font-subtitle text-sm whitespace-nowrap",
                   hidden.has(id) && "opacity-60 line-through",
                   active === id
                     ? "bg-2ed-light-yellow border-2ed-light-yellow text-black"
@@ -175,12 +175,12 @@ export const JumpBar: React.FC<
         </nav>
 
         <details ref={detailsRef} className="group md:hidden">
-          <summary className="flex items-center gap-2.5 min-h-13 px-4 py-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+          <summary className="flex items-center gap-3 min-h-13 px-4 py-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
             <span className={EYEBROW}>{label}</span>
             <span className="grow min-w-0 font-subtitle text-base text-2ed-white truncate">
               {activeLabel}
             </span>
-            <span className="shrink-0 px-2.5 py-1 bg-2ed-light-yellow font-subtitle text-xs uppercase tracking-widest text-black">
+            <span className="shrink-0 px-3 py-1 bg-2ed-light-yellow font-subtitle text-xs uppercase tracking-widest text-black">
               <span className="group-open:hidden">Jump</span>
               <span className="hidden group-open:inline">Close</span>
             </span>

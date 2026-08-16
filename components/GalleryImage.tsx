@@ -1,14 +1,14 @@
 "use client";
 
-import { Aspect, BLUR_DATA_URL } from "./ImageWithCredit";
+import { BLUR_DATA_URL } from "./ImageWithCredit";
+import type { Image } from "./ImageWithCredit";
 import NextImage from "next/image";
 
-export const GalleryImage: React.FC<{
-  src: string;
-  title: string;
-  aspect?: Aspect;
-  onOpen: () => void;
-}> = ({ src, title, aspect = "aspect-square", onOpen }): React.JSX.Element => {
+export const GalleryImage: React.FC<
+  Image & {
+    onOpen: () => void;
+  }
+> = ({ src, title, aspect = "aspect-square", onOpen }): React.JSX.Element => {
   return (
     <button
       type="button"
