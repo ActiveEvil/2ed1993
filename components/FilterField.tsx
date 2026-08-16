@@ -19,11 +19,12 @@ export const FilterField: React.FC<{
   inputRef,
   onChange,
 }): React.JSX.Element => (
-  <div className="flex items-center gap-2.5">
+  <div className="flex items-center gap-3">
     <span className="shrink-0 font-subtitle text-[11px] text-2ed-light-yellow uppercase tracking-[0.14em]">
       {label}
     </span>
     <input
+      id={label}
       ref={inputRef}
       type="search"
       value={value}

@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { Panel } from "@/components/Panel";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -82,42 +83,44 @@ export default async function Page(props: {
             },
           ]}
         />
-        <main
-          id="main"
-          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg"
+        <Panel
+          as="main"
+          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
         >
           <header>
             <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               {faction.name}
             </h1>
           </header>
-          {heros.length === 1 ? (
-            <ImageWithCredit
-              key={heros[0].file_name}
-              src={`images/${heros[0].file_name}`}
-              title={heros[0].title}
-              artist={heros[0].artist}
-              width="half-from-md"
+          <section className="grid md:grid-cols-2 gap-4">
+            {heros.length === 1 ? (
+              <ImageWithCredit
+                key={heros[0].file_name}
+                src={`images/${heros[0].file_name}`}
+                title={heros[0].title}
+                artist={heros[0].artist}
+                width="half-from-md"
+              />
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                {heros.map((hero) => (
+                  <div key={hero.file_name}>
+                    <ImageWithCredit
+                      src={`images/${hero.file_name}`}
+                      title={hero.title}
+                      artist={hero.artist}
+                      aspect="aspect-portrait"
+                      width="half"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            <section
+              className="dynamic-content flex flex-col justify-center gap-4"
+              dangerouslySetInnerHTML={{ __html: faction.description }}
             />
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              {heros.map((hero) => (
-                <div key={hero.file_name}>
-                  <ImageWithCredit
-                    src={`images/${hero.file_name}`}
-                    title={hero.title}
-                    artist={hero.artist}
-                    aspect="aspect-portrait"
-                    width="half"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-          <section
-            className="dynamic-content flex flex-col justify-center gap-4"
-            dangerouslySetInnerHTML={{ __html: faction.description }}
-          />
+          </section>
           <section className="flex flex-col gap-8">
             <h2 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               Army Lists
@@ -259,7 +262,7 @@ export default async function Page(props: {
               );
             })}
           </section>
-        </main>
+        </Panel>
       </>
     );
   }

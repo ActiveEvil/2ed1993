@@ -1,8 +1,8 @@
 "use client";
 
+import { IndexCard } from "./Cards";
 import { CHIP_CLASS, Chip } from "./Chip";
 import { FilterField } from "./FilterField";
-import { IndexCard } from "./IndexCard";
 import { JumpBar } from "./JumpBar";
 import { Panel } from "./Panel";
 import { SectionBar } from "./SectionBar";

@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { IndexCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
-import { IndexCard } from "@/components/IndexCard";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
@@ -91,7 +91,7 @@ export default async function Page() {
                         href={`/rules/${slug}`}
                         title={numbered ? `${position + 1}. ${name}` : name}
                       >
-                        <ol className="pl-6 space-y-0.5 text-lg list-decimal">
+                        <ol className="pl-6 text-lg list-decimal">
                           {rules.map((rule) => (
                             <li key={rule.name}>
                               <Link
