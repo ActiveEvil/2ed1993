@@ -1,10 +1,8 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { ImageCard } from "@/components/Cards";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { FactionCard } from "@/components/Cards";
 import type { Image } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
-import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
@@ -17,22 +15,15 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "factions")
-    .single();
-  const hero = heroImage?.images ?? null;
-
   const { data: factions, error: factionsError } = await supabase
     .from("factions")
     .select("slug, name, images(file_name, artist, title)")
-    .is("parent_faction_id", null)
+    // .is("parent_faction_id", null)
     .order("name");
 
-  assertNoQueryErrors("/factions", heroImageError, factionsError);
+  assertNoQueryErrors("/factions", factionsError);
 
-  if (hero && factions) {
+  if (factions) {
     return (
       <>
         <Breadcrumbs
@@ -55,11 +46,6 @@ export default async function Page() {
               Factions
             </h1>
           </header>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
-          />
           <div className="grid md:grid-cols-2 gap-4">
             {factions.map(({ slug, name, images }) => {
               const image: Image | undefined = images[0] && {
@@ -68,10 +54,10 @@ export default async function Page() {
                 artist: images[0].artist,
               };
               return (
-                <ImageCard
+                <FactionCard
                   key={slug}
-                  href={`/rules/${slug}`}
-                  title={name}
+                  href={`/factions/${slug}`}
+                  name={name}
                   image={image}
                 />
               );

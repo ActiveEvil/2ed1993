@@ -35,7 +35,7 @@
 
 @layer utilities {
   .aquilla-bars {
-    ::before {
+    &::before {
       content: " ";
       position: absolute;
       background-image: repeating-linear-gradient(
@@ -50,7 +50,7 @@
       left: 0;
       width: 2.5rem;
     }
-    ::after {
+    &::after {
       content: " ";
       position: absolute;
       background-image: repeating-linear-gradient(
@@ -66,7 +66,7 @@
       width: 2.5rem;
     }
     @variant md {
-      ::before {
+      &::before {
         content: " ";
         position: absolute;
         background-image: repeating-linear-gradient(
@@ -81,7 +81,7 @@
         left: 0;
         width: 5rem;
       }
-      ::after {
+      &::after {
         content: " ";
         position: absolute;
         background-image: repeating-linear-gradient(
@@ -99,7 +99,7 @@
     }
   }
   .aquilla-bars-black {
-    ::before {
+    &::before {
       content: " ";
       position: absolute;
       background-image: repeating-linear-gradient(
@@ -114,7 +114,7 @@
       left: 0;
       width: 3.25rem;
     }
-    ::after {
+    &::after {
       content: " ";
       position: absolute;
       background-image: repeating-linear-gradient(
@@ -131,7 +131,7 @@
     }
   }
   .aquilla-bars-tiny {
-    ::before {
+    &::before {
       content: " ";
       position: absolute;
       background-image: repeating-linear-gradient(
@@ -146,7 +146,7 @@
       left: 0;
       width: 0.7rem;
     }
-    ::after {
+    &::after {
       content: " ";
       position: absolute;
       background-image: repeating-linear-gradient(

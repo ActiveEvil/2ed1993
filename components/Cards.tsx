@@ -26,23 +26,23 @@ export const IndexCard: React.FC<
   </Panel>
 );
 
-export const ImageCard: React.FC<{
+export const FactionCard: React.FC<{
   href: string;
-  title: string;
+  name: string;
   image?: Image;
-}> = ({ href, title, image }): React.JSX.Element => (
+}> = ({ href, name, image }): React.JSX.Element => (
   <Panel as="article" className="flex flex-col gap-2 p-4">
-    <Link
-      className="flex flex-col gap-3 font-subtitle text-2xl leading-tight hover:underline underline-offset-4"
-      href={href}
-    >
-      {title}
+    <Link className="relative flex flex-col gap-3" href={href}>
+      <span className="absolute inset-0 z-10 mx-auto mt-12 w-fit h-fit p-3 bg-black border-4 border-2ed-dark-yellow [border-style:inset] font-title tracking-widest text-center text-2xl leading-tight text-balance text-2ed-dark-yellow [-webkit-text-stroke:2px_#fff20b]">
+        {name.toUpperCase()}
+      </span>
       {image && (
         <ImageWithCredit
           src={image.src}
           title={image.title}
           artist={image.artist}
-          width="half-from-md"
+          aspect="aspect-portrait"
+          // width="half-from-md"
         />
       )}
     </Link>
