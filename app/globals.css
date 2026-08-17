@@ -4,7 +4,9 @@
 [data-theme="light"] {
   --background: #fafafa;
   --foreground: #2d2d2d;
-  --house-rule-accent: #008cc1;
+  /* 2ed-dark-blue rather than 2ed-mid-blue: the .label is 12px, and mid-blue on
+     this background is 3.64 against the 4.5 AA threshold for small text. */
+  --house-rule-accent: #005097;
   /* Card faces are printed card stock rather than page background: they keep
      their dark ink in both schemes and only lose the glare in dark mode. */
   --card-face: #fafafa;
@@ -354,7 +356,7 @@ body {
   [data-theme="dark"] {
     --background: #fafafa;
     --foreground: #2d2d2d;
-    --house-rule-accent: #008cc1;
+    --house-rule-accent: #005097;
     --card-face: #fafafa;
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
   }

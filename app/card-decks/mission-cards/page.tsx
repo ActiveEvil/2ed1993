@@ -159,7 +159,7 @@ export default async function Page() {
                               />
                             )}
                             <div className="flex flex-col justify-center items-center gap-2">
-                              <h4 className="font-subtitle text-xl text-2ed-dark-red">
+                              <h4 className="font-subtitle font-bold text-xl text-2ed-dark-red">
                                 Primary Objective
                               </h4>
                               <div
@@ -171,7 +171,7 @@ export default async function Page() {
                             </div>
                             {card.secondary_objective && (
                               <div className="flex flex-col justify-center items-center gap-2">
-                                <h4 className="font-subtitle text-xl text-2ed-dark-red">
+                                <h4 className="font-subtitle font-bold text-xl text-2ed-dark-red">
                                   Secondary Objective
                                 </h4>
                                 <div
@@ -184,7 +184,7 @@ export default async function Page() {
                             )}
                             {card.special_rules && (
                               <div className="flex flex-col justify-center items-center gap-2">
-                                <h4 className="font-subtitle text-xl text-2ed-dark-red">
+                                <h4 className="font-subtitle font-bold text-xl text-2ed-dark-red">
                                   Special Rules
                                 </h4>
                                 <div

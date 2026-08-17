@@ -487,7 +487,7 @@ export default async function Page() {
                         </p>
                       )}
                       {(card.restriction || card.discard_after_use) && (
-                        <p className="mt-auto font-subtitle uppercase text-2ed-dark-red text-center">
+                        <p className="mt-auto font-subtitle font-bold uppercase text-xl text-2ed-dark-red text-center">
                           {[
                             card.restriction,
                             card.discard_after_use ? "Discard after use" : null,
