@@ -47,9 +47,9 @@
       background-image: repeating-linear-gradient(
         to bottom,
         var(--aquilla-cut),
-        var(--aquilla-cut) 0.4em,
-        transparent 0.4em,
-        transparent 0.8em
+        var(--aquilla-cut) 0.3em,
+        transparent 0.3em,
+        transparent 0.6em
       );
     }
     &::before {

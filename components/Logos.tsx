@@ -15,7 +15,7 @@ export const Logo: React.FC<{
   size?: LogoSize;
   dropCaps?: boolean;
   grayscale?: boolean;
-  as?: "div" | "h1";
+  as?: "div" | "h1" | "h2";
 }> = ({
   title,
   subtitle,
@@ -55,7 +55,7 @@ export const Logo: React.FC<{
         </span>
       </span>
       {subtitle ? (
-        <span className="relative inline-block -mt-[1.4667em] mx-[2.6667em] px-[0.5333em] py-[0.2667em] bg-2ed-light-yellow border-[0.1333em] border-2ed-dark-yellow [border-style:outset] text-[0.5em] leading-none text-2ed-dark-red">
+        <span className="relative inline-block mt-[-1.4667em] mx-[2.6667em] px-[0.5333em] py-[0.2667em] bg-2ed-light-yellow border-[0.1333em] border-2ed-dark-yellow [border-style:outset] text-[0.5em] leading-none text-2ed-dark-red">
           {subtitle.toUpperCase()}
         </span>
       ) : null}
