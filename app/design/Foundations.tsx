@@ -209,7 +209,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
       id="Contrast"
       title="Ink pairs"
       source="computed from the live variables"
-      note="Measured in the browser from the resolved properties rather than a table of hexes, so it cannot drift from globals.css. AA wants 4.5:1 for body text, 3:1 at 24px or at 18.66px bold. Five pairs fall under it, and all five are open design calls."
+      note="Measured in the browser from the resolved properties rather than a table of hexes, so it cannot drift from globals.css. AA wants 4.5:1 for body text, 3:1 at 24px or at 18.66px bold."
     >
       <Contrast />
     </Entry>
