@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
-import { Warhammer } from "@/components/Logos";
+import { Logo } from "@/components/Logos";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -105,7 +105,13 @@ export default async function Page() {
           className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg"
         >
           <header className="flex justify-center items-center">
-            <Warhammer />
+            <Logo
+              as="h1"
+              size="xl"
+              title="Warhammer"
+              subtitle="40K 2nd Edition"
+              dropCaps
+            />
           </header>
           <section className="flex flex-col gap-4 w-full text-xl">
             <p>
