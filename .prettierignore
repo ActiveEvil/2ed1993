@@ -1,0 +1,6 @@
+*.md
+pnpm-lock.yaml
+scripts/verbatim/texts.json
+scripts/verbatim/_thin-reocr/
+scripts/verify/exemptions.json
+supabase/.temp/
