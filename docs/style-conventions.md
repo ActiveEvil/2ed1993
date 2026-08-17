@@ -24,7 +24,8 @@ a third time and its Working practice entry hardened; a duplicate
 file moved into the repo at `docs/style-conventions.md` and is canonical there;
 two Working practice entries added (git stash over the bridge, Prettier and
 markdown); the `/design` second-person exception added (Voice); the
-custom-property substitution trap added (Working practice).
+custom-property substitution trap added (Working practice); the
+justification-and-table-advice rule added (Sources).
 
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
@@ -273,6 +274,19 @@ the codex is also more complete.
   house-ruling.
 - **Check the faction codex before authoring a supplement's rule.**
 - **Rules chapters carry system; factions carry entries.**
+- **A source's justification and table advice are out of scope.** Author the
+  mechanic and the permissions the source grants; leave behind the reasoning
+  for a rule, the modelling suggestions, and the advice on how to handle dice
+  and models at the table. Ruled by Thomas 17 August on the shooting drafts,
+  where "Dice of different colours let both batches be thrown at once" was
+  flagged as a house rule rather than a rule. Six further lines went with it in
+  the same pass — in-fiction reasons ("amid the smoke and the explosions no one
+  picks a particular target"), pace advice ("speeds the game considerably"),
+  and the closing justification of the cover-averaging steps — cutting the
+  three drafts from 502 words to 335. The same test had already removed Model
+  Buildings and the Buildings chapter's closing Special Rules, and it took one
+  sentence back out of `general-rules:Buildings` after that rule went live.
+  **Permission is not advice**: "players may agree X" is scope and stays.
 - **Content comes from the one page being transcribed, not its army-list
   cousins.** Added 13 August after a Tarantula draft imported "fitted with a
   targeter" from the Codex Ultramarines entry into the Wargear-book rules text.
