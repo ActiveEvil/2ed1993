@@ -1,7 +1,7 @@
 "use client";
 
 import { LABEL } from "./Shared";
-import { contrast, hex, toRgb, type Rgb } from "./luminance";
+import { contrast, hex, lightnessContrast, toRgb, type Rgb } from "./luminance";
 import { useEffect, useRef, useState } from "react";
 
 type Token = { key: string; className?: string; style?: React.CSSProperties };
@@ -49,7 +49,20 @@ const PAIRS: Pair[] = [
     size: 24,
   },
   { where: "Card heading", ink: "2ed-dark-blue", on: "card-face", size: 24 },
-  { where: "Card body ink", ink: "2ed-dark-red", on: "card-face", size: 18 },
+  {
+    where: "Card objective heading",
+    ink: "2ed-dark-red",
+    on: "card-face",
+    size: 20,
+    bold: true,
+  },
+  {
+    where: "Card restriction line",
+    ink: "2ed-dark-red",
+    on: "card-face",
+    size: 20,
+    bold: true,
+  },
   {
     where: "Special warp card heading",
     ink: "2ed-mid-blue",
@@ -132,6 +145,7 @@ export const Contrast: React.FC = (): React.JSX.Element => {
 
     const ratio = contrast(ink, on);
     const pass = ratio >= needs(pair);
+    const lc = lightnessContrast(ink, on);
 
     return (
       <td>
@@ -139,7 +153,9 @@ export const Contrast: React.FC = (): React.JSX.Element => {
           &nbsp;{ratio.toFixed(2)}&nbsp;
         </span>
         <br />
-        <small>{pass ? "passes" : "under AA"}</small>
+        <small>
+          {pass ? "passes" : "under AA"} &middot; Lc {lc.toFixed(0)}
+        </small>
       </td>
     );
   };
@@ -185,6 +201,21 @@ export const Contrast: React.FC = (): React.JSX.Element => {
               </tbody>
             </table>
           </section>
+          <p>
+            The ratio and the verdict are WCAG 2.1, which is what AA means.
+            <strong>Lc</strong> is the same pair measured by APCA, the
+            perceptual model behind the WCAG 3 draft: it accounts for which of
+            the two colours is lighter, where the 2.1 ratio does not. As a
+            guide, Lc 60 is comfortable for body text, Lc 45 for large or bold
+            text, and Lc 30 is the floor for any text at all.
+          </p>
+          <p>
+            Where the two disagree, the ratio decides conformance and the Lc
+            decides whether a change is worth making. Black ink on the
+            randomiser panel scores 5.52 against the current 3.64 and reads
+            worse, at Lc 39 against Lc 67 &mdash; a pass bought by making the
+            panel harder to read. Check both before moving a colour.
+          </p>
         </div>
       )}
     </div>
