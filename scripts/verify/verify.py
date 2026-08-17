@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Standing verification suite over every prose column, from texts.json.
 
-The checks in claude/style-conventions.md, mechanised and extended beyond
+The checks in docs/style-conventions.md, mechanised and extended beyond
 `rules` to every kind dump-texts.py emits. Run after any batch change:
 
   python3 scripts/verify/verify.py                  # texts.json beside dump-texts.py

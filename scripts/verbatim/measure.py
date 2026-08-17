@@ -4,7 +4,8 @@
 The site's standing rule is "mechanics exact, expression new". This measures
 compliance: for each stored text, EVERY run of consecutive words at or over the
 threshold that it shares with any source — not merely the longest. See
-claude/style-conventions.md and claude/verbatim-audit-2026-08-08.md.
+docs/style-conventions.md, and the 8 August 2026 verbatim audit in the Claude
+project.
 
   python3 measure.py texts.json                 # audit, ranked worst first
   python3 measure.py texts.json --gate          # exit 1 if anything unexempt fails

@@ -8,6 +8,7 @@
   /* Card faces are printed card stock rather than page background: they keep
      their dark ink in both schemes and only lose the glare in dark mode. */
   --card-face: #fafafa;
+  --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
 }
 @theme inline {
   --aspect-retro: 4 / 3;
@@ -42,9 +43,14 @@
     );
     -webkit-mask-image: linear-gradient(#000 0 0), var(--fin), var(--fin);
     mask-image: linear-gradient(#000 0 0), var(--fin), var(--fin);
-    -webkit-mask-size: calc(100% - 2.6666em) 100%, 1.3333em 100%,
+    -webkit-mask-size:
+      calc(100% - 2.6666em) 100%,
+      1.3333em 100%,
       1.3333em 100%;
-    mask-size: calc(100% - 2.6666em) 100%, 1.3333em 100%, 1.3333em 100%;
+    mask-size:
+      calc(100% - 2.6666em) 100%,
+      1.3333em 100%,
+      1.3333em 100%;
     -webkit-mask-position: center, left, right;
     mask-position: center, left, right;
     -webkit-mask-repeat: no-repeat;
@@ -284,6 +290,7 @@
     --foreground: #fafafa;
     --house-rule-accent: #6dcef7;
     --card-face: #d8d8d8;
+    --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
   }
 }
 
@@ -292,6 +299,7 @@
   --foreground: #fafafa;
   --house-rule-accent: #6dcef7;
   --card-face: #d8d8d8;
+  --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -303,10 +311,6 @@
 :root {
   /* Falls back to 3em so pages with no jump bar keep their original offset. */
   --jump-offset: calc(var(--jump-bar-height, 3em) + 1rem);
-  /* Zebra stripe. Defined once here rather than at each striped table: it
-     resolves per colour scheme because --background and --foreground are
-     substituted at use. */
-  --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
 }
 
 :target,
@@ -352,6 +356,7 @@ body {
     --foreground: #2d2d2d;
     --house-rule-accent: #008cc1;
     --card-face: #fafafa;
+    --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
   }
 
   /* Light text takes ink. Unconditional on purpose: browsers drop backgrounds

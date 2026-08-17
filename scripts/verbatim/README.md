@@ -3,8 +3,8 @@
 Measures how much of the site's published text is word-for-word identical to its
 sources. The standing rule is **mechanics exact, expression new** — every number,
 dice, trigger and effect keeps its substance precisely; every sentence is written
-fresh. See `claude/style-conventions.md` for the rule and
-`claude/verbatim-audit-2026-08-08.md` for the audit that produced this tool.
+fresh. See `docs/style-conventions.md` for the rule, and the 8 August 2026
+verbatim audit in the Claude project for the work that produced this tool.
 
 **Run it before any text goes into the database, and over everything after each
 batch.** It exists because the standard arrived on 3 August 2026 and most of the
@@ -26,7 +26,8 @@ about 10&ndash;20 seconds a page depending on cores.
 
 ## Running
 
-    psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json
+    python3 dump-texts.py                                     # writes texts.json
+    psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json   # equivalent, needs psql
 
     python3 measure.py texts.json                 # audit, worst first
     python3 measure.py texts.json --gate          # exit 1 on unexempt failure
