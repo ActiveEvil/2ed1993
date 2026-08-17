@@ -3,10 +3,10 @@ import { clsx } from "clsx";
 type LogoSize = "sm" | "md" | "lg" | "xl";
 
 const sizes: Record<LogoSize, string> = {
-  sm: "text-xl aquilla-bars-ink",
-  md: "text-[clamp(1.25rem,6cqw,2.25rem)] aquilla-bars-ink",
-  lg: "text-6xl aquilla-bars-ink",
-  xl: "text-2xl md:text-6xl aquilla-bars",
+  sm: "text-xl",
+  md: "text-[clamp(1.25rem,6cqw,2.25rem)]",
+  lg: "text-6xl",
+  xl: "text-2xl md:text-6xl",
 };
 
 export const Logo: React.FC<{
@@ -36,7 +36,7 @@ export const Logo: React.FC<{
       <span className="relative flex justify-center items-center w-full px-[1.6em] py-[0.2em]">
         <span
           aria-hidden="true"
-          className="absolute inset-0 bg-2ed-light-yellow [clip-path:polygon(0_0,100%_0,calc(100%-1.3333em)_100%,1.3333em_100%)]"
+          className="aquilla-fins absolute inset-0 bg-2ed-light-yellow [clip-path:polygon(0_0,100%_0,calc(100%-1.3333em)_100%,1.3333em_100%)]"
         />
         <span className="relative inline-block p-[0.2667em] bg-black border-[0.0667em] border-2ed-dark-yellow [border-style:inset] leading-[1.4] text-center text-balance text-2ed-dark-yellow [-webkit-text-stroke:0.0333em_#fff20b]">
           {dropCaps && letters.length > 2 ? (
