@@ -1,6 +1,6 @@
 "use client";
 
-import { Tiny2ed1993 } from "./Logos";
+import { Logo } from "./Logos";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -147,10 +147,10 @@ export const TopNav: React.FC = (): React.JSX.Element => {
         className="flex justify-center items-center gap-8 w-full max-w-5xl p-4"
       >
         {pathname === "/" ? (
-          <Tiny2ed1993 grayscale />
+          <Logo size="sm" title="2ed" subtitle="1993" grayscale />
         ) : (
           <Link href="/">
-            <Tiny2ed1993 />
+            <Logo size="sm" title="2ed" subtitle="1993" />
           </Link>
         )}
 
