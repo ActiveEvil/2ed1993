@@ -125,7 +125,7 @@ export default async function Page() {
             <Logo
               as="h1"
               size="xl"
-              title="Warhammer"
+              title="Oldhammer"
               subtitle="40K 2nd Edition"
               dropCaps
             />
