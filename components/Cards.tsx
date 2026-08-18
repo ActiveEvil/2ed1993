@@ -2,6 +2,7 @@ import { ImageWithCredit } from "./ImageWithCredit";
 import type { Image } from "./ImageWithCredit";
 import { Logo } from "./Logos";
 import { Panel } from "./Panel";
+import { clsx } from "clsx";
 import Link from "next/link";
 
 export const IndexCard: React.FC<
@@ -36,7 +37,12 @@ export const FactionCard: React.FC<{
     className="@container relative flex flex-col gap-3"
     // href={href}
   >
-    <div className="absolute inset-0 z-10 mx-auto mt-8 px-8 w-fit h-fit">
+    <div
+      className={clsx(
+        "mx-auto w-fit h-fit",
+        image && "absolute inset-0 z-10 mt-8 px-8",
+      )}
+    >
       <Logo as="h2" size="md" title={name} />
     </div>
     {image && (
