@@ -32,7 +32,10 @@ export const Entry: React.FC<
   } & React.PropsWithChildren
 > = ({ id, title, source, note, children }): React.JSX.Element => (
   <section id={id} className="flex flex-col gap-3">
-    <SectionBar title={title} note={source} />
+    <SectionBar
+      title={title}
+      note={<span className="whitespace-normal">{source}</span>}
+    />
     {children}
     {note && <p className="text-lg">{note}</p>}
   </section>
