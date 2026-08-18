@@ -32,20 +32,21 @@ export const FactionCard: React.FC<{
   name: string;
   image?: Image;
 }> = ({ href, name, image }): React.JSX.Element => (
-  <Panel as="article" className="flex flex-col gap-2 p-4">
-    <Link className="@container relative flex flex-col gap-3" href={href}>
-      <div className="absolute inset-0 z-10 mx-auto mt-12 px-8 w-fit h-fit">
-        <Logo as="h2" size="md" title={name} />
-      </div>
-      {image && (
-        <ImageWithCredit
-          src={image.src}
-          title={image.title}
-          artist={image.artist}
-          aspect="aspect-portrait"
-          // width="half-from-md"
-        />
-      )}
-    </Link>
-  </Panel>
+  <div
+    className="@container relative flex flex-col gap-3"
+    // href={href}
+  >
+    <div className="absolute inset-0 z-10 mx-auto mt-8 px-8 w-fit h-fit">
+      <Logo as="h2" size="md" title={name} />
+    </div>
+    {image && (
+      <ImageWithCredit
+        src={image.src}
+        title={image.title}
+        artist={image.artist}
+        aspect="aspect-portrait"
+        // width="half-from-md"
+      />
+    )}
+  </div>
 );
