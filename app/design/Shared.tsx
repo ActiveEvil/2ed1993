@@ -34,7 +34,7 @@ export const Entry: React.FC<
   <section id={id} className="flex flex-col gap-3">
     <SectionBar
       title={title}
-      note={<span className="whitespace-normal">{source}</span>}
+      note={<span className="whitespace-normal wrap-anywhere">{source}</span>}
     />
     {children}
     {note && <p className="text-lg">{note}</p>}
