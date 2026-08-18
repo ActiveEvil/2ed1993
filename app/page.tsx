@@ -29,6 +29,14 @@ export default async function Page() {
   const { data: sections, error: sectionsError } = await supabase
     .from("rules")
     .select("id");
+  const { data: factions, error: factionsError } = await supabase
+    .from("factions")
+    .select("id")
+    .is("parent_faction_id", null);
+  const { data: subfactions, error: subfactionsError } = await supabase
+    .from("factions")
+    .select("id")
+    .not("parent_faction_id", "is", null);
   const wargear = await Promise.all(
     (["weapons", "armour", "wargear_cards"] as const).map((table) =>
       supabase.from(table).select("id"),
@@ -50,6 +58,8 @@ export default async function Page() {
     heroImageError,
     chaptersError,
     sectionsError,
+    factionsError,
+    subfactionsError,
     ...wargear.map(({ error }) => error),
     ...decks.map(({ error }) => error),
   );
@@ -58,6 +68,8 @@ export default async function Page() {
     hero &&
     chapters &&
     sections &&
+    factions &&
+    subfactions &&
     wargear.every(({ data }) => data) &&
     decks.every(({ data }) => data)
   ) {
@@ -73,6 +85,11 @@ export default async function Page() {
         href: "/rules",
         title: "Rules",
         stat: `${chapters.length} chapters \u00b7 ${sections.length} sections`,
+      },
+      {
+        href: "/factions",
+        title: "Factions",
+        stat: `${factions.length} factions \u00b7 ${subfactions.length} subfactions`,
       },
       {
         href: "/wargear",
@@ -140,7 +157,7 @@ export default async function Page() {
                 <Link
                   key={href}
                   href={href}
-                  className="group flex flex-col gap-2 p-4 border-4 border-black shadow-lg"
+                  className="group flex flex-col gap-2 p-4 border-4 border-black shadow-lg md:first:col-span-2"
                 >
                   <span className="font-subtitle text-2xl group-hover:underline underline-offset-4">
                     {title}
