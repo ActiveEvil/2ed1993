@@ -1,5 +1,20 @@
 import type { NextConfig } from "next";
 
+const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""};
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data: https://twcioksmkijgnhgxibrn.supabase.co;
+    font-src 'self';
+    connect-src 'self';
+    frame-ancestors 'none';
+    base-uri 'self';
+    object-src 'none';
+    form-action 'self';
+    upgrade-insecure-requests;
+    
+`;
+
 const nextConfig: NextConfig = {
   output: "standalone",
   images: {
@@ -13,6 +28,7 @@ const nextConfig: NextConfig = {
     ],
     qualities: [80, 75],
   },
+  poweredByHeader: false,
   async redirects() {
     return [
       {
@@ -44,6 +60,10 @@ const nextConfig: NextConfig = {
           {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader.replace(/\n/g, ""),
           },
         ],
       },
