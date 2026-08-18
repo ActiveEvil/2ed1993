@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { FactionCard } from "@/components/Cards";
 import type { Image } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
+import { SectionBar } from "@/components/SectionBar";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -46,6 +47,7 @@ export default async function Page() {
               Factions
             </h1>
           </header>
+          <SectionBar as="h2" title="Coming soon..." />
           <div className="grid md:grid-cols-2 gap-4">
             {factions.map(({ slug, name, images }) => {
               const image: Image | undefined = images[0] && {
