@@ -122,10 +122,10 @@ export const TopNav: React.FC = (): React.JSX.Element => {
       href: "/rules",
       anchor: "Rules",
     },
-    /*{
+    {
       href: "/factions",
       anchor: "Factions",
-    },*/
+    },
     {
       href: "/wargear",
       anchor: "Wargear",
