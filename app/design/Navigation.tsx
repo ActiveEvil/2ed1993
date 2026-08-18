@@ -42,7 +42,7 @@ export const Navigation: React.FC = (): React.JSX.Element => {
           <Specimen label="xl &middot; dropCaps &middot; the home page mark">
             <Logo
               size="xl"
-              title="Warhammer"
+              title="Oldhammer"
               subtitle="40K 2nd Edition"
               dropCaps
             />
