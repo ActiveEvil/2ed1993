@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' https://va.vercel-scripts.com ${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""};
+    script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com ${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://twcioksmkijgnhgxibrn.supabase.co;
     font-src 'self';
