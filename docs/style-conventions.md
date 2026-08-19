@@ -25,7 +25,10 @@ file moved into the repo at `docs/style-conventions.md` and is canonical there;
 two Working practice entries added (git stash over the bridge, Prettier and
 markdown); the `/design` second-person exception added (Voice); the
 custom-property substitution trap added (Working practice); the
-justification-and-table-advice rule added (Sources).
+justification-and-table-advice rule added (Sources). **Revised 19 August
+2026:** the `/design` second-person exception dropped from Voice — granted
+17 August, never used once the page's copy pass removed every instance, so
+second person is now permitted only in asides and `the-golden-rule`.
 
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
@@ -136,12 +139,6 @@ Baseline: **`/general-rules`**.
   is direct address by design. The three vetted asides (Psykers, Running, To
   Hit The Target) are recorded in `scripts/verify/exemptions.json`.
 - **Asides are plain `<p>`** — no marker, no dedicated class. Decided 29 July.
-- **`/design` may use second person.** Ruled by Thomas 17 August. The design
-  record is documentation addressing a reader rather than rules prose, and a
-  line like "Tab now to see it" earns the address by asking for an action. This
-  is a convention rather than an entry in `exemptions.json`: `verify.py` reads
-  `texts.json`, so it never sees JSX and there is nothing to exempt. The rule is
-  unchanged everywhere else.
 - **"dice", never "die", as the noun.** Clarified 13 August: the *verb* is
   ordinary English — "should that model die" stands. The script flags only
   determiner+die and "die roll".

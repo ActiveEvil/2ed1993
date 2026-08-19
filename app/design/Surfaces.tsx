@@ -97,7 +97,7 @@ export const Surfaces: React.FC = (): React.JSX.Element => (
     <Entry
       title="SectionBar"
       source="components/SectionBar.tsx &middot; title, note"
-      note='The note is the only yellow on the bar, and is always a count or a range. as="h2" makes the bar a heading. Every entry label on this page is one, carrying its source file.'
+      note='The note is the only yellow on the bar, and on the site is always a count or a range, pinned to one line from sm up. as="h2" makes the bar a heading. Every entry label on this page is one, and is the single exception: it carries a file path, wrapped so it cannot overflow the bar.'
     >
       <div className="flex flex-col gap-2">
         <SectionBar
