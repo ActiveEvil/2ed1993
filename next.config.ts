@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""};
+    script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com ${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://twcioksmkijgnhgxibrn.supabase.co;
     font-src 'self';
@@ -12,7 +12,6 @@ const cspHeader = `
     object-src 'none';
     form-action 'self';
     upgrade-insecure-requests;
-    
 `;
 
 const nextConfig: NextConfig = {
@@ -61,10 +60,10 @@ const nextConfig: NextConfig = {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
-          // {
-          //   key: "Content-Security-Policy",
-          //   value: cspHeader.replace(/\n/g, ""),
-          // },
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader.replace(/\n/g, ""),
+          },
         ],
       },
     ];
