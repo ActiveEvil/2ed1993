@@ -213,7 +213,6 @@
       table {
         position: relative;
         width: 100%;
-        min-width: max-content;
         table-layout: auto;
         background-color: var(--color-black);
         border-color: var(--color-black);
