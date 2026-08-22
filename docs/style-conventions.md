@@ -29,6 +29,15 @@ justification-and-table-advice rule added (Sources). **Revised 19 August
 2026:** the `/design` second-person exception dropped from Voice — granted
 17 August, never used once the page's copy pass removed every instance, so
 second person is now permitted only in asides and `the-golden-rule`.
+**Revised 22 August 2026:** the datafax rule and the points-in-rules ruling
+added to Sources; the chart-suffix rule extended in Heading naming to name
+whatever roll resolves a chart; the exemption-rekeying trap added to Working
+practice; the section-naming rule added to Heading naming after the
+`Rules by subject` rename; the
+`--no-optional-locks` entry corrected in Working practice; two Known data
+defects closed on re-measurement — the leading spaces in
+`weapon_profiles.short_to_hit` (zero rows now) and the duplicate
+`images.file_name` (no file name is shared by two rows anywhere in the table).
 
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
@@ -220,8 +229,15 @@ Settled 29 July.
 | **Noun phrase** | a thing the reader looks up — the default | `Armour Value`, `Hard Cover`, `Vision Slit`, `Penetration Tests` |
 | **`<Name> Chart`** | any chart title, always including the word "Chart" | `Skid Test Chart (D6)`, `Structure Damage Chart (D6)`, `Turning Chart` |
 
-- **`(D6)`** is appended only where the chart is resolved by a D6 roll.
-  `Turning Chart` and `Range Chart` are lookups and carry no suffix.
+- **The resolving roll is named in brackets** where the chart is resolved by a
+  roll: `(D6)`, `(2D6)`, and so on. **Extended by Thomas 22 August**, when the
+  `Drop Pod Scatter Chart (2D6)` needed a form the convention did not grant; until
+  then only `(D6)` was sanctioned. Swept the same day across all 57 live charts:
+  none needed a new suffix, and none carried one that its body contradicted.
+  `Turning Chart` and `Range Chart` are lookups and carry no suffix. Two charts
+  bracket what resolves them without naming dice at all — `Bonus Penetration Dice
+  Chart (Attack Strength)` and `Plasma Overload Chart (Sustained Fire Dice)` —
+  which is the same convention read widely.
 - **Gerunds are not a third form.** They survive only where every noun phrasing
   is worse: `Going into Hiding`, `Dealing Psychic Powers`, `Dealing Warp Cards`,
   `Keeping Powers Secret`, `Leading Squads`, `Determining the Warp Flux`,
@@ -236,6 +252,16 @@ Settled 29 July.
 - `Characteristics` uses a fourth pattern carrying the abbreviation —
   `Attacks (A)`, `Ballistic Skill (BS)`. Consistent within that rule; leave it.
 - **Card names drop a leading definite article.** Ruled 8 August.
+- **A section names a concept, never its contents.** `Before the game`,
+  `The turn sequence` and `Factions` all name what the section is. The fourth
+  enumerated its categories — `General rules, weapons, psychology & vehicles` —
+  and so went stale the moment a fifth category joined it, besides being the only
+  one of the four that wrapped to two lines on a phone. **Renamed
+  `Rules by subject` 22 August**, the reading being that the first two sections
+  organise rules by *when* they apply and this one by *what they are about*. A
+  name that lists its members has to be edited every time the list changes, which
+  the faction categories would have forced again immediately. Sentence case
+  throughout; the index renders them upper case itself.
 
 ## Sources
 
@@ -284,6 +310,22 @@ the codex is also more complete.
   Buildings and the Buildings chapter's closing Special Rules, and it took one
   sentence back out of `general-rules:Buildings` after that rule went live.
   **Permission is not advice**: "players may agree X" is scope and stays.
+- **Nothing a datafax carries is restated in a rule.** Ruled by Thomas 22 August,
+  and it outranks the points rule below. Capacity, access, fire arcs, deployment,
+  points, armour values and a structure's own damage chart all belong to its
+  datafax. The rule carries the mechanics, names the datafax, and leaves the
+  figures there — **dangling the reference on purpose** until the datafaxes are
+  built, at which point every deferral becomes a link.
+  `general-rules:Fortifications` already worked this way and is the model. Applied
+  22 August across the field defences, the fortification types and the drop pods,
+  which cost the field defences four damage charts and every figure it had.
+- **A points cost that is not on a datafax belongs in a rule only where it is
+  generic.** Ruled the same day. A cost every army pays for the thing the rule
+  describes stays — 50 points for a stronghold's teleport jammer. A cost tied to
+  one army's list goes with that list: the Imperial Guard command relay and the
+  per-army anti-skimmer weapon options were stripped of their prices in the same
+  pass and keep their rules, each closing on a sentence saying the cost sits with
+  the army list.
 - **Content comes from the one page being transcribed, not its army-list
   cousins.** Added 13 August after a Tarantula draft imported "fitted with a
   targeter" from the Codex Ultramarines entry into the Wargear-book rules text.
@@ -352,8 +394,12 @@ literal-to-entity pass walked each value tag-by-tag (split on `(?=<)`, convert
 text bodies only) and was verified with an attribute-damage query afterwards.
 
 **The bridge cannot unlink files**, so `git checkout -- <path>` fails; restore
-with `git show HEAD:path > path`. **`git status` without
-`--no-optional-locks` leaves an index.lock** the bridge cannot remove.
+with `git show HEAD:path > path`. **A plain `git status` leaves an
+index.lock** the bridge cannot remove. **The flag belongs to `git`, not to the
+subcommand** — `git --no-optional-locks status` works and leaves nothing behind,
+while `git status --no-optional-locks` is rejected as an unknown option.
+Corrected 22 August, after the wrong form was tried and the plain one then left a
+stale lock behind.
 **And `git stash` is unusable over the bridge** for the same reason: it half
 runs, reports "the stash entry is kept", and leaves whatever was already
 stashed in place. 17 August it was reached for to compare a file against its
@@ -368,15 +414,15 @@ point the editor at `node_modules/typescript/lib`.
 
 **A custom property is substituted where it is DECLARED, not where it is
 used.** Found 17 August, and it had been wrong in `globals.css` since the
-variable was introduced &mdash; with a comment asserting the opposite.
+variable was introduced — with a comment asserting the opposite.
 `--stripe` was declared once on `:root` as
 `color-mix(in oklab, var(--background) 85%, var(--foreground))`, so both `var()`
 calls resolved against `:root` and **a nested `[data-theme]` could not change
 it**. The zebra always carried the page's stripe, so a light specimen inside a
 dark page struck its rows in dark grey and vice versa; the print block reset the
 other four variables and left the stripe on whatever scheme the reader was in.
-The fix is to declare `--stripe` inside every scheme block &mdash; light, the
-OS-dark media query, forced dark, and the print reset &mdash; rather than once.
+The fix is to declare `--stripe` inside every scheme block — light, the
+OS-dark media query, forced dark, and the print reset — rather than once.
 **The reason the other four never showed this** is Tailwind's `@theme inline`:
 `inline` means the alias is substituted at use, which is exactly the behaviour
 a plain `:root` declaration does not have. Verified in headless Chromium across
@@ -385,10 +431,10 @@ both schemes and print.
 **`getComputedStyle` returns `oklab()` for a `color-mix()` value, not `rgb()`.**
 Found 17 August on the `/design` contrast table, which read `--stripe` back from
 the DOM and parsed the first three numbers of
-`oklab(0.88187 0.0000401683 0.0000176661)` as if they were 0&ndash;255 channels.
+`oklab(0.88187 0.0000401683 0.0000176661)` as if they were 0–255 channels.
 The zebra pair reported 1.52:1 against a true 9.66:1, and reported it as a
-failure. **Never regex a computed colour.** Round-trip it through a 1&times;1
-canvas &mdash; `fillStyle = value; fillRect; getImageData` &mdash; which returns
+failure. **Never regex a computed colour.** Round-trip it through a 1×1
+canvas — `fillStyle = value; fillRect; getImageData` — which returns
 sRGB bytes and lets the browser own the conversion. Plain hex tokens return
 `rgb()` and hid the fault, so it only appeared on the one derived colour.
 
@@ -399,7 +445,7 @@ Prettier de-indents a continuation line inside a numbered list item wherever a
 backtick span wraps across the line break, which silently changes the rendered
 output of this file; and it would explode `exemptions.json` from one readable
 entry per line into multi-line objects. Everything else is formatted, and
-`npx prettier --check .` passes clean &mdash; keep it that way.
+`npx prettier --check .` passes clean — keep it that way.
 
 **`2ed1993-schema.sql` is not a true record of the live database.** Read the
 live shape from `information_schema` and `pg_type`.
@@ -415,6 +461,17 @@ live shape from `information_schema` and `pg_type`.
 ```sql
 select last_value from pg_sequences where sequencename = '<table>_id_seq';
 ```
+
+**Moving a rule between categories silently breaks its exemptions.** Both
+exemption files key on `kind`, and `kind` is `rule:<category-slug>` — so a rule
+that changes category stops matching its own entry, and the gate begins failing
+on runs that were deliberately allowed. Found 22 August, when `Buildings` moved
+into `buildings-fortifications` and its whole-text exemption, keyed
+`rule:general-rules`, stopped applying: the full-dump gate went from clean to one
+unexempt failure across eight runs, all of them the armour-value table the
+exemption exists for. **Re-key every exemption for any rule that moves, and run
+the gate over the whole dump rather than the changed texts** — measuring only
+what you wrote would have missed this entirely.
 
 **Scope every verification query to the whole table**, never to the chapter
 being worked in.
@@ -453,20 +510,13 @@ whitespace-tolerantly or the tally misreports.
 
 ## Known data defects
 
-- **Leading spaces in `weapon_profiles.short_to_hit`.** Four rows store `" +2"`
-  or `" +1"`: `Bolt Pistol`, `Plasma Pistol`, `Needle Pistol`, `Needle Sniper
-  Rifle`. Invisible in the centred layouts. Found 8 August, still open.
 - **Mole Mortar profile cells** store empty strings where the printed chart
   says "See special rules" across S/Dmg/Save. Cosmetic, undecided, 13 August.
-- **Duplicate `images.file_name` — `Blood-Angels.jpg`.** Two rows: id 12
-  (David Gallagher, 1440×1920, on the `shooting` rules category) and id 71
-  (Geoff Taylor, 1374×1920, on the Blood Angels faction page). They are
-  different pictures. `ImageWithCredit` builds its src as
-  `images/<file_name>`, so both rows resolve to one file and one credit will be
-  attached to a picture it does not belong to; uploading the new file as-is
-  overwrites the one `shooting` uses. Found 15 August, open — needs a rename
-  before upload. **`images.file_name` has no unique constraint**, which is what
-  let this in.
+
+*The two defects recorded here on 8 and 15 August — the leading spaces and the
+duplicate `Blood-Angels.jpg` — were re-measured 22 August and are closed.*
+**`images.file_name` still has no unique constraint**, which is what let the
+duplicate in.
 
 ## Standing verification suite
 

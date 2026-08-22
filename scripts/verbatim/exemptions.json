@@ -30,7 +30,7 @@
       "reason": "chart digits \u2014 the damage table has no other wording"
     },
     {
-      "kind": "rule:general-rules",
+      "kind": "rule:buildings-fortifications",
       "name": "Buildings",
       "reason": "chart digits \u2014 armour value table"
     },
