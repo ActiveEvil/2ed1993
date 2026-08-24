@@ -29,11 +29,19 @@ justification-and-table-advice rule added (Sources). **Revised 19 August
 2026:** the `/design` second-person exception dropped from Voice — granted
 17 August, never used once the page's copy pass removed every instance, so
 second person is now permitted only in asides and `the-golden-rule`.
+**Revised 24 August 2026:** the card-face red
+contrast rule and the `--card-stripe` rule added to Working practice; the
+`/profiles` names-and-links rule added to Sources.
 **Revised 22 August 2026:** the datafax rule and the points-in-rules ruling
 added to Sources; the chart-suffix rule extended in Heading naming to name
 whatever roll resolves a chart; the exemption-rekeying trap added to Working
 practice; the section-naming rule added to Heading naming after the
-`Rules by subject` rename; the
+`Rules by subject` rename; the rulebook-unless-a-Q&A-supersedes instruction and
+the Studio-house-rule distinction added to Sources; five Working practice entries
+added from the paragraph-audit write (fingerprint verification, the `&`-to-`and`
+anchor slug, psychic cards carrying no markup, the obligation to re-read every
+text when a term's meaning changes, and the risk carried by a review's own fix
+pass); the
 `--no-optional-locks` entry corrected in Working practice; two Known data
 defects closed on re-measurement — the leading spaces in
 `weapon_profiles.short_to_hit` (zero rows now) and the duplicate
@@ -273,7 +281,16 @@ material outranks fan compilation, always:
    Orks, Codex Imperialis, Citadel Journal) — authoritative in their domain,
    and a codex may supersede a supplement.
 3. **White Dwarf Q&A** — official errata and clarification; use it to resolve
-   ambiguity in 1 and 2, not to contradict them.
+   ambiguity in 1 and 2, not to contradict them. **Standing instruction, Thomas,
+   22 August: follow the rulebook unless a Q&A supersedes it.** The Q&A does two
+   different things and only one of them supersedes. Where it errata's a rule or
+   settles a contradiction between two places in the book, it governs — the
+   Overwatch shooting window, and the p20-versus-p22 charge declaration, which it
+   resolves as "you charge the closest unengaged model". Where it reports what the
+   Studio does at its own table it is a house rule and carries no weight: the
+   permission for a model on Overwatch to turn in place is introduced with "at the
+   Studio we play a house rule", and was cut on that basis the same day. **Read the
+   framing of the answer, not just its content.**
 4. **Fan compilations — never an authority, and never a source.** Three are
    known: `W40K 2nd Ed BattleBible`, `2nd Ed Wargear.pdf` (deleted 8 August),
    and `weapons.pdf` ("The Complete, Concise Rules…", Jason E. Payne). **One
@@ -310,6 +327,20 @@ the codex is also more complete.
   Buildings and the Buildings chapter's closing Special Rules, and it took one
   sentence back out of `general-rules:Buildings` after that rule went live.
   **Permission is not advice**: "players may agree X" is scope and stays.
+- **`/profiles` names and links; it does not restate what another page carries.**
+  Ruled by Thomas 24 August, twice in one exchange: **points stay off the
+  profile**, and so do **armour saves**. A profile shows what a model *is* —
+  its characteristics, its model count, and the weapons and armour it carries,
+  by name — and every one of those names is a link to the page that holds the
+  full entry. Flak Armour's `6+` and `5+ against Blast and Template` live on
+  `/wargear/armour`; a squad's 100 points lives with its army list entry.
+  **The codex does restate both inline**, so this is a site decision rather than
+  source fidelity, and it is the same shape as the datafax rule above: store
+  once, render where it belongs. The datafax is the standing exception — it
+  carries full weapon profiles because the printed card is self-contained.
+  Applied consistently this also keeps the army list's wargear options off
+  `/profiles`, since "from the Assault Weapons section of the Wargear List"
+  means nothing outside a list.
 - **Nothing a datafax carries is restated in a rule.** Ruled by Thomas 22 August,
   and it outranks the points rule below. Capacity, access, fire arcs, deployment,
   points, armour values and a structure's own damage chart all belong to its
@@ -370,6 +401,30 @@ deliberately commented-out code survive a sweep. Three restatements means this
 is not a preference to be re-litigated: **write no comment unless it is a
 directive.**
 
+**`2ed-dark-red` is a large-text-only colour on a card face.** Measured
+24 August: `#ea2323` on `--card-face` is **4.22:1** in light and **3.09:1** in
+dark. That is below AA for small text in both schemes, and clears the 3:1
+large-text threshold in dark by 0.09. It has always been used legally &mdash;
+every occurrence on the site is `text-xl`, and `font-subtitle` is IBM Plex Sans
+loaded at weight 700 only, so 20px bold qualifies as large text &mdash; but that
+was true by accident rather than by decision, and the first attempt at a denser
+datafax put red on `text-sm` table titles, which would have failed both schemes.
+
+**So: red on a card face only at `text-xl` or above.** Below that, use weight and
+case in the card's own ink, which measures 13.19:1 light and 9.66:1 dark. Ruled
+by Thomas 24 August after the three options were measured; the alternative was a
+darker `--card-red` (`#b3141a`, 6.64 / 4.86, passes at any size), left untaken
+because it means either a second red token or shifting `2ed-dark-red` under the
+wargear cards, mission cards and `/design`.
+
+**A stripe mixed from `--background` is wrong on a card face.** `--stripe` is
+`color-mix(... var(--background) ...)`, and a card face deliberately does not
+follow the scheme, so the two disagree. `--card-stripe` was added 24 August,
+declared beside **every** `--card-face` declaration &mdash; light, the OS-dark
+media query, forced dark, and the print reset &mdash; for the same reason
+`--stripe` itself has to be: a custom property is substituted where it is
+declared, not where it is used.
+
 **Ask before writing to the database.** Standing instruction from 29 July.
 Treat **DDL as a separate permission from row writes**.
 
@@ -384,6 +439,53 @@ suite *and* the gate after any batch prose change.**
 **He edits the database directly too** — 15 August he added eight `images` rows
 and wrapped three `factions.description` values in `<p>` while a session was
 running. Re-read a table before assuming the shape you last measured.
+
+**A write that matches no row reports success.** Three times on 22 August a
+database write returned cleanly and did nothing: twice a rule was dropped from a
+long multi-statement paste (`Victory Points`, `Psykers`), and once a `WHERE`
+clause carried `&amp;` where the row's name has a literal `&`
+(`Vehicle Squadrons & Support Weapon Batteries`). An `UPDATE` matching no row is
+not an error, and neither is a `replace()` that finds nothing. **Verify every
+write against a computed fingerprint, never against the absence of an error.**
+The cheap form is an order-independent sum over the whole table:
+
+```sql
+select count(*), sum(('x'||substr(md5(<key>||'|'||md5(<column>)),1,8))::bit(32)::bigint) from ...
+```
+
+Compute the same figure locally from the drafts, check it before writing and
+again after, and take a mid-write reading on a long run so a miss is localised
+to a chunk rather than hunted across the whole set. This is what caught all
+three.
+
+**Anchors derive from the rule name with `&` written `and` and commas stripped.**
+`Dreadnoughts & War Walkers` is reached at `#Dreadnoughts_and_War_Walkers`. A
+naive space-to-underscore slug reported two false broken links on 22 August;
+under the real rule the only unresolved anchor site-wide is
+`/rules/infantry#Terminators`, in the Cyclone Missile Launcher weapon text,
+pointing at a page that does not exist.
+
+**Psychic cards carry no markup.** 59 of the 60 are plain prose with no tags at
+all; the sole exception is `Eldritch Storm`, which bolds `Scatter Dice`.
+Consistency in that deck means using the site's *terms*, not marking them &mdash;
+`psychic:Scan` was brought into line on 22 August by writing "automatically
+Detected" in bare text, where the wargear cards link both terms.
+
+**Changing what a term means obliges you to re-read every text that uses it.**
+The 22 August split of *Spotted* from *Detected* in `general-rules:Hiding` silently
+inverted a sentence in `vehicle-rules:Vehicle Squadrons & Support Weapon Batteries`
+&mdash; "the crew cannot be shot at unless detected" became the opposite of the
+rule it depends on. Thirty passages outside `Hiding` mention spotting, detection
+or hiding. Sweep them all: the check also *vindicated* the split, since
+`Holo-Field`, `Cameleoline`, `Stealth Suit`, `Executioner`, `Spy Mask` and
+`Sentinel Array` already encoded the distinction the core rule had lost.
+
+**A review's own fixes are the riskiest edits in the batch.** Batch 7 of the
+22 August audit was the fix pass for a style review, and three of the seams a
+later review found were opened by it; the follow-on sweep repeated the pattern.
+Fixing a finding moves text, and moved text strands connectives, pronouns and
+list introductions. **Re-run the checks after fixing, not only after drafting**,
+and treat a deletion as more dangerous than an insertion.
 
 **Scope every string replacement to the block it belongs to**, and check the
 removal count against what you expected.

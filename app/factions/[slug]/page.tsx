@@ -50,14 +50,17 @@ export default async function Page(props: {
   const { data: faction, error: factionError } = await supabase
     .from("factions")
     .select(
-      `slug, name, description, images(file_name, artist, title), army_lists(id, name, unit_categories(category, position, units(id, name)), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name))))`,
+      `slug, name, description, images(file_name, artist, title), army_lists(id, name, unit_categories(category, position, army_list_entries(id, position, units(id, name)))), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name)))`,
     )
     .eq("slug", params.slug)
     .order("name", { referencedTable: "army_lists" })
     .order("position", { referencedTable: "army_lists.unit_categories" })
-    .order("id", { referencedTable: "army_lists.wargear_categories" })
+    .order("position", {
+      referencedTable: "army_lists.unit_categories.army_list_entries",
+    })
+    .order("id", { referencedTable: "wargear_categories" })
     .order("points", {
-      referencedTable: "army_lists.wargear_categories.wargear_items",
+      referencedTable: "wargear_categories.wargear_items",
     })
     .single();
 
@@ -171,87 +174,16 @@ export default async function Page(props: {
                               {section.category}
                             </h4>
                             <ul>
-                              {section.units.map((unit) => (
+                              {section.army_list_entries.map((entry) => (
                                 <li
-                                  key={unit.id}
+                                  key={entry.id}
                                   className="flex items-baseline gap-2 text-lg"
                                 >
                                   <h5 className="font-subtitle text-xl">
-                                    {unit.name}
+                                    {entry.units.name}
                                   </h5>
                                 </li>
                               ))}
-                            </ul>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                  {Boolean(list.wargear_categories.length) && (
-                    <>
-                      <h3 className="font-subtitle text-3xl">Equipment</h3>
-                      <ul className="md:columns-3 gap-8 [&>*:nth-child(n+2)]:mt-4">
-                        {list.wargear_categories.map((section) => (
-                          <li
-                            key={section.category}
-                            className="flex flex-col gap-2 break-inside-avoid-column"
-                          >
-                            <h4 className="font-subtitle text-2xl capitalize">
-                              {section.category}
-                            </h4>
-                            <p>{section.note}</p>
-                            <ul>
-                              {section.wargear_items.map((item) => {
-                                if (item.armour) {
-                                  return (
-                                    <li
-                                      key={item.id}
-                                      className="flex items-baseline gap-2 text-lg"
-                                    >
-                                      <Link
-                                        href={`/wargear/armour#${generateAnchorId(item.armour.name)}`}
-                                        className="whitespace-nowrap underline underline-offset-4"
-                                      >
-                                        {item.armour.name}
-                                      </Link>
-                                      <span
-                                        className="flex-1 border-b-2 border-dotted border-black"
-                                        aria-hidden="true"
-                                      />
-                                      <span className="whitespace-nowrap">
-                                        {item.points}
-                                        {item.points === 1 ? "pt" : "pts"}
-                                      </span>
-                                    </li>
-                                  );
-                                }
-
-                                if (item.weapons) {
-                                  return (
-                                    <li
-                                      key={item.id}
-                                      className="flex items-baseline gap-2 text-lg"
-                                    >
-                                      <Link
-                                        href={`/wargear/weapons#${generateAnchorId(item.weapons.name)}`}
-                                        className="whitespace-nowrap underline underline-offset-4"
-                                      >
-                                        {item.weapons.name}
-                                      </Link>
-                                      <span
-                                        className="flex-1 border-b-2 border-dotted border-black"
-                                        aria-hidden="true"
-                                      />
-                                      <span className="whitespace-nowrap">
-                                        {item.points}
-                                        {item.points === 1 ? "pt" : "pts"}
-                                      </span>
-                                    </li>
-                                  );
-                                }
-
-                                return <></>;
-                              })}
                             </ul>
                           </li>
                         ))}
@@ -262,6 +194,79 @@ export default async function Page(props: {
               );
             })}
           </section>
+          {Boolean(faction.wargear_categories.length) && (
+            <section className="flex flex-col gap-8">
+              <h2 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
+                Equipment
+              </h2>
+              <ul className="md:columns-3 gap-8 [&>*:nth-child(n+2)]:mt-4">
+                {faction.wargear_categories.map((section) => (
+                  <li
+                    key={section.category}
+                    className="flex flex-col gap-2 break-inside-avoid-column"
+                  >
+                    <h3 className="font-subtitle text-2xl capitalize">
+                      {section.category}
+                    </h3>
+                    <p>{section.note}</p>
+                    <ul>
+                      {section.wargear_items.map((item) => {
+                        if (item.armour) {
+                          return (
+                            <li
+                              key={item.id}
+                              className="flex items-baseline gap-2 text-lg"
+                            >
+                              <Link
+                                href={`/wargear/armour#${generateAnchorId(item.armour.name)}`}
+                                className="whitespace-nowrap underline underline-offset-4"
+                              >
+                                {item.armour.name}
+                              </Link>
+                              <span
+                                className="flex-1 border-b-2 border-dotted border-black"
+                                aria-hidden="true"
+                              />
+                              <span className="whitespace-nowrap">
+                                {item.points}
+                                {item.points === 1 ? "pt" : "pts"}
+                              </span>
+                            </li>
+                          );
+                        }
+
+                        if (item.weapons) {
+                          return (
+                            <li
+                              key={item.id}
+                              className="flex items-baseline gap-2 text-lg"
+                            >
+                              <Link
+                                href={`/wargear/weapons#${generateAnchorId(item.weapons.name)}`}
+                                className="whitespace-nowrap underline underline-offset-4"
+                              >
+                                {item.weapons.name}
+                              </Link>
+                              <span
+                                className="flex-1 border-b-2 border-dotted border-black"
+                                aria-hidden="true"
+                              />
+                              <span className="whitespace-nowrap">
+                                {item.points}
+                                {item.points === 1 ? "pt" : "pts"}
+                              </span>
+                            </li>
+                          );
+                        }
+
+                        return <></>;
+                      })}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </Panel>
       </>
     );

@@ -5,11 +5,16 @@ import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
+import {
+  ArmourProfile,
+  CloseCombatProfile,
+  RangedProfile,
+  SpecialRuleLinks,
+} from "@/components/WeaponProfile";
 import { facetHref, generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
-import { ReactNode } from "react";
 
 export const revalidate = 3600;
 
@@ -20,204 +25,6 @@ export function generateMetadata(): Metadata {
     title: "Warhammer 40,000 2nd Edition Wargear Cards | 2ed1993",
     description: "Warhammer 40,000 2nd Edition Wargear Cards.",
   };
-}
-
-function ProfileTable({
-  caption,
-  children,
-}: {
-  caption?: string | null;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      {caption && <h3 className="font-subtitle text-sm">{caption}</h3>}
-      <table className="w-full table-fixed bg-black border-4 border-black border-collapse text-center">
-        <tbody>{children}</tbody>
-      </table>
-    </div>
-  );
-}
-
-function RangedProfile({
-  caption,
-  range,
-  toHit,
-  strength,
-  damage,
-  saveModifier,
-  armourPenetration,
-  special,
-}: {
-  caption?: string | null;
-  range: string;
-  toHit: string;
-  strength: string;
-  damage: string;
-  saveModifier: string;
-  armourPenetration: string;
-  special: ReactNode;
-}) {
-  return (
-    <ProfileTable caption={caption}>
-      <tr>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          Range
-        </th>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          To Hit
-        </th>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          Str
-        </th>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          Dam
-        </th>
-      </tr>
-      <tr className="bg-card-face text-2ed-black text-sm">
-        <td className="p-1 bg-card-face">{range}</td>
-        <td className="p-1 bg-card-face">{toHit}</td>
-        <td className="p-1 bg-card-face">{strength}</td>
-        <td className="p-1 bg-card-face">{damage}</td>
-      </tr>
-      <tr>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          Save Mod
-        </th>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          AP
-        </th>
-        <th
-          scope="col"
-          colSpan={2}
-          className="p-1 font-subtitle text-xs text-white"
-        >
-          Special
-        </th>
-      </tr>
-      <tr className="bg-card-face text-2ed-black text-sm">
-        <td className="p-1 bg-card-face">{saveModifier}</td>
-        <td className="p-1 bg-card-face">{armourPenetration}</td>
-        <td colSpan={2} className="p-1 bg-card-face">
-          {special}
-        </td>
-      </tr>
-    </ProfileTable>
-  );
-}
-
-function CloseCombatProfile({
-  caption,
-  strength,
-  damage,
-  saveModifier,
-  armourPenetration,
-  special,
-}: {
-  caption?: string | null;
-  strength: string;
-  damage: string;
-  saveModifier: string;
-  armourPenetration: string;
-  special: ReactNode;
-}) {
-  return (
-    <ProfileTable caption={caption}>
-      <tr>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          Str
-        </th>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          Dam
-        </th>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          Save Mod
-        </th>
-        <th scope="col" className="p-1 font-subtitle text-xs text-white">
-          AP
-        </th>
-      </tr>
-      <tr className="bg-card-face text-2ed-black text-sm">
-        <td className="p-1 bg-card-face">{strength}</td>
-        <td className="p-1 bg-card-face">{damage}</td>
-        <td className="p-1 bg-card-face">{saveModifier}</td>
-        <td className="p-1 bg-card-face">{armourPenetration}</td>
-      </tr>
-      <tr>
-        <th
-          scope="col"
-          colSpan={4}
-          className="p-1 font-subtitle text-xs text-white"
-        >
-          Special
-        </th>
-      </tr>
-      <tr className="bg-card-face text-2ed-black text-sm">
-        <td colSpan={4} className="p-1 bg-card-face">
-          {special}
-        </td>
-      </tr>
-    </ProfileTable>
-  );
-}
-
-function ArmourProfile({
-  caption,
-  save,
-  special,
-}: {
-  caption?: string | null;
-  save: ReactNode;
-  special: ReactNode;
-}) {
-  return (
-    <ProfileTable caption={caption}>
-      <tr>
-        <th scope="col" className="p-2 font-subtitle text-xs text-white">
-          Save
-        </th>
-        <th
-          scope="col"
-          colSpan={3}
-          className="p-2 font-subtitle text-xs text-white"
-        >
-          Special
-        </th>
-      </tr>
-      <tr className="bg-card-face text-2ed-black text-lg">
-        <td className="p-2 bg-card-face">{save}</td>
-        <td colSpan={3} className="p-2 bg-card-face">
-          {special}
-        </td>
-      </tr>
-    </ProfileTable>
-  );
-}
-
-function SpecialRuleLinks({
-  href,
-  rules,
-}: {
-  href: string;
-  rules: { name: string }[];
-}) {
-  if (!rules.length) {
-    return <>&ndash;</>;
-  }
-
-  return (
-    <span className="flex flex-col">
-      {rules.map((rule) => (
-        <Link
-          key={rule.name}
-          className="underline underline-offset-4"
-          href={`${href}#${generateAnchorId(rule.name)}_Rule`}
-        >
-          {rule.name}
-        </Link>
-      ))}
-    </span>
-  );
 }
 
 export default async function Page() {
@@ -231,7 +38,7 @@ export default async function Page() {
   const { data: cards, error: cardsError } = await supabase
     .from("wargear_cards")
     .select(
-      "id, name, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
+      "id, name, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
     )
     .order("name")
     .order("position", { referencedTable: "wargear_cards_weapons" })
@@ -389,6 +196,7 @@ export default async function Page() {
                             <SpecialRuleLinks
                               href="/wargear/weapons"
                               rules={profile.weapon_special_rules}
+                              bearer="Infantry"
                             />
                           );
 

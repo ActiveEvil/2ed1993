@@ -10,6 +10,7 @@
   /* Card faces are printed card stock rather than page background: they keep
      their dark ink in both schemes and only lose the glare in dark mode. */
   --card-face: #fafafa;
+  --card-stripe: color-mix(in oklab, #fafafa 93%, #2d2d2d);
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
 }
 @theme inline {
@@ -20,6 +21,7 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--house-rule-accent);
   --color-card-face: var(--card-face);
+  --color-card-stripe: var(--card-stripe);
   --color-2ed-black: #2d2d2d;
   --color-2ed-white: #fafafa;
   --color-2ed-light-yellow: #fff20b;
@@ -31,6 +33,22 @@
   --color-2ed-light-blue: #6dcef7;
   --color-2ed-light-green: #c2dfcf;
   --color-2ed-dark-green: #00a800;
+  --color-faction-space-marines: #244a91;
+  --color-faction-imperial-agents: #d9261c;
+  --color-faction-eldar: #0094de;
+  --color-faction-orks: #009140;
+  --color-faction-squats: #e87817;
+  --color-faction-tyranids: #6e619e;
+  --color-faction-slaanesh: #f09ca1;
+  --color-faction-tzeentch: #0094de;
+  --color-faction-nurgle: #b8db7d;
+  /* Imperial Guard, Chaos and the Necrons come from the datafax frames rather
+     than the psychic cards, which those factions have no deck in. The Chaos
+     datafaxes are framed in black on every one of the nine cards: the near-black
+     below is what the source prints, not a stand-in for a colour. */
+  --color-faction-imperial-guard: #1d3a86;
+  --color-faction-chaos: #202028;
+  --color-faction-necrons: #707582;
   --font-title: var(--merriweather);
   --font-subtitle: var(--ibm-plex-sans);
   --font-block: var(--crimson-text);
@@ -82,6 +100,13 @@
           margin-left: calc(var(--spacing) * -4);
         }
       }
+    }
+  }
+  .dynamic-content.compact {
+    p,
+    li {
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
     }
   }
   .dynamic-content {
@@ -291,6 +316,7 @@
     --foreground: #fafafa;
     --house-rule-accent: #6dcef7;
     --card-face: #d8d8d8;
+    --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
   }
 }
@@ -300,6 +326,7 @@
   --foreground: #fafafa;
   --house-rule-accent: #6dcef7;
   --card-face: #d8d8d8;
+  --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
 }
 
@@ -357,6 +384,7 @@ body {
     --foreground: #2d2d2d;
     --house-rule-accent: #005097;
     --card-face: #fafafa;
+    --card-stripe: color-mix(in oklab, #fafafa 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
   }
 
