@@ -1,6 +1,5 @@
 {
   "second_person": [
-    {"key": "rule:general-rules:Psykers", "reason": "vetted aside, second-person pass of 8 August"},
     {"key": "rule:movement:Running", "reason": "vetted aside, second-person pass of 8 August"},
     {"key": "rule:shooting:To Hit The Target", "reason": "vetted aside, second-person pass of 8 August"}
   ],

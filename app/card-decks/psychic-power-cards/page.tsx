@@ -5,24 +5,12 @@ import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
+import { deckColors } from "@/lib/factions";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
-
-export const deckColors: Record<string, string> = {
-  Librarian: "bg-blue-600",
-  Inquisition: "bg-red-500",
-  Adeptus: "bg-blue-700",
-  "Ork Weirdboyz": "bg-green-600",
-  "Eldar Seers": "bg-sky-500",
-  Squat: "bg-orange-500",
-  Tyranid: "bg-purple-500",
-  Slaanesh: "bg-pink-400",
-  Tzeentch: "bg-cyan-500",
-  Nurgle: "bg-lime-400",
-};
 
 export function generateMetadata(): Metadata {
   return {
