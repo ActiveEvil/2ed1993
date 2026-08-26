@@ -1589,14 +1589,17 @@ export type Database = {
           alternative: number;
           armour_id: number | null;
           created_at: string;
+          grant_mode: string | null;
           granted_unit_id: number | null;
           id: number;
           models_max: number | null;
+          models_min: number | null;
           models_per: number | null;
           note: string | null;
+          option_group: string;
           optional: boolean;
           position: number;
-          quantity: number;
+          quantity: number | null;
           replaces_armour_id: number | null;
           replaces_weapon_id: number | null;
           restriction: string | null;
@@ -1611,14 +1614,17 @@ export type Database = {
           alternative?: number;
           armour_id?: number | null;
           created_at?: string;
+          grant_mode?: string | null;
           granted_unit_id?: number | null;
           id?: number;
           models_max?: number | null;
+          models_min?: number | null;
           models_per?: number | null;
           note?: string | null;
+          option_group: string;
           optional?: boolean;
           position: number;
-          quantity?: number;
+          quantity?: number | null;
           replaces_armour_id?: number | null;
           replaces_weapon_id?: number | null;
           restriction?: string | null;
@@ -1633,14 +1639,17 @@ export type Database = {
           alternative?: number;
           armour_id?: number | null;
           created_at?: string;
+          grant_mode?: string | null;
           granted_unit_id?: number | null;
           id?: number;
           models_max?: number | null;
+          models_min?: number | null;
           models_per?: number | null;
           note?: string | null;
+          option_group?: string;
           optional?: boolean;
           position?: number;
-          quantity?: number;
+          quantity?: number | null;
           replaces_armour_id?: number | null;
           replaces_weapon_id?: number | null;
           restriction?: string | null;
@@ -1713,6 +1722,7 @@ export type Database = {
       unit_profiles: {
         Row: {
           a: number | null;
+          alternative: number;
           bs: number | null;
           created_at: string;
           i: number | null;
@@ -1735,6 +1745,7 @@ export type Database = {
         };
         Insert: {
           a?: number | null;
+          alternative?: number;
           bs?: number | null;
           created_at?: string;
           i?: number | null;
@@ -1757,6 +1768,7 @@ export type Database = {
         };
         Update: {
           a?: number | null;
+          alternative?: number;
           bs?: number | null;
           created_at?: string;
           i?: number | null;

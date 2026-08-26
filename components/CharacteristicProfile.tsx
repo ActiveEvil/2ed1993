@@ -22,10 +22,9 @@ export type Characteristics = {
 export type CharacteristicRow = Characteristics & {
   id: number | string;
   name: string;
+  alternative?: number;
   count?: string | null;
   note?: string | null;
-  weapons?: React.ReactNode;
-  armour?: React.ReactNode;
 };
 
 const characteristic = (value: number | null): string =>
@@ -33,48 +32,61 @@ const characteristic = (value: number | null): string =>
 
 const HEAD_CELL = "px-2 py-1 font-subtitle text-xs text-white";
 const CELL = "px-2 py-1";
-const WARGEAR_CELL = "px-2 py-1 text-left";
+
+export const ProfileFrame: React.FC<React.PropsWithChildren> = ({
+  children,
+}): React.JSX.Element => (
+  <div className="border-4 border-black">{children}</div>
+);
 
 export const CharacteristicTable: React.FC<{
   caption: string;
   rows: CharacteristicRow[];
-}> = ({ caption, rows }): React.JSX.Element => {
-  const armed = rows.some((row) => row.weapons);
-  const armoured = rows.some((row) => row.armour);
-
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-max bg-black border-4 border-black border-collapse text-center">
-        <caption className="sr-only">{caption}</caption>
-        <thead>
-          <tr>
-            <th scope="col" className={clsx(HEAD_CELL, "text-left")}>
-              Profile
+}> = ({ caption, rows }): React.JSX.Element => (
+  <div className="overflow-x-auto">
+    <table className="w-full min-w-max bg-black border-collapse text-center">
+      <caption className="sr-only">{caption}</caption>
+      <thead>
+        <tr>
+          <th scope="col" className={clsx(HEAD_CELL, "text-left")}>
+            Profile
+          </th>
+          {CHARACTERISTICS.map(({ key, label }) => (
+            <th key={key} scope="col" className={HEAD_CELL}>
+              {label}
             </th>
-            {CHARACTERISTICS.map(({ key, label }) => (
-              <th key={key} scope="col" className={HEAD_CELL}>
-                {label}
-              </th>
-            ))}
-            {armed && (
-              <th scope="col" className={clsx(HEAD_CELL, "text-left")}>
-                Weapons
-              </th>
-            )}
-            {armoured && (
-              <th scope="col" className={clsx(HEAD_CELL, "text-left")}>
-                Armour
-              </th>
-            )}
-          </tr>
-        </thead>
-        <tbody className="text-sm">
-          {rows.map((row) => (
+          ))}
+        </tr>
+      </thead>
+      <tbody className="text-base">
+        {rows.map((row, index) => {
+          const orAbove =
+            index > 0 && row.alternative !== rows[index - 1].alternative;
+          const orBelow =
+            index < rows.length - 1 &&
+            rows[index + 1].alternative !== row.alternative;
+
+          return (
             <tr key={row.id} className="bg-background even:bg-(--stripe)">
               <th
                 scope="row"
-                className={clsx(CELL, "text-left whitespace-nowrap")}
+                className={clsx(
+                  "relative px-2 text-left whitespace-nowrap",
+                  orAbove ? "pt-4" : "pt-1",
+                  orBelow ? "pb-4" : "pb-1",
+                )}
               >
+                {orAbove && (
+                  <>
+                    <span
+                      aria-hidden="true"
+                      className="absolute -top-3 left-2 font-subtitle font-normal"
+                    >
+                      {"\u2014or\u2014"}
+                    </span>
+                    <span className="sr-only">{"or "}</span>
+                  </>
+                )}
                 {row.name}
                 {row.count && (
                   <span className="font-normal">{` ${TIMES}${row.count}`}</span>
@@ -88,30 +100,49 @@ export const CharacteristicTable: React.FC<{
                   {characteristic(row[key])}
                 </td>
               ))}
-              {armed && <td className={WARGEAR_CELL}>{row.weapons}</td>}
-              {armoured && <td className={WARGEAR_CELL}>{row.armour}</td>}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-export const OptionList: React.FC<{
-  caption: string;
-  children: React.ReactNode;
-}> = ({ caption, children }): React.JSX.Element => (
-  <div className="border-4 border-black">
-    <h4 className="sr-only">{caption}</h4>
-    <ul className="text-base">{children}</ul>
+          );
+        })}
+      </tbody>
+    </table>
   </div>
 );
 
-export const OptionRow: React.FC<React.PropsWithChildren> = ({
+export const LabelledTable: React.FC<{
+  caption: string;
+  className?: string;
+  children: React.ReactNode;
+}> = ({ caption, className, children }): React.JSX.Element => (
+  <table
+    className={clsx(
+      "w-full border-collapse text-sm",
+      "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-(--stripe)",
+      className,
+    )}
+  >
+    <caption className="sr-only">{caption}</caption>
+    {children}
+  </table>
+);
+
+export const LabelledGroup: React.FC<React.PropsWithChildren> = ({
   children,
-}): React.JSX.Element => (
-  <li className="px-2 py-1 bg-background even:bg-(--stripe)">{children}</li>
+}): React.JSX.Element => <tbody>{children}</tbody>;
+
+export const LabelledRow: React.FC<{
+  label: string;
+  repeated?: boolean;
+  children: React.ReactNode;
+}> = ({ label, repeated = false, children }): React.JSX.Element => (
+  <tr>
+    <th
+      scope="row"
+      className="w-24 px-2 py-1 font-subtitle text-sm text-left align-top uppercase"
+    >
+      <span className={clsx(repeated && "sr-only")}>{label}</span>
+    </th>
+    <td className="px-2 py-1 align-top">{children}</td>
+  </tr>
 );
 
 export const CharacteristicStrip: React.FC<{

@@ -417,6 +417,12 @@ darker `--card-red` (`#b3141a`, 6.64 / 4.86, passes at any size), left untaken
 because it means either a second red token or shifting `2ed-dark-red` under the
 wargear cards, mission cards and `/design`.
 
+**The page background measures the same, so the rule is not a card rule.**
+`#ea2323` on `--background` is **4.22:1** light and **3.12:1** dark, measured
+24 August during the profile layout work &mdash; near-identical to the card-face
+figures. The rule therefore generalises: **red at `text-xl` or above, anywhere
+on the site.** Below that, weight and case in the surface's own ink.
+
 **A stripe mixed from `--background` is wrong on a card face.** `--stripe` is
 `color-mix(... var(--background) ...)`, and a card face deliberately does not
 follow the scheme, so the two disagree. `--card-stripe` was added 24 August,
