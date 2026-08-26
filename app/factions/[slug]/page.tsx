@@ -68,6 +68,9 @@ export default async function Page(props: {
 
   if (faction) {
     const heros = faction.images.slice(0, 2);
+    const stockedSections = faction.wargear_categories.filter(
+      ({ wargear_items }) => wargear_items.length,
+    );
 
     return (
       <>
@@ -194,13 +197,13 @@ export default async function Page(props: {
               );
             })}
           </section>
-          {Boolean(faction.wargear_categories.length) && (
+          {Boolean(stockedSections.length) && (
             <section className="flex flex-col gap-8">
               <h2 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
                 Equipment
               </h2>
               <ul className="md:columns-3 gap-8 [&>*:nth-child(n+2)]:mt-4">
-                {faction.wargear_categories.map((section) => (
+                {stockedSections.map((section) => (
                   <li
                     key={section.category}
                     className="flex flex-col gap-2 break-inside-avoid-column"
