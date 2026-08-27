@@ -16,7 +16,7 @@ const BurgerMenu: React.FC<{
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const list = items.map(({ href, anchor }) => (
-    <li key={href} className="font-subtitle text-xl uppercase">
+    <li key={href} className="font-subtitle uppercase">
       {pathname === href ? (
         <span
           aria-current="page"
@@ -83,7 +83,7 @@ const StandardMenu: React.FC<{
 }> = ({ items }): React.JSX.Element => {
   const pathname = usePathname();
   const list = items.map(({ href, anchor }) => (
-    <li key={href} className="font-subtitle text-xl uppercase">
+    <li key={href} className="font-subtitle uppercase">
       {pathname === href ? (
         <span
           aria-current="page"
@@ -125,6 +125,10 @@ export const TopNav: React.FC = (): React.JSX.Element => {
     {
       href: "/factions",
       anchor: "Factions",
+    },
+    {
+      href: "/profiles",
+      anchor: "Unit Profiles",
     },
     {
       href: "/wargear",

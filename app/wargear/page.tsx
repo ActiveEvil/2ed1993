@@ -38,20 +38,22 @@ const SectionList: React.FC<{
 );
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "wargear")
-    .single();
+  const [
+    { data: heroImage, error: heroImageError },
+    { data: armourCategoryRows, error: armourCategoryError },
+    { data: availabilityRows, error: availabilityError },
+    { data: weaponCategoryRows, error: weaponCategoryError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "wargear")
+      .single(),
+    supabase.from("armour_categories").select("name").order("position"),
+    supabase.from("availabilities").select("name").order("position"),
+    supabase.from("weapon_categories").select("name").order("position"),
+  ]);
   const hero = heroImage?.images ?? null;
-  const { data: armourCategoryRows, error: armourCategoryError } =
-    await supabase.from("armour_categories").select("name").order("position");
-  const { data: availabilityRows, error: availabilityError } = await supabase
-    .from("availabilities")
-    .select("name")
-    .order("position");
-  const { data: weaponCategoryRows, error: weaponCategoryError } =
-    await supabase.from("weapon_categories").select("name").order("position");
 
   assertNoQueryErrors(
     "/wargear",
