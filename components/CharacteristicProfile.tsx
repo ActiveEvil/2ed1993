@@ -58,7 +58,7 @@ export const CharacteristicTable: React.FC<{
           ))}
         </tr>
       </thead>
-      <tbody className="text-base">
+      <tbody className="text-lg font-semibold">
         {rows.map((row, index) => {
           const orAbove =
             index > 0 && row.alternative !== rows[index - 1].alternative;
@@ -118,7 +118,7 @@ export const LabelledTable: React.FC<{
 }> = ({ caption, className, children }): React.JSX.Element => (
   <table
     className={clsx(
-      "w-full border-collapse text-sm",
+      "w-full border-collapse text-lg",
       "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-(--stripe)",
       "group-target:[&>tbody:nth-of-type(odd)]:bg-2ed-light-yellow group-target:[&>tbody:nth-of-type(even)]:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]",
       className,
