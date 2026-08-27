@@ -52,7 +52,7 @@ export const CharacteristicTable: React.FC<{
             Profile
           </th>
           {CHARACTERISTICS.map(({ key, label }) => (
-            <th key={key} scope="col" className={HEAD_CELL}>
+            <th key={key} scope="col" className={clsx(HEAD_CELL, "w-12")}>
               {label}
             </th>
           ))}
@@ -67,7 +67,10 @@ export const CharacteristicTable: React.FC<{
             rows[index + 1].alternative !== row.alternative;
 
           return (
-            <tr key={row.id} className="bg-background even:bg-(--stripe)">
+            <tr
+              key={row.id}
+              className="bg-background even:bg-(--stripe) group-target:bg-2ed-light-yellow group-target:even:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]"
+            >
               <th
                 scope="row"
                 className={clsx(
@@ -117,6 +120,7 @@ export const LabelledTable: React.FC<{
     className={clsx(
       "w-full border-collapse text-sm",
       "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-(--stripe)",
+      "group-target:[&>tbody:nth-of-type(odd)]:bg-2ed-light-yellow group-target:[&>tbody:nth-of-type(even)]:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]",
       className,
     )}
   >
