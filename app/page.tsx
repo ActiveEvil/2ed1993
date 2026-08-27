@@ -16,33 +16,34 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImages, error: heroImageError } = await supabase
+  const heroImagesQuery = supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
     .eq("slug", "home")
     .order("position");
-  const heros = heroImages?.map(({ images }) => images) ?? [];
-  const [hero, secondImage] = heros;
-  const { data: chapters, error: chaptersError } = await supabase
+  const chaptersQuery = supabase
     .from("rule_categories")
-    .select("id");
-  const { data: sections, error: sectionsError } = await supabase
+    .select("id", { count: "exact", head: true });
+  const sectionsQuery = supabase
     .from("rules")
-    .select("id");
-  const { data: factions, error: factionsError } = await supabase
+    .select("id", { count: "exact", head: true });
+  const factionsQuery = supabase
     .from("factions")
-    .select("id")
+    .select("id", { count: "exact", head: true })
     .is("parent_faction_id", null);
-  const { data: subfactions, error: subfactionsError } = await supabase
+  const unitProfilesQuery = supabase
+    .from("units")
+    .select("id, unit_types(plural_name, position)");
+  const subfactionsQuery = supabase
     .from("factions")
-    .select("id")
+    .select("id", { count: "exact", head: true })
     .not("parent_faction_id", "is", null);
-  const wargear = await Promise.all(
+  const wargearQuery = Promise.all(
     (["weapons", "armour", "wargear_cards"] as const).map((table) =>
-      supabase.from(table).select("id"),
+      supabase.from(table).select("id", { count: "exact", head: true }),
     ),
   );
-  const decks = await Promise.all(
+  const decksQuery = Promise.all(
     (
       [
         "mission_cards",
@@ -50,8 +51,32 @@ export default async function Page() {
         "psychic_power_cards",
         "special_warp_cards",
       ] as const
-    ).map((table) => supabase.from(table).select("id")),
+    ).map((table) =>
+      supabase.from(table).select("id", { count: "exact", head: true }),
+    ),
   );
+
+  const [
+    { data: heroImages, error: heroImageError },
+    { count: chapters, error: chaptersError },
+    { count: sections, error: sectionsError },
+    { count: factions, error: factionsError },
+    { data: unitProfiles, error: unitProfilesError },
+    { count: subfactions, error: subfactionsError },
+    wargear,
+    decks,
+  ] = await Promise.all([
+    heroImagesQuery,
+    chaptersQuery,
+    sectionsQuery,
+    factionsQuery,
+    unitProfilesQuery,
+    subfactionsQuery,
+    wargearQuery,
+    decksQuery,
+  ]);
+  const heros = heroImages?.map(({ images }) => images) ?? [];
+  const [hero, secondImage] = heros;
 
   assertNoQueryErrors(
     "/",
@@ -59,6 +84,7 @@ export default async function Page() {
     chaptersError,
     sectionsError,
     factionsError,
+    unitProfilesError,
     subfactionsError,
     ...wargear.map(({ error }) => error),
     ...decks.map(({ error }) => error),
@@ -66,30 +92,48 @@ export default async function Page() {
 
   if (
     hero &&
-    chapters &&
-    sections &&
-    factions &&
-    subfactions &&
-    wargear.every(({ data }) => data) &&
-    decks.every(({ data }) => data)
+    chapters !== null &&
+    sections !== null &&
+    factions !== null &&
+    unitProfiles &&
+    subfactions !== null &&
+    wargear.every(({ count }) => count !== null) &&
+    decks.every(({ count }) => count !== null)
   ) {
     const [weaponCount, armourCount, wargearCardCount] = wargear.map(
-      ({ data }) => data?.length ?? 0,
+      ({ count }) => count ?? 0,
     );
     const cardCount = decks.reduce(
-      (total, { data }) => total + (data?.length ?? 0),
+      (total, { count }) => total + (count ?? 0),
       0,
     );
+    const unitProfileCounts = Object.values(
+      unitProfiles.reduce<
+        Record<string, { pluralName: string; position: number; count: number }>
+      >((acc, profile) => {
+        const pluralName = profile.unit_types?.plural_name ?? "Unknown";
+        const position = profile.unit_types?.position ?? Infinity;
+        acc[pluralName] = acc[pluralName] ?? { pluralName, position, count: 0 };
+        acc[pluralName].count += 1;
+        return acc;
+      }, {}),
+    ).sort((a, b) => a.position - b.position);
+
     const record = [
       {
         href: "/rules",
         title: "Rules",
-        stat: `${chapters.length} chapters \u00b7 ${sections.length} sections`,
+        stat: `${chapters} chapters \u00b7 ${sections} sections`,
       },
       {
         href: "/factions",
         title: "Factions",
-        stat: `${factions.length} factions \u00b7 ${subfactions.length} subfactions`,
+        stat: `${factions} factions \u00b7 ${subfactions} subfactions`,
+      },
+      {
+        href: "/profiles",
+        title: "Unit Profiles",
+        stat: `${unitProfileCounts.map(({ pluralName, count }) => `${pluralName} ${count}`).join(" \u00b7 ")}`,
       },
       {
         href: "/wargear",
@@ -157,7 +201,7 @@ export default async function Page() {
                 <Link
                   key={href}
                   href={href}
-                  className="group flex flex-col gap-2 p-4 border-4 border-black shadow-lg md:first:col-span-2"
+                  className="group flex flex-col gap-2 p-4 border-4 border-black shadow-lg"
                 >
                   <span className="font-subtitle text-2xl group-hover:underline underline-offset-4">
                     {title}

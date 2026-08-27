@@ -71,11 +71,13 @@ export default async function Page() {
         slug,
         name,
         count: counts.get(id) ?? 0,
+        wide: false,
       })),
     {
       slug: FORTIFICATIONS_SLUG,
       name: FORTIFICATIONS_NAME,
       count: fortifications,
+      wide: true,
     },
   ];
 
@@ -104,12 +106,13 @@ export default async function Page() {
           note={countLabel(units.length)}
         />
         <div className="grid md:grid-cols-2 gap-4">
-          {sections.map(({ slug, name, count }) => (
+          {sections.map(({ slug, name, count, wide }) => (
             <IndexCard
               key={slug}
               href={`/profiles/${slug}`}
               title={name}
               summary={countLabel(count)}
+              wide={wide}
             />
           ))}
         </div>

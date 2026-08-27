@@ -2,7 +2,6 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { FactionCard } from "@/components/Cards";
 import type { Image } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
-import { SectionBar } from "@/components/SectionBar";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -18,7 +17,7 @@ export function generateMetadata(): Metadata {
 export default async function Page() {
   const { data: factions, error: factionsError } = await supabase
     .from("factions")
-    .select("slug, name, images(file_name, artist, title)")
+    .select("slug, name, images(file_name, artist, title), army_lists(id)")
     .is("parent_faction_id", null)
     .order("name");
 
@@ -47,9 +46,8 @@ export default async function Page() {
               Factions
             </h1>
           </header>
-          <SectionBar as="h2" title="Coming soon..." />
           <div className="grid md:grid-cols-2 gap-4">
-            {factions.map(({ slug, name, images }) => {
+            {factions.map(({ slug, name, images, army_lists }) => {
               const image: Image | undefined = images[0] && {
                 src: `images/${images[0].file_name}`,
                 title: images[0].title,
@@ -61,6 +59,8 @@ export default async function Page() {
                   href={`/factions/${slug}`}
                   name={name}
                   image={image}
+                  // disabled={!army_lists.length}
+                  disabled
                 />
               );
             })}

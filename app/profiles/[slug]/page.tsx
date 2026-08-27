@@ -10,6 +10,7 @@ import {
 } from "@/components/CharacteristicProfile";
 import { Datafax } from "@/components/Datafax";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
+import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
@@ -24,12 +25,13 @@ export const revalidate = 3600;
 
 const FORTIFICATIONS_SLUG = "fortifications";
 const FORTIFICATIONS_NAME = "Fortifications";
+const FORTIFICATIONS_IMAGE_FILE_NAME = "The-Green-Tide.jpg";
 const DASH = "–";
 const TIMES = "×";
 const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
 
 const UNITS_SELECT =
-  "id, name, profile_description, faction_id, unit_types(name, plural_name, position), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, armour(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), unit_option_categories(position, wargear_categories(category))), datafaxes(id, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, transport_capacity, open_topped, large_target, capacity_inside, capacity_roof, deployment, location_dice, note, motive_types(name), datafax_images(position, images(file_name, artist, title)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, weapons(name, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, position, damage_chart_results(id, roll_min, roll_max, effect, position)))";
+  "id, name, profile_description, faction_id, unit_types(name, plural_name, position), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, armour(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), unit_option_categories(position, wargear_categories(category))), datafaxes(id, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, transport_capacity, open_topped, large_target, capacity_inside, capacity_roof, deployment, location_dice, note, points, motive_types(name), datafax_images(position, images(file_name, artist, title)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, weapons(name, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, position, damage_chart_results(id, roll_min, roll_max, effect, position)))";
 
 const range = (min: number, max: number | null): string =>
   max === null || max === min ? String(min) : `${min}${DASH}${max}`;
@@ -151,7 +153,9 @@ export default async function Page(props: {
 
   const { data: factionRows, error: factionsError } = await supabase
     .from("factions")
-    .select("id, slug, name, parent_faction_id")
+    .select(
+      "id, slug, name, parent_faction_id, images(file_name, artist, title)",
+    )
     .order("name");
 
   assertNoQueryErrors("/profiles/[slug]", factionsError);
@@ -166,6 +170,22 @@ export default async function Page(props: {
 
   if (!isFortifications && !faction) {
     notFound();
+  }
+
+  let hero: { file_name: string; artist: string | null; title: string } | null =
+    faction?.images[0] ?? null;
+
+  if (isFortifications) {
+    const { data: fortificationsImage, error: fortificationsImageError } =
+      await supabase
+        .from("images")
+        .select("file_name, artist, title")
+        .eq("file_name", FORTIFICATIONS_IMAGE_FILE_NAME)
+        .maybeSingle();
+
+    assertNoQueryErrors("/profiles/[slug]", fortificationsImageError);
+
+    hero = fortificationsImage;
   }
 
   const title = faction ? faction.name : FORTIFICATIONS_NAME;
@@ -255,6 +275,13 @@ export default async function Page(props: {
               {title}
             </h1>
           </header>
+          {hero && (
+            <ImageWithCredit
+              src={`images/${hero.file_name}`}
+              title={hero.title}
+              artist={hero.artist}
+            />
+          )}
         </Panel>
         {Boolean(groups.length) && (
           <JumpBar className={FULL_BLEED} items={jumpItems} label="Jump to">
