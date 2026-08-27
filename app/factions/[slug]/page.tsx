@@ -6,6 +6,7 @@ import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
+import { Fragment } from "react";
 
 export const revalidate = 3600;
 
@@ -51,6 +52,51 @@ const formatCost = (points: number, basis: string | null): string => {
       return formatPoints(points);
   }
 };
+
+const allowanceRule = (rule: {
+  count: number;
+  per_count: number;
+  note: string | null;
+  per_entry: { units: { name: string } } | null;
+}): string | null => {
+  if (rule.note !== null) {
+    return rule.note;
+  }
+
+  if (rule.per_count === 1 && rule.per_entry) {
+    return `Up to ${rule.count} per ${rule.per_entry.units.name}`;
+  }
+
+  return null;
+};
+
+const CategoryPick: React.FC<{
+  quantity: number;
+  categories: string[];
+  priced: boolean;
+  hrefFor: (category: string) => string | null;
+}> = ({ quantity, categories, priced, hrefFor }): React.JSX.Element => (
+  <p className="text-sm">
+    {quantity} from{" "}
+    {categories.map((category, index) => {
+      const href = hrefFor(category);
+
+      return (
+        <Fragment key={category}>
+          {index > 0 && ", "}
+          {href ? (
+            <Link className="underline underline-offset-4" href={href}>
+              {category}
+            </Link>
+          ) : (
+            category
+          )}
+        </Fragment>
+      );
+    })}
+    {priced && ", at additional cost"}
+  </p>
+);
 
 const entryCost = (entry: {
   points: number | null;
@@ -113,7 +159,7 @@ export default async function Page(props: {
   const { data: faction, error: factionError } = await supabase
     .from("factions")
     .select(
-      `slug, name, description, images(file_name, artist, title), army_lists(id, name, description, unit_categories(category, note, position, army_list_entries(id, position, allowance_min, allowance_max, points, note, points_bases(name), army_list_entry_options(points), units(id, name)))), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name), units(id, name)))`,
+      `slug, name, description, images(file_name, artist, title), army_lists(id, name, description, unit_categories(category, note, position, army_list_entries(id, position, allowance_min, allowance_max, points, note, points_bases(name), army_list_entry_options(points), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), units(id, name, unit_options!unit_options_unit_id_fkey(id, option_group, optional, quantity, position, unit_option_categories(position, wargear_categories(category))))))), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name)))`,
     )
     .eq("slug", params.slug)
     .order("name", { referencedTable: "army_lists" })
@@ -134,6 +180,19 @@ export default async function Page(props: {
     const stockedSections = faction.wargear_categories.filter(
       ({ wargear_items }) => wargear_items.length,
     );
+    const stockedByName = new Map(
+      stockedSections.map((section) => [section.category, section]),
+    );
+    const categoryHref = (category: string): string | null =>
+      stockedByName.has(category)
+        ? `/factions/${faction.slug}#${generateAnchorId(category)}`
+        : null;
+    const categoryPriced = (category: string): boolean =>
+      Boolean(
+        stockedByName
+          .get(category)
+          ?.wargear_items.some(({ points }) => points !== null),
+      );
 
     return (
       <>
@@ -228,57 +287,101 @@ export default async function Page(props: {
                         dangerouslySetInnerHTML={{ __html: list.description }}
                       />
                     )}
-                    {list.unit_categories.map((section) => (
-                      <div
-                        key={section.category}
-                        className="flex flex-col gap-2"
-                      >
-                        <h4 className="font-subtitle text-2xl capitalize">
-                          {section.category}
-                        </h4>
-                        {section.note && <p>{section.note}</p>}
-                        <ul className="flex flex-col gap-2">
-                          {section.army_list_entries.map((entry) => {
-                            const allowance = formatAllowance(
-                              entry.allowance_min,
-                              entry.allowance_max,
-                            );
-                            const cost = entryCost(entry);
+                    <ul className="md:columns-3 gap-8 [&>*:nth-child(n+2)]:mt-4">
+                      {list.unit_categories.map((section) => (
+                        <li
+                          key={section.category}
+                          className="flex flex-col gap-2 break-inside-avoid-column"
+                        >
+                          <h4 className="font-subtitle text-2xl capitalize">
+                            {section.category}
+                          </h4>
+                          {section.note && <p>{section.note}</p>}
+                          <ul className="flex flex-col gap-2">
+                            {section.army_list_entries.map((entry) => {
+                              const allowance = formatAllowance(
+                                entry.allowance_min,
+                                entry.allowance_max,
+                              );
+                              const cost = entryCost(entry);
+                              const rules = entry.army_list_allowance_rules
+                                .map(allowanceRule)
+                                .filter(
+                                  (text): text is string => text !== null,
+                                );
+                              const picks = entry.units.unit_options
+                                .filter(
+                                  (option) =>
+                                    option.option_group === "wargear" &&
+                                    !option.optional &&
+                                    option.quantity !== null &&
+                                    option.unit_option_categories.length > 0,
+                                )
+                                .sort((a, b) => a.position - b.position)
+                                .map((option) => ({
+                                  id: option.id,
+                                  quantity: option.quantity ?? 1,
+                                  categories: [...option.unit_option_categories]
+                                    .sort((a, b) => a.position - b.position)
+                                    .map(
+                                      ({ wargear_categories }) =>
+                                        wargear_categories.category,
+                                    ),
+                                }))
+                                .map((pick) => ({
+                                  ...pick,
+                                  priced: pick.categories.some(categoryPriced),
+                                }));
 
-                            return (
-                              <li
-                                key={entry.id}
-                                className="flex flex-col gap-1"
-                              >
-                                <div className={ROW}>
-                                  <Link
-                                    href={`/profiles/${faction.slug}#${generateAnchorId(entry.units.name)}`}
-                                    className={LINK}
-                                  >
-                                    {entry.units.name}
-                                  </Link>
-                                  {allowance && (
-                                    <span className={CELL}>{allowance}</span>
+                              return (
+                                <li
+                                  key={entry.id}
+                                  className="flex flex-col gap-1"
+                                >
+                                  <div className={ROW}>
+                                    <Link
+                                      href={`/profiles/${faction.slug}#${generateAnchorId(entry.units.name)}`}
+                                      className={LINK}
+                                    >
+                                      {entry.units.name}
+                                    </Link>
+                                    {allowance && (
+                                      <span className={CELL}>{allowance}</span>
+                                    )}
+                                    {cost && (
+                                      <>
+                                        <span
+                                          className={LEADER}
+                                          aria-hidden="true"
+                                        />
+                                        <span className={CELL}>{cost}</span>
+                                      </>
+                                    )}
+                                  </div>
+                                  {entry.note && (
+                                    <p className="text-sm">{entry.note}</p>
                                   )}
-                                  {cost && (
-                                    <>
-                                      <span
-                                        className={LEADER}
-                                        aria-hidden="true"
-                                      />
-                                      <span className={CELL}>{cost}</span>
-                                    </>
-                                  )}
-                                </div>
-                                {entry.note && (
-                                  <p className="text-sm">{entry.note}</p>
-                                )}
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    ))}
+                                  {rules.map((text) => (
+                                    <p key={text} className="text-sm">
+                                      {text}
+                                    </p>
+                                  ))}
+                                  {picks.map((pick) => (
+                                    <CategoryPick
+                                      key={pick.id}
+                                      quantity={pick.quantity}
+                                      categories={pick.categories}
+                                      priced={pick.priced}
+                                      hrefFor={categoryHref}
+                                    />
+                                  ))}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
                   </section>
                 );
               })}
@@ -296,7 +399,10 @@ export default async function Page(props: {
                     key={section.category}
                     className="flex flex-col gap-2 break-inside-avoid-column"
                   >
-                    <h3 className="font-subtitle text-2xl capitalize">
+                    <h3
+                      id={generateAnchorId(section.category)}
+                      className="font-subtitle text-2xl capitalize"
+                    >
                       {section.category}
                     </h3>
                     <p>{section.note}</p>
@@ -334,21 +440,6 @@ export default async function Page(props: {
                                 {item.points}
                                 {item.points === 1 ? "pt" : "pts"}
                               </span>
-                            </li>
-                          );
-                        }
-
-                        if (item.units) {
-                          return (
-                            <li key={item.id} className={ROW}>
-                              <Link
-                                href={`/profiles/${faction.slug}#${generateAnchorId(item.units.name)}`}
-                                className={LINK}
-                              >
-                                {item.units.name}
-                              </Link>
-                              <span className={LEADER} aria-hidden="true" />
-                              <span className={CELL}>{DATAFAX_COST}</span>
                             </li>
                           );
                         }
