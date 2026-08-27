@@ -443,9 +443,7 @@ export default async function Page(props: {
                                         >
                                           {named && (
                                             <>
-                                              <span className="font-subtitle">
-                                                {profile.name}
-                                              </span>
+                                              <strong>{profile.name}</strong>
                                               {` ${DASH} `}
                                             </>
                                           )}
@@ -478,9 +476,7 @@ export default async function Page(props: {
                                         >
                                           {named && (
                                             <>
-                                              <span className="font-subtitle">
-                                                {profile.name}
-                                              </span>
+                                              <strong>{profile.name}</strong>
                                               {` ${DASH} `}
                                             </>
                                           )}
@@ -552,15 +548,15 @@ export default async function Page(props: {
                                               repeated={index > 0}
                                             >
                                               {option.profile && (
-                                                <span className="font-subtitle">
+                                                <strong>
                                                   {option.profile.name}
-                                                </span>
+                                                </strong>
                                               )}
                                               {scope && (
-                                                <span className="font-subtitle">
+                                                <strong>
                                                   {option.profile && ", "}
                                                   {scope}
-                                                </span>
+                                                </strong>
                                               )}
                                               {(option.profile || scope) &&
                                                 Boolean(
