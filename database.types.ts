@@ -830,7 +830,6 @@ export type Database = {
           motive_type_id: number | null;
           note: string | null;
           open_topped: boolean | null;
-          points: number | null;
           ram_damage: string | null;
           ram_save_modifier: number | null;
           ram_strength: number | null;
@@ -853,7 +852,6 @@ export type Database = {
           motive_type_id?: number | null;
           note?: string | null;
           open_topped?: boolean | null;
-          points?: number | null;
           ram_damage?: string | null;
           ram_save_modifier?: number | null;
           ram_strength?: number | null;
@@ -876,7 +874,6 @@ export type Database = {
           motive_type_id?: number | null;
           note?: string | null;
           open_topped?: boolean | null;
-          points?: number | null;
           ram_damage?: string | null;
           ram_save_modifier?: number | null;
           ram_strength?: number | null;

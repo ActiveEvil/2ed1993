@@ -25,7 +25,6 @@ export type DatafaxData = {
   deployment: string | null;
   location_dice: string;
   note: string | null;
-  points: number | null;
   motive_types: { name: string } | null;
   datafax_images: {
     images: { file_name: string; artist: string | null; title: string };
@@ -220,12 +219,6 @@ export const Datafax: React.FC<{
       : null,
     ...capacity.map(({ label, value }) => ({ label, value: String(value) })),
     flags.length ? { label: "Notes", value: flags.join(MIDDOT) } : null,
-    datafax.points !== null
-      ? {
-          label: "Points",
-          value: `${datafax.points} point${datafax.points === 1 ? "" : "s"}`,
-        }
-      : null,
   ];
 
   const runs = allRuns.filter((run): run is DataRun => run !== null);
