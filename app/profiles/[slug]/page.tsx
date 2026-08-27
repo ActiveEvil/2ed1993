@@ -386,7 +386,7 @@ export default async function Page(props: {
                         key={unitId}
                         id={unitId}
                         data-search={search}
-                        className="highlight-target flex flex-col gap-4 px-4 md:px-8 py-4 target:bg-2ed-light-yellow target:text-black"
+                        className="group highlight-target flex flex-col gap-4 px-4 md:px-8 py-4 target:bg-2ed-light-yellow target:text-black"
                       >
                         {!titleOnCard && (
                           <h3 className="font-subtitle text-3xl">
@@ -515,7 +515,9 @@ export default async function Page(props: {
                                           const scope =
                                             option.models_max === null
                                               ? option.whole_unit
-                                                ? "the whole squad"
+                                                ? option.profile
+                                                  ? "the whole squad"
+                                                  : "The whole squad"
                                                 : grantee &&
                                                     grantee.models_max !== 1
                                                   ? "any model"
@@ -581,6 +583,10 @@ export default async function Page(props: {
                                               )}
                                               {option.grants && (
                                                 <>
+                                                  {!sections.length &&
+                                                    !option.upgrade &&
+                                                    !option.replaces &&
+                                                    "equipped with "}
                                                   {option.quantity !== null &&
                                                     option.quantity > 1 &&
                                                     `${option.quantity} ${TIMES} `}
