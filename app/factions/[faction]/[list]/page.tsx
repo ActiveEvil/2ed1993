@@ -592,8 +592,8 @@ export default async function Page(props: {
                                     data-search={entry.search}
                                     className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
                                   >
-                                    <div className="flex items-baseline gap-x-3 text-lg">
-                                        <h4 className="grow font-subtitle text-lg md:text-2xl">
+                                    <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
+                                        <h4 className="font-subtitle text-xl md:text-2xl">
                                           <HighlighterLink
                                             className="hover:underline underline-offset-4"
                                             href={`${listHref}#${entry.anchor}`}
