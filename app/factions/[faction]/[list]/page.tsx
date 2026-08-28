@@ -592,9 +592,8 @@ export default async function Page(props: {
                                     data-search={entry.search}
                                     className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
                                   >
-                                    <div className="flex flex-col md:flex-row items-baseline gap-3 text-lg">
-                                      <div className="flex items-baseline gap-x-3">
-                                        <h4 className="font-subtitle text-2xl">
+                                    <div className="flex flex-col md:flex-row items-baseline gap-x-3 text-lg">
+                                        <h4 className="font-subtitle text-xl md:text-2xl">
                                           <HighlighterLink
                                             className="hover:underline underline-offset-4"
                                             href={`${listHref}#${entry.anchor}`}
@@ -613,8 +612,6 @@ export default async function Page(props: {
                                             Datafax
                                           </Link>
                                         )}
-                                      </div>
-                                      <div className="flex items-baseline gap-x-3">
                                         <span
                                           className="grow basis-8 border-b-2 border-dotted border-leader-ink"
                                           aria-hidden="true"
@@ -624,7 +621,6 @@ export default async function Page(props: {
                                             ? "see grades"
                                             : entry.cost}
                                         </span>
-                                      </div>
                                     </div>
                                     <Details
                                       entry={entry}
