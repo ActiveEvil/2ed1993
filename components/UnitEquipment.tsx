@@ -48,6 +48,7 @@ export type EquipmentOption = {
   upgrade: { name: string; units: { name: string } } | null;
   replaces: { name: string } | null;
   grants: { name: string } | null;
+  card: { name: string } | null;
   unit_option_categories: {
     position: number;
     wargear_categories: { category: string };
@@ -314,6 +315,7 @@ export const UnitEquipment: React.FC<{
                   sections.length ||
                   option.upgrade ||
                   option.grants ||
+                  option.card ||
                   option.replaces,
                 );
 
@@ -336,6 +338,7 @@ export const UnitEquipment: React.FC<{
                         sections.length ||
                         option.upgrade ||
                         option.grants ||
+                        option.card ||
                         option.replaces,
                       ) &&
                       ` ${DASH} `}
@@ -364,6 +367,25 @@ export const UnitEquipment: React.FC<{
                           href={`/wargear/weapons#${generateAnchorId(option.grants.name)}`}
                         >
                           {option.grants.name}
+                        </Link>
+                      </>
+                    )}
+                    {option.card && (
+                      <>
+                        {option.grants && ", "}
+                        {!option.grants &&
+                          !sections.length &&
+                          !option.upgrade &&
+                          !option.replaces &&
+                          "equipped with "}
+                        {option.quantity !== null &&
+                          option.quantity > 1 &&
+                          `${option.quantity} ${TIMES} `}
+                        <Link
+                          className={LINK}
+                          href={`/wargear/wargear-cards#${generateAnchorId(option.card.name)}`}
+                        >
+                          {option.card.name}
                         </Link>
                       </>
                     )}

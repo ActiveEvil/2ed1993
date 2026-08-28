@@ -12,6 +12,11 @@ const TOKENS: Token[] = [
   { key: "accent", className: "bg-accent" },
   { key: "card-face", className: "bg-card-face" },
   { key: "stripe", style: { backgroundColor: "var(--stripe)" } },
+  { key: "leader-ink", style: { backgroundColor: "var(--leader-ink)" } },
+  {
+    key: "group-surface",
+    style: { backgroundColor: "var(--group-surface)" },
+  },
   { key: "black", className: "bg-black" },
   { key: "white", className: "bg-white" },
   { key: "2ed-white", className: "bg-2ed-white" },
@@ -26,13 +31,32 @@ type Pair = {
   where: string;
   ink: string;
   on: string;
-  size: number;
+  size?: number;
   bold?: boolean;
+  graphic?: boolean;
 };
 
 const PAIRS: Pair[] = [
   { where: "Body copy", ink: "foreground", on: "background", size: 18 },
   { where: "Zebra row", ink: "foreground", on: "stripe", size: 18 },
+  {
+    where: "Note over a grouped run",
+    ink: "foreground",
+    on: "group-surface",
+    size: 14,
+  },
+  {
+    where: "Entry leader dots",
+    ink: "leader-ink",
+    on: "background",
+    graphic: true,
+  },
+  {
+    where: "Entry leader dots on a run",
+    ink: "leader-ink",
+    on: "group-surface",
+    graphic: true,
+  },
   { where: "Chip", ink: "foreground", on: "background", size: 12 },
   { where: "Table and chart headers", ink: "white", on: "black", size: 14 },
   {
@@ -91,8 +115,8 @@ const PAIRS: Pair[] = [
   },
 ];
 
-const needs = ({ size, bold }: Pair): number =>
-  size >= 24 || (size >= 18.66 && bold) ? 3 : 4.5;
+const needs = ({ size = 0, bold, graphic }: Pair): number =>
+  graphic || size >= 24 || (size >= 18.66 && bold) ? 3 : 4.5;
 
 type Measured = Record<string, Rgb>;
 
@@ -192,7 +216,9 @@ export const Contrast: React.FC = (): React.JSX.Element => {
                     <td>
                       {needs(pair).toFixed(1)}
                       <br />
-                      <small>{pair.size}px</small>
+                      <small>
+                        {pair.graphic ? "non-text" : `${pair.size}px`}
+                      </small>
                     </td>
                     {cell(pair, read.light)}
                     {cell(pair, read.dark)}

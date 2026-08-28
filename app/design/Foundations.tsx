@@ -29,6 +29,16 @@ const SCHEME_TOKENS = [
     style: { backgroundColor: "var(--stripe)" },
     use: "85% background, 15% foreground, in oklab. Declared in every scheme block; on :root alone a nested theme cannot change it.",
   },
+  {
+    name: "--leader-ink",
+    style: { backgroundColor: "var(--leader-ink)" },
+    use: "55% foreground, 45% background, in oklab. The dotted leader that carries an army-list entry across to its points.",
+  },
+  {
+    name: "--group-surface",
+    style: { backgroundColor: "var(--group-surface)" },
+    use: "92% background, 8% foreground, in oklab. The band that holds a note and the run of army-list entries it governs. Lighter than the zebra on purpose: at the zebra's 85% the leader dots fall under 3:1 in light.",
+  },
 ];
 
 const PALETTE = [
@@ -176,8 +186,8 @@ export const Foundations: React.FC = (): React.JSX.Element => (
   <Group id="Foundations" title="Foundations">
     <Entry
       title="Scheme tokens"
-      source="globals.css &middot; 5 variables"
-      note="The five variables that change between schemes; the rest of the palette is fixed. A page follows the OS unless a [data-theme] ancestor overrides it."
+      source="globals.css &middot; 7 variables"
+      note="The seven variables that change between schemes; the rest of the palette is fixed. A page follows the OS unless a [data-theme] ancestor overrides it."
     >
       <DualScheme>
         <ul className="flex flex-col gap-3">
@@ -209,7 +219,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
       id="Contrast"
       title="Ink pairs"
       source="computed from the live variables"
-      note="Measured in the browser from the resolved properties rather than a table of hexes, so it cannot drift from globals.css. AA wants 4.5:1 for body text, 3:1 at 24px or at 18.66px bold."
+      note="Measured in the browser from the resolved properties rather than a table of hexes, so it cannot drift from globals.css. AA wants 4.5:1 for body text, 3:1 at 24px or at 18.66px bold, and 3:1 for a non-text mark that carries meaning."
     >
       <Contrast />
     </Entry>

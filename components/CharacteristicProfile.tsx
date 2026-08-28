@@ -106,7 +106,7 @@ export const CharacteristicTable: React.FC<{
                       <>
                         <span
                           aria-hidden="true"
-                          className="absolute -top-3 left-2 font-subtitle font-normal"
+                          className="absolute -top-3 left-2 text-sm font-subtitle font-normal"
                         >
                           {"\u2014or\u2014"}
                         </span>
