@@ -592,35 +592,39 @@ export default async function Page(props: {
                                     data-search={entry.search}
                                     className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
                                   >
-                                    <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
-                                      <h4 className="font-subtitle text-2xl">
-                                        <HighlighterLink
-                                          className="hover:underline underline-offset-4"
-                                          href={`${listHref}#${entry.anchor}`}
-                                        >
-                                          {entry.name}
-                                        </HighlighterLink>
-                                      </h4>
-                                      {entry.allowance && (
-                                        <span>{entry.allowance}</span>
-                                      )}
-                                      {entry.datafax && (
-                                        <Link
-                                          href={`/datafaxes/${faction.slug}#${entry.anchor}`}
-                                          className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
-                                        >
-                                          Datafax
-                                        </Link>
-                                      )}
-                                      <span
-                                        className="grow basis-8 border-b-2 border-dotted border-leader-ink"
-                                        aria-hidden="true"
-                                      />
-                                      <span className="whitespace-nowrap">
-                                        {entry.graded
-                                          ? "see grades"
-                                          : entry.cost}
-                                      </span>
+                                    <div className="flex flex-col md:flex-row items-baseline gap-3 text-lg">
+                                      <div className="flex items-baseline gap-x-3">
+                                        <h4 className="font-subtitle text-2xl">
+                                          <HighlighterLink
+                                            className="hover:underline underline-offset-4"
+                                            href={`${listHref}#${entry.anchor}`}
+                                          >
+                                            {entry.name}
+                                          </HighlighterLink>
+                                        </h4>
+                                        {entry.allowance && (
+                                          <span>{entry.allowance}</span>
+                                        )}
+                                        {entry.datafax && (
+                                          <Link
+                                            href={`/datafaxes/${faction.slug}#${entry.anchor}`}
+                                            className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
+                                          >
+                                            Datafax
+                                          </Link>
+                                        )}
+                                      </div>
+                                      <div className="flex items-baseline gap-x-3">
+                                        <span
+                                          className="grow basis-8 border-b-2 border-dotted border-leader-ink"
+                                          aria-hidden="true"
+                                        />
+                                        <span className="whitespace-nowrap">
+                                          {entry.graded
+                                            ? "see grades"
+                                            : entry.cost}
+                                        </span>
+                                      </div>
                                     </div>
                                     <Details
                                       entry={entry}
