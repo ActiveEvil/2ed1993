@@ -12,8 +12,6 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
-
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
@@ -100,7 +98,7 @@ export default async function Page(props: {
 
           {sections.length > 1 && (
             <JumpBar
-              className={FULL_BLEED}
+              className="self-stretch -mx-2 md:-mx-4"
               items={sections.map(({ id, name }) => ({ id, label: name }))}
             />
           )}

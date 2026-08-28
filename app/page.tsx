@@ -33,7 +33,7 @@ export default async function Page() {
     .is("parent_faction_id", null);
   const unitProfilesQuery = supabase
     .from("units")
-    .select("id, unit_types(plural_name, position)");
+    .select("id, unit_types(plural_name, position), datafaxes(id)");
   const subfactionsQuery = supabase
     .from("factions")
     .select("id", { count: "exact", head: true })
@@ -107,16 +107,25 @@ export default async function Page() {
       (total, { count }) => total + (count ?? 0),
       0,
     );
-    const unitProfileCounts = Object.values(
-      unitProfiles.reduce<
-        Record<string, { pluralName: string; position: number; count: number }>
-      >((acc, profile) => {
-        const pluralName = profile.unit_types?.plural_name ?? "Unknown";
-        const position = profile.unit_types?.position ?? Infinity;
-        acc[pluralName] = acc[pluralName] ?? { pluralName, position, count: 0 };
-        acc[pluralName].count += 1;
-        return acc;
-      }, {}),
+    const datafaxCounts = Object.values(
+      unitProfiles
+        .filter(({ datafaxes }) => datafaxes !== null)
+        .reduce<
+          Record<
+            string,
+            { pluralName: string; position: number; count: number }
+          >
+        >((acc, profile) => {
+          const pluralName = profile.unit_types?.plural_name ?? "Unknown";
+          const position = profile.unit_types?.position ?? Infinity;
+          acc[pluralName] = acc[pluralName] ?? {
+            pluralName,
+            position,
+            count: 0,
+          };
+          acc[pluralName].count += 1;
+          return acc;
+        }, {}),
     ).sort((a, b) => a.position - b.position);
 
     const record = [
@@ -131,9 +140,9 @@ export default async function Page() {
         stat: `${factions} factions \u00b7 ${subfactions} subfactions`,
       },
       {
-        href: "/profiles",
-        title: "Unit Profiles",
-        stat: `${unitProfileCounts.map(({ pluralName, count }) => `${pluralName} ${count}`).join(" \u00b7 ")}`,
+        href: "/datafaxes",
+        title: "Datafaxes",
+        stat: `${datafaxCounts.map(({ pluralName, count }) => `${pluralName} ${count}`).join(" \u00b7 ")}`,
       },
       {
         href: "/wargear",

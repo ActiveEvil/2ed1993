@@ -41,6 +41,16 @@ const nextConfig: NextConfig = {
         destination: "https://2ed1993.com/:path*",
         permanent: true,
       },
+      {
+        source: "/profiles",
+        destination: "/factions",
+        permanent: true,
+      },
+      {
+        source: "/profiles/:faction",
+        destination: "/factions/:faction",
+        permanent: true,
+      },
     ];
   },
   async headers() {

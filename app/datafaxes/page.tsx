@@ -8,26 +8,26 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-const FORTIFICATIONS_SLUG = "fortifications";
-const FORTIFICATIONS_NAME = "Fortifications";
-
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Unit Profiles | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Unit Profiles.",
+    title: "Warhammer 40,000 2nd Edition Datafaxes | 2ed1993",
+    description: "Warhammer 40,000 2nd Edition vehicle datafaxes, by faction.",
   };
 }
 
 const countLabel = (count: number): string =>
-  count === 1 ? "1 unit" : `${count} units`;
+  count === 0
+    ? "No datafaxes yet"
+    : count === 1
+      ? "1 datafax"
+      : `${count} datafaxes`;
 
 export default async function Page() {
   const { data: heroImage, error: heroImageError } = await supabase
     .from("hero_images")
     .select("images(file_name, artist, title)")
-    .eq("slug", "profiles")
-    .single();
-  const hero = heroImage?.images ?? null;
+    .eq("slug", "datafaxes")
+    .maybeSingle();
 
   const { data: factionRows, error: factionsError } = await supabase
     .from("factions")
@@ -36,55 +36,44 @@ export default async function Page() {
 
   const { data: unitRows, error: unitsError } = await supabase
     .from("units")
-    .select("id, faction_id");
+    .select("faction_id, datafaxes(id)");
 
-  assertNoQueryErrors("/profiles", heroImageError, factionsError, unitsError);
+  assertNoQueryErrors("/datafaxes", heroImageError, factionsError, unitsError);
 
-  if (!hero || !factionRows || !unitRows) {
-    throw new Error("/profiles: rendered with no data");
-  }
-
-  const factions = factionRows;
-  const units = unitRows;
+  const hero = heroImage?.images ?? null;
+  const factions = factionRows ?? [];
+  const units = unitRows ?? [];
 
   const parents = new Map(
     factions.map(({ id, parent_faction_id }) => [id, parent_faction_id]),
   );
 
   const counts = new Map<number, number>();
-  let fortifications = 0;
+  let total = 0;
 
-  for (const { faction_id } of units) {
-    if (faction_id === null) {
-      fortifications += 1;
+  for (const { faction_id, datafaxes } of units) {
+    if (!datafaxes || faction_id === null) {
       continue;
     }
+
+    total += 1;
 
     const topLevel = parents.get(faction_id) ?? faction_id;
     counts.set(topLevel, (counts.get(topLevel) ?? 0) + 1);
   }
 
-  const sections = [
-    ...factions
-      .filter(({ parent_faction_id }) => parent_faction_id === null)
-      .map(({ id, slug, name }) => ({
-        slug,
-        name,
-        count: counts.get(id) ?? 0,
-        wide: false,
-      })),
-    {
-      slug: FORTIFICATIONS_SLUG,
-      name: FORTIFICATIONS_NAME,
-      count: fortifications,
-      wide: true,
-    },
-  ];
+  const sections = factions
+    .filter(({ parent_faction_id }) => parent_faction_id === null)
+    .map(({ id, slug, name }) => ({
+      slug,
+      name,
+      count: counts.get(id) ?? 0,
+    }));
 
   return (
     <>
       <Breadcrumbs
-        crumbs={[{ href: "/", anchor: "2ed1993" }, { anchor: "Profiles" }]}
+        crumbs={[{ href: "/", anchor: "2ed1993" }, { anchor: "Datafaxes" }]}
       />
       <Panel
         as="main"
@@ -92,27 +81,28 @@ export default async function Page() {
       >
         <header>
           <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-            Unit Profiles
+            Datafaxes
           </h1>
         </header>
-        <ImageWithCredit
-          src={`images/${hero.file_name}`}
-          title={hero.title}
-          artist={hero.artist}
-        />
+        {hero && (
+          <ImageWithCredit
+            src={`images/${hero.file_name}`}
+            title={hero.title}
+            artist={hero.artist}
+          />
+        )}
         <SectionBar
           as="h2"
-          title="Profiles and datafaxes"
-          note={countLabel(units.length)}
+          title="Datafaxes by faction"
+          note={countLabel(total)}
         />
         <div className="grid md:grid-cols-2 gap-4">
-          {sections.map(({ slug, name, count, wide }) => (
+          {sections.map(({ slug, name, count }) => (
             <IndexCard
               key={slug}
-              href={`/profiles/${slug}`}
+              href={`/datafaxes/${slug}`}
               title={name}
               summary={countLabel(count)}
-              wide={wide}
             />
           ))}
         </div>

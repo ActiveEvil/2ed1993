@@ -13,8 +13,6 @@ import { Metadata } from "next/types";
 
 export const revalidate = 3600;
 
-const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
-
 export function generateMetadata(): Metadata {
   return {
     title: "Warhammer 40,000 2nd Edition Weapons | 2ed1993",
@@ -117,7 +115,11 @@ export default async function Page() {
               artist={hero.artist}
             />
           </Panel>
-          <JumpBar className={FULL_BLEED} items={jumpItems} label="Jump to">
+          <JumpBar
+            className="self-stretch -mx-2 md:-mx-4"
+            items={jumpItems}
+            label="Jump to"
+          >
             <RowFilter
               label="Filter"
               unit="entries"
