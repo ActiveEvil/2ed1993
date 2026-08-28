@@ -17,7 +17,7 @@ export function generateMetadata(): Metadata {
 export default async function Page() {
   const { data: factions, error: factionsError } = await supabase
     .from("factions")
-    .select("slug, name, images(file_name, artist, title), army_lists(id)")
+    .select("slug, name, images(file_name, artist, title)")
     .is("parent_faction_id", null)
     .order("name");
 
@@ -47,7 +47,7 @@ export default async function Page() {
             </h1>
           </header>
           <div className="grid md:grid-cols-2 gap-4">
-            {factions.map(({ slug, name, images, army_lists }) => {
+            {factions.map(({ slug, name, images }) => {
               const image: Image | undefined = images[0] && {
                 src: `images/${images[0].file_name}`,
                 title: images[0].title,
@@ -59,7 +59,6 @@ export default async function Page() {
                   href={`/factions/${slug}`}
                   name={name}
                   image={image}
-                  disabled={!army_lists.length}
                 />
               );
             })}

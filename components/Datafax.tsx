@@ -153,7 +153,7 @@ const Run: React.FC<{
 
 export const Datafax: React.FC<{
   datafax: DatafaxData;
-  factionSlug: string;
+  factionSlug: string | null;
   unitName: string;
   unitTypeName: string;
   titleHref?: string;
@@ -164,7 +164,7 @@ export const Datafax: React.FC<{
   unitTypeName,
   titleHref,
 }): React.JSX.Element => {
-  const ink = factionInk[factionSlug] ?? "text-2ed-light-yellow";
+  const ink = factionInk[factionSlug ?? ""] ?? "text-2ed-light-yellow";
   const Title = titleHref ? "h3" : "h4";
 
   const speeds = [
@@ -489,7 +489,7 @@ export const Datafax: React.FC<{
     <section
       className={clsx(
         "flex flex-col gap-2 p-2 border-4 border-black shadow-xl",
-        factionColors[factionSlug] ?? "bg-2ed-dark-blue",
+        factionColors[factionSlug ?? ""] ?? "bg-2ed-dark-blue",
       )}
     >
       <div className="flex justify-between items-baseline gap-4 px-1">

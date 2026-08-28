@@ -36,7 +36,7 @@ export default async function Page() {
 
   const { data: unitRows, error: unitsError } = await supabase
     .from("units")
-    .select("faction_id, datafaxes(id)");
+    .select("faction_id, unit_types(name), datafaxes(id)");
 
   assertNoQueryErrors("/datafaxes", heroImageError, factionsError, unitsError);
 
@@ -50,25 +50,37 @@ export default async function Page() {
 
   const counts = new Map<number, number>();
   let total = 0;
+  let fortificationCount = 0;
 
-  for (const { faction_id, datafaxes } of units) {
-    if (!datafaxes || faction_id === null) {
+  for (const { faction_id, unit_types, datafaxes } of units) {
+    if (!datafaxes) {
       continue;
     }
 
     total += 1;
 
+    if (unit_types.name === "Fortification") {
+      fortificationCount += 1;
+      continue;
+    }
+
+    if (faction_id === null) {
+      continue;
+    }
+
     const topLevel = parents.get(faction_id) ?? faction_id;
     counts.set(topLevel, (counts.get(topLevel) ?? 0) + 1);
   }
 
-  const sections = factions
-    .filter(({ parent_faction_id }) => parent_faction_id === null)
-    .map(({ id, slug, name }) => ({
-      slug,
-      name,
-      count: counts.get(id) ?? 0,
-    }));
+  const sections = [
+    ...factions
+      .filter(({ parent_faction_id }) => parent_faction_id === null)
+      .map(({ id, slug, name }) => ({
+        slug,
+        name,
+        count: counts.get(id) ?? 0,
+      })),
+  ];
 
   return (
     <>
@@ -106,6 +118,13 @@ export default async function Page() {
             />
           ))}
         </div>
+        <SectionBar as="h2" title="Other Datafaxes" />
+        <IndexCard
+          key="fortifications"
+          href="/datafaxes/fortifications"
+          title="Fortifications"
+          summary={countLabel(fortificationCount)}
+        />
       </Panel>
     </>
   );

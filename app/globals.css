@@ -13,6 +13,11 @@
   --card-stripe: color-mix(in oklab, #fafafa 93%, #2d2d2d);
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
   --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
+  --group-surface: color-mix(
+    in oklab,
+    var(--background) 92%,
+    var(--foreground)
+  );
 }
 @theme inline {
   --aspect-retro: 4 / 3;
@@ -24,6 +29,7 @@
   --color-card-face: var(--card-face);
   --color-card-stripe: var(--card-stripe);
   --color-leader-ink: var(--leader-ink);
+  --color-group-surface: var(--group-surface);
   --color-2ed-black: #2d2d2d;
   --color-2ed-white: #fafafa;
   --color-2ed-light-yellow: #fff20b;
@@ -321,6 +327,11 @@
     --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
     --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
+    --group-surface: color-mix(
+      in oklab,
+      var(--background) 92%,
+      var(--foreground)
+    );
   }
 }
 
@@ -332,6 +343,11 @@
   --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
   --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
+  --group-surface: color-mix(
+    in oklab,
+    var(--background) 92%,
+    var(--foreground)
+  );
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -391,6 +407,11 @@ body {
     --card-stripe: color-mix(in oklab, #fafafa 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
     --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
+    --group-surface: color-mix(
+      in oklab,
+      var(--background) 92%,
+      var(--foreground)
+    );
   }
 
   /* Light text takes ink. Unconditional on purpose: browsers drop backgrounds

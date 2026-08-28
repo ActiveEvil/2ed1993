@@ -1617,6 +1617,7 @@ export type Database = {
           unit_id: number;
           unit_profile_id: number | null;
           updated_at: string | null;
+          wargear_card_id: number | null;
           weapon_id: number | null;
           whole_unit: boolean;
         };
@@ -1642,6 +1643,7 @@ export type Database = {
           unit_id: number;
           unit_profile_id?: number | null;
           updated_at?: string | null;
+          wargear_card_id?: number | null;
           weapon_id?: number | null;
           whole_unit?: boolean;
         };
@@ -1667,6 +1669,7 @@ export type Database = {
           unit_id?: number;
           unit_profile_id?: number | null;
           updated_at?: string | null;
+          wargear_card_id?: number | null;
           weapon_id?: number | null;
           whole_unit?: boolean;
         };
@@ -1718,6 +1721,13 @@ export type Database = {
             columns: ["unit_profile_id"];
             isOneToOne: false;
             referencedRelation: "unit_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "unit_options_wargear_card_id_fkey";
+            columns: ["wargear_card_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_cards";
             referencedColumns: ["id"];
           },
           {
