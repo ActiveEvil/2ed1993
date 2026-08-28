@@ -593,7 +593,7 @@ export default async function Page(props: {
                                     className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
                                   >
                                     <div className="flex items-baseline gap-x-3 text-lg">
-                                        <h4 className="font-subtitle text-lg md:text-2xl">
+                                        <h4 className="grow font-subtitle text-lg md:text-2xl">
                                           <HighlighterLink
                                             className="hover:underline underline-offset-4"
                                             href={`${listHref}#${entry.anchor}`}
@@ -613,7 +613,7 @@ export default async function Page(props: {
                                           </Link>
                                         )}
                                         <span
-                                          className="md:grow basis-8 border-b-2 border-dotted border-leader-ink"
+                                          className="grow basis-8 border-b-2 border-dotted border-leader-ink"
                                           aria-hidden="true"
                                         />
                                         <span className="whitespace-nowrap">
