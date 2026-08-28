@@ -14,7 +14,7 @@ export const Breadcrumbs: React.FC<{
 
     if (!crumb.href) {
       return (
-        <li key={key} aria-current="page" className="font-subtitle text-ellipsis">
+        <li key={key} aria-current="page" className="font-subtitle truncate">
           {crumb.anchor}
         </li>
       );
