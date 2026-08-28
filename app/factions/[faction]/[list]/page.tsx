@@ -613,7 +613,7 @@ export default async function Page(props: {
                                           </Link>
                                         )}
                                         <span
-                                          className="grow basis-8 border-b-2 border-dotted border-leader-ink"
+                                          className="md:grow basis-8 border-b-2 border-dotted border-leader-ink"
                                           aria-hidden="true"
                                         />
                                         <span className="whitespace-nowrap">
