@@ -378,6 +378,7 @@ export type Database = {
           replaces_weapon_id: number | null;
           restriction: string | null;
           to_unit_profile_id: number | null;
+          unit_option_id: number | null;
           unit_profile_id: number | null;
           updated_at: string | null;
           wargear_category_id: number | null;
@@ -402,6 +403,7 @@ export type Database = {
           replaces_weapon_id?: number | null;
           restriction?: string | null;
           to_unit_profile_id?: number | null;
+          unit_option_id?: number | null;
           unit_profile_id?: number | null;
           updated_at?: string | null;
           wargear_category_id?: number | null;
@@ -426,6 +428,7 @@ export type Database = {
           replaces_weapon_id?: number | null;
           restriction?: string | null;
           to_unit_profile_id?: number | null;
+          unit_option_id?: number | null;
           unit_profile_id?: number | null;
           updated_at?: string | null;
           wargear_category_id?: number | null;
@@ -482,6 +485,13 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
+            foreignKeyName: "army_list_entry_options_unit_option_id_fkey";
+            columns: ["unit_option_id"];
+            isOneToOne: false;
+            referencedRelation: "unit_options";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "army_list_entry_options_unit_profile_id_fkey";
             columns: ["unit_profile_id"];
             isOneToOne: false;
@@ -511,6 +521,7 @@ export type Database = {
           faction_id: number;
           id: number;
           name: string;
+          slug: string;
           updated_at: string | null;
         };
         Insert: {
@@ -519,6 +530,7 @@ export type Database = {
           faction_id: number;
           id?: number;
           name: string;
+          slug: string;
           updated_at?: string | null;
         };
         Update: {
@@ -527,6 +539,7 @@ export type Database = {
           faction_id?: number;
           id?: number;
           name?: string;
+          slug?: string;
           updated_at?: string | null;
         };
         Relationships: [
@@ -1883,29 +1896,29 @@ export type Database = {
       };
       wargear_categories: {
         Row: {
+          army_list_id: number;
           category: string;
-          faction_id: number;
           id: number;
           note: string | null;
         };
         Insert: {
+          army_list_id: number;
           category: string;
-          faction_id: number;
           id?: number;
           note?: string | null;
         };
         Update: {
+          army_list_id?: number;
           category?: string;
-          faction_id?: number;
           id?: number;
           note?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: "wargear_categories_faction_id_fkey";
-            columns: ["faction_id"];
+            foreignKeyName: "wargear_categories_army_list_id_fkey";
+            columns: ["army_list_id"];
             isOneToOne: false;
-            referencedRelation: "factions";
+            referencedRelation: "army_lists";
             referencedColumns: ["id"];
           },
         ];

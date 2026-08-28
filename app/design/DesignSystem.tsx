@@ -12,8 +12,6 @@ import { Panel } from "@/components/Panel";
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 
-const FULL_BLEED = "self-stretch -mx-2 md:-mx-4";
-
 const SECTIONS = [
   { id: "Foundations", label: "Foundations" },
   { id: "Palette", label: "Palette" },
@@ -92,7 +90,7 @@ export const DesignSystem: React.FC = (): React.JSX.Element => {
         </p>
       </Panel>
 
-      <JumpBar className={FULL_BLEED} items={SECTIONS} />
+      <JumpBar className="self-stretch -mx-2 md:-mx-4" items={SECTIONS} />
 
       <Foundations />
       <Surfaces />

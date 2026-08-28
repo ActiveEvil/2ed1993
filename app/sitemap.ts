@@ -26,6 +26,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/datafaxes`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/wargear`,
       lastModified: new Date(),
       changeFrequency: "monthly",
@@ -88,21 +94,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    // const factionsPages: MetadataRoute.Sitemap = [];
-    // const { data: factions } = await supabase
-    //   .from("factions")
-    //   .select("slug, created_at, updated_at");
+    const factionsPages: MetadataRoute.Sitemap = [];
+    const { data: factions } = await supabase
+      .from("factions")
+      .select(
+        "slug, parent_faction_id, created_at, updated_at, army_lists(slug, created_at, updated_at)",
+      );
 
-    // if (factions) {
-    //   for (const faction of factions) {
-    //     factionsPages.push({
-    //       url: `${baseUrl}/factions/${faction.slug}`,
-    //       lastModified: new Date(faction.updated_at || faction.created_at),
-    //       changeFrequency: "monthly",
-    //       priority: 0.6,
-    //     });
-    //   }
-    // }
+    if (factions) {
+      for (const faction of factions) {
+        factionsPages.push({
+          url: `${baseUrl}/factions/${faction.slug}`,
+          lastModified: new Date(faction.updated_at || faction.created_at),
+          changeFrequency: "monthly",
+          priority: 0.6,
+        });
+
+        if (faction.parent_faction_id === null) {
+          factionsPages.push({
+            url: `${baseUrl}/datafaxes/${faction.slug}`,
+            lastModified: new Date(faction.updated_at || faction.created_at),
+            changeFrequency: "monthly",
+            priority: 0.6,
+          });
+        }
+
+        for (const list of faction.army_lists) {
+          factionsPages.push({
+            url: `${baseUrl}/factions/${faction.slug}/${list.slug}`,
+            lastModified: new Date(list.updated_at || list.created_at),
+            changeFrequency: "monthly",
+            priority: 0.6,
+          });
+        }
+      }
+    }
 
     const rulesPages: MetadataRoute.Sitemap = [];
     const { data: rule_categories } = await supabase
@@ -120,7 +146,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
 
-    return [...staticPages, ...rulesPages];
+    return [...staticPages, ...factionsPages, ...rulesPages];
   } catch (error) {
     console.log("Error generating sitemap:", error);
     return staticPages;

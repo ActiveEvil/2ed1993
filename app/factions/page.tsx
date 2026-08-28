@@ -59,8 +59,7 @@ export default async function Page() {
                   href={`/factions/${slug}`}
                   name={name}
                   image={image}
-                  // disabled={!army_lists.length}
-                  disabled
+                  disabled={!army_lists.length}
                 />
               );
             })}

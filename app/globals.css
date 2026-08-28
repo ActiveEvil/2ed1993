@@ -12,6 +12,7 @@
   --card-face: #fafafa;
   --card-stripe: color-mix(in oklab, #fafafa 93%, #2d2d2d);
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
+  --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
 }
 @theme inline {
   --aspect-retro: 4 / 3;
@@ -22,6 +23,7 @@
   --color-accent: var(--house-rule-accent);
   --color-card-face: var(--card-face);
   --color-card-stripe: var(--card-stripe);
+  --color-leader-ink: var(--leader-ink);
   --color-2ed-black: #2d2d2d;
   --color-2ed-white: #fafafa;
   --color-2ed-light-yellow: #fff20b;
@@ -318,6 +320,7 @@
     --card-face: #d8d8d8;
     --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
+    --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
   }
 }
 
@@ -328,6 +331,7 @@
   --card-face: #d8d8d8;
   --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
+  --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -386,6 +390,7 @@ body {
     --card-face: #fafafa;
     --card-stripe: color-mix(in oklab, #fafafa 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
+    --leader-ink: color-mix(in oklab, var(--foreground) 55%, var(--background));
   }
 
   /* Light text takes ink. Unconditional on purpose: browsers drop backgrounds

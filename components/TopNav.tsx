@@ -127,12 +127,12 @@ export const TopNav: React.FC = (): React.JSX.Element => {
       anchor: "Factions",
     },
     {
-      href: "/profiles",
-      anchor: "Unit Profiles",
-    },
-    {
       href: "/wargear",
       anchor: "Wargear",
+    },
+    {
+      href: "/datafaxes",
+      anchor: "Datafaxes",
     },
     {
       href: "/card-decks",
