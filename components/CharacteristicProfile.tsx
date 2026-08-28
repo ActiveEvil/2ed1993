@@ -151,7 +151,7 @@ export const LabelledTable: React.FC<{
 }> = ({ caption, className, compact = false, children }): React.JSX.Element => (
   <table
     className={clsx(
-      "w-full",
+      "w-full border-collapse",
       compact ? "text-sm" : "text-lg",
       "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-(--stripe)",
       "group-target:[&>tbody:nth-of-type(odd)]:bg-2ed-light-yellow group-target:[&>tbody:nth-of-type(even)]:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]",
