@@ -9,8 +9,8 @@ export const Breadcrumbs: React.FC<{
     anchor: string;
   }[];
 }> = ({ crumbs }): React.JSX.Element => {
-  const list = crumbs.map((crumb) => {
-    const key = generateAnchorId(crumb.anchor);
+  const list = crumbs.map((crumb, index) => {
+     const key = generateAnchorId(crumb.anchor);
 
     if (!crumb.href) {
       return (
@@ -20,10 +20,21 @@ export const Breadcrumbs: React.FC<{
       );
     }
 
+    if (index === 0) {
+      return (
+        <li key={key} className="font-subtitle after:content-['/'] after:ml-2">
+          <Link className=" hover:underline underline-offset-4" href={crumb.href}>
+            {crumb.anchor}
+          </Link>
+        </li>
+      );
+    }
+
     return (
       <li key={key} className="font-subtitle after:content-['/'] after:ml-2">
-        <Link className=" hover:underline underline-offset-4" href={crumb.href}>
-          {crumb.anchor}
+        <Link className="hover:underline underline-offset-4" href={crumb.href}>
+          <span className="hidden md:inline">{crumb.anchor}</span>
+          <span className="md:hidden ">&hellip;</span>
         </Link>
       </li>
     );
