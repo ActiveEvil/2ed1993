@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { FactionCard, IndexCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
 import type { Image } from "@/components/ImageWithCredit";
+import { Logo } from "@/components/Logos";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
@@ -110,10 +111,11 @@ export default async function Page(props: {
           as="main"
           className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
         >
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
+          <header className="flex justify-center items-center">
+            <Logo as="h1" size="xl" title={faction.name} />
+            {/* <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
               {faction.name}
-            </h1>
+            </h1> */}
           </header>
           <section className="grid md:grid-cols-2 gap-4">
             {heros.length === 1 ? (

@@ -11,6 +11,7 @@ import {
 } from "@/components/CharacteristicProfile";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { JumpBar } from "@/components/JumpBar";
+import { Logo } from "@/components/Logos";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
 import { SectionBar } from "@/components/SectionBar";
@@ -481,6 +482,8 @@ export default async function Page(props: {
         : []),
     ];
 
+    const [title, subtitle] = list.name.split(": ");
+
     return (
       <>
         <Highlighter />
@@ -505,10 +508,11 @@ export default async function Page(props: {
         />
         <main id="main" className="flex flex-col items-center gap-4 w-full">
           <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
-            <header>
-              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
+            <header className="flex justify-center items-center">
+              <Logo as="h1" size="xl" title={title} subtitle={subtitle} />
+              {/* <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
                 {list.name}
-              </h1>
+              </h1> */}
             </header>
             {list.description && (
               <section
@@ -593,34 +597,34 @@ export default async function Page(props: {
                                     className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
                                   >
                                     <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
-                                        <h4 className="font-subtitle text-xl md:text-2xl">
-                                          <HighlighterLink
-                                            className="hover:underline underline-offset-4"
-                                            href={`${listHref}#${entry.anchor}`}
-                                          >
-                                            {entry.name}
-                                          </HighlighterLink>
-                                        </h4>
-                                        {entry.allowance && (
-                                          <span>{entry.allowance}</span>
-                                        )}
-                                        {entry.datafax && (
-                                          <Link
-                                            href={`/datafaxes/${faction.slug}#${entry.anchor}`}
-                                            className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
-                                          >
-                                            Datafax
-                                          </Link>
-                                        )}
-                                        <span
-                                          className="grow basis-8 border-b-2 border-dotted border-leader-ink"
-                                          aria-hidden="true"
-                                        />
-                                        <span className="whitespace-nowrap">
-                                          {entry.graded
-                                            ? "see grades"
-                                            : entry.cost}
-                                        </span>
+                                      <h4 className="font-subtitle text-xl md:text-2xl">
+                                        <HighlighterLink
+                                          className="hover:underline underline-offset-4"
+                                          href={`${listHref}#${entry.anchor}`}
+                                        >
+                                          {entry.name}
+                                        </HighlighterLink>
+                                      </h4>
+                                      {entry.allowance && (
+                                        <span>{entry.allowance}</span>
+                                      )}
+                                      {entry.datafax && (
+                                        <Link
+                                          href={`/datafaxes/${faction.slug}#${entry.anchor}`}
+                                          className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
+                                        >
+                                          Datafax
+                                        </Link>
+                                      )}
+                                      <span
+                                        className="grow basis-8 border-b-2 border-dotted border-leader-ink"
+                                        aria-hidden="true"
+                                      />
+                                      <span className="whitespace-nowrap">
+                                        {entry.graded
+                                          ? "see grades"
+                                          : entry.cost}
+                                      </span>
                                     </div>
                                     <Details
                                       entry={entry}

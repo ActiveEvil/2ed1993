@@ -4,9 +4,9 @@ type LogoSize = "sm" | "md" | "lg" | "xl";
 
 const sizes: Record<LogoSize, string> = {
   sm: "text-xl",
-  md: "text-[clamp(1.25rem,6cqw,2.25rem)]",
-  lg: "text-6xl",
-  xl: "text-2xl md:text-6xl",
+  md: "text-2xl",
+  lg: "text-3xl md:text-4xl",
+  xl: "text-3xl md:text-4xl lg:text-6xl",
 };
 
 export const Logo: React.FC<{
