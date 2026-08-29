@@ -149,18 +149,19 @@ export const LabelledTable: React.FC<{
   compact?: boolean;
   children: React.ReactNode;
 }> = ({ caption, className, compact = false, children }): React.JSX.Element => (
-  <table
-    className={clsx(
-      "w-full border-collapse",
-      compact ? "text-sm" : "text-lg",
-      "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-(--stripe)",
-      "group-target:[&>tbody:nth-of-type(odd)]:bg-2ed-light-yellow group-target:[&>tbody:nth-of-type(even)]:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]",
-      className,
-    )}
-  >
-    <caption className="sr-only">{caption}</caption>
-    {children}
-  </table>
+  <div className={clsx("w-full", className)}>
+    <table
+      className={clsx(
+        "w-full border-collapse",
+        compact ? "text-sm" : "text-lg",
+        "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-(--stripe)",
+        "group-target:[&>tbody:nth-of-type(odd)]:bg-2ed-light-yellow group-target:[&>tbody:nth-of-type(even)]:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]",
+      )}
+    >
+      <caption className="sr-only">{caption}</caption>
+      {children}
+    </table>
+  </div>
 );
 
 export const LabelledGroup: React.FC<React.PropsWithChildren> = ({
