@@ -703,7 +703,7 @@ export default async function Page(props: {
                       >
                         {section.category}
                       </h3>
-                      <p>{section.note} 0000</p>
+                      <p>{section.note}</p>
                       <ul>
                         {section.wargear_items.map((item) => {
                           const target = item.armour
