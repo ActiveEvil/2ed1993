@@ -113,9 +113,6 @@ export default async function Page(props: {
         >
           <header className="flex justify-center items-center">
             <Logo as="h1" size="xl" title={faction.name} />
-            {/* <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              {faction.name}
-            </h1> */}
           </header>
           <section className="grid md:grid-cols-2 gap-4">
             {heros.length === 1 ? (

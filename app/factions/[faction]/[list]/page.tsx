@@ -509,10 +509,13 @@ export default async function Page(props: {
         <main id="main" className="flex flex-col items-center gap-4 w-full">
           <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
             <header className="flex justify-center items-center">
-              <Logo as="h1" size="xl" title={title} subtitle={subtitle} />
-              {/* <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-                {list.name}
-              </h1> */}
+              <Logo
+                as="h1"
+                size="xl"
+                title={title}
+                subtitle={subtitle}
+                dropCaps
+              />
             </header>
             {list.description && (
               <section
