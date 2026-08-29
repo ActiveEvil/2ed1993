@@ -28,17 +28,17 @@ export const Logo: React.FC<{
   return (
     <Root
       className={clsx(
-        "relative flex flex-col justify-center items-center w-fit max-w-full font-title tracking-[0.0267em]",
+        "relative flex flex-col justify-center items-center w-fit max-w-full font-title tracking-wider",
         sizes[size],
         { grayscale: Boolean(grayscale) },
       )}
     >
-      <span className="relative flex justify-center items-center w-full px-[1.6em] py-[0.2em]">
+      <span className="relative flex justify-center items-center w-full px-[1.625em] py-[0.25em]">
         <span
           aria-hidden="true"
           className="aquilla-fins absolute inset-0 bg-2ed-light-yellow [clip-path:polygon(0_0,100%_0,calc(100%-1.3333em)_100%,1.3333em_100%)]"
         />
-        <span className="relative inline-block p-[0.2667em] bg-black border-[0.0667em] border-2ed-dark-yellow [border-style:inset] leading-[1.4] text-center text-balance text-2ed-dark-yellow [-webkit-text-stroke:0.0333em_#fff20b]">
+        <span className="relative inline-block p-[0.2667em] bg-black border-[0.075em] border-2ed-dark-yellow [border-style:inset] leading-tight text-center text-balance text-2ed-dark-yellow [-webkit-text-stroke:0.0333em_#fff20b]">
           {dropCaps && letters.length > 2 ? (
             <>
               <span className="align-text-top leading-none text-[1.6em]">
@@ -55,7 +55,12 @@ export const Logo: React.FC<{
         </span>
       </span>
       {subtitle ? (
-        <span className="relative inline-block mt-[-1.4667em] mx-[2.6667em] px-[0.5333em] py-[0.2667em] bg-2ed-light-yellow border-[0.1333em] border-2ed-dark-yellow [border-style:outset] text-[0.5em] leading-none text-2ed-dark-red">
+        <span
+          className={clsx(
+            "relative inline-block px-[0.5em] py-[0.26em] bg-2ed-light-yellow border-[0.2em] border-2ed-dark-yellow [border-style:outset] text-[0.5em] leading-none text-2ed-dark-red",
+            dropCaps ? "mt-[-1.5em]" : "mt-[-1.125em]",
+          )}
+        >
           {subtitle.toUpperCase()}
         </span>
       ) : null}
