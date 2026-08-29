@@ -33,12 +33,12 @@ export const Logo: React.FC<{
         { grayscale: Boolean(grayscale) },
       )}
     >
-      <span className="relative flex justify-center items-center w-full px-[1.625em] py-[0.25em]  tracking-wider">
+      <span className="relative flex justify-center items-center w-full px-[1.625em] py-[0.25em]">
         <span
           aria-hidden="true"
           className="aquilla-fins absolute inset-0 bg-2ed-light-yellow [clip-path:polygon(0_0,100%_0,calc(100%-1.3333em)_100%,1.3333em_100%)]"
         />
-        <span className="relative inline-block p-[0.2667em] bg-black border-[0.075em] border-2ed-dark-yellow [border-style:inset] leading-tight text-center text-balance text-2ed-dark-yellow [-webkit-text-stroke:0.0333em_#fff20b]">
+        <span className="relative inline-block p-[0.2667em] bg-black border-[0.075em] border-2ed-dark-yellow [border-style:inset] leading-tight tracking-wider text-center text-balance text-2ed-dark-yellow [-webkit-text-stroke:0.0333em_#fff20b]">
           {dropCaps && letters.length > 2 ? (
             <>
               <span className="align-text-top leading-none text-[1.6em]">
