@@ -51,6 +51,11 @@ const nextConfig: NextConfig = {
         destination: "/factions/:faction",
         permanent: true,
       },
+      {
+        source: "/factions/:faction/black-codex",
+        destination: "/factions/:faction/codex-army-lists",
+        permanent: true,
+      },
     ];
   },
   async headers() {
