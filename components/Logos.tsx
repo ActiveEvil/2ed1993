@@ -28,12 +28,12 @@ export const Logo: React.FC<{
   return (
     <Root
       className={clsx(
-        "relative flex flex-col justify-center items-center w-fit max-w-full font-title tracking-wider",
+        "relative flex flex-col justify-center items-center w-fit max-w-full font-title",
         sizes[size],
         { grayscale: Boolean(grayscale) },
       )}
     >
-      <span className="relative flex justify-center items-center w-full px-[1.625em] py-[0.25em]">
+      <span className="relative flex justify-center items-center w-full px-[1.625em] py-[0.25em]  tracking-wider">
         <span
           aria-hidden="true"
           className="aquilla-fins absolute inset-0 bg-2ed-light-yellow [clip-path:polygon(0_0,100%_0,calc(100%-1.3333em)_100%,1.3333em_100%)]"
@@ -57,7 +57,7 @@ export const Logo: React.FC<{
       {subtitle ? (
         <span
           className={clsx(
-            "relative inline-block px-[0.5em] py-[0.26em] bg-2ed-light-yellow border-[0.2em] border-2ed-dark-yellow [border-style:outset] text-[0.5em] leading-none text-2ed-dark-red",
+            "relative inline-block px-[0.5em] py-[0.26em] bg-2ed-light-yellow border-[0.2em] border-2ed-dark-yellow [border-style:outset] text-[0.5em] leading-none text-2ed-dark-red tracking-wide",
             dropCaps ? "mt-[-1.5em]" : "mt-[-1.125em]",
           )}
         >
