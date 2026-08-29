@@ -26,18 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/datafaxes`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/datafaxes/fortifications`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
       url: `${baseUrl}/wargear`,
       lastModified: new Date(),
       changeFrequency: "monthly",
@@ -53,49 +41,61 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/wargear/armour`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/wargear/wargear-cards`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/card-decks`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/card-decks/mission-cards`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/card-decks/strategy-cards`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/card-decks/psychic-power-cards`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/card-decks/special-warp-cards`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/datafaxes`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/datafaxes/fortifications`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/gallery`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
+      changeFrequency: "yearly",
+      priority: 0.5,
     },
   ];
 
@@ -112,16 +112,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         factionsPages.push({
           url: `${baseUrl}/factions/${faction.slug}`,
           lastModified: new Date(faction.updated_at || faction.created_at),
-          changeFrequency: "monthly",
-          priority: 0.6,
+          changeFrequency: "weekly",
+          priority: 0.7,
         });
 
         if (faction.parent_faction_id === null) {
           factionsPages.push({
             url: `${baseUrl}/datafaxes/${faction.slug}`,
             lastModified: new Date(faction.updated_at || faction.created_at),
-            changeFrequency: "monthly",
-            priority: 0.6,
+            changeFrequency: "weekly",
+            priority: 0.5,
           });
         }
 
@@ -129,8 +129,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           factionsPages.push({
             url: `${baseUrl}/factions/${faction.slug}/${list.slug}`,
             lastModified: new Date(list.updated_at || list.created_at),
-            changeFrequency: "monthly",
-            priority: 0.6,
+            changeFrequency: "weekly",
+            priority: 0.7,
           });
         }
       }
@@ -147,7 +147,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           url: `${baseUrl}/rules/${category.slug}`,
           lastModified: new Date(category.updated_at || category.created_at),
           changeFrequency: "monthly",
-          priority: 0.6,
+          priority: 0.7,
         });
       }
     }
