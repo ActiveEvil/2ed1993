@@ -582,15 +582,10 @@ export default async function Page(props: {
                               key={block.entries[0].id}
                               className={
                                 block.note
-                                  ? "flex flex-col gap-3 bg-group-surface pt-4"
+                                  ? "flex flex-col gap-3 bg-group-surface pb-4"
                                   : "flex flex-col gap-3"
                               }
                             >
-                              {block.note && (
-                                <p className="max-w-[70ch] px-4 md:px-8 text-sm italic">
-                                  {block.note}
-                                </p>
-                              )}
                               <div className="flex flex-col gap-4">
                                 {block.entries.map((entry) => (
                                   <article
@@ -661,6 +656,11 @@ export default async function Page(props: {
                                   </article>
                                 ))}
                               </div>
+                              {block.note && (
+                                <p className="px-4 md:px-8 text-sm">
+                                  {block.note}
+                                </p>
+                              )}
                             </div>
                           ))}
                         </div>
