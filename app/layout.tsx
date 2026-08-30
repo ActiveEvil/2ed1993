@@ -1,5 +1,6 @@
 import "./globals.css";
 import { BackToTop } from "@/components/BackToTop";
+import { Insta } from "@/components/Logos";
 import { TopNav } from "@/components/TopNav";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
@@ -78,15 +79,25 @@ export default async function RootLayout({
         <div className="flex flex-col justify-center items-center w-full p-2 md:p-4">
           {children}
         </div>
-        <footer className="p-4 mb-4 font-title text-xs text-center">
-          © {new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd Edition
-          digital record project).
-          <br />
-          Credited images are the property of their respective copyright
-          holders&mdash;such as a named individual or Games Workshop&mdash;and
-          are reproduced for reference only.
-          <br />
-          All rights reserved.
+        <footer className="flex flex-col items-center gap-4 p-4 mb-4">
+          <a
+            href="https://www.instagram.com/oldmetalguardsmen/"
+            target="_blank"
+            className=" inline-block"
+            title="oldmetalguardsmen on Instagram"
+          >
+            <Insta />
+          </a>
+          <div className="font-title text-xs text-center">
+            © {new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd
+            Edition digital record project).
+            <br />
+            Credited images are the property of their respective copyright
+            holders&mdash;such as a named individual or Games Workshop&mdash;and
+            are reproduced for reference only.
+            <br />
+            All rights reserved.
+          </div>
         </footer>
         <BackToTop />
         <Analytics />
