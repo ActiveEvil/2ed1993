@@ -3,8 +3,8 @@ import { clsx } from "clsx";
 type LogoSize = "sm" | "md" | "lg" | "xl";
 
 const sizes: Record<LogoSize, string> = {
-  sm: "text-xl",
-  md: "text-2xl",
+  sm: "text-[clamp(1rem,6cqw,1.125rem)]",
+  md: "text-[clamp(1.125rem,6cqw,1.5rem)]",
   lg: "text-[clamp(1.25rem,6cqw,2.25rem)]",
   xl: "text-[clamp(1.25rem,6cqw,3.75rem)]",
 };
