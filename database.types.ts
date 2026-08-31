@@ -1476,6 +1476,7 @@ export type Database = {
       };
       unit_profile_armour: {
         Row: {
+          alternative: number;
           armour_id: number;
           created_at: string;
           position: number;
@@ -1483,6 +1484,7 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
+          alternative?: number;
           armour_id: number;
           created_at?: string;
           position?: number;
@@ -1490,6 +1492,7 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
+          alternative?: number;
           armour_id?: number;
           created_at?: string;
           position?: number;
@@ -1509,6 +1512,45 @@ export type Database = {
             columns: ["unit_profile_id"];
             isOneToOne: false;
             referencedRelation: "unit_profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      unit_profile_wargear_cards: {
+        Row: {
+          created_at: string;
+          position: number;
+          unit_profile_id: number;
+          updated_at: string | null;
+          wargear_card_id: number;
+        };
+        Insert: {
+          created_at?: string;
+          position?: number;
+          unit_profile_id: number;
+          updated_at?: string | null;
+          wargear_card_id: number;
+        };
+        Update: {
+          created_at?: string;
+          position?: number;
+          unit_profile_id?: number;
+          updated_at?: string | null;
+          wargear_card_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "unit_profile_wargear_cards_unit_profile_id_fkey";
+            columns: ["unit_profile_id"];
+            isOneToOne: false;
+            referencedRelation: "unit_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "unit_profile_wargear_cards_wargear_card_id_fkey";
+            columns: ["wargear_card_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_cards";
             referencedColumns: ["id"];
           },
         ];
