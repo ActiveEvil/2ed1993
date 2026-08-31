@@ -22,7 +22,13 @@ type ProfileWeapon = {
 type ProfileArmour = {
   armour_id: number;
   position: number;
+  alternative: number;
   armour: { name: string };
+};
+
+type ProfileWargearCard = {
+  position: number;
+  card: { name: string };
 };
 
 export type EquipmentProfile = {
@@ -31,6 +37,7 @@ export type EquipmentProfile = {
   models_max: number | null;
   unit_profile_weapons: ProfileWeapon[];
   unit_profile_armour: ProfileArmour[];
+  unit_profile_wargear_cards: ProfileWargearCard[];
 };
 
 export type EquipmentOption = {
@@ -61,15 +68,24 @@ export type EquipmentUnit = {
   unit_options: EquipmentOption[];
 };
 
-const Loadout: React.FC<{ weapons: ProfileWeapon[] }> = ({
-  weapons,
-}): React.JSX.Element => {
+const Loadout: React.FC<{
+  weapons: ProfileWeapon[];
+  armour?: ProfileArmour[];
+}> = ({ weapons, armour = [] }): React.JSX.Element => {
   const alternatives = new Map<number, ProfileWeapon[]>();
 
   for (const weapon of weapons) {
     const bucket = alternatives.get(weapon.alternative) ?? [];
     bucket.push(weapon);
     alternatives.set(weapon.alternative, bucket);
+  }
+
+  const armourByAlternative = new Map<number, ProfileArmour[]>();
+
+  for (const piece of armour) {
+    const bucket = armourByAlternative.get(piece.alternative) ?? [];
+    bucket.push(piece);
+    armourByAlternative.set(piece.alternative, bucket);
   }
 
   const loadouts = [...alternatives.entries()].sort(([a], [b]) => a - b);
@@ -93,6 +109,17 @@ const Loadout: React.FC<{ weapons: ProfileWeapon[] }> = ({
               </Link>
             </Fragment>
           ))}
+          {(armourByAlternative.get(alternative) ?? []).map((piece) => (
+            <Fragment key={`armour-${piece.armour_id}`}>
+              {", "}
+              <Link
+                className={LINK}
+                href={`/wargear/armour#${generateAnchorId(piece.armour.name)}`}
+              >
+                {piece.armour.name}
+              </Link>
+            </Fragment>
+          ))}
         </Fragment>
       ))}
     </>
@@ -101,10 +128,17 @@ const Loadout: React.FC<{ weapons: ProfileWeapon[] }> = ({
 
 const loadoutKey = (profile: {
   unit_profile_weapons: ProfileWeapon[];
+  unit_profile_armour: ProfileArmour[];
 }): string =>
-  profile.unit_profile_weapons
-    .map((w) => `${w.alternative}:${w.quantity}:${w.weapons.name}`)
-    .join("|");
+  [
+    profile.unit_profile_weapons
+      .map((w) => `${w.alternative}:${w.quantity}:${w.weapons.name}`)
+      .join("|"),
+    profile.unit_profile_armour
+      .filter((piece) => piece.alternative !== 0)
+      .map((piece) => `${piece.alternative}:${piece.armour.name}`)
+      .join("|"),
+  ].join("~");
 
 const ArmourLinks: React.FC<{ armour: ProfileArmour[] }> = ({
   armour,
@@ -153,7 +187,8 @@ export const unitHasEquipment = (unit: EquipmentUnit): boolean =>
     unit.unit_profiles.some(
       (profile) =>
         profile.unit_profile_weapons.length ||
-        profile.unit_profile_armour.length,
+        profile.unit_profile_armour.length ||
+        profile.unit_profile_wargear_cards.length,
     ) || unit.unit_options.length,
   );
 
@@ -176,17 +211,21 @@ export const UnitEquipment: React.FC<{
   const armed = profiles.filter(
     (profile) => profile.unit_profile_weapons.length,
   );
+  const universalArmour = (profile: EquipmentProfile): ProfileArmour[] =>
+    profile.unit_profile_armour.filter((piece) => piece.alternative === 0);
+  const scopedArmour = (profile: EquipmentProfile): ProfileArmour[] =>
+    profile.unit_profile_armour.filter((piece) => piece.alternative !== 0);
   const armoured = profiles.filter(
-    (profile) => profile.unit_profile_armour.length,
+    (profile) => universalArmour(profile).length,
   );
   const sharedArmour =
     armoured.length === profiles.length &&
     armoured.every(
       (profile) =>
-        profile.unit_profile_armour
+        universalArmour(profile)
           .map(({ armour }) => armour.name)
           .join(", ") ===
-        armoured[0].unit_profile_armour
+        universalArmour(armoured[0])
           .map(({ armour }) => armour.name)
           .join(", "),
     );
@@ -194,8 +233,20 @@ export const UnitEquipment: React.FC<{
     armed.length > 0 &&
     armed.length === profiles.length &&
     armed.every((profile) => loadoutKey(profile) === loadoutKey(armed[0]));
+  const wargearCardGrants = profiles.flatMap((profile) =>
+    profile.unit_profile_wargear_cards.map((entry) => ({
+      key: `wargear-card-${profile.id}-${entry.position}`,
+      profile,
+      card: entry.card,
+    })),
+  );
 
-  if (!armed.length && !armoured.length && !options.length) {
+  if (
+    !armed.length &&
+    !armoured.length &&
+    !options.length &&
+    !wargearCardGrants.length
+  ) {
     return null;
   }
 
@@ -209,7 +260,10 @@ export const UnitEquipment: React.FC<{
         <LabelledGroup>
           {sharedWeapons ? (
             <LabelledRow label="Weapons" compact={compact}>
-              <Loadout weapons={armed[0].unit_profile_weapons} />
+              <Loadout
+                weapons={armed[0].unit_profile_weapons}
+                armour={scopedArmour(armed[0])}
+              />
             </LabelledRow>
           ) : (
             armed.map((profile, index) => (
@@ -225,7 +279,10 @@ export const UnitEquipment: React.FC<{
                     {` ${DASH} `}
                   </>
                 )}
-                <Loadout weapons={profile.unit_profile_weapons} />
+                <Loadout
+                  weapons={profile.unit_profile_weapons}
+                  armour={scopedArmour(profile)}
+                />
               </LabelledRow>
             ))
           )}
@@ -235,7 +292,7 @@ export const UnitEquipment: React.FC<{
         <LabelledGroup>
           {sharedArmour ? (
             <LabelledRow label="Armour" compact={compact}>
-              <ArmourLinks armour={armoured[0].unit_profile_armour} />
+              <ArmourLinks armour={universalArmour(armoured[0])} />
             </LabelledRow>
           ) : (
             armoured.map((profile, index) => (
@@ -251,7 +308,7 @@ export const UnitEquipment: React.FC<{
                     {` ${DASH} `}
                   </>
                 )}
-                <ArmourLinks armour={profile.unit_profile_armour} />
+                <ArmourLinks armour={universalArmour(profile)} />
               </LabelledRow>
             ))
           )}
@@ -260,27 +317,73 @@ export const UnitEquipment: React.FC<{
       {[
         {
           label: "Wargear",
-          rows: options.filter(
-            ({ option_group }) => option_group === "wargear",
-          ),
+          rows: [
+            ...wargearCardGrants.map((grant) => ({
+              kind: "card" as const,
+              key: grant.key,
+              profile: grant.profile,
+              card: grant.card,
+            })),
+            ...options
+              .filter(({ option_group }) => option_group === "wargear")
+              .map((option) => ({
+                kind: "option" as const,
+                key: `Wargear-${option.id}`,
+                option,
+              })),
+          ],
         },
         {
           label: "Special",
-          rows: options.filter(
-            ({ option_group }) => option_group === "special",
-          ),
+          rows: options
+            .filter(({ option_group }) => option_group === "special")
+            .map((option) => ({
+              kind: "option" as const,
+              key: `Special-${option.id}`,
+              option,
+            })),
         },
         {
           label: "Support",
-          rows: options.filter(
-            ({ option_group }) => option_group === "support",
-          ),
+          rows: options
+            .filter(({ option_group }) => option_group === "support")
+            .map((option) => ({
+              kind: "option" as const,
+              key: `Support-${option.id}`,
+              option,
+            })),
         },
       ].map(
         ({ label, rows }) =>
           Boolean(rows.length) && (
             <LabelledGroup key={label}>
-              {rows.map((option, index) => {
+              {rows.map((row, index) => {
+                if (row.kind === "card") {
+                  return (
+                    <LabelledRow
+                      key={row.key}
+                      label={label}
+                      repeated={index > 0}
+                      compact={compact}
+                    >
+                      {named && (
+                        <>
+                          <strong>{row.profile.name}</strong>
+                          {` ${DASH} `}
+                        </>
+                      )}
+                      <Link
+                        className={LINK}
+                        href={`/wargear/wargear-cards#${generateAnchorId(row.card.name)}`}
+                      >
+                        {row.card.name}
+                      </Link>
+                      {"."}
+                    </LabelledRow>
+                  );
+                }
+
+                const option = row.option;
                 const sections = option.unit_option_categories.map(
                   ({ wargear_categories }) => wargear_categories.category,
                 );
@@ -321,7 +424,7 @@ export const UnitEquipment: React.FC<{
 
                 return (
                   <LabelledRow
-                    key={`${label}-${option.id}`}
+                    key={row.key}
                     label={label}
                     repeated={index > 0}
                     compact={compact}
