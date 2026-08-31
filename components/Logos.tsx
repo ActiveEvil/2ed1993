@@ -69,12 +69,12 @@ export const Logo: React.FC<{
 };
 
 export const Insta: React.FC<{
-  className?: string;
-}> = (className): React.JSX.Element => (
+  className?: string | undefined;
+}> = ({ className }): React.JSX.Element => (
   <svg
     role="img"
     viewBox="0 0 24 24"
-    className="fill-foreground size-8"
+    className={className}
     xmlns="http://www.w3.org/2000/svg"
   >
     <title>Instagram</title>
