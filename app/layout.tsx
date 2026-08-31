@@ -83,10 +83,9 @@ export default async function RootLayout({
           <a
             href="https://www.instagram.com/oldmetalguardsmen/"
             target="_blank"
-            className=" inline-block"
             title="oldmetalguardsmen on Instagram"
           >
-            <Insta />
+            <Insta className="fill-foreground size-8" />
           </a>
           <div className="font-title text-xs text-center">
             © {new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd
