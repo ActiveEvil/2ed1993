@@ -311,7 +311,7 @@ export const Datafax: React.FC<{
             weight:
               60 +
               datafax.datafax_locations.length * 30 +
-              footnotes.length * 26,
+              footnotes.reduce((total, note) => total + textWeight(note), 0),
             node: (
               <div className="flex flex-col gap-1">
                 <h6
@@ -409,7 +409,11 @@ export const Datafax: React.FC<{
                             colSpan={4}
                             className="px-2 py-1 bg-card-face text-xs text-center"
                           >
-                            <sup>{MARKERS[index]}</sup> {note}
+                            <sup>{MARKERS[index]}</sup>{" "}
+                            <span
+                              className="dynamic-content compact"
+                              dangerouslySetInnerHTML={{ __html: note }}
+                            />
                           </td>
                         </tr>
                       ))}
