@@ -47,6 +47,11 @@ defects closed on re-measurement — the leading spaces in
 `weapon_profiles.short_to_hit` (zero rows now) and the duplicate
 `images.file_name` (no file name is shared by two rows anywhere in the table).
 
+**Revised 1 September 2026:** the threshold form added to the dice-naming rule
+(Voice); the link-and-capitalise rule and the `Targeter` capitalisation added
+(Emphasis and linking); two Working practice entries added — the row-count guard
+on a batch write, and running the gates on both sides of a write.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -159,8 +164,10 @@ Baseline: **`/general-rules`**.
 - **"dice", never "die", as the noun.** Clarified 13 August: the *verb* is
   ordinary English — "should that model die" stands. The script flags only
   determiner+die and "die roll".
-- **A roll always names its dice.** Never "a roll of 4 or more" — "a D6 roll
-  of 4+". Ruled by Thomas 14 August and swept site-wide the same day.
+- **A roll always names its dice, and states the threshold as `n+`.** Never
+  "a roll of 4 or more", and never "a D6 roll of 4 or more" — "a D6 roll of
+  4+". Ruled by Thomas 14 August for the naming and 1 September for the form;
+  each swept site-wide the same day.
 - **No gendered terms.** "crew member", not "crewman" — the last nine
   "crewman"s site-wide (three weapon texts, six psychic cards) were purged
   13 August. Singular *they* for a model or player of unstated gender.
@@ -193,6 +200,21 @@ Baseline: **`/general-rules`**.
   mention keeps the link and drops the bold, since links and strong never nest
   (Space Marine Dreadnoughts), and chart headings carry no strong (Plasma
   Overload Chart). Profile stat cells ("Art. Dice") are cells, not prose.
+- **Link and capitalise wherever a target exists.** Every weapon, armour, card
+  and rule mention in an HTML column takes its capitalised name and its
+  first-mention link, and a series marks uniformly (exemption 4). **The name is
+  the one the data holds** — `weapons` records **Multimelta**, not
+  "multi-melta", and **Boltgun**, so a vehicle's "bolters" have no target and
+  stay unmarked. Where a column is plain JSX (`wargear_categories.note`,
+  `army_list_entries.note`, `datafaxes.note`, `datafax_locations.note`) the
+  capitalisation still applies and the link cannot. **"Where possible" is a real
+  limit**: inventing a name so that a link can exist is content-new, which
+  Sources forbids outright. Ruled by Thomas 1 September.
+- **`Targeter` is capitalised.** It is a wargear card name and links to
+  `/wargear/wargear-cards#Targeter`. Ruled by Thomas 1 September, against the
+  review's recommendation; the four lower-case occurrences in the two army lists
+  were raised the same day, and two remain in older lists (`wargear_categories`
+  5 and 13).
 
 Four standing exemptions from the first-mention rule:
 
@@ -464,6 +486,18 @@ again after, and take a mid-write reading on a long run so a miss is localised
 to a chunk rather than hunted across the whole set. This is what caught all
 three.
 
+**Guard a batch write with a row count, not a `WHERE` clause alone.** Run every
+update of a batch as a data-modifying CTE returning its ids, tally the counts
+against expected values in the final select, and force an error on any mismatch
+so the whole statement rolls back. **Do not write the guard as `1/0`** —
+Postgres constant-folds it at plan time and the statement throws whether or not
+the guard is violated. Cast a column-derived string instead:
+`('GUARD FAILED: '||k)::int::text`, which cannot be folded and names the failing
+statement. Established 1 September. **A row may be updated only once per
+statement** — two CTEs touching the same row silently lose the second edit,
+since both read the pre-statement snapshot; combine the replacements into one
+CTE per row.
+
 **Anchors derive from the rule name with `&` written `and` and commas stripped.**
 `Dreadnoughts & War Walkers` is reached at `#Dreadnoughts_and_War_Walkers`. A
 naive space-to-underscore slug reported two false broken links on 22 August;
@@ -492,6 +526,11 @@ later review found were opened by it; the follow-on sweep repeated the pattern.
 Fixing a finding moves text, and moved text strands connectives, pronouns and
 list introductions. **Re-run the checks after fixing, not only after drafting**,
 and treat a deletion as more dangerous than an insertion.
+1 September: the fix pass for the two army-list reviews introduced a dead link
+of its own — **Wound** linked to `#Wound`, where the anchor is `#Wounds` —
+because the survey that found the anchor had matched a prefix. `verify.py` on
+the regenerated dump caught it after applying, not on the drafts before.
+**Run the gates on both sides of a write.**
 
 **Scope every string replacement to the block it belongs to**, and check the
 removal count against what you expected.

@@ -58,6 +58,7 @@ export type DatafaxData = {
     id: number;
     name: string;
     dice: string;
+    note: string | null;
     damage_chart_results: {
       id: number;
       roll_min: number;
@@ -426,6 +427,7 @@ export const Datafax: React.FC<{
     key: `chart-${chart.id}`,
     weight:
       52 +
+      (chart.note ? textWeight(chart.note) : 0) +
       chart.damage_chart_results.reduce(
         (total, result) => total + textWeight(result.effect),
         0,
@@ -435,45 +437,53 @@ export const Datafax: React.FC<{
         <h6 id={chartAnchor(chart.name)} className={SUB_HEADING}>
           {chart.name} Damage Chart ({chart.dice})
         </h6>
-        <table className="w-full bg-black border-4 border-black border-collapse text-left">
-          <thead>
-            <tr>
-              <th
-                scope="col"
-                className="px-2 py-1 font-subtitle text-xs text-white"
-              >
-                {chart.dice}
-              </th>
-              <th
-                scope="col"
-                className="px-2 py-1 font-subtitle text-xs text-white"
-              >
-                Effect
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {chart.damage_chart_results.map((result) => (
-              <tr
-                key={result.id}
-                className="bg-card-face even:bg-card-stripe text-sm"
-              >
+        {chart.note && (
+          <div
+            className="dynamic-content compact flex flex-col gap-2 text-sm"
+            dangerouslySetInnerHTML={{ __html: chart.note }}
+          />
+        )}
+        {Boolean(chart.damage_chart_results.length) && (
+          <table className="w-full bg-black border-4 border-black border-collapse text-left">
+            <thead>
+              <tr>
                 <th
-                  scope="row"
-                  className="px-2 py-1 text-center align-top whitespace-nowrap"
+                  scope="col"
+                  className="px-2 py-1 font-subtitle text-xs text-white"
                 >
-                  {range(result.roll_min, result.roll_max)}
+                  {chart.dice}
                 </th>
-                <td className="px-2 py-1 text-pretty">
-                  <div
-                    className="dynamic-content compact flex flex-col gap-2"
-                    dangerouslySetInnerHTML={{ __html: result.effect }}
-                  />
-                </td>
+                <th
+                  scope="col"
+                  className="px-2 py-1 font-subtitle text-xs text-white"
+                >
+                  Effect
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {chart.damage_chart_results.map((result) => (
+                <tr
+                  key={result.id}
+                  className="bg-card-face even:bg-card-stripe text-sm"
+                >
+                  <th
+                    scope="row"
+                    className="px-2 py-1 text-center align-top whitespace-nowrap"
+                  >
+                    {range(result.roll_min, result.roll_max)}
+                  </th>
+                  <td className="px-2 py-1 text-pretty">
+                    <div
+                      className="dynamic-content compact flex flex-col gap-2"
+                      dangerouslySetInnerHTML={{ __html: result.effect }}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     ),
   }));
