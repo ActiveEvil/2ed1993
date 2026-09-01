@@ -13,12 +13,17 @@ file, keyed by check name; entries are "kind:name" or "kind:name:detail" and
 each needs a reason. Checks that need human judgment (series marking, repeat
 link groups, first-mention-links) stay manual — see the doc.
 
-Entity and non-ASCII checks apply only to HTML columns. Two rendered fields are
-plain JSX and literal characters there are correct: psychic_power_cards.note
-and wargear_categories.note. The dump joins the psychic note into the card's
-text, so `psychic` stays in HTML_KINDS and any note needing literal characters
-belongs in exemptions. Kinds not rendered anywhere yet (unit, unit_wargear,
-army_list, equipment_weapon, wargear_cat) get voice checks only.
+Entity and non-ASCII checks apply only to HTML columns. Rendered fields that are
+plain JSX take literal characters, and an entity there renders as its own
+characters: psychic_power_cards.note, wargear_categories.note,
+army_list_entries.note and the other army-list note columns. The plain_entity
+check catches those; it is the mirror of ampersand and runs only off HTML.
+The dump joins the psychic note into the card's text, so `psychic` stays in
+HTML_KINDS and any note needing literal characters belongs in exemptions.
+unit_options.note and damage_charts.note are rendered through
+dangerouslySetInnerHTML, so `unit_wargear` and `damage_chart` are HTML kinds.
+Kinds not rendered anywhere yet (unit, army_list, equipment_weapon, wargear_cat)
+get voice checks only.
 """
 import json, os, re, sys
 from collections import defaultdict
@@ -27,7 +32,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "wargear_card", "mission", "strategy", "psychic", "warp",
-              "faction", "damage_result")
+              "faction", "damage_result", "unit_wargear", "damage_chart")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
             "ldquo", "rdquo", "half", "uarr", "sup2", "AElig"}
@@ -119,6 +124,11 @@ def check_ampersand(k, n, t):
             yield f"&{name}; not a permitted entity"
 
 
+def check_plain_entity(k, n, t):
+    for match in re.finditer(r"&(?:[A-Za-z][A-Za-z0-9]*|#[0-9]+);", t):
+        yield f"{match.group(0)} renders literally in a plain-JSX column"
+
+
 def check_non_ascii(k, n, t):
     text = strip_tags(t)
     bad = sorted({c for c in text if ord(c) > 126 or c in "'\""})
@@ -186,13 +196,15 @@ PER_TEXT = {
     "empty_id": check_empty_id, "li_id": check_li_id,
     "stray_ws": check_stray_ws, "chart_title": check_chart_title,
     "spaced_mdash": check_spaced_mdash, "ampersand": check_ampersand,
-    "non_ascii": check_non_ascii, "gendered": check_gendered,
+    "non_ascii": check_non_ascii, "plain_entity": check_plain_entity,
+    "gendered": check_gendered,
     "die_noun": check_die, "second_person": check_second_person,
     "inline_p": check_inline_p, "nesting": check_nesting,
 }
 HTML_ONLY = {"tag_balance", "heading_id", "empty_id", "li_id", "stray_ws",
              "chart_title", "spaced_mdash", "ampersand", "non_ascii",
              "inline_p", "nesting"}
+PLAIN_ONLY = {"plain_entity"}
 
 
 def cross_checks(texts):
@@ -255,6 +267,8 @@ def main():
     for row in texts:
         for check, fn in PER_TEXT.items():
             if check in HTML_ONLY and not is_html(row["k"]):
+                continue
+            if check in PLAIN_ONLY and is_html(row["k"]):
                 continue
             for detail in fn(row["k"], row["n"], row["t"]):
                 if excused(check, row["k"], row["n"], detail):
