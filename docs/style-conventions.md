@@ -206,10 +206,10 @@ Baseline: **`/general-rules`**.
   the one the data holds** — `weapons` records **Multimelta**, not
   "multi-melta", and **Boltgun**, so a vehicle's "bolters" have no target and
   stay unmarked. Where a column is plain JSX (`wargear_categories.note`,
-  `army_list_entries.note`, `datafaxes.note`, `datafax_locations.note`) the
-  capitalisation still applies and the link cannot. **"Where possible" is a real
-  limit**: inventing a name so that a link can exist is content-new, which
-  Sources forbids outright. Ruled by Thomas 1 September.
+  `army_list_entries.note`, `datafaxes.note`) the capitalisation still applies
+  and the link cannot. **"Where possible" is a real limit**: inventing a name so
+  that a link can exist is content-new, which Sources forbids outright. Ruled by
+  Thomas 1 September.
 - **`Targeter` is capitalised.** It is a wargear card name and links to
   `/wargear/wargear-cards#Targeter`. Ruled by Thomas 1 September, against the
   review's recommendation; the four lower-case occurrences in the two army lists

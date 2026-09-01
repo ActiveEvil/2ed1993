@@ -20,8 +20,9 @@ army_list_entries.note and the other army-list note columns. The plain_entity
 check catches those; it is the mirror of ampersand and runs only off HTML.
 The dump joins the psychic note into the card's text, so `psychic` stays in
 HTML_KINDS and any note needing literal characters belongs in exemptions.
-unit_options.note and damage_charts.note are rendered through
-dangerouslySetInnerHTML, so `unit_wargear` and `damage_chart` are HTML kinds.
+unit_options.note, damage_charts.note and datafax_locations.note are rendered
+through dangerouslySetInnerHTML, so `unit_wargear`, `damage_chart` and
+`datafax_location` are HTML kinds.
 Kinds not rendered anywhere yet (unit, army_list, equipment_weapon, wargear_cat)
 get voice checks only.
 """
@@ -32,7 +33,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "wargear_card", "mission", "strategy", "psychic", "warp",
-              "faction", "damage_result", "unit_wargear", "damage_chart")
+              "faction", "damage_result", "unit_wargear", "damage_chart",
+              "datafax_location")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
             "ldquo", "rdquo", "half", "uarr", "sup2", "AElig"}
