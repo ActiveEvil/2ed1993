@@ -3,6 +3,7 @@ import { IndexCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
+import { ruleName } from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -27,22 +28,64 @@ export default async function Page() {
   const { data: sectionRows, error: sectionsError } = await supabase
     .from("rule_sections")
     .select(
-      "name, numbered, rule_categories(slug, name, position, rules(name, position))",
+      "name, numbered, rule_categories(slug, name, position, faction_id, rules(name, position))",
     )
     .order("position");
+  const { data: assignmentRows, error: assignmentsError } = await supabase
+    .from("unit_special_rule_assignments")
+    .select("rule:unit_special_rules(name), units!inner(faction_id)");
 
-  assertNoQueryErrors("/rules", heroImageError, sectionsError);
+  assertNoQueryErrors(
+    "/rules",
+    heroImageError,
+    sectionsError,
+    assignmentsError,
+  );
 
   if (hero && sectionRows) {
     const byPosition = <T extends { position: number }>(a: T, b: T) =>
       a.position - b.position;
+
+    const unitRuleNames = new Map<number, Set<string>>();
+
+    for (const row of assignmentRows ?? []) {
+      const faction = row.units.faction_id;
+
+      if (row.rule === null || faction === null) {
+        continue;
+      }
+
+      const names = unitRuleNames.get(faction) ?? new Set<string>();
+      names.add(ruleName(row.rule.name));
+      unitRuleNames.set(faction, names);
+    }
+
+    const chapterEntries = (category: {
+      faction_id: number | null;
+      rules: { name: string; position: number }[];
+    }): { name: string; anchor: string }[] => {
+      const listed = [...category.rules].sort(byPosition).map(({ name }) => ({
+        name,
+        anchor: generateAnchorId(name),
+      }));
+      const claimed = new Set(listed.map(({ anchor }) => anchor));
+      const generated =
+        category.faction_id === null
+          ? []
+          : [...(unitRuleNames.get(category.faction_id) ?? [])]
+              .sort((a, b) => a.localeCompare(b))
+              .map((name) => ({ name, anchor: generateAnchorId(name) }))
+              .filter(({ anchor }) => !claimed.has(anchor));
+
+      return [...listed, ...generated];
+    };
 
     const sections = sectionRows
       .map((section) => ({
         ...section,
         categories: [...section.rule_categories].sort(byPosition).map((c) => ({
           ...c,
-          rules: [...c.rules].sort(byPosition),
+          entries: chapterEntries(c),
         })),
       }))
       .filter(({ categories }) => categories.length > 0);
@@ -85,20 +128,20 @@ export default async function Page() {
                     }
                   />
                   <div className="grid md:grid-cols-2 gap-4">
-                    {categories.map(({ slug, name, position, rules }) => (
+                    {categories.map(({ slug, name, position, entries }) => (
                       <IndexCard
                         key={slug}
                         href={`/rules/${slug}`}
                         title={numbered ? `${position + 1}. ${name}` : name}
                       >
                         <ol className="pl-6 text-lg list-decimal">
-                          {rules.map((rule) => (
-                            <li key={rule.name}>
+                          {entries.map((entry) => (
+                            <li key={entry.anchor}>
                               <Link
                                 className="hover:underline underline-offset-4"
-                                href={`/rules/${slug}#${generateAnchorId(rule.name)}`}
+                                href={`/rules/${slug}#${entry.anchor}`}
                               >
-                                {rule.name}
+                                {entry.name}
                               </Link>
                             </li>
                           ))}

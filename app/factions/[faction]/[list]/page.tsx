@@ -15,7 +15,12 @@ import { Logo } from "@/components/Logos";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
 import { SectionBar } from "@/components/SectionBar";
-import { UnitEquipment, unitHasEquipment } from "@/components/UnitEquipment";
+import {
+  UnitEquipment,
+  cards,
+  ruleName,
+  unitHasEquipment,
+} from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -30,7 +35,7 @@ const loadList = (faction: string, list: string) =>
   supabase
     .from("army_lists")
     .select(
-      "id, name, description, factions!inner(slug, name), unit_categories(category, note, min_percent, max_percent, position, army_list_entries(id, position, allowance_min, allowance_max, points, note, points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), units(id, name, datafaxes(id), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category)))))), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name)))",
+      "id, name, description, factions!inner(slug, name), unit_categories(category, note, min_percent, max_percent, position, army_list_entries(id, position, allowance_min, allowance_max, points, note, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), units(id, name, datafaxes(id), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category))), unit_special_rule_assignments(position, note, rule:unit_special_rules(id, name, rule, rule_id, anchor, rules(id, name, rule_categories(slug))))))), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name)))",
     )
     .eq("slug", list)
     .eq("factions.slug", faction)
@@ -58,6 +63,10 @@ const loadList = (faction: string, list: string) =>
     .order("position", {
       referencedTable: "unit_categories.army_list_entries.units.unit_options",
     })
+    .order("position", {
+      referencedTable:
+        "unit_categories.army_list_entries.units.unit_special_rule_assignments",
+    })
     .order("position", { referencedTable: "army_list_allies" })
     .order("position", { referencedTable: "wargear_categories" })
     .order("position", { referencedTable: "wargear_categories.wargear_items" })
@@ -71,9 +80,11 @@ type Entry = {
   id: number;
   name: string;
   anchor: string;
+  group: RawEntry["entry_group"];
   allowance: string | null;
   cost: string | null;
   graded: boolean;
+  wargearCardsMax: number | null;
   note: string | null;
   rules: string[];
   extras: string[];
@@ -109,6 +120,8 @@ const formatCost = (points: number, basis: string | null): string => {
       return `${formatPoints(points)} per model`;
     case "Per base":
       return `${formatPoints(points)} per base`;
+    case "Per Mastery Level":
+      return `+${formatPoints(points)} per Mastery Level`;
     default:
       return formatPoints(points);
   }
@@ -130,9 +143,6 @@ const shortestName = (names: readonly string[]): string | null =>
       shortest === null || name.length < shortest.length ? name : shortest,
     null,
   );
-
-const cards = (count: number): string =>
-  `${count} wargear card${count === 1 ? "" : "s"}`;
 
 const profileNotes = (profile: {
   mastery_level: number | null;
@@ -199,6 +209,15 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
     profiles.length > 1 &&
     profiles.every(({ id }) => gradeByProfile.has(id));
 
+  const wargearCardsMax =
+    profiles.length > 0 &&
+    profiles.every(
+      (profile) => profile.wargear_cards_max === profiles[0].wargear_cards_max,
+    ) &&
+    profiles[0].wargear_cards_max !== null
+      ? profiles[0].wargear_cards_max
+      : null;
+
   let cost: string | null = null;
 
   if (entry.points !== null) {
@@ -228,7 +247,11 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
       name: profile.name,
       alternative: profile.alternative,
       count: range(profile.models_min, profile.models_max),
-      note: profileNotes(profile),
+      note: profileNotes({
+        mastery_level: profile.mastery_level,
+        wargear_cards_max:
+          wargearCardsMax === null ? profile.wargear_cards_max : null,
+      }),
       cost: grade ? formatCost(grade.points, grade.basis) : null,
       ...Object.fromEntries(
         CHARACTERISTICS.map(({ key }) => [key, profile[key]]),
@@ -257,6 +280,9 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
         ({ wargear_categories }) => wargear_categories.category,
       ),
     ]),
+    ...entry.units.unit_special_rule_assignments.map((assignment) =>
+      assignment.rule ? ruleName(assignment.rule.name) : "",
+    ),
   ]
     .join(" ")
     .toLowerCase();
@@ -265,9 +291,11 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
     id: entry.id,
     name: entry.units.name,
     anchor: generateAnchorId(entry.units.name),
+    group: entry.entry_group,
     allowance: formatAllowance(entry.allowance_min, entry.allowance_max),
     cost,
     graded,
+    wargearCardsMax,
     note: entry.note,
     rules: entry.army_list_allowance_rules
       .map(allowanceRule)
@@ -299,6 +327,24 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
     optionCosts,
     search,
   };
+};
+
+type Run = { group: Entry["group"]; entries: Entry[] };
+
+const groupRuns = (entries: Entry[]): Run[] => {
+  const runs: Run[] = [];
+
+  for (const entry of entries) {
+    const last = runs[runs.length - 1];
+
+    if (last && (last.group?.id ?? null) === (entry.group?.id ?? null)) {
+      last.entries.push(entry);
+    } else {
+      runs.push({ group: entry.group, entries: [entry] });
+    }
+  }
+
+  return runs;
 };
 
 type Block = { note: string | null; entries: Entry[] };
@@ -581,90 +627,106 @@ export default async function Page(props: {
 
                       {entries.length ? (
                         <div className="flex flex-col gap-6">
-                          {groupBlocks(entries).map((block) => (
+                          {groupRuns(entries).map((run) => (
                             <div
-                              key={block.entries[0].id}
-                              className={
-                                block.note
-                                  ? "flex flex-col gap-3 bg-group-surface pb-4"
-                                  : "flex flex-col gap-3"
-                              }
+                              key={run.entries[0].id}
+                              className="flex flex-col gap-6"
                             >
-                              <div className="flex flex-col gap-4">
-                                {block.entries.map((entry) => (
-                                  <article
-                                    key={entry.id}
-                                    id={entry.anchor}
-                                    data-search={entry.search}
-                                    className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
-                                  >
-                                    <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
-                                      <h4 className="font-subtitle text-xl md:text-2xl">
-                                        <HighlighterLink
-                                          className="hover:underline underline-offset-4"
-                                          href={`${listHref}#${entry.anchor}`}
-                                        >
-                                          {entry.name}
-                                        </HighlighterLink>
-                                      </h4>
-                                      {entry.allowance && (
-                                        <span>{entry.allowance}</span>
-                                      )}
-                                      {entry.datafax && (
-                                        <Link
-                                          href={`/datafaxes/${faction.slug}#${entry.anchor}`}
-                                          className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
-                                        >
-                                          Datafax
-                                        </Link>
-                                      )}
-                                      <span
-                                        className="grow basis-8 border-b-2 border-dotted border-leader-ink"
-                                        aria-hidden="true"
-                                      />
-                                      <span className="whitespace-nowrap">
-                                        {entry.graded
-                                          ? "see grades"
-                                          : entry.cost}
-                                      </span>
-                                    </div>
-                                    <Details
-                                      entry={entry}
-                                      showNote={block.note === null}
-                                    />
-                                    {Boolean(
-                                      entry.rows.length ||
-                                      unitHasEquipment(entry.unit),
-                                    ) && (
-                                      <ProfileFrame className="mt-1 min-w-0">
-                                        {Boolean(entry.rows.length) && (
-                                          <CharacteristicTable
-                                            caption={`${entry.name} profile`}
-                                            rows={entry.rows}
-                                            costLabel="Pts"
-                                          />
-                                        )}
-                                        <UnitEquipment
-                                          unit={entry.unit}
-                                          optionCosts={entry.optionCosts}
-                                          compact
-                                          categoryHref={categoryHref}
-                                          className={
-                                            entry.rows.length
-                                              ? "border-t-4 border-black"
-                                              : undefined
-                                          }
-                                        />
-                                      </ProfileFrame>
-                                    )}
-                                  </article>
-                                ))}
-                              </div>
-                              {block.note && (
-                                <p className="px-4 md:px-8 text-sm">
-                                  {block.note}
-                                </p>
+                              {run.group && (
+                                <h3 className="mt-3 px-4 md:px-8 font-subtitle uppercase tracking-[0.14em] text-sm">
+                                  {run.group.name}
+                                </h3>
                               )}
+                              {groupBlocks(run.entries).map((block) => (
+                                <div
+                                  key={block.entries[0].id}
+                                  className={
+                                    block.note
+                                      ? "flex flex-col gap-3 bg-group-surface pb-4"
+                                      : "flex flex-col gap-3"
+                                  }
+                                >
+                                  <div className="flex flex-col gap-4">
+                                    {block.entries.map((entry) => (
+                                      <article
+                                        key={entry.id}
+                                        id={entry.anchor}
+                                        data-search={entry.search}
+                                        className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
+                                      >
+                                        <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
+                                          <h4 className="font-subtitle text-xl md:text-2xl">
+                                            <HighlighterLink
+                                              className="hover:underline underline-offset-4"
+                                              href={`${listHref}#${entry.anchor}`}
+                                            >
+                                              {entry.name}
+                                            </HighlighterLink>
+                                          </h4>
+                                          {entry.allowance && (
+                                            <span>{entry.allowance}</span>
+                                          )}
+                                          {entry.datafax && (
+                                            <Link
+                                              href={`/datafaxes/${faction.slug}#${entry.anchor}`}
+                                              className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
+                                            >
+                                              Datafax
+                                            </Link>
+                                          )}
+                                          <span
+                                            className="grow basis-8 border-b-2 border-dotted border-leader-ink"
+                                            aria-hidden="true"
+                                          />
+                                          <span className="whitespace-nowrap">
+                                            {entry.graded
+                                              ? "see grades"
+                                              : entry.cost}
+                                          </span>
+                                        </div>
+                                        <Details
+                                          entry={entry}
+                                          showNote={block.note === null}
+                                        />
+                                        {Boolean(
+                                          entry.rows.length ||
+                                          unitHasEquipment(entry.unit),
+                                        ) && (
+                                          <ProfileFrame className="mt-1 min-w-0">
+                                            {Boolean(entry.rows.length) && (
+                                              <CharacteristicTable
+                                                caption={`${entry.name} profile`}
+                                                rows={entry.rows}
+                                                costLabel="Pts"
+                                              />
+                                            )}
+                                            <UnitEquipment
+                                              unit={entry.unit}
+                                              optionCosts={entry.optionCosts}
+                                              wargearCardsMax={
+                                                entry.wargearCardsMax
+                                              }
+                                              compact
+                                              categoryHref={categoryHref}
+                                              factionSlug={faction.slug}
+                                              className={
+                                                entry.rows.length
+                                                  ? "border-t-4 border-black"
+                                                  : undefined
+                                              }
+                                            />
+                                          </ProfileFrame>
+                                        )}
+                                      </article>
+                                    ))}
+                                  </div>
+                                  {block.note && (
+                                    <p className="px-4 md:px-8 text-sm">
+                                      {block.note}
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
                             </div>
                           ))}
                         </div>

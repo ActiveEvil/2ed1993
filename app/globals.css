@@ -116,6 +116,23 @@
       font-size: var(--text-sm);
       line-height: var(--tw-leading, var(--text-sm--line-height));
     }
+    p + p {
+      margin-top: calc(var(--spacing) * 2);
+    }
+    .chart {
+      margin-top: calc(var(--spacing) * 2);
+      margin-bottom: calc(var(--spacing) * 2);
+      h3 {
+        padding: calc(var(--spacing) * 1);
+        font-size: var(--text-xs);
+        line-height: var(--tw-leading, var(--text-xs--line-height));
+      }
+      div {
+        padding: calc(var(--spacing) * 1);
+        font-size: var(--text-sm);
+        line-height: var(--tw-leading, var(--text-sm--line-height));
+      }
+    }
   }
   .dynamic-content {
     h3 {

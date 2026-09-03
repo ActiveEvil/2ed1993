@@ -299,6 +299,7 @@ export type Database = {
           allowance_max: number | null;
           allowance_min: number;
           created_at: string;
+          entry_group_id: number | null;
           id: number;
           note: string | null;
           points: number | null;
@@ -312,6 +313,7 @@ export type Database = {
           allowance_max?: number | null;
           allowance_min?: number;
           created_at?: string;
+          entry_group_id?: number | null;
           id?: number;
           note?: string | null;
           points?: number | null;
@@ -325,6 +327,7 @@ export type Database = {
           allowance_max?: number | null;
           allowance_min?: number;
           created_at?: string;
+          entry_group_id?: number | null;
           id?: number;
           note?: string | null;
           points?: number | null;
@@ -335,6 +338,13 @@ export type Database = {
           updated_at?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "army_list_entries_entry_group_id_fkey";
+            columns: ["entry_group_id"];
+            isOneToOne: false;
+            referencedRelation: "army_list_entry_groups";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "army_list_entries_points_basis_id_fkey";
             columns: ["points_basis_id"];
@@ -354,6 +364,41 @@ export type Database = {
             columns: ["unit_id"];
             isOneToOne: false;
             referencedRelation: "units";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      army_list_entry_groups: {
+        Row: {
+          army_list_id: number;
+          created_at: string;
+          id: number;
+          name: string;
+          position: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          army_list_id: number;
+          created_at?: string;
+          id?: number;
+          name: string;
+          position: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          army_list_id?: number;
+          created_at?: string;
+          id?: number;
+          name?: string;
+          position?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "army_list_entry_groups_army_list_id_fkey";
+            columns: ["army_list_id"];
+            isOneToOne: false;
+            referencedRelation: "army_lists";
             referencedColumns: ["id"];
           },
         ];
@@ -381,6 +426,7 @@ export type Database = {
           unit_option_id: number | null;
           unit_profile_id: number | null;
           updated_at: string | null;
+          wargear_card_id: number | null;
           wargear_category_id: number | null;
           weapon_id: number | null;
         };
@@ -406,6 +452,7 @@ export type Database = {
           unit_option_id?: number | null;
           unit_profile_id?: number | null;
           updated_at?: string | null;
+          wargear_card_id?: number | null;
           wargear_category_id?: number | null;
           weapon_id?: number | null;
         };
@@ -431,6 +478,7 @@ export type Database = {
           unit_option_id?: number | null;
           unit_profile_id?: number | null;
           updated_at?: string | null;
+          wargear_card_id?: number | null;
           wargear_category_id?: number | null;
           weapon_id?: number | null;
         };
@@ -496,6 +544,13 @@ export type Database = {
             columns: ["unit_profile_id"];
             isOneToOne: false;
             referencedRelation: "unit_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "army_list_entry_options_wargear_card_id_fkey";
+            columns: ["wargear_card_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_cards";
             referencedColumns: ["id"];
           },
           {
@@ -843,6 +898,7 @@ export type Database = {
           motive_type_id: number | null;
           note: string | null;
           open_topped: boolean | null;
+          origin: string;
           ram_damage: string | null;
           ram_save_modifier: number | null;
           ram_strength: number | null;
@@ -865,6 +921,7 @@ export type Database = {
           motive_type_id?: number | null;
           note?: string | null;
           open_topped?: boolean | null;
+          origin: string;
           ram_damage?: string | null;
           ram_save_modifier?: number | null;
           ram_strength?: number | null;
@@ -887,6 +944,7 @@ export type Database = {
           motive_type_id?: number | null;
           note?: string | null;
           open_topped?: boolean | null;
+          origin?: string;
           ram_damage?: string | null;
           ram_save_modifier?: number | null;
           ram_strength?: number | null;
@@ -1480,6 +1538,7 @@ export type Database = {
           armour_id: number;
           created_at: string;
           position: number;
+          save_override: string | null;
           unit_profile_id: number;
           updated_at: string | null;
         };
@@ -1488,6 +1547,7 @@ export type Database = {
           armour_id: number;
           created_at?: string;
           position?: number;
+          save_override?: string | null;
           unit_profile_id: number;
           updated_at?: string | null;
         };
@@ -1496,6 +1556,7 @@ export type Database = {
           armour_id?: number;
           created_at?: string;
           position?: number;
+          save_override?: string | null;
           unit_profile_id?: number;
           updated_at?: string | null;
         };
@@ -1783,73 +1844,76 @@ export type Database = {
       };
       unit_profiles: {
         Row: {
-          a: number | null;
+          a: string | null;
           alternative: number;
-          bs: number | null;
+          bs: string | null;
           created_at: string;
-          i: number | null;
+          i: string | null;
           id: number;
-          ld: number | null;
-          m: number | null;
+          ld: string | null;
+          m: string | null;
           mastery_level: number | null;
           models_max: number | null;
           models_min: number;
           name: string;
           points: number | null;
           position: number;
-          s: number | null;
-          t: number | null;
+          s: string | null;
+          strategy_rating: number | null;
+          t: string | null;
           unit_id: number;
           updated_at: string | null;
-          w: number | null;
+          w: string | null;
           wargear_cards_max: number | null;
-          ws: number | null;
+          ws: string | null;
         };
         Insert: {
-          a?: number | null;
+          a?: string | null;
           alternative?: number;
-          bs?: number | null;
+          bs?: string | null;
           created_at?: string;
-          i?: number | null;
+          i?: string | null;
           id?: number;
-          ld?: number | null;
-          m?: number | null;
+          ld?: string | null;
+          m?: string | null;
           mastery_level?: number | null;
           models_max?: number | null;
           models_min: number;
           name: string;
           points?: number | null;
           position: number;
-          s?: number | null;
-          t?: number | null;
+          s?: string | null;
+          strategy_rating?: number | null;
+          t?: string | null;
           unit_id: number;
           updated_at?: string | null;
-          w?: number | null;
+          w?: string | null;
           wargear_cards_max?: number | null;
-          ws?: number | null;
+          ws?: string | null;
         };
         Update: {
-          a?: number | null;
+          a?: string | null;
           alternative?: number;
-          bs?: number | null;
+          bs?: string | null;
           created_at?: string;
-          i?: number | null;
+          i?: string | null;
           id?: number;
-          ld?: number | null;
-          m?: number | null;
+          ld?: string | null;
+          m?: string | null;
           mastery_level?: number | null;
           models_max?: number | null;
           models_min?: number;
           name?: string;
           points?: number | null;
           position?: number;
-          s?: number | null;
-          t?: number | null;
+          s?: string | null;
+          strategy_rating?: number | null;
+          t?: string | null;
           unit_id?: number;
           updated_at?: string | null;
-          w?: number | null;
+          w?: string | null;
           wargear_cards_max?: number | null;
-          ws?: number | null;
+          ws?: string | null;
         };
         Relationships: [
           {
@@ -1857,6 +1921,93 @@ export type Database = {
             columns: ["unit_id"];
             isOneToOne: false;
             referencedRelation: "units";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      unit_special_rule_assignments: {
+        Row: {
+          id: number;
+          note: string | null;
+          position: number;
+          special_rule_id: number;
+          unit_id: number;
+        };
+        Insert: {
+          id?: number;
+          note?: string | null;
+          position?: number;
+          special_rule_id: number;
+          unit_id: number;
+        };
+        Update: {
+          id?: number;
+          note?: string | null;
+          position?: number;
+          special_rule_id?: number;
+          unit_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "unit_special_rule_assignments_special_rule_id_fkey";
+            columns: ["special_rule_id"];
+            isOneToOne: false;
+            referencedRelation: "unit_special_rules";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "unit_special_rule_assignments_unit_id_fkey";
+            columns: ["unit_id"];
+            isOneToOne: false;
+            referencedRelation: "units";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      unit_special_rules: {
+        Row: {
+          anchor: string | null;
+          created_at: string;
+          faction_id: number | null;
+          id: number;
+          name: string;
+          rule: string | null;
+          rule_id: number | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          anchor?: string | null;
+          created_at?: string;
+          faction_id?: number | null;
+          id?: number;
+          name: string;
+          rule?: string | null;
+          rule_id?: number | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          anchor?: string | null;
+          created_at?: string;
+          faction_id?: number | null;
+          id?: number;
+          name?: string;
+          rule?: string | null;
+          rule_id?: number | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "unit_special_rules_faction_id_fkey";
+            columns: ["faction_id"];
+            isOneToOne: false;
+            referencedRelation: "factions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "unit_special_rules_rule_id_fkey";
+            columns: ["rule_id"];
+            isOneToOne: false;
+            referencedRelation: "rules";
             referencedColumns: ["id"];
           },
         ];
@@ -1952,18 +2103,21 @@ export type Database = {
           category: string;
           id: number;
           note: string | null;
+          position: number;
         };
         Insert: {
           army_list_id: number;
           category: string;
           id?: number;
           note?: string | null;
+          position?: number;
         };
         Update: {
           army_list_id?: number;
           category?: string;
           id?: number;
           note?: string | null;
+          position?: number;
         };
         Relationships: [
           {
@@ -1981,6 +2135,7 @@ export type Database = {
           created_at: string;
           id: number;
           points: number | null;
+          position: number;
           restriction: string | null;
           unit_id: number | null;
           updated_at: string | null;
@@ -1992,6 +2147,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           points?: number | null;
+          position?: number;
           restriction?: string | null;
           unit_id?: number | null;
           updated_at?: string | null;
@@ -2003,6 +2159,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           points?: number | null;
+          position?: number;
           restriction?: string | null;
           unit_id?: number | null;
           updated_at?: string | null;
@@ -2033,6 +2190,71 @@ export type Database = {
           },
           {
             foreignKeyName: "wargear_items_weapon_id_fkey";
+            columns: ["weapon_id"];
+            isOneToOne: false;
+            referencedRelation: "weapons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      wargear_item_components: {
+        Row: {
+          armour_id: number | null;
+          created_at: string;
+          id: number;
+          position: number;
+          quantity: number;
+          updated_at: string | null;
+          wargear_card_id: number | null;
+          wargear_item_id: number;
+          weapon_id: number | null;
+        };
+        Insert: {
+          armour_id?: number | null;
+          created_at?: string;
+          id?: number;
+          position?: number;
+          quantity?: number;
+          updated_at?: string | null;
+          wargear_card_id?: number | null;
+          wargear_item_id: number;
+          weapon_id?: number | null;
+        };
+        Update: {
+          armour_id?: number | null;
+          created_at?: string;
+          id?: number;
+          position?: number;
+          quantity?: number;
+          updated_at?: string | null;
+          wargear_card_id?: number | null;
+          wargear_item_id?: number;
+          weapon_id?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wargear_item_components_armour_id_fkey";
+            columns: ["armour_id"];
+            isOneToOne: false;
+            referencedRelation: "armour";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_item_components_wargear_card_id_fkey";
+            columns: ["wargear_card_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_item_components_wargear_item_id_fkey";
+            columns: ["wargear_item_id"];
+            isOneToOne: false;
+            referencedRelation: "wargear_items";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_item_components_weapon_id_fkey";
             columns: ["weapon_id"];
             isOneToOne: false;
             referencedRelation: "weapons";

@@ -14,6 +14,8 @@ select json_agg(json_build_object('k', kind, 'n', name, 't', txt)) from (
   union all select 'warp',             sw.name,  sw.description          from special_warp_cards sw
   union all select 'unit',             u.name,   u.profile_description   from units u                   where u.profile_description is not null
   union all select 'unit_wargear',     'unit_options_row', uo.note   from unit_options uo         where uo.note is not null
+  union all select 'unit_rule',        v.name,   v.rule                  from unit_special_rules v      where v.rule is not null
+  union all select 'unit_rule_note',   'unit_special_rule_assignments_row', usra.note from unit_special_rule_assignments usra where usra.note is not null
   union all select 'unit_cat',         uc.category, uc.note            from unit_categories uc        where uc.note is not null
   union all select 'entry',            'army_list_entries_row', ale.note from army_list_entries ale   where ale.note is not null
   union all select 'entry_option',     'army_list_entry_options_row', concat_ws(' ', aleo.note, aleo.restriction) from army_list_entry_options aleo where coalesce(aleo.note, aleo.restriction) is not null
