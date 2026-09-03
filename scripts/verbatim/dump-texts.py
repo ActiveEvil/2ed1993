@@ -79,6 +79,8 @@ add("psychic", "psychic_power_cards", "name,description,note", "name", "descript
 add("warp", "special_warp_cards", "name,description", "name", "description")
 add("unit", "units", "name,profile_description", "name", "profile_description")
 add("unit_wargear", "unit_options", "note", None, "note")
+add("unit_rule", "unit_special_rules", "name,rule", "name", "rule")
+add("unit_rule_note", "unit_special_rule_assignments", "note", None, "note")
 add("unit_cat", "unit_categories", "category,note", "category", "note")
 add("entry", "army_list_entries", "note", None, "note")
 add("entry_option", "army_list_entry_options", "note,restriction", None, "note", "restriction")

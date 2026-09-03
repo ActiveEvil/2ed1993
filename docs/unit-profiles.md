@@ -46,11 +46,15 @@ last-resort prose field and should normally be null.
   0, Master Inquisitor 1, Inquisitor Lord 2 — one model at one grade. Same
   semantics as `unit_profile_weapons.alternative`.
 - `mastery_level` and `wargear_cards_max` render as a sub-line under the
-  profile name ("Mastery 4 · 1 wargear card").
+  profile name ("Mastery 4 · 1 wargear card"). A psyker character with no
+  printed level takes its psi-level from `w` — the hero level, 1 to 4 — and
+  `mastery_level` is set from it.
 - `points` is per model of this profile (the graded-character and
   per-model-priced-mob mechanism); not rendered on `/profiles`.
-- The nine characteristics are nullable integers; null renders as an
-  en-dash, distinct from 0.
+- The nine characteristics are nullable **text**, as `weapon_profiles` and
+  `armour_profiles` are, and hold what the card prints: "4" where the card
+  prints 4, "D6" where the Beast of Nurgle rolls for Attacks. Null renders as
+  an en-dash, distinct from "0". Nothing computes with them.
 
 **`unit_profile_weapons`** — the printed base loadout. `alternative` groups
 either/or sets (*"Bolt Pistol, Axe —or— Boltgun"*) and is a **per-model
@@ -59,7 +63,9 @@ alternative, even when free (the Guardian laspistol call). `quantity` covers
 "two laspistols". Position is explicit and follows the printed order.
 
 **`unit_profile_armour`** — per profile; mixed suits/fields/shields are
-multiple rows.
+multiple rows. `save_override` carries the save where the printed entry gives
+one the armour itself does not (the Rough Riders mounted 5+, the Eldar aspect
+saves); null means the armour's own save stands.
 
 **`unit_options`** — everything printed under WARGEAR, SPECIAL and SUPPORT.
 One row per item. The columns:
@@ -92,6 +98,30 @@ One row per item. The columns:
 - `note` — gate-clean prose for what structure cannot hold; voice per
   `style-conventions.md`.
 
+**`unit_special_rules` / `unit_special_rule_assignments`** — the printed
+special rules that say what a model *is*, on the shape `weapon_special_rules`
+and `armour_special_rules` already use. A `unit_special_rules` row either
+carries its own prose (`rule`, HTML), points at a rules-chapter rule
+(`rule_id`), or does both where a printed entry states an exception to a
+shared rule; at least one of the two is required. `anchor` overrides the
+fragment the link lands on where the rule is a subsection of its target
+(Dispersed Formation sits inside Squad Coherency). `name` is unique, so a
+rule the book prints twice for different bearers carries a parenthesised
+qualifier — `Break (Confessor)` — and only the part before the first " ("
+is displayed. `faction_id` is grouping only. The assignment carries the association — one rule, many units, across
+factions where the book shares it (Repair reaches Space Marines, Imperial
+Guard, Imperial Agents and Squats) — with `position` for printed order and
+`note` for the per-unit variable (Hive Mind's 12" against 18"). Rules that
+the core chapters hold are pointers, not copies; faction-specific rules are
+prose; the reader follows the link to the chapter for the full text.
+
+**The rule of thumb: `unit_options` for army-list mechanics,
+`unit_special_rules` for what the model is.** Who commands, who carries the
+standard, whose Leadership a squad tests on, what may be bought and in place
+of what — those are options. Fear, Terror, Daemonic Aura, Iron Body, Repair —
+those are special rules. Nothing is said twice; a rule that has moved to
+`unit_special_rules` leaves its `unit_options` row behind.
+
 **`wargear_categories`** — faction-scoped section vocabulary
 (`faction_id`, `category`, `note`); the note is the section's own printed
 rule ("One per model. May not be chosen for Character models."). Insert a
@@ -110,7 +140,9 @@ The upgrade price differs per list and belongs to army list entries.
 
 One `ProfileFrame` per entry: the statline table (`text-base` body), a 4px
 divider, then the labelled band (`text-sm`) — WEAPONS, ARMOUR, WARGEAR,
-SPECIAL, SUPPORT, in that order, one `tbody` per section, **shading per
+SPECIAL, SUPPORT, in that order, SPECIAL leading with the
+`unit_special_rule_assignments` rows in `position` order and the
+`unit_options` SPECIAL rows under them, one `tbody` per section, **shading per
 section** (sections alternate base/stripe, so the shade changes exactly at
 each label), one row per item, labels repeated `sr-only` on continuation
 rows. Every lead-in joins its content with ` – `.
@@ -143,6 +175,15 @@ restriction. The phrasings:
 | named grant + `replaces` | Boltgun, in place of Bolt Pistol |
 | `to_unit_profile_id` | upgraded to Veteran Sergeant (linked) |
 
+A special-rule row renders as the bold rule name, stripped of any bearer
+qualifier — linked to `/rules/<category slug>#<fragment>` by `ruleHref` where
+`rule_id` is set. The fragment is the row's `anchor` where it has one, else
+`generateAnchorId` of the target rule's name, which is the `id` the rules
+page puts on that rule's section. Then ` – `, the rule's own prose, and the
+assignment's note after it. Prose carrying a `<section class="chart">` gets a
+block container and no lead-in dash: the chart is a grid and the cell holds
+it as its own line under the name.
+
 **The noun follows the sections**: weapon/weapons when every granted
 section's name contains "Weapons"; item/equipment otherwise ("additional
 equipment from Armour, Assault Weapons, Special Weapons, Grenades").
@@ -168,7 +209,12 @@ equipment from Armour, Assault Weapons, Special Weapons, Grenades").
 | 26 Aug | Graded profiles are alternatives | `unit_profiles.alternative`; rendered with "—or—" on the row boundary, flanking rows padded. |
 | 26 Aug | Upgrades | A printed upgrade entry is its own unit plus an inline `to_unit_profile_id` option on each squad it applies to (Veteran Sergeant). |
 | 26 Aug | Red generalised | `2ed-dark-red` at `text-xl` or above anywhere on the site — the page background measures the same as the card face (4.22 light / 3.12 dark). |
+| 2 Sep | Psi-level is the hero level | A psyker character's psi-level is its Wounds value, 1 to 4, unless the profile prints a mastery level; `mastery_level` is set from `w` in that case, the Prime Psyker grades included. |
+| 2 Sep | Characteristics are text | The nine columns are text, not integers, and store the printed value — a rolled characteristic (`D6`) is stored as printed rather than resolved or left null. |
+| 3 Sep | Unit special rules get a join | `unit_special_rules` and `unit_special_rule_assignments`, on the weapon and armour special-rule shape. `rule_id` points at a rules-chapter rule, `rule` carries faction-specific prose, both together carry a printed exception, and the assignment's `note` carries the per-unit variable. |
 
-Schema changes to these tables have so far been applied as plain SQL with
-explicit approval and are **not in the Supabase migrations history**; the
-statements are recorded in the project docs named above.
+Schema changes to these tables were applied as plain SQL with explicit
+approval up to 27 August and are absent from the Supabase migrations history;
+the statements are recorded in the project docs named above and are backfilled
+by `supabase/migrations/20260902090000_backfill_direct_sql_of_27_august.sql`.
+From batch 4 onward every schema change goes in as a migration.

@@ -20,9 +20,13 @@ army_list_entries.note and the other army-list note columns. The plain_entity
 check catches those; it is the mirror of ampersand and runs only off HTML.
 The dump joins the psychic note into the card's text, so `psychic` stays in
 HTML_KINDS and any note needing literal characters belongs in exemptions.
-unit_options.note, damage_charts.note and datafax_locations.note are rendered
-through dangerouslySetInnerHTML, so `unit_wargear`, `damage_chart` and
-`datafax_location` are HTML kinds.
+unit_options.note, damage_charts.note, datafax_locations.note,
+unit_special_rules.rule and unit_special_rule_assignments.note are rendered
+through dangerouslySetInnerHTML, so `unit_wargear`, `damage_chart`,
+`datafax_location`, `unit_rule` and `unit_rule_note` are HTML kinds.
+A unit rule's prose may carry a D6 chart, so `unit_rule` ids join the
+duplicate_id cross-check under a namespace of their own — every unit rule on
+an army-list page shares that page.
 Kinds not rendered anywhere yet (unit, army_list, equipment_weapon, wargear_cat)
 get voice checks only.
 """
@@ -34,7 +38,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "wargear_card", "mission", "strategy", "psychic", "warp",
               "faction", "damage_result", "unit_wargear", "damage_chart",
-              "datafax_location")
+              "datafax_location", "unit_rule", "unit_rule_note")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
             "ldquo", "rdquo", "half", "uarr", "sup2", "AElig"}
@@ -212,18 +216,22 @@ PLAIN_ONLY = {"plain_entity"}
 def cross_checks(texts):
     ids = defaultdict(list)
     for row in texts:
-        if not row["k"].startswith("rule:"):
+        if row["k"].startswith("rule:"):
+            slug = row["k"][5:]
+            ids[slug].append(anchor(row["n"]))
+        elif row["k"] == "unit_rule":
+            slug = "unit_rule"
+        else:
             continue
-        slug = row["k"][5:]
-        ids[slug].append(anchor(row["n"]))
         for match in re.finditer(r'id="([^"]+)"', row["t"]):
             ids[slug].append(match.group(1))
 
     for slug, found in ids.items():
+        label = slug if slug == "unit_rule" else f"rule:{slug}"
         seen = set()
         for i in found:
             if i in seen:
-                yield "duplicate_id", f"rule:{slug}", i, f"id {i} defined twice"
+                yield "duplicate_id", label, i, f"id {i} defined twice"
             seen.add(i)
 
     for row in texts:

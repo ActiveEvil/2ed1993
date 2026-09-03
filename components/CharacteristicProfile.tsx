@@ -16,7 +16,7 @@ export const CHARACTERISTICS = [
 ] as const;
 
 export type Characteristics = {
-  [Key in (typeof CHARACTERISTICS)[number]["key"]]: number | null;
+  [Key in (typeof CHARACTERISTICS)[number]["key"]]: string | null;
 };
 
 export type CharacteristicRow = Characteristics & {
@@ -28,8 +28,7 @@ export type CharacteristicRow = Characteristics & {
   cost?: string | null;
 };
 
-const characteristic = (value: number | null): string =>
-  value === null ? DASH : String(value);
+const characteristic = (value: string | null): string => value ?? DASH;
 
 const HEAD_CELL = "py-1 font-subtitle text-xs text-white";
 const CELL = "py-1";
