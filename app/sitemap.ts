@@ -104,19 +104,44 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const { data: factions } = await supabase
       .from("factions")
       .select(
-        "slug, parent_faction_id, created_at, updated_at, army_lists(slug, created_at, updated_at)",
+        "id, slug, parent_faction_id, created_at, updated_at, army_lists(slug, created_at, updated_at)",
       );
+    const { data: datafaxUnits } = await supabase
+      .from("units")
+      .select("faction_id, datafaxes!inner(id)");
 
     if (factions) {
-      for (const faction of factions) {
-        factionsPages.push({
-          url: `${baseUrl}/factions/${faction.slug}`,
-          lastModified: new Date(faction.updated_at || faction.created_at),
-          changeFrequency: "weekly",
-          priority: 0.7,
-        });
+      const factionIdsWithDatafaxes = new Set(
+        (datafaxUnits ?? [])
+          .map(({ faction_id }) => faction_id)
+          .filter((id): id is number => id !== null),
+      );
+      const hasArmyLists = (faction: (typeof factions)[number]): boolean =>
+        faction.army_lists.length > 0 ||
+        factions.some(
+          (other) =>
+            other.parent_faction_id === faction.id &&
+            other.army_lists.length > 0,
+        );
+      const hasDatafaxes = (factionId: number): boolean =>
+        factionIdsWithDatafaxes.has(factionId) ||
+        factions.some(
+          (other) =>
+            other.parent_faction_id === factionId &&
+            factionIdsWithDatafaxes.has(other.id),
+        );
 
-        if (faction.parent_faction_id === null) {
+      for (const faction of factions) {
+        if (hasArmyLists(faction)) {
+          factionsPages.push({
+            url: `${baseUrl}/factions/${faction.slug}`,
+            lastModified: new Date(faction.updated_at || faction.created_at),
+            changeFrequency: "weekly",
+            priority: 0.7,
+          });
+        }
+
+        if (faction.parent_faction_id === null && hasDatafaxes(faction.id)) {
           factionsPages.push({
             url: `${baseUrl}/datafaxes/${faction.slug}`,
             lastModified: new Date(faction.updated_at || faction.created_at),

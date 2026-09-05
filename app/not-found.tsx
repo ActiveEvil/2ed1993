@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const metadata: Metadata = {
-  title: "Page Not Found | 2ed1993",
+  title: "Page Not Found",
   description: "This page does not exist in the record.",
 };
 

@@ -6,6 +6,7 @@ import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -13,8 +14,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Warhammer 40,000 2nd Edition Strategy Cards | 2ed1993`,
-    description: `Warhammer 40,000 2nd Edition  Strategy Cards.`,
+    title: pageTitle("Strategy Cards"),
+    description:
+      "The Strategy cards of Warhammer 40,000 2nd Edition, with the text and effect of each card, including Flank March, Booby Traps and Virus Outbreak.",
   };
 }
 

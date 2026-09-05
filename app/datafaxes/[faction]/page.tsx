@@ -6,6 +6,7 @@ import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
 import { generateAnchorId } from "@/lib/anchors";
+import { joinWithinBudget } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
@@ -28,7 +29,7 @@ export async function generateMetadata(props: {
   const params = await props.params;
   const { data: faction, error: factionError } = await supabase
     .from("factions")
-    .select("name")
+    .select("id, name")
     .eq("slug", params.faction)
     .is("parent_faction_id", null)
     .maybeSingle();
@@ -36,9 +37,42 @@ export async function generateMetadata(props: {
   assertNoQueryErrors(CONTEXT, factionError);
 
   if (faction) {
+    const { data: children, error: childrenError } = await supabase
+      .from("factions")
+      .select("id")
+      .eq("parent_faction_id", faction.id);
+
+    assertNoQueryErrors(CONTEXT, childrenError);
+
+    const factionIds = [faction.id, ...(children ?? []).map(({ id }) => id)];
+
+    const { data: unitRows, error: unitsError } = await supabase
+      .from("units")
+      .select("name, datafaxes!inner(id), unit_types(position)")
+      .in("faction_id", factionIds)
+      .order("position", { referencedTable: "unit_types" })
+      .order("name")
+      .limit(6);
+
+    assertNoQueryErrors(CONTEXT, unitsError);
+
+    const title = `${faction.name} Datafaxes in 40k 2nd Edition`;
+
+    if (!unitRows || unitRows.length === 0) {
+      return {
+        title,
+        description: `Vehicle datafaxes for the ${faction.name} in Warhammer 40,000 2nd Edition. None have been added to the record yet.`,
+        robots: { index: false },
+      };
+    }
+
     return {
-      title: `${faction.name} Datafaxes in Warhammer 40,000 2nd Edition | 2ed1993`,
-      description: `Warhammer 40,000 2nd Edition ${faction.name} vehicle datafaxes.`,
+      title,
+      description: joinWithinBudget(
+        unitRows.map(({ name }) => name),
+        `${faction.name} vehicle datafaxes for Warhammer 40,000 2nd Edition, including the `,
+        ", with armour values and damage charts.",
+      ),
     };
   }
 

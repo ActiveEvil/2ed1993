@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { FactionCard } from "@/components/Cards";
 import type { Image } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -9,8 +10,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Factions | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Factions.",
+    title: pageTitle("Factions"),
+    description:
+      "Every army in Warhammer 40,000 2nd Edition, from Space Marines and Imperial Guard to Orks, Eldar, Chaos, Tyranids, Squats and Necrons.",
   };
 }
 

@@ -3,6 +3,7 @@ import { IndexCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -10,8 +11,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Datafaxes | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition vehicle datafaxes, by faction.",
+    title: pageTitle("Vehicle Datafaxes"),
+    description:
+      "Vehicle datafaxes for Warhammer 40,000 2nd Edition, by faction, giving speed, armour values, crew, weapons and the damage charts for each vehicle.",
   };
 }
 
