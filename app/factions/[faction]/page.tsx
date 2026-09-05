@@ -6,6 +6,7 @@ import { Logo } from "@/components/Logos";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -15,34 +16,61 @@ export const revalidate = 3600;
 
 const CONTEXT = "/factions/[faction]";
 
-const toPlainText = (html: string) =>
-  html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&mdash;/g, "—")
-    .replace(/&ndash;/g, "–")
-    .replace(/&apos;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .replace(/\s+/g, " ")
-    .trim();
-
 export async function generateMetadata(props: {
   params: Promise<{ faction: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
   const { data: faction, error: factionError } = await supabase
     .from("factions")
-    .select("name, description")
+    .select("id, name, parent_faction_id, army_lists(id)")
     .eq("slug", params.faction)
     .single();
 
   assertNoQueryErrors(CONTEXT, factionError);
 
   if (faction) {
-    const { name, description } = faction;
+    const { data: children, error: childrenError } = await supabase
+      .from("factions")
+      .select("army_lists(id)")
+      .eq("parent_faction_id", faction.id);
+
+    assertNoQueryErrors(CONTEXT, childrenError);
+
+    const hasArmyLists =
+      faction.army_lists.length > 0 ||
+      (children ?? []).some((child) => child.army_lists.length > 0);
+
+    const title = pageTitle(faction.name);
+
+    if (!hasArmyLists) {
+      return {
+        title,
+        description: `The ${faction.name} in Warhammer 40,000 2nd Edition. Background and history, with the army list and unit profiles still to be added.`,
+        robots: { index: false },
+      };
+    }
+
+    const { data: parent, error: parentError } =
+      faction.parent_faction_id === null
+        ? { data: null, error: null }
+        : await supabase
+            .from("factions")
+            .select("name")
+            .eq("id", faction.parent_faction_id)
+            .single();
+
+    assertNoQueryErrors(CONTEXT, parentError);
+
+    if (faction.parent_faction_id !== null && parent?.name === "Space Marines") {
+      return {
+        title,
+        description: `The ${faction.name}, a Space Marine Chapter in Warhammer 40,000 2nd Edition, with unit profiles, points values, wargear and the Chapter's special rules.`,
+      };
+    }
+
     return {
-      title: name + " in Warhammer 40,000 2nd Edition | 2ed1993",
-      description: toPlainText(description),
+      title,
+      description: `The ${faction.name} army lists for Warhammer 40,000 2nd Edition, with unit profiles, points values, wargear options and the faction's special rules.`,
     };
   }
 

@@ -5,6 +5,7 @@ import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { ruleName } from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -13,8 +14,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Rules | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Rules.",
+    title: pageTitle("Rules"),
+    description:
+      "Every chapter of the Warhammer 40,000 2nd Edition rules, covering the movement, shooting, hand-to-hand and psychic phases, plus vehicles and psychology.",
   };
 }
 

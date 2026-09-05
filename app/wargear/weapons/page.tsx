@@ -6,6 +6,7 @@ import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import Link from "next/link";
@@ -15,8 +16,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Weapons | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Weapons.",
+    title: pageTitle("Weapons"),
+    description:
+      "Weapon profiles from Warhammer 40,000 2nd Edition, giving range, to hit, Strength, damage and save modifier for pistols, basic, heavy and support weapons.",
   };
 }
 

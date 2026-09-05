@@ -12,6 +12,7 @@ import {
   SpecialRuleLinks,
 } from "@/components/WeaponProfile";
 import { facetHref, generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -20,8 +21,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Wargear Cards | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Wargear Cards.",
+    title: pageTitle("Wargear Cards"),
+    description:
+      "The Wargear cards of Warhammer 40,000 2nd Edition, with points value, rarity, restrictions and the weapon or armour profile where a card has one.",
   };
 }
 

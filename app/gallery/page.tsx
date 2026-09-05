@@ -7,9 +7,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Gallery | 2ed1993",
+    title: "Warhammer 40,000 2nd Edition Miniatures Gallery",
     description:
-      "Miniatures I've painted, from my Warhammer 40,000 2nd Edition collection.",
+      "Miniatures I have painted from my Warhammer 40,000 2nd Edition collection, mostly the metal and plastic Citadel models of the period.",
   };
 }
 

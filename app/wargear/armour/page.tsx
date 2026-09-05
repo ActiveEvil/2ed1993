@@ -6,6 +6,7 @@ import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -14,8 +15,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Armour | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Armour.",
+    title: pageTitle("Armour"),
+    description:
+      "Armour saves for Warhammer 40,000 2nd Edition, covering physical armour such as power armour, personal force fields and shields, with their special rules.",
   };
 }
 

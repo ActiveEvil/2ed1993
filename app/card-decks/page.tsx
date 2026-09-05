@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { IndexCard } from "@/components/Cards";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
@@ -37,8 +38,9 @@ const DECKS = [
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition Card Decks | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition Card Decks.",
+    title: pageTitle("Card Decks"),
+    description:
+      "The card decks used in Warhammer 40,000 2nd Edition: Mission cards, Strategy cards, psychic power cards and Special Warp cards.",
   };
 }
 

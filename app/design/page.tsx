@@ -3,7 +3,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Metadata } from "next/types";
 
 export const metadata: Metadata = {
-  title: "Design | 2ed1993",
+  title: "Design",
   robots: { index: false, follow: false },
 };
 

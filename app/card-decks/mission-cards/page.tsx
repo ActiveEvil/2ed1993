@@ -6,6 +6,7 @@ import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -13,8 +14,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Warhammer 40,000 2nd Edition Mission Cards | 2ed1993`,
-    description: `Warhammer 40,000 2nd Edition  Mission Cards.`,
+    title: pageTitle("Mission Cards"),
+    description:
+      "The Mission cards of Warhammer 40,000 2nd Edition, giving the primary objective, any secondary objective and the victory points, grouped by source.",
   };
 }
 

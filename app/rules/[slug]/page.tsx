@@ -6,6 +6,7 @@ import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { ruleName } from "@/components/UnitEquipment";
 import { generateAnchorId, ruleHref } from "@/lib/anchors";
+import { joinWithinBudget, pageTitle } from "@/lib/metadata";
 import { extractSubsections } from "@/lib/sections";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
@@ -141,22 +142,48 @@ const ChapterHeading: React.FC<{ title: string }> = ({
   </div>
 );
 
+const GOLDEN_RULE_SLUG = "the-golden-rule";
+
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
   const { data: category, error: categoryError } = await supabase
     .from("rule_categories")
-    .select("name")
+    .select("name, faction_id, factions(name), rules(name, position)")
     .eq("slug", params.slug)
+    .order("position", { referencedTable: "rules" })
     .single();
 
   assertNoQueryErrors(CONTEXT, categoryError);
 
   if (category) {
+    const title = pageTitle(category.name);
+
+    if (params.slug === GOLDEN_RULE_SLUG) {
+      return {
+        title,
+        description:
+          "The Golden Rule of Warhammer 40,000 2nd Edition, the one that says the players should agree how to settle anything the rules do not cover.",
+      };
+    }
+
+    if (category.rules.length === 0 && category.factions) {
+      return {
+        title,
+        description: `The special rules carried by ${category.factions.name} units in Warhammer 40,000 2nd Edition, listed with the units that have them.`,
+      };
+    }
+
+    const ruleNames = category.rules.map(({ name }) => name);
+
     return {
-      title: `Warhammer 40,000 2nd Edition ${category.name} | 2ed1993`,
-      description: `Warhammer 40,000 2nd Edition ${category.name}.`,
+      title,
+      description: joinWithinBudget(
+        ruleNames,
+        `The ${category.name} in Warhammer 40,000 2nd Edition, covering `,
+        ".",
+      ),
     };
   }
 

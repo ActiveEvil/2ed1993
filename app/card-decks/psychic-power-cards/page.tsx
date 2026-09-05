@@ -6,6 +6,7 @@ import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
 import { deckColors } from "@/lib/factions";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import { Metadata } from "next/types";
@@ -14,8 +15,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Warhammer 40,000 2nd Edition Psychic Power Cards | 2ed1993`,
-    description: `Warhammer 40,000 2nd Edition Psychic Power Cards.`,
+    title: pageTitle("Psychic Power Cards"),
+    description:
+      "The psychic power cards of Warhammer 40,000 2nd Edition, grouped by discipline, giving the force card cost, range and effect of each power.",
   };
 }
 

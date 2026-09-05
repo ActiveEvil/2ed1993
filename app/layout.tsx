@@ -29,7 +29,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "./",
   },
-  title: "2ed1993",
+  title: {
+    default: "2ed1993",
+    template: "%s | 2ed1993",
+  },
   description: "The Warhammer 40,000 2nd Edition digital record project.",
   icons: [
     { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },

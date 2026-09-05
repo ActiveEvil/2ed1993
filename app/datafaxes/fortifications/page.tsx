@@ -6,6 +6,7 @@ import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
 
@@ -15,8 +16,9 @@ const CONTEXT = "/datafaxes/fortifications";
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Fortification Datafaxes in Warhammer 40,000 2nd Edition | 2ed1993",
-    description: "Warhammer 40,000 2nd Edition fortification datafaxes.",
+    title: pageTitle("Fortification Datafaxes"),
+    description:
+      "Datafaxes for the Warhammer 40,000 2nd Edition fortifications, with armour values by location, damage charts and the weapons each can mount.",
   };
 }
 

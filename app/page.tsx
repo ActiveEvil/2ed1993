@@ -9,9 +9,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: "Warhammer 40,000 2nd Edition | 2ed1993",
+    title: "Warhammer 40,000 2nd Edition Rules & Army Lists",
     description:
-      "2ed1993 is a record of every rule, army list, unit profile, FAQ, or similar material for Warhammer 40,000 2nd Edition.",
+      "A record of the Warhammer 40,000 2nd Edition rules, army lists, unit profiles, weapons, wargear, cards and vehicle datafaxes.",
   };
 }
 

@@ -22,6 +22,7 @@ import {
   unitHasEquipment,
 } from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
+import { armyListShortName } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -420,11 +421,14 @@ export async function generateMetadata(props: {
 
   if (list) {
     const { name, description, factions: faction } = list;
+    const plainDescription = description ? toPlainText(description) : null;
+
     return {
-      title: name + " in Warhammer 40,000 2nd Edition | 2ed1993",
-      description: description
-        ? toPlainText(description)
-        : `The ${name} army list for ${faction.name} in Warhammer 40,000 2nd Edition.`,
+      title: `${name} in 2nd Edition`,
+      description:
+        plainDescription && plainDescription.length <= 155
+          ? plainDescription
+          : `${armyListShortName(name, faction.name)} for ${faction.name} in Warhammer 40,000 2nd Edition, with unit entries, points values, wargear options and army list restrictions.`,
     };
   }
 

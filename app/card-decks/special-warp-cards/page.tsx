@@ -5,6 +5,7 @@ import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
+import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
 import { Metadata } from "next/types";
@@ -13,8 +14,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Warhammer 40,000 2nd Edition Special Warp Cards | 2ed1993`,
-    description: `Warhammer 40,000 2nd Edition Special Warp Cards.`,
+    title: pageTitle("Special Warp Cards"),
+    description:
+      "The Special Warp cards of Warhammer 40,000 2nd Edition, played to nullify, reflect or destroy an enemy psychic power, or to force a psychic duel.",
   };
 }
 
