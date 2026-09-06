@@ -40,7 +40,8 @@ export default async function Page() {
       .select(
         "id, name, category_id, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
       )
-      .order("name"),
+      .order("name")
+      .order("position", { referencedTable: "weapon_profiles" }),
     supabase
       .from("weapon_special_rules")
       .select("name, rule, rules(name, rule_categories(slug))")

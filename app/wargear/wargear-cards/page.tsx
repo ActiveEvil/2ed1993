@@ -45,6 +45,9 @@ export default async function Page() {
       )
       .order("name")
       .order("position", { referencedTable: "wargear_cards_weapons" })
+      .order("position", {
+        referencedTable: "wargear_cards_weapons.weapons.weapon_profiles",
+      })
       .order("position", { referencedTable: "wargear_cards_armour" }),
     supabase.from("availabilities").select("name").order("position"),
   ]);

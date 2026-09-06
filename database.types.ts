@@ -2436,6 +2436,7 @@ export type Database = {
           long_range: string;
           long_to_hit: string;
           name: string | null;
+          position: number;
           save_modifier: string;
           short_range: string;
           short_to_hit: string;
@@ -2451,6 +2452,7 @@ export type Database = {
           long_range: string;
           long_to_hit: string;
           name?: string | null;
+          position?: number;
           save_modifier: string;
           short_range: string;
           short_to_hit: string;
@@ -2466,6 +2468,7 @@ export type Database = {
           long_range?: string;
           long_to_hit?: string;
           name?: string | null;
+          position?: number;
           save_modifier?: string;
           short_range?: string;
           short_to_hit?: string;
