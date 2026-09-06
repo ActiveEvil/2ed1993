@@ -13,6 +13,7 @@ const BurgerMenu: React.FC<{
   }[];
 }> = ({ items }): React.JSX.Element => {
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const list = items.map(({ href, anchor }) => (
@@ -42,9 +43,17 @@ const BurgerMenu: React.FC<{
         setOpen(false);
       }
     };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (open && e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
     document.addEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [ref, open]);
 
@@ -52,8 +61,10 @@ const BurgerMenu: React.FC<{
     <div className="relative flex md:hidden justify-end items-center w-full">
       <div>
         <button
+          ref={buttonRef}
           className="flex flex-col justify-center items-center gap-1 w-11 h-11"
           aria-expanded={open}
+          aria-controls="main-menu"
           onClick={() => setOpen((isOpen) => !isOpen)}
         >
           <span className="sr-only">Menu</span>
@@ -62,6 +73,7 @@ const BurgerMenu: React.FC<{
           <div className="w-8 h-1 bg-2ed-light-yellow"></div>
         </button>
         <div
+          id="main-menu"
           ref={ref}
           className={clsx({
             "-z-10 collapse absolute inset-y-auto right-2 p-2 bg-background border-4 border-black text-foreground": true,

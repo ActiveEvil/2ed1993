@@ -166,10 +166,8 @@ their one permitted use is as clean-text detectors in the verbatim gate.
 
 ## Not built yet
 
-Tables exist without pages behind them: `units`, `unit_profiles`, `vehicles`,
-`army_lists`, `equipment_weapons`. The unit and vehicle data models are the two
-largest open pieces of work. `equipment_weapons` denormalisation is parked by
-decision until the army-lists rework.
+One table exists without a page behind it: `equipment_weapons`. Its
+denormalisation is parked by decision until the army-lists rework.
 
 ## Deployment
 

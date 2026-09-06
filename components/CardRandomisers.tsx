@@ -2,7 +2,6 @@
 
 import { SectionBar } from "./SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
-import Link from "next/link";
 import { useState } from "react";
 
 export const StrategyCardRandomiser: React.FC<{
@@ -114,12 +113,10 @@ export const StrategyCardRandomiser: React.FC<{
       </div>
       <div className="sticky top-0 z-10 bg-background shadow-lg">
         <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue">
-          <Link
-            className="px-4 py-1 rounded-none  bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
-            href={baseHref}
-            onNavigate={(e) => {
-              e.preventDefault();
-
+          <button
+            type="button"
+            className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
+            onClick={() => {
               if (ids.length) {
                 const href =
                   baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
@@ -127,10 +124,9 @@ export const StrategyCardRandomiser: React.FC<{
                 window.location.replace(new URL(window.location.origin + href));
               }
             }}
-            scroll
           >
             Draw one card at random!
-          </Link>
+          </button>
         </div>
       </div>
     </div>
@@ -273,12 +269,10 @@ export const MissionCardRandomiser: React.FC<{
       </div>
       <div className="sticky top-0 z-10 bg-background shadow-lg">
         <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue">
-          <Link
-            className="px-4 py-1 rounded-none  bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
-            href={baseHref}
-            onNavigate={(e) => {
-              e.preventDefault();
-
+          <button
+            type="button"
+            className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
+            onClick={() => {
               if (ids.length) {
                 const href =
                   baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
@@ -286,10 +280,9 @@ export const MissionCardRandomiser: React.FC<{
                 window.location.replace(new URL(window.location.origin + href));
               }
             }}
-            scroll
           >
             Draw one card at random!
-          </Link>
+          </button>
         </div>
       </div>
     </div>
