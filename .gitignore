@@ -45,3 +45,6 @@ __pycache__/
 
 # local scan output
 texts-scan.json
+
+# desktop app deliveries
+Claude outputs/
