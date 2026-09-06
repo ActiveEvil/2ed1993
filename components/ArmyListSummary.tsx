@@ -70,7 +70,10 @@ export const ArmyListSummary: React.FC<{
                 <div className="col-span-2 text-center content-center">
                   {band.limit}
                 </div>
-                <div className="col-span-4">{band.note}</div>
+                <div
+                  className="col-span-4"
+                  dangerouslySetInnerHTML={{ __html: band.note ?? "" }}
+                />
               </Fragment>
             ))}
           </section>

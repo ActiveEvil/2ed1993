@@ -507,6 +507,7 @@ export default async function Page(props: {
         max: section.max_percent,
         note: section.note,
       }),
+      note: section.note,
       rules: section.army_list_allowance_rules
         .map(allowanceRule)
         .filter((text): text is string => text !== null),
@@ -691,6 +692,13 @@ export default async function Page(props: {
                         note={section.limit}
                         className="mx-4 md:mx-8"
                       />
+
+                      {section.note && (
+                        <div
+                          className="dynamic-content compact mx-4 md:mx-8"
+                          dangerouslySetInnerHTML={{ __html: section.note }}
+                        />
+                      )}
 
                       {Boolean(section.rules.length) && (
                         <div className="flex flex-col gap-1 mx-4 md:mx-8 text-sm">
