@@ -111,6 +111,9 @@ export default async function Page(props: {
     .order("name")
     .order("position", { referencedTable: "datafaxes.datafax_images" })
     .order("position", { referencedTable: "datafaxes.datafax_weapons" })
+    .order("position", {
+      referencedTable: "datafaxes.datafax_weapons.weapons.weapon_profiles",
+    })
     .order("position", { referencedTable: "datafaxes.datafax_locations" })
     .order("position", { referencedTable: "datafaxes.damage_charts" })
     .order("position", {
