@@ -34,10 +34,6 @@ export const metadata: Metadata = {
     template: "%s | 2ed1993",
   },
   description: "The Warhammer 40,000 2nd Edition digital record project.",
-  icons: [
-    { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
-    { rel: "shortcut icon", url: "/favicon.ico" },
-  ],
   robots: {
     index: true,
     follow: true,
