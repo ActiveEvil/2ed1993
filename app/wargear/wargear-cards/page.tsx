@@ -28,26 +28,27 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "wargear-cards")
-    .maybeSingle();
+  const [
+    { data: heroImage },
+    { data: cards, error: cardsError },
+    { data: availabilityRows, error: availabilityError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "wargear-cards")
+      .maybeSingle(),
+    supabase
+      .from("wargear_cards")
+      .select(
+        "id, name, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
+      )
+      .order("name")
+      .order("position", { referencedTable: "wargear_cards_weapons" })
+      .order("position", { referencedTable: "wargear_cards_armour" }),
+    supabase.from("availabilities").select("name").order("position"),
+  ]);
   const hero = heroImage?.images ?? null;
-
-  const { data: cards, error: cardsError } = await supabase
-    .from("wargear_cards")
-    .select(
-      "id, name, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
-    )
-    .order("name")
-    .order("position", { referencedTable: "wargear_cards_weapons" })
-    .order("position", { referencedTable: "wargear_cards_armour" });
-
-  const { data: availabilityRows, error: availabilityError } = await supabase
-    .from("availabilities")
-    .select("name")
-    .order("position");
 
   assertNoQueryErrors("/wargear/wargear-cards", cardsError, availabilityError);
 

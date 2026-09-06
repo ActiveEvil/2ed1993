@@ -31,9 +31,9 @@ export default async function Page() {
     .from("factions")
     .select("id", { count: "exact", head: true })
     .is("parent_faction_id", null);
-  const unitProfilesQuery = supabase
-    .from("units")
-    .select("id, unit_types(plural_name, position), datafaxes(id)");
+  const datafaxesQuery = supabase
+    .from("datafaxes")
+    .select("units!inner(unit_types(plural_name, position))");
   const subfactionsQuery = supabase
     .from("factions")
     .select("id", { count: "exact", head: true })
@@ -61,7 +61,7 @@ export default async function Page() {
     { count: chapters, error: chaptersError },
     { count: sections, error: sectionsError },
     { count: factions, error: factionsError },
-    { data: unitProfiles, error: unitProfilesError },
+    { data: datafaxRows, error: datafaxesError },
     { count: subfactions, error: subfactionsError },
     wargear,
     decks,
@@ -70,7 +70,7 @@ export default async function Page() {
     chaptersQuery,
     sectionsQuery,
     factionsQuery,
-    unitProfilesQuery,
+    datafaxesQuery,
     subfactionsQuery,
     wargearQuery,
     decksQuery,
@@ -84,7 +84,7 @@ export default async function Page() {
     chaptersError,
     sectionsError,
     factionsError,
-    unitProfilesError,
+    datafaxesError,
     subfactionsError,
     ...wargear.map(({ error }) => error),
     ...decks.map(({ error }) => error),
@@ -95,7 +95,7 @@ export default async function Page() {
     chapters !== null &&
     sections !== null &&
     factions !== null &&
-    unitProfiles &&
+    datafaxRows &&
     subfactions !== null &&
     wargear.every(({ count }) => count !== null) &&
     decks.every(({ count }) => count !== null)
@@ -108,24 +108,18 @@ export default async function Page() {
       0,
     );
     const datafaxCounts = Object.values(
-      unitProfiles
-        .filter(({ datafaxes }) => datafaxes !== null)
-        .reduce<
-          Record<
-            string,
-            { pluralName: string; position: number; count: number }
-          >
-        >((acc, profile) => {
-          const pluralName = profile.unit_types?.plural_name ?? "Unknown";
-          const position = profile.unit_types?.position ?? Infinity;
-          acc[pluralName] = acc[pluralName] ?? {
-            pluralName,
-            position,
-            count: 0,
-          };
-          acc[pluralName].count += 1;
-          return acc;
-        }, {}),
+      datafaxRows.reduce<
+        Record<string, { pluralName: string; position: number; count: number }>
+      >((acc, { units }) => {
+        const { plural_name: pluralName, position } = units.unit_types;
+        acc[pluralName] = acc[pluralName] ?? {
+          pluralName,
+          position,
+          count: 0,
+        };
+        acc[pluralName].count += 1;
+        return acc;
+      }, {}),
     ).sort((a, b) => a.position - b.position);
 
     const record = [

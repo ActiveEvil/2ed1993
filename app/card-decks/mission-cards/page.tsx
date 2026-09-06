@@ -21,18 +21,23 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "mission-cards")
-    .single();
+  const [
+    { data: heroImage, error: heroImageError },
+    { data: mission_cards, error: missionCardsError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "mission-cards")
+      .single(),
+    supabase
+      .from("mission_cards")
+      .select(
+        "id, origin, name, description, primary_objective, secondary_objective, special_rules",
+      )
+      .order("id"),
+  ]);
   const hero = heroImage?.images ?? null;
-  const { data: mission_cards, error: missionCardsError } = await supabase
-    .from("mission_cards")
-    .select(
-      "id, origin, name, description, primary_objective, secondary_objective, special_rules",
-    )
-    .order("id");
 
   assertNoQueryErrors(
     "/card-decks/mission-cards",

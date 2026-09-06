@@ -73,6 +73,9 @@ const loadList = (faction: string, list: string) =>
     .order("position", { referencedTable: "wargear_categories.wargear_items" })
     .single();
 
+const loadRuleCategories = () =>
+  supabase.from("rule_categories").select("slug, factions!inner(slug)");
+
 type List = NonNullable<Awaited<ReturnType<typeof loadList>>["data"]>;
 type RawEntry = List["unit_categories"][number]["army_list_entries"][number];
 type RawOption = RawEntry["army_list_entry_options"][number];
@@ -473,15 +476,24 @@ export default async function Page(props: {
   params: Promise<{ faction: string; list: string }>;
 }) {
   const params = await props.params;
-  const { data: list, error: listError } = await loadList(
-    params.faction,
-    params.list,
-  );
+  const [
+    { data: list, error: listError },
+    { data: ruleCategoryRows, error: ruleCategoriesError },
+  ] = await Promise.all([
+    loadList(params.faction, params.list),
+    loadRuleCategories(),
+  ]);
 
-  assertNoQueryErrors(CONTEXT, listError);
+  assertNoQueryErrors(CONTEXT, listError, ruleCategoriesError);
 
   if (list) {
     const faction = list.factions;
+    const rulesSlugByFaction = new Map(
+      (ruleCategoryRows ?? []).map(({ slug, factions }) => [
+        factions.slug,
+        slug,
+      ]),
+    );
     const listHref = `/factions/${faction.slug}/${params.list}`;
     const stockedSections = list.wargear_categories.filter(
       ({ wargear_items }) => wargear_items.length,
@@ -791,7 +803,11 @@ export default async function Page(props: {
                                               }
                                               compact
                                               categoryHref={categoryHref}
-                                              factionSlug={faction.slug}
+                                              rulesSlug={
+                                                rulesSlugByFaction.get(
+                                                  entry.factionSlug,
+                                                ) ?? null
+                                              }
                                               className={
                                                 entry.rows.length
                                                   ? "border-t-4 border-black"

@@ -50,7 +50,7 @@ export async function generateMetadata(props: {
       .from("units")
       .select("name, datafaxes!inner(id), unit_types(position)")
       .in("faction_id", factionIds)
-      .order("position", { referencedTable: "unit_types" })
+      .order("unit_types(position)")
       .order("name")
       .limit(6);
 

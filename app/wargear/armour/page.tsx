@@ -22,34 +22,34 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "armour")
-    .single();
-  const hero = heroImage?.images ?? null;
-
-  const { data: categoryRows, error: categoryRowsError } = await supabase
-    .from("armour_categories")
-    .select("id, name")
-    .order("position");
-
-  const { data: armour, error: armourError } = await supabase
-    .from("armour")
-    .select(
-      "id, name, category_id, profile_description, armour_profiles(save, condition), armour_special_rules(name)",
-    )
-    .order("name")
-    .order("condition", {
-      referencedTable: "armour_profiles",
-      nullsFirst: true,
-    });
-
-  const { data: armourSpecialRules, error: armourSpecialRulesError } =
-    await supabase
+  const [
+    { data: heroImage, error: heroImageError },
+    { data: categoryRows, error: categoryRowsError },
+    { data: armour, error: armourError },
+    { data: armourSpecialRules, error: armourSpecialRulesError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "armour")
+      .single(),
+    supabase.from("armour_categories").select("id, name").order("position"),
+    supabase
+      .from("armour")
+      .select(
+        "id, name, category_id, profile_description, armour_profiles(save, condition), armour_special_rules(name)",
+      )
+      .order("name")
+      .order("condition", {
+        referencedTable: "armour_profiles",
+        nullsFirst: true,
+      }),
+    supabase
       .from("armour_special_rules")
       .select("name, rule, rules(name, rule_categories(slug))")
-      .order("name");
+      .order("name"),
+  ]);
+  const hero = heroImage?.images ?? null;
 
   assertNoQueryErrors(
     "/wargear/armour",

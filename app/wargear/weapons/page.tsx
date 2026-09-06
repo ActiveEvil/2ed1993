@@ -23,30 +23,30 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "weapons")
-    .single();
-  const hero = heroImage?.images ?? null;
-
-  const { data: categoryRows, error: categoryRowsError } = await supabase
-    .from("weapon_categories")
-    .select("id, name")
-    .order("position");
-
-  const { data: weapons, error: weaponsError } = await supabase
-    .from("weapons")
-    .select(
-      "id, name, category_id, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
-    )
-    .order("name");
-
-  const { data: weaponSpecialRules, error: weaponSpecialRulesError } =
-    await supabase
+  const [
+    { data: heroImage, error: heroImageError },
+    { data: categoryRows, error: categoryRowsError },
+    { data: weapons, error: weaponsError },
+    { data: weaponSpecialRules, error: weaponSpecialRulesError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "weapons")
+      .single(),
+    supabase.from("weapon_categories").select("id, name").order("position"),
+    supabase
+      .from("weapons")
+      .select(
+        "id, name, category_id, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
+      )
+      .order("name"),
+    supabase
       .from("weapon_special_rules")
       .select("name, rule, rules(name, rule_categories(slug))")
-      .order("name");
+      .order("name"),
+  ]);
+  const hero = heroImage?.images ?? null;
 
   assertNoQueryErrors(
     "/wargear/weapons",
