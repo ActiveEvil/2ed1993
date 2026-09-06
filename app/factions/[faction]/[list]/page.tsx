@@ -22,7 +22,7 @@ import {
   unitHasEquipment,
 } from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
-import { armyListShortName } from "@/lib/metadata";
+import { armyListShortName, pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -461,7 +461,7 @@ export async function generateMetadata(props: {
     const plainDescription = description ? toPlainText(description) : null;
 
     return {
-      title: `${name} in 2nd Edition`,
+      title: pageTitle(name),
       description:
         plainDescription && plainDescription.length <= 155
           ? plainDescription

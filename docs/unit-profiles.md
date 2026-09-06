@@ -122,11 +122,11 @@ of what — those are options. Fear, Terror, Daemonic Aura, Iron Body, Repair �
 those are special rules. Nothing is said twice; a rule that has moved to
 `unit_special_rules` leaves its `unit_options` row behind.
 
-**`wargear_categories`** — faction-scoped section vocabulary
-(`faction_id`, `category`, `note`); the note is the section's own printed
-rule ("One per model. May not be chosen for Character models."). Insert a
-faction's sections as its first unit needs them; item-less categories do not
-render on the faction page.
+**`wargear_categories`** — army-list-scoped section vocabulary
+(`army_list_id`, `category`, `note`); the note is the section's own printed
+rule ("One per model. May not be chosen for Character models."). Insert an
+army list's sections as its first unit needs them; item-less categories do not
+render on the list page.
 
 **Upgrades are both a linked entry and an inline option.** A printed
 upgrade with its own statline (Veteran Sergeants) is authored as its own

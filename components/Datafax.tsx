@@ -70,6 +70,8 @@ export type DatafaxData = {
 
 const MARKERS = ["†", "‡", "§"];
 
+const marker = (index: number): string => MARKERS[index] ?? String(index + 1);
+
 const FACE_HEADING = "font-subtitle text-xl text-2ed-dark-red";
 const SUB_HEADING = "font-subtitle uppercase tracking-wide text-sm";
 const RUN_LABEL = "font-subtitle uppercase text-xs";
@@ -166,7 +168,9 @@ export const Datafax: React.FC<{
   titleHref,
 }): React.JSX.Element => {
   const ink = factionInk[factionSlug ?? ""] ?? "text-2ed-light-yellow";
-  const Title = titleHref ? "h3" : "h4";
+  const [Title, Heading, Subheading] = titleHref
+    ? (["h3", "h4", "h5"] as const)
+    : (["h4", "h5", "h6"] as const);
 
   const speeds = [
     { label: "Slow", value: datafax.speed_slow },
@@ -314,12 +318,12 @@ export const Datafax: React.FC<{
               footnotes.reduce((total, note) => total + textWeight(note), 0),
             node: (
               <div className="flex flex-col gap-1">
-                <h6
+                <Heading
                   id={generateAnchorId(`${unitName} Hit Location Chart`)}
                   className={SUB_HEADING}
                 >
                   Hit Location Chart ({datafax.location_dice})
-                </h6>
+                </Heading>
                 <table className="w-full bg-black border-4 border-black border-collapse text-center">
                   <thead>
                     <tr>
@@ -389,7 +393,7 @@ export const Datafax: React.FC<{
                             ) : (
                               location.name
                             )}
-                            {note >= 0 && <sup>{MARKERS[note]}</sup>}
+                            {note >= 0 && <sup>{marker(note)}</sup>}
                           </td>
                           <td className="px-2 py-1">
                             {stat(location.armour_front)}
@@ -409,7 +413,7 @@ export const Datafax: React.FC<{
                             colSpan={4}
                             className="px-2 py-1 bg-card-face text-xs text-center"
                           >
-                            <sup>{MARKERS[index]}</sup>{" "}
+                            <sup>{marker(index)}</sup>{" "}
                             <span
                               className="dynamic-content compact"
                               dangerouslySetInnerHTML={{ __html: note }}
@@ -438,9 +442,9 @@ export const Datafax: React.FC<{
       ),
     node: (
       <div key={chart.id} className="flex flex-col gap-1">
-        <h6 id={chartAnchor(chart.name)} className={SUB_HEADING}>
+        <Heading id={chartAnchor(chart.name)} className={SUB_HEADING}>
           {chart.name} Damage Chart ({chart.dice})
-        </h6>
+        </Heading>
         {chart.note && (
           <div
             className="dynamic-content compact flex flex-col gap-2 text-sm"
@@ -531,7 +535,7 @@ export const Datafax: React.FC<{
 
       {hasFrontData && (
         <div className="flex flex-col gap-2 p-3 bg-card-face text-2ed-black">
-          <h5 className={FACE_HEADING}>{unitTypeName} data</h5>
+          <Heading className={FACE_HEADING}>{unitTypeName} data</Heading>
           <div
             className={clsx(
               "grid gap-3",
@@ -606,7 +610,7 @@ export const Datafax: React.FC<{
           </div>
           {Boolean(datafax.datafax_weapons.length) && (
             <div className="flex flex-col gap-1">
-              <h6 className={SUB_HEADING}>Weapon data</h6>
+              <Subheading className={SUB_HEADING}>Weapon data</Subheading>
               <WeaponDataTable
                 bearer="Vehicle"
                 caption={`${unitName} weapon data`}
