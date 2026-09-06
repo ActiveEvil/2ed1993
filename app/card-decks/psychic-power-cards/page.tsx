@@ -22,17 +22,21 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImages, error: heroImagesError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "psychic-power-cards")
-    .order("position");
-  const heros = heroImages?.map(({ images }) => images);
-  const { data: psychic_power_cards, error: psychicPowerCardsError } =
-    await supabase
+  const [
+    { data: heroImages, error: heroImagesError },
+    { data: psychic_power_cards, error: psychicPowerCardsError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "psychic-power-cards")
+      .order("position"),
+    supabase
       .from("psychic_power_cards")
       .select("id, deck, name, description, force, range, note")
-      .order("id");
+      .order("id"),
+  ]);
+  const heros = heroImages?.map(({ images }) => images);
 
   assertNoQueryErrors(
     "/card-decks/psychic-power-cards",

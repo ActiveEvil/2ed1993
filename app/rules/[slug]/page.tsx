@@ -27,9 +27,10 @@ const loadFactionRules = (factionId: number) =>
   supabase
     .from("unit_special_rule_assignments")
     .select(
-      "rule:unit_special_rules(id, name, rule, anchor, rules(id, name, rule_categories(slug, name))), units!inner(id, name, faction_id, army_list_entries(unit_categories(army_lists(slug, factions(slug)))))",
+      "rule:unit_special_rules(id, name, rule, anchor, rules(id, name, rule_categories(slug, name))), units!inner(id, name, faction_id, army_list_entries(id, unit_categories(army_lists(slug, factions(slug)))))",
     )
-    .eq("units.faction_id", factionId);
+    .eq("units.faction_id", factionId)
+    .order("id", { referencedTable: "units.army_list_entries" });
 
 type AssignmentRow = NonNullable<
   Awaited<ReturnType<typeof loadFactionRules>>["data"]

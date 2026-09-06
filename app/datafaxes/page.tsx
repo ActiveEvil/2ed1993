@@ -25,26 +25,35 @@ const countLabel = (count: number): string =>
       : `${count} datafaxes`;
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "datafaxes")
-    .maybeSingle();
+  const [
+    { data: heroImage, error: heroImageError },
+    { data: factionRows, error: factionsError },
+    { data: datafaxRows, error: datafaxesError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "datafaxes")
+      .maybeSingle(),
+    supabase
+      .from("factions")
+      .select("id, slug, name, parent_faction_id")
+      .order("name"),
+    supabase
+      .from("datafaxes")
+      .select("units!inner(faction_id, unit_types(name))"),
+  ]);
 
-  const { data: factionRows, error: factionsError } = await supabase
-    .from("factions")
-    .select("id, slug, name, parent_faction_id")
-    .order("name");
-
-  const { data: unitRows, error: unitsError } = await supabase
-    .from("units")
-    .select("faction_id, unit_types(name), datafaxes(id)");
-
-  assertNoQueryErrors("/datafaxes", heroImageError, factionsError, unitsError);
+  assertNoQueryErrors(
+    "/datafaxes",
+    heroImageError,
+    factionsError,
+    datafaxesError,
+  );
 
   const hero = heroImage?.images ?? null;
   const factions = factionRows ?? [];
-  const units = unitRows ?? [];
+  const datafaxes = datafaxRows ?? [];
 
   const parents = new Map(
     factions.map(({ id, parent_faction_id }) => [id, parent_faction_id]),
@@ -54,11 +63,9 @@ export default async function Page() {
   let total = 0;
   let fortificationCount = 0;
 
-  for (const { faction_id, unit_types, datafaxes } of units) {
-    if (!datafaxes) {
-      continue;
-    }
-
+  for (const {
+    units: { faction_id, unit_types },
+  } of datafaxes) {
     total += 1;
 
     if (unit_types.name === "Fortification") {

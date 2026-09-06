@@ -9,7 +9,10 @@ export const Panel: React.FC<
     className?: string;
   } & React.PropsWithChildren
 > = ({ as: Tag = "div", id, className, children }): React.JSX.Element => (
-  <Tag id={id} className={clsx("border-4 border-black shadow-lg", className)}>
+  <Tag
+    id={id ?? (Tag === "main" ? "main" : undefined)}
+    className={clsx("border-4 border-black shadow-lg", className)}
+  >
     {children}
   </Tag>
 );

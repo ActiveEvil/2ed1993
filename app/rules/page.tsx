@@ -21,21 +21,27 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "rules")
-    .single();
+  const [
+    { data: heroImage, error: heroImageError },
+    { data: sectionRows, error: sectionsError },
+    { data: assignmentRows, error: assignmentsError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title)")
+      .eq("slug", "rules")
+      .single(),
+    supabase
+      .from("rule_sections")
+      .select(
+        "name, numbered, rule_categories(slug, name, position, faction_id, rules(name, position))",
+      )
+      .order("position"),
+    supabase
+      .from("unit_special_rule_assignments")
+      .select("rule:unit_special_rules(name), units!inner(faction_id)"),
+  ]);
   const hero = heroImage?.images ?? null;
-  const { data: sectionRows, error: sectionsError } = await supabase
-    .from("rule_sections")
-    .select(
-      "name, numbered, rule_categories(slug, name, position, faction_id, rules(name, position))",
-    )
-    .order("position");
-  const { data: assignmentRows, error: assignmentsError } = await supabase
-    .from("unit_special_rule_assignments")
-    .select("rule:unit_special_rules(name), units!inner(faction_id)");
 
   assertNoQueryErrors(
     "/rules",

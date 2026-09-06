@@ -236,7 +236,7 @@ export const UnitEquipment: React.FC<{
   compact?: boolean;
   className?: string;
   categoryHref?: (category: string) => string | null;
-  factionSlug?: string | null;
+  rulesSlug?: string | null;
   optionCosts?: ReadonlyMap<number, string>;
   wargearCardsMax?: number | null;
 }> = ({
@@ -244,7 +244,7 @@ export const UnitEquipment: React.FC<{
   compact = false,
   className,
   categoryHref,
-  factionSlug,
+  rulesSlug,
   optionCosts,
   wargearCardsMax,
 }): React.JSX.Element | null => {
@@ -465,8 +465,8 @@ export const UnitEquipment: React.FC<{
                     const display = ruleName(row.rule.name);
                     const href = linked
                       ? ruleHref(linked, row.rule.anchor)
-                      : factionSlug
-                        ? `/rules/${factionSlug}-rules#${generateAnchorId(display)}`
+                      : rulesSlug
+                        ? `/rules/${rulesSlug}#${generateAnchorId(display)}`
                         : null;
                     const prose = row.rule.rule;
                     const blockProse = isBlockHtml(prose);
