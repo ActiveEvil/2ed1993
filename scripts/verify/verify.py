@@ -38,7 +38,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "wargear_card", "mission", "strategy", "psychic", "warp",
               "faction", "damage_result", "unit_wargear", "damage_chart",
-              "datafax_location", "unit_rule", "unit_rule_note")
+              "datafax_location", "unit_rule", "unit_rule_note", "unit_cat")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
             "ldquo", "rdquo", "half", "uarr", "sup2", "AElig"}
