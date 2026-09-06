@@ -36,7 +36,7 @@ const loadList = (faction: string, list: string) =>
   supabase
     .from("army_lists")
     .select(
-      "id, name, description, factions!inner(slug, name), unit_categories(category, note, min_percent, max_percent, position, army_list_entries(id, position, allowance_min, allowance_max, points, note, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), units(id, name, datafaxes(id), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category))), unit_special_rule_assignments(position, note, rule:unit_special_rules(id, name, rule, rule_id, anchor, rules(id, name, rule_categories(slug))))))), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, wargear_items(id, points, armour(name), weapons(name)))",
+      "id, name, description, factions!inner(slug, name), unit_categories(category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), units(id, name, factions(slug), datafaxes(id, points), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category))), unit_special_rule_assignments(position, note, rule:unit_special_rules(id, name, rule, rule_id, anchor, rules(id, name, rule_categories(slug))))))), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug), datafaxes(points))))",
     )
     .eq("slug", list)
     .eq("factions.slug", faction)
@@ -87,10 +87,12 @@ type Entry = {
   graded: boolean;
   wargearCardsMax: number | null;
   note: string | null;
+  transport: string | null;
   rules: string[];
   extras: string[];
   rows: CharacteristicRow[];
-  datafax: boolean;
+  datafaxHref: string | null;
+  factionSlug: string;
   unit: RawEntry["units"];
   optionCosts: ReadonlyMap<number, string>;
   search: string;
@@ -135,6 +137,15 @@ const formatOptionCost = (option: RawOption): string | null =>
       ? null
       : formatCost(option.points, option.points_bases?.name ?? null);
 
+const TRANSPORT_SCOPES: Readonly<Record<string, string>> = {
+  characters: "Transport for any character.",
+  squads: "Transport for any squad.",
+  characters_and_squads: "Transport for any character or squad.",
+};
+
+const transportLine = (scope: string | null): string | null =>
+  scope === null ? null : (TRANSPORT_SCOPES[scope] ?? null);
+
 const range = (min: number, max: number | null): string =>
   max === null || max === min ? String(min) : `${min}–${max}`;
 
@@ -176,7 +187,11 @@ const allowanceRule = (rule: {
   return null;
 };
 
-const buildEntry = (entry: RawEntry, category: string): Entry => {
+const buildEntry = (
+  entry: RawEntry,
+  category: string,
+  listFactionSlug: string,
+): Entry => {
   const basis = entry.points_bases?.name ?? null;
   const options = entry.army_list_entry_options;
   const profiles = entry.units.unit_profiles;
@@ -219,10 +234,19 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
       ? profiles[0].wargear_cards_max
       : null;
 
+  const datafax = entry.units.datafaxes;
+  const factionSlug = entry.units.factions?.slug ?? listFactionSlug;
+
   let cost: string | null = null;
 
   if (entry.points !== null) {
     cost = formatCost(entry.points, basis);
+  } else if (
+    basis === "See datafax" &&
+    datafax !== null &&
+    datafax.points !== null
+  ) {
+    cost = formatPoints(datafax.points);
   } else if (!graded) {
     const priced = options
       .filter((option) => option.unit_option_id === null)
@@ -298,6 +322,7 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
     graded,
     wargearCardsMax,
     note: entry.note,
+    transport: transportLine(entry.transport_scope),
     rules: entry.army_list_allowance_rules
       .map(allowanceRule)
       .filter((text): text is string => text !== null),
@@ -323,7 +348,10 @@ const buildEntry = (entry: RawEntry, category: string): Entry => {
           })
           .filter((text): text is string => text !== null),
     rows,
-    datafax: Boolean(entry.units.datafaxes),
+    datafaxHref: datafax
+      ? `/datafaxes/${factionSlug}#${generateAnchorId(entry.units.name)}`
+      : null,
+    factionSlug,
     unit: entry.units,
     optionCosts,
     search,
@@ -389,12 +417,18 @@ const Details: React.FC<{ entry: Entry; showNote: boolean }> = ({
 }): React.JSX.Element | null => {
   const note = showNote ? entry.note : null;
 
-  if (!note && !entry.rules.length && !entry.extras.length) {
+  if (
+    !note &&
+    !entry.transport &&
+    !entry.rules.length &&
+    !entry.extras.length
+  ) {
     return null;
   }
 
   return (
     <div className="flex flex-col gap-1 text-sm">
+      {entry.transport && <p>{entry.transport}</p>}
       {note && <p>{note}</p>}
       {entry.rules.map((text) => (
         <p key={text}>{text}</p>
@@ -473,10 +507,36 @@ export default async function Page(props: {
         max: section.max_percent,
         note: section.note,
       }),
+      rules: section.army_list_allowance_rules
+        .map(allowanceRule)
+        .filter((text): text is string => text !== null),
       entries: section.army_list_entries.map((entry) =>
-        buildEntry(entry, section.category),
+        buildEntry(entry, section.category, faction.slug),
       ),
     }));
+
+    const seenAnchors = new Set<string>();
+
+    for (const { entries } of categories) {
+      for (const entry of entries) {
+        if (!seenAnchors.has(entry.anchor)) {
+          seenAnchors.add(entry.anchor);
+          continue;
+        }
+
+        const base = `${entry.anchor}_${generateAnchorId(entry.factionSlug)}`;
+        let anchor = base;
+        let suffix = 2;
+
+        while (seenAnchors.has(anchor)) {
+          anchor = `${base}_${suffix}`;
+          suffix += 1;
+        }
+
+        seenAnchors.add(anchor);
+        entry.anchor = anchor;
+      }
+    }
 
     const allies = list.army_list_allies.flatMap((ally) => {
       if (ally.ally_list) {
@@ -506,7 +566,10 @@ export default async function Page(props: {
 
     const stockedItems = stockedSections.flatMap(({ wargear_items }) =>
       wargear_items
-        .map(({ armour, weapons }) => armour?.name ?? weapons?.name ?? null)
+        .map(
+          ({ armour, weapons, units }) =>
+            armour?.name ?? weapons?.name ?? units?.name ?? null,
+        )
         .filter((name): name is string => name !== null),
     );
 
@@ -629,6 +692,14 @@ export default async function Page(props: {
                         className="mx-4 md:mx-8"
                       />
 
+                      {Boolean(section.rules.length) && (
+                        <div className="flex flex-col gap-1 mx-4 md:mx-8 text-sm">
+                          {section.rules.map((text) => (
+                            <p key={text}>{text}</p>
+                          ))}
+                        </div>
+                      )}
+
                       {entries.length ? (
                         <div className="flex flex-col gap-6">
                           {groupRuns(entries).map((run) => (
@@ -670,9 +741,9 @@ export default async function Page(props: {
                                           {entry.allowance && (
                                             <span>{entry.allowance}</span>
                                           )}
-                                          {entry.datafax && (
+                                          {entry.datafaxHref && (
                                             <Link
-                                              href={`/datafaxes/${faction.slug}#${entry.anchor}`}
+                                              href={entry.datafaxHref}
                                               className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
                                             >
                                               Datafax
@@ -786,17 +857,33 @@ export default async function Page(props: {
                                   name: item.weapons.name,
                                   href: `/wargear/weapons#${generateAnchorId(item.weapons.name)}`,
                                 }
-                              : null;
+                              : item.units
+                                ? {
+                                    name: item.units.name,
+                                    href: `/datafaxes/${item.units.factions?.slug ?? faction.slug}#${generateAnchorId(item.units.name)}`,
+                                  }
+                                : null;
 
                           if (!target) {
                             return null;
                           }
 
+                          const datafaxPoints =
+                            item.units?.datafaxes?.points ?? null;
                           const price =
-                            item.points === null
-                              ? ""
-                              : formatPoints(item.points);
-                          const search = [target.name, section.category, price]
+                            item.points !== null
+                              ? formatPoints(item.points)
+                              : datafaxPoints !== null
+                                ? formatPoints(datafaxPoints)
+                                : item.units
+                                  ? "See Datafax"
+                                  : "";
+                          const search = [
+                            target.name,
+                            item.restriction ?? "",
+                            section.category,
+                            price,
+                          ]
                             .join(" ")
                             .toLowerCase();
 
@@ -812,14 +899,16 @@ export default async function Page(props: {
                               >
                                 {target.name}
                               </Link>
+                              {item.restriction && (
+                                <span className="text-sm">
+                                  ({item.restriction})
+                                </span>
+                              )}
                               <span
                                 className="flex-1 border-b-2 border-dotted border-leader-ink"
                                 aria-hidden="true"
                               />
-                              <span className="whitespace-nowrap">
-                                {item.points}
-                                {item.points === 1 ? "pt" : "pts"}
-                              </span>
+                              <span className="whitespace-nowrap">{price}</span>
                             </li>
                           );
                         })}

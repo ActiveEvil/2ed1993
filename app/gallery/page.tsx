@@ -9,7 +9,7 @@ export function generateMetadata(): Metadata {
   return {
     title: "Warhammer 40,000 2nd Edition Miniatures Gallery",
     description:
-      "Miniatures I have painted from my Warhammer 40,000 2nd Edition collection, mostly the metal and plastic Citadel models of the period.",
+      "Miniatures I have painted from my Warhammer 40,000 2nd Edition collection, metal and plastic Citadel models of the period.",
   };
 }
 

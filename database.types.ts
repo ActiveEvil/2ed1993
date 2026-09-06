@@ -305,6 +305,7 @@ export type Database = {
           points: number | null;
           points_basis_id: number | null;
           position: number;
+          transport_scope: string | null;
           unit_category_id: number;
           unit_id: number;
           updated_at: string | null;
@@ -319,6 +320,7 @@ export type Database = {
           points?: number | null;
           points_basis_id?: number | null;
           position: number;
+          transport_scope?: string | null;
           unit_category_id: number;
           unit_id: number;
           updated_at?: string | null;
@@ -333,6 +335,7 @@ export type Database = {
           points?: number | null;
           points_basis_id?: number | null;
           position?: number;
+          transport_scope?: string | null;
           unit_category_id?: number;
           unit_id?: number;
           updated_at?: string | null;
@@ -899,6 +902,7 @@ export type Database = {
           note: string | null;
           open_topped: boolean | null;
           origin: string;
+          points: number | null;
           ram_damage: string | null;
           ram_save_modifier: number | null;
           ram_strength: number | null;
@@ -922,6 +926,7 @@ export type Database = {
           note?: string | null;
           open_topped?: boolean | null;
           origin: string;
+          points?: number | null;
           ram_damage?: string | null;
           ram_save_modifier?: number | null;
           ram_strength?: number | null;
@@ -945,6 +950,7 @@ export type Database = {
           note?: string | null;
           open_topped?: boolean | null;
           origin?: string;
+          points?: number | null;
           ram_damage?: string | null;
           ram_save_modifier?: number | null;
           ram_strength?: number | null;
