@@ -9,91 +9,76 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 1.0,
     },
     {
       url: `${baseUrl}/factions`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/rules`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/wargear`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/wargear/weapons`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/wargear/armour`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/wargear/wargear-cards`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/card-decks`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/card-decks/mission-cards`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/card-decks/strategy-cards`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/card-decks/psychic-power-cards`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/card-decks/special-warp-cards`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     {
       url: `${baseUrl}/datafaxes`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/datafaxes/fortifications`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     {
       url: `${baseUrl}/gallery`,
-      lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.5,
     },
@@ -116,13 +101,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           .map(({ faction_id }) => faction_id)
           .filter((id): id is number => id !== null),
       );
-      const hasArmyLists = (faction: (typeof factions)[number]): boolean =>
-        faction.army_lists.length > 0 ||
-        factions.some(
-          (other) =>
-            other.parent_faction_id === faction.id &&
-            other.army_lists.length > 0,
-        );
       const hasDatafaxes = (factionId: number): boolean =>
         factionIdsWithDatafaxes.has(factionId) ||
         factions.some(
@@ -132,14 +110,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         );
 
       for (const faction of factions) {
-        if (hasArmyLists(faction)) {
-          factionsPages.push({
-            url: `${baseUrl}/factions/${faction.slug}`,
-            lastModified: new Date(faction.updated_at || faction.created_at),
-            changeFrequency: "weekly",
-            priority: 0.7,
-          });
-        }
+        factionsPages.push({
+          url: `${baseUrl}/factions/${faction.slug}`,
+          lastModified: new Date(faction.updated_at || faction.created_at),
+          changeFrequency: "weekly",
+          priority: 0.7,
+        });
 
         if (faction.parent_faction_id === null && hasDatafaxes(faction.id)) {
           factionsPages.push({

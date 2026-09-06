@@ -1,10 +1,16 @@
 import type { NextConfig } from "next";
 
+const projectId = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID;
+
+if (!projectId) {
+  throw new Error("NEXT_PUBLIC_SUPABASE_PROJECT_ID is not set");
+}
+
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com ${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://twcioksmkijgnhgxibrn.supabase.co;
+    img-src 'self' blob: data: https://${projectId}.supabase.co;
     font-src 'self';
     connect-src 'self';
     frame-ancestors 'none';
@@ -19,12 +25,6 @@ const nextConfig: NextConfig = {
   images: {
     loader: "custom",
     loaderFile: "./supabase-image-loader.ts",
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**.supabase.co",
-      },
-    ],
     qualities: [80, 75],
   },
   poweredByHeader: false,

@@ -6,6 +6,13 @@ import { useEffect, useRef, useState } from "react";
 
 const ROW = "[data-search]";
 
+const isEditable = (element: Element | null): boolean =>
+  element instanceof HTMLElement &&
+  (element instanceof HTMLInputElement ||
+    element instanceof HTMLTextAreaElement ||
+    element instanceof HTMLSelectElement ||
+    element.isContentEditable);
+
 export const FILTER_EVENT = "2ed:filter";
 
 export const RowFilter: React.FC<{
@@ -108,11 +115,12 @@ export const RowFilter: React.FC<{
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const input = inputRef.current;
+      const active = document.activeElement;
       const plain = !e.ctrlKey && !e.metaKey && !e.altKey;
-      if (e.key === "/" && plain && document.activeElement !== input) {
+      if (e.key === "/" && plain && !isEditable(active)) {
         e.preventDefault();
         input?.focus();
-      } else if (e.key === "Escape") {
+      } else if (e.key === "Escape" && active === input) {
         setQuery("");
       }
     };

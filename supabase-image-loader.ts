@@ -1,3 +1,12 @@
+const projectId = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID;
+
+if (!projectId) {
+  throw new Error("NEXT_PUBLIC_SUPABASE_PROJECT_ID is not set");
+}
+
+const encodePath = (path: string): string =>
+  path.split("/").map(encodeURIComponent).join("/");
+
 export default function supabaseLoader({
   src,
   width,
@@ -7,5 +16,5 @@ export default function supabaseLoader({
   width: number;
   quality: number;
 }) {
-  return `https://${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID!}.supabase.co/storage/v1/render/image/public/${src}?width=${width}&quality=${quality || 75}&resize=contain`;
+  return `https://${projectId}.supabase.co/storage/v1/render/image/public/${encodePath(src)}?width=${width}&quality=${quality || 75}&resize=contain`;
 }
