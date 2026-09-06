@@ -59,11 +59,7 @@ export async function generateMetadata(props: {
     const title = `${faction.name} Datafaxes in 40k 2nd Edition`;
 
     if (!unitRows || unitRows.length === 0) {
-      return {
-        title,
-        description: `Vehicle datafaxes for the ${faction.name} in Warhammer 40,000 2nd Edition. None have been added to the record yet.`,
-        robots: { index: false },
-      };
+      notFound();
     }
 
     return {

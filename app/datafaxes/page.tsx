@@ -74,15 +74,14 @@ export default async function Page() {
     counts.set(topLevel, (counts.get(topLevel) ?? 0) + 1);
   }
 
-  const sections = [
-    ...factions
-      .filter(({ parent_faction_id }) => parent_faction_id === null)
-      .map(({ id, slug, name }) => ({
-        slug,
-        name,
-        count: counts.get(id) ?? 0,
-      })),
-  ];
+  const sections = factions
+    .filter(({ parent_faction_id }) => parent_faction_id === null)
+    .map(({ id, slug, name }) => ({
+      slug,
+      name,
+      count: counts.get(id) ?? 0,
+    }))
+    .filter(({ count }) => count > 0);
 
   return (
     <>

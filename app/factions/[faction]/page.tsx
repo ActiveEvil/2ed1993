@@ -42,14 +42,6 @@ export async function generateMetadata(props: {
 
     const title = pageTitle(faction.name);
 
-    if (!hasArmyLists) {
-      return {
-        title,
-        description: `The ${faction.name} in Warhammer 40,000 2nd Edition. Background and history, with the army list and unit profiles still to be added.`,
-        robots: { index: false },
-      };
-    }
-
     const { data: parent, error: parentError } =
       faction.parent_faction_id === null
         ? { data: null, error: null }
@@ -61,7 +53,10 @@ export async function generateMetadata(props: {
 
     assertNoQueryErrors(CONTEXT, parentError);
 
-    if (faction.parent_faction_id !== null && parent?.name === "Space Marines") {
+    if (
+      faction.parent_faction_id !== null &&
+      parent?.name === "Space Marines"
+    ) {
       return {
         title,
         description: `The ${faction.name}, a Space Marine Chapter in Warhammer 40,000 2nd Edition, with unit profiles, points values, wargear and the Chapter's special rules.`,
