@@ -14,7 +14,6 @@
     "@supabase/supabase-js": "^2.110.8",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
-    "js-cookie": "^3.0.8",
     "next": "16.1.6",
     "node-html-parser": "^9.0.1",
     "react": "19.2.3",
@@ -23,7 +22,6 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
-    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

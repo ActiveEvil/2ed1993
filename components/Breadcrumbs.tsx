@@ -1,5 +1,3 @@
-"use client";
-
 import { generateAnchorId } from "@/lib/anchors";
 import Link from "next/link";
 
@@ -10,7 +8,7 @@ export const Breadcrumbs: React.FC<{
   }[];
 }> = ({ crumbs }): React.JSX.Element => {
   const list = crumbs.map((crumb, index) => {
-     const key = generateAnchorId(crumb.anchor);
+    const key = generateAnchorId(crumb.anchor);
 
     if (!crumb.href) {
       return (
@@ -23,7 +21,10 @@ export const Breadcrumbs: React.FC<{
     if (index === 0) {
       return (
         <li key={key} className="font-subtitle after:content-['/'] after:ml-2">
-          <Link className=" hover:underline underline-offset-4" href={crumb.href}>
+          <Link
+            className=" hover:underline underline-offset-4"
+            href={crumb.href}
+          >
             {crumb.anchor}
           </Link>
         </li>

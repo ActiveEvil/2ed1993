@@ -22,24 +22,13 @@ export async function generateMetadata(props: {
   const params = await props.params;
   const { data: faction, error: factionError } = await supabase
     .from("factions")
-    .select("id, name, parent_faction_id, army_lists(id)")
+    .select("id, name, parent_faction_id")
     .eq("slug", params.faction)
     .single();
 
   assertNoQueryErrors(CONTEXT, factionError);
 
   if (faction) {
-    const { data: children, error: childrenError } = await supabase
-      .from("factions")
-      .select("army_lists(id)")
-      .eq("parent_faction_id", faction.id);
-
-    assertNoQueryErrors(CONTEXT, childrenError);
-
-    const hasArmyLists =
-      faction.army_lists.length > 0 ||
-      (children ?? []).some((child) => child.army_lists.length > 0);
-
     const title = pageTitle(faction.name);
 
     const { data: parent, error: parentError } =
