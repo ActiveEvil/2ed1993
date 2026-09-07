@@ -47,6 +47,9 @@ defects closed on re-measurement — the leading spaces in
 `weapon_profiles.short_to_hit` (zero rows now) and the duplicate
 `images.file_name` (no file name is shared by two rows anywhere in the table).
 
+**Revised 6 September 2026:** charts span the content column (Markup 7 and
+The prose measure); the 36rem chart width is superseded.
+
 **Revised 1 September 2026:** the threshold form added to the dice-naming rule
 (Voice); the link-and-capitalise rule and the `Targeter` capitalisation added
 (Emphasis and linking); two Working practice entries added — the row-count guard
@@ -93,9 +96,13 @@ on a batch write, and running the gates on both sides of a write.
 6. **Nesting** — a `<p>` inside a `<section>` indents one level, and its
    `<small>` / `<em>` children step in from there. Closing tags each get their
    own line; `</em></small></p>` on one line is wrong.
-7. **Charts** — `<section class="chart">`, always `max-width: 36rem`, always
+7. **Charts** — `<section class="chart">`, always
    `grid-template-columns: repeat(6, minmax(0, 1fr))`. A chart *title* spans all
    six columns and carries an id; a *column header* spans fewer and carries none.
+   **Charts span the content column** (ruled 6 September 2026): a chart
+   carries no `max-width`, and no page component wraps one in a `max-w-*`.
+   The historical `max-width: 36rem` was removed from every stored chart the
+   same day.
 
    **Inside a card face** (the wargear cards page renders at roughly half page
    width) the constraint is width per cell, not column count, and the two cases
@@ -114,8 +121,8 @@ on a batch write, and running the gates on both sides of a write.
      is a model rather than an item.
 
    Note that **weapon profiles on a card face are not charts at all.** They are
-   a bespoke banded table in the page component, not `.chart` HTML — see the
-   wargear cards design doc §4d.
+   the `WeaponStrip` on its `card` surface, rendered by the page component,
+   not `.chart` HTML — see the strip grammar below.
 
    **Chart titles always include the word "Chart"** (see Heading naming). Now
    true site-wide: the last four holdouts, all in `weapons` texts (Inferno
@@ -410,6 +417,157 @@ on the measurement (corpus coverage, paraphrase blindness, OCR noise) are
 stated in the audit doc and still apply.
 
 ---
+
+## Shell and tokens
+
+Added 6 September 2026 with the design refresh. These govern the page
+chrome and the shared components; the prose markup rules above are
+unchanged.
+
+### The `--frame` token
+
+Every 4px frame on a page surface is `border-frame`, never `border-black`.
+`--frame` is `#000` in all four scheme blocks and in print, declared in each
+for the same reason `--stripe` is: a custom property is substituted where it
+is declared. `@theme inline` exposes it as `--color-frame`. Borders stay
+black in dark mode by decision (6 September 2026); the token exists so that
+decision lives in one place. Card faces and the black heads on tables and
+charts are surfaces rather than frames and are not on the token. Chips keep
+`border-foreground`, so they read as text-coloured outlines in both schemes.
+
+### The prose measure
+
+Rules prose sits at `max-w-prose` (65ch). It is applied by the
+`dynamic-content measure` class in `globals.css`, which caps paragraphs,
+lists, headings, house-rule asides and blockquotes at `--container-prose`
+and leaves charts and tables alone, so a chart spans the content column
+(charts are exempt from the measure, ruled 6 September 2026) and a wide table
+may exceed the measure. Pages that render short
+descriptions (faction, army list) use the same class inside the title band.
+
+### The strip grammar and the abbreviation set
+
+A weapon or armour entry outside a table is a `WeaponStrip`: a black name
+bar with the special rules right-aligned in white, then label/value cells,
+one labelled value row per profile under a single name bar when a weapon has
+more than one. From `md` the cells sit on one line; below `md` they wrap to
+three columns (two for the four-cell close-combat and armour strips) so no
+value breaks mid-way. The cell labels are the one abbreviation set used
+everywhere a profile appears: **Range · To hit · Str · Dam · Save Mod ·
+AP**, in that order. The strip has two surfaces: `page`, framed and ruled
+in `--frame` with `--background` cells and the yellow target highlight, on
+the weapons and armour references; and `card`, ruled in black with
+`--card-face` cells in `text-2ed-black`, inside a wargear card face and a
+datafax (ruled 6 September 2026, replacing the profile tables and the
+datafax weapon data table). On a card the strip carries no `id`, since the
+artefact is the anchor; on the page it carries the entry's `id`,
+`data-search` and `data-refs`, so anchors and the filter work exactly as
+they did on the table rows.
+
+### Surfaces and artefacts
+
+The refresh draws one line through the components. A surface is part of
+the page shell and follows the shell grammar: the `Panel`, the `TitleBand`,
+the rail and Jump bar, the contents tables and ruled rows, the `SectionBar`,
+the dark-blue randomiser, and the `WeaponStrip` on the weapons and armour
+references. A surface takes the `--frame` token, casts no shadow, and lays
+its rows out with rules and strips. An artefact is a reproduction of a
+printed object and keeps its printed cues: the mission, strategy, psychic
+power, special warp and wargear cards, and the datafax. An artefact floats
+on the page with `shadow-lg` or `shadow-xl`, sits in a black 4px frame in
+both schemes (still `border-frame`, since the token is black by decision),
+holds a coloured mat around a `--card-face` surface in `text-2ed-black`,
+and centres its name. Its weapon and armour data is the `WeaponStrip` on
+the `card` surface: the black name bar with the special rules
+right-aligned, then the labelled cells on card stock, one strip per weapon
+or armour item on a wargear card and per weapon under the datafax's
+"Weapon data" heading. The hit location chart and damage charts stay
+black-headed tables on the datafax face. Body prose on a face is left-set, as the printed cards are;
+only the name, and the objective labels on a mission card, are centred. The
+mats are the deck colours: dark blue for mission cards, dark red for
+strategy cards, the discipline colour for psychic powers, mid blue for
+special warp cards, dark blue for wargear cards and the faction colour for
+a datafax. The mission card name sits on its mat in light yellow; every
+other name sits on the face, in dark blue where the original set the
+special warp name in mid blue, because mid blue does not clear AA on the
+dark-scheme card stock. The rider to the shadow rule follows from this: shadows belong to
+Panels and images, and to artefacts, because a printed card floats on the
+page.
+
+`ImageWithCredit` is the one image component; `GalleryImage` is gone and
+the gallery is a grid of `ImageWithCredit` tiles sharing one `Lightbox`.
+Every figure is a button that opens the plate in the lightbox unless
+`openable` is false, which it is only where the click already means
+something else, as on the faction card. The figure is a container, and the
+caption follows it: below 16rem it drops to `text-2xs` in a thinner box,
+so the small band plates keep their art. `text-2xs` exists for that
+caption and nothing else.
+
+### Yellow
+
+`2ed-light-yellow` means *current or selected* and nothing else: the current
+nav item, the current rail item, the current target named in the mobile Jump
+bar, the logo ground, and the `:target` highlight (light-yellow at 80% on
+even rows, transient by nature). The one deliberate exception is the mission
+card name on its dark-blue mat, which is a printed cue rather than a state. Notes in a `SectionBar` are
+white at `font-normal`. Two controls keep their yellow by decision
+(7 September 2026): the mobile Jump/Close toggle and back-to-top, both of
+which sit over content and were yellow before the refresh; the lightbox
+buttons keep their light blue for the same reason, over a dimmed page. The
+rest — Draw, the filter, the burger — are black or white with a frame. Chips underline on hover like every other link; nothing fills.
+
+### The shell: band, rail, Jump bar and filter
+
+Every page is one `Panel` holding a `TitleBand` and then either full-width
+content or a rail-and-content row. The band carries the art uncropped at
+`aspect-portrait` in a `w-40` column (`w-56` from `lg`), an optional eyebrow
+in Plex `text-xs uppercase tracking-widest`, the H1 in Merriweather (the
+`Logo` on faction and army-list pages), and, on the home and gallery pages
+only, an introductory paragraph. Text never goes below `text-xs`.
+
+Pages have a single header type, by decision of 7 September 2026: a
+`TitleBand` with an eyebrow, the title and optional art. The eyebrow carries
+the section name, a count of what the page indexes, or both joined by a middle
+dot, as in `Card Decks · 12 cards · 5 sources`; a bare count reads
+`21 chapters`, singular where the number is one. Chip links do not appear
+inside a band, since they duplicated the contents table set out immediately
+below it. `Chip` itself is unchanged and remains the form for in-page facet and
+rule links elsewhere.
+
+Merriweather and IBM Plex Sans are display faces and are each loaded at one
+weight &mdash; 900 and 700 &mdash; by decision (7 September 2026). Hierarchy
+inside the sans layer is therefore made with size, case and tracking, not
+weight, and a weight utility on a `font-subtitle` element does nothing: the
+refresh briefly loaded Plex at 400 and 600 to demote labels, and those 26
+classes were stripped when it was reverted. Crimson Text is the body face and
+does carry 400, 600 and 700.
+
+Pages with jump targets use `JumpBar` in `rail` mode. From `lg` it is a
+`w-56` sticky rail on the left of the content, headed "On this page", with
+the current item yellow and the rail's right rule aligned with the band's
+art column; where a page has a filter it sits in the rail under the list
+with the row count beside its label. Below `lg` the rail becomes the sticky
+Jump bar described next. Index pages space their sections at `gap-12` and
+put `gap-4` between a `SectionBar` and its grid.
+
+### The mobile filter
+
+Below `lg` the Jump bar is a sticky black `<details>` at the top of the
+content column, `min-h-11`, whose summary shows a framed "Jump" control on
+the left and the current target's name in yellow on the right. Opening it
+lists the sections, each a `min-h-11` row, and shows the filter field
+beneath the list inside the same sticky block; "Jump" reads "Close" while
+open. Choosing a section closes the bar and returns focus to the summary; the
+bar never closes on its own while the reader is typing, and closing it keeps
+whatever the field holds, so the filtered page stays filtered and the count
+in the field is the record of that. The `/` shortcut opens the bar if it is
+closed and focuses the field; Escape in the field clears it. Matching is
+unchanged from the table days: every strip, row or card that carries
+`data-search` is hidden when any typed term is missing from that attribute;
+a hidden entry's `data-refs` targets stay visible when a visible entry
+references them; a `data-group` section hides when none of its entries is
+visible; the `data-empty` message shows when nothing matches; and the Jump
+list strikes through a section that the filter has emptied.
 
 ## Working practice — hard-won
 

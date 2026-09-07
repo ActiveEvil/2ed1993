@@ -1,10 +1,12 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { IndexCard } from "@/components/Cards";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { ContentsTable } from "@/components/ContentsTable";
+import { dimensionsOf } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
+import { TitleBand } from "@/components/TitleBand";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
+import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
@@ -24,6 +26,26 @@ const countLabel = (count: number): string =>
       ? "1 datafax"
       : `${count} datafaxes`;
 
+const Row: React.FC<{
+  href: string;
+  name: string;
+  count: number;
+}> = ({ href, name, count }): React.JSX.Element => (
+  <li className="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-8 px-4 md:px-8 py-3">
+    {count > 0 ? (
+      <Link
+        href={href}
+        className="md:w-56 shrink-0 font-subtitle text-lg hover:underline underline-offset-4"
+      >
+        {name}
+      </Link>
+    ) : (
+      <span className="md:w-56 shrink-0 font-subtitle text-lg">{name}</span>
+    )}
+    <span className="text-base">{countLabel(count)}</span>
+  </li>
+);
+
 export default async function Page() {
   const [
     { data: heroImage, error: heroImageError },
@@ -32,7 +54,7 @@ export default async function Page() {
   ] = await Promise.all([
     supabase
       .from("hero_images")
-      .select("images(file_name, artist, title)")
+      .select("images(file_name, artist, title, width, height)")
       .eq("slug", "datafaxes")
       .maybeSingle(),
     supabase
@@ -90,49 +112,56 @@ export default async function Page() {
     }))
     .filter(({ count }) => count > 0);
 
+  const rows = [
+    ...sections.map((section) => ({
+      ...section,
+      href: `/datafaxes/${section.slug}`,
+    })),
+  ];
+
+  const other = [
+    {
+      slug: "fortifications",
+      name: "Fortifications",
+      count: fortificationCount,
+      href: "/datafaxes/fortifications",
+    },
+  ];
+
   return (
     <>
       <Breadcrumbs
         crumbs={[{ href: "/", anchor: "2ed1993" }, { anchor: "Datafaxes" }]}
       />
-      <Panel
-        as="main"
-        className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
-      >
-        <header>
-          <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-            Datafaxes
-          </h1>
-        </header>
-        {hero && (
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
-          />
-        )}
-        <SectionBar
-          as="h2"
-          title="Datafaxes by faction"
-          note={countLabel(total)}
+      <Panel as="main" className="flex flex-col w-full max-w-5xl">
+        <TitleBand
+          title="Datafaxes"
+          eyebrow={countLabel(total)}
+          image={
+            hero && {
+              src: `images/${hero.file_name}`,
+              title: hero.title,
+              artist: hero.artist,
+              dimensions: dimensionsOf(hero),
+            }
+          }
         />
-        <div className="grid md:grid-cols-2 gap-4">
-          {sections.map(({ slug, name, count }) => (
-            <IndexCard
-              key={slug}
-              href={`/datafaxes/${slug}`}
-              title={name}
-              summary={countLabel(count)}
-            />
-          ))}
-        </div>
-        <SectionBar as="h2" title="Other Datafaxes" />
-        <IndexCard
-          key="fortifications"
-          href="/datafaxes/fortifications"
-          title="Fortifications"
-          summary={countLabel(fortificationCount)}
-        />
+        <section className="group flex flex-col">
+          <SectionBar as="h2" title="Datafaxes by faction" />
+          <ContentsTable as="ul">
+            {rows.map(({ slug, href, name, count }) => (
+              <Row key={slug} href={href} name={name} count={count} />
+            ))}
+          </ContentsTable>
+        </section>
+        <section className="group flex flex-col">
+          <SectionBar as="h2" title="Other Datafaxes" />
+          <ContentsTable as="ul">
+            {other.map(({ slug, href, name, count }) => (
+              <Row key={slug} href={href} name={name} count={count} />
+            ))}
+          </ContentsTable>
+        </section>
       </Panel>
     </>
   );

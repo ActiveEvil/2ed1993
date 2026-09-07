@@ -4,22 +4,29 @@ import { FILTER_EVENT } from "./RowFilter";
 import { clsx } from "clsx";
 import { useEffect, useRef, useState } from "react";
 
-export type JumpItem = { id: string; label: string };
+export type JumpItem = {
+  id: string;
+  label: string;
+  subsections?: { id: string; label: string }[];
+};
 
-const EYEBROW =
-  "shrink-0 font-subtitle text-[10px] uppercase tracking-[0.14em] text-2ed-light-yellow";
+const EYEBROW = "shrink-0 font-subtitle text-xs uppercase tracking-widest";
+
+const RAIL_QUERY = "(min-width: 64rem)";
 
 export const JumpBar: React.FC<
   {
     items: JumpItem[];
     label?: string;
     sticky?: boolean;
+    rail?: boolean;
     className?: string;
   } & React.PropsWithChildren
 > = ({
   items,
   label = "On this page",
   sticky = true,
+  rail = false,
   className,
   children,
 }): React.JSX.Element => {
@@ -36,7 +43,10 @@ export const JumpBar: React.FC<
 
     const root = document.documentElement;
     const publish = () => {
-      const height = Math.round(element.getBoundingClientRect().height);
+      const asRail = rail && window.matchMedia(RAIL_QUERY).matches;
+      const height = asRail
+        ? 0
+        : Math.round(element.getBoundingClientRect().height);
       heightRef.current = height;
       if (sticky) root.style.setProperty("--jump-bar-height", `${height}px`);
     };
@@ -49,7 +59,7 @@ export const JumpBar: React.FC<
       observer.disconnect();
       root.style.removeProperty("--jump-bar-height");
     };
-  }, [sticky]);
+  }, [sticky, rail]);
 
   useEffect(() => {
     const ids = new Set(items.map(({ id }) => id));
@@ -136,11 +146,127 @@ export const JumpBar: React.FC<
   const activeLabel =
     items.find(({ id }) => id === active)?.label ?? items[0]?.label ?? "";
 
+  const closeDetails = () => {
+    const details = detailsRef.current;
+    if (!details) return;
+    details.open = false;
+    details.querySelector<HTMLElement>("summary")?.focus({
+      preventScroll: true,
+    });
+  };
+
+  const details = (
+    <details
+      ref={detailsRef}
+      className={clsx("group peer", rail ? "lg:hidden" : "md:hidden")}
+    >
+      <summary className="flex items-center gap-3 min-h-11 px-4 py-1 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+        <span className="shrink-0 flex items-center min-h-9 px-3 bg-2ed-light-yellow font-subtitle text-sm text-black">
+          <span className="group-open:hidden">Jump</span>
+          <span className="hidden group-open:inline">Close</span>
+        </span>
+        <span className="grow min-w-0 font-subtitle text-sm text-2ed-light-yellow text-right truncate">
+          {activeLabel}
+        </span>
+      </summary>
+      <nav
+        aria-label={label}
+        className="flex flex-col max-h-96 overflow-y-auto border-t-2 border-white/25"
+      >
+        {items.map(({ id, label: text }) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            aria-current={active === id ? "true" : undefined}
+            onClick={() => {
+              setActive(id);
+              closeDetails();
+            }}
+            className={clsx(
+              "flex items-center min-h-11 px-4 py-2 border-b-2 border-white/15 last:border-b-0 font-subtitle text-sm",
+              hidden.has(id) && "opacity-60 line-through",
+              active === id
+                ? "bg-2ed-light-yellow text-black"
+                : "text-2ed-white",
+            )}
+          >
+            {text}
+          </a>
+        ))}
+      </nav>
+    </details>
+  );
+
+  if (rail) {
+    return (
+      <div
+        data-jump=""
+        className={clsx(
+          "contents lg:block lg:w-56 lg:shrink-0 lg:-ml-1 lg:border-r-4 lg:border-frame print:hidden",
+          className,
+        )}
+      >
+        <div
+          ref={ref}
+          className={clsx(
+            "z-30 bg-black lg:flex lg:flex-col lg:gap-4 lg:p-4 lg:bg-transparent",
+            sticky && "sticky top-0 lg:top-4",
+          )}
+        >
+          {details}
+          <nav
+            aria-label={label}
+            className="hidden lg:flex lg:flex-col gap-2 min-w-0"
+          >
+            <span className={clsx(EYEBROW, "px-2")}>{label}</span>
+            <ul className="flex flex-col">
+              {items.map(({ id, label: text, subsections }) => (
+                <li key={id} className="flex flex-col">
+                  <a
+                    href={`#${id}`}
+                    aria-current={active === id ? "true" : undefined}
+                    onClick={() => setActive(id)}
+                    className={clsx(
+                      "block px-2 py-1 font-subtitle text-sm hover:underline underline-offset-4",
+                      hidden.has(id) && "opacity-60 line-through",
+                      active === id && "bg-2ed-light-yellow text-black",
+                    )}
+                  >
+                    {text}
+                  </a>
+                  {active === id && subsections && subsections.length > 0 && (
+                    <ul className="flex flex-col py-1">
+                      {subsections.map((subsection) => (
+                        <li key={subsection.id}>
+                          <a
+                            href={`#${subsection.id}`}
+                            className="block pl-5 pr-2 py-1 font-subtitle text-xs hover:underline underline-offset-4"
+                          >
+                            {subsection.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+          {children && (
+            <div className="hidden peer-open:block lg:block px-4 pb-4 lg:p-0">
+              {children}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}
       className={clsx(
-        "z-30 bg-black border-y-4 border-black print:hidden",
+        "z-30 bg-black border-y-4 border-frame print:hidden",
         sticky && "sticky top-0",
         className,
       )}
@@ -152,7 +278,7 @@ export const JumpBar: React.FC<
           aria-label={label}
           className="hidden md:flex items-baseline gap-3 px-4 py-2"
         >
-          <span className={clsx(EYEBROW, "pr-1")}>{label}</span>
+          <span className={clsx(EYEBROW, "pr-1 text-2ed-white")}>{label}</span>
           <div className="flex flex-wrap gap-2">
             {items.map(({ id, label: text }) => (
               <a
@@ -174,48 +300,7 @@ export const JumpBar: React.FC<
           </div>
         </nav>
 
-        <details ref={detailsRef} className="group md:hidden">
-          <summary className="flex items-center gap-3 min-h-13 px-4 py-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-            <span className={EYEBROW}>{label}</span>
-            <span className="grow min-w-0 font-subtitle text-base text-2ed-white truncate">
-              {activeLabel}
-            </span>
-            <span className="shrink-0 px-3 py-1 bg-2ed-light-yellow font-subtitle text-xs uppercase tracking-widest text-black">
-              <span className="group-open:hidden">Jump</span>
-              <span className="hidden group-open:inline">Close</span>
-            </span>
-          </summary>
-          <nav
-            aria-label={label}
-            className="flex flex-col max-h-[60vh] overflow-y-auto border-t-2 border-white/25"
-          >
-            {items.map(({ id, label: text }) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                aria-current={active === id ? "true" : undefined}
-                onClick={() => {
-                  setActive(id);
-                  const details = detailsRef.current;
-                  if (!details) return;
-                  details.open = false;
-                  details
-                    .querySelector<HTMLElement>("summary")
-                    ?.focus({ preventScroll: true });
-                }}
-                className={clsx(
-                  "flex items-center min-h-13 px-4 py-2 border-b-2 border-white/15 last:border-b-0 font-subtitle text-sm",
-                  hidden.has(id) && "opacity-60 line-through",
-                  active === id
-                    ? "bg-2ed-light-yellow text-black"
-                    : "text-2ed-white",
-                )}
-              >
-                {text}
-              </a>
-            ))}
-          </nav>
-        </details>
+        {details}
       </div>
     </div>
   );

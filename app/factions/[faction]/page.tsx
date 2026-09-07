@@ -1,10 +1,11 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { FactionCard, IndexCard } from "@/components/Cards";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { FactionCard } from "@/components/Cards";
+import { ContentsTable } from "@/components/ContentsTable";
 import type { Image } from "@/components/ImageWithCredit";
 import { Logo } from "@/components/Logos";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
+import { TitleBand } from "@/components/TitleBand";
 import { generateAnchorId } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
@@ -68,7 +69,7 @@ export default async function Page(props: {
   const { data: faction, error: factionError } = await supabase
     .from("factions")
     .select(
-      `id, slug, name, description, images(file_name, artist, title), army_lists(id, name, slug, unit_categories(category), wargear_categories(category, wargear_items(id)))`,
+      `id, slug, name, description, army_lists(id, name, slug, unit_categories(category), wargear_categories(category, wargear_items(id)))`,
     )
     .eq("slug", params.faction)
     .order("name", { referencedTable: "army_lists" })
@@ -87,7 +88,6 @@ export default async function Page(props: {
 
     assertNoQueryErrors(CONTEXT, subfactionsError);
 
-    const heros = faction.images.slice(0, 2);
     const lists = faction.army_lists.map((list) => {
       const sections = list.unit_categories.map(({ category }) => category);
       const equipped = list.wargear_categories.some(
@@ -119,77 +119,58 @@ export default async function Page(props: {
             },
           ]}
         />
-        <Panel
-          as="main"
-          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
-        >
-          <header className="flex justify-center items-center">
-            <Logo as="h1" size="xl" title={faction.name} />
-          </header>
-          <section className="grid md:grid-cols-2 gap-4">
-            {heros.length === 1 ? (
-              <ImageWithCredit
-                key={heros[0].file_name}
-                src={`images/${heros[0].file_name}`}
-                title={heros[0].title}
-                artist={heros[0].artist}
-                width="half-from-md"
-                aspect="aspect-portrait"
-              />
-            ) : (
-              <div className="grid grid-cols-2 gap-4">
-                {heros.map((hero) => (
-                  <div key={hero.file_name}>
-                    <ImageWithCredit
-                      src={`images/${hero.file_name}`}
-                      title={hero.title}
-                      artist={hero.artist}
-                      aspect="aspect-portrait"
-                      width="half"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            eyebrow="Factions"
+            heading={<Logo as="h1" size="lg" title={faction.name} />}
+          >
             <section
-              className="dynamic-content flex flex-col justify-center gap-4"
+              className="dynamic-content measure flex flex-col gap-4"
               dangerouslySetInnerHTML={{ __html: faction.description }}
             />
-          </section>
+          </TitleBand>
           {Boolean(lists.length) && (
-            <section className="flex flex-col gap-4">
+            <section className="group flex flex-col">
               <SectionBar as="h2" title="Army Lists" />
-              <div className="grid md:grid-cols-2 gap-4">
+              <ContentsTable as="ul">
                 {lists.map(({ id, name, href, sections }) => (
-                  <IndexCard
+                  <li
                     key={id}
-                    href={href}
-                    title={name}
-                    summary={sections.length ? null : "Not yet transcribed."}
+                    className="flex flex-col md:flex-row gap-2 md:gap-8 px-4 md:px-8 py-4"
                   >
-                    {Boolean(sections.length) && (
-                      <ol className="pl-6 text-lg list-decimal">
+                    <h3 className="md:w-56 shrink-0 font-subtitle text-lg leading-tight">
+                      <Link
+                        className="hover:underline underline-offset-4"
+                        href={href}
+                      >
+                        {name}
+                      </Link>
+                    </h3>
+                    {sections.length ? (
+                      <ul className="flex flex-wrap gap-x-3 gap-y-1 text-base">
                         {sections.map((section) => (
                           <li key={section} className="capitalize">
                             <Link
-                              className="hover:underline underline-offset-4"
+                              className="underline underline-offset-4"
                               href={`${href}#${generateAnchorId(section)}`}
                             >
                               {section}
                             </Link>
                           </li>
                         ))}
-                      </ol>
+                      </ul>
+                    ) : (
+                      <p className="text-sm">Not yet transcribed.</p>
                     )}
-                  </IndexCard>
+                  </li>
                 ))}
-              </div>
+              </ContentsTable>
             </section>
           )}
           {Boolean(subfactions?.length) && (
-            <section className="flex flex-col gap-4">
+            <section className="flex flex-col">
               <SectionBar as="h2" title="Subfactions" />
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-4 p-4 md:p-8">
                 {subfactions?.map(({ slug, name, images }) => {
                   const image: Image | undefined = images[0] && {
                     src: `images/${images[0].file_name}`,

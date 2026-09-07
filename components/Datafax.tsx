@@ -1,6 +1,7 @@
 import { HighlighterLink } from "./Highlighter";
-import { ImageWithCredit } from "./ImageWithCredit";
-import { WeaponDataTable, WeaponProfileRow } from "./WeaponProfile";
+import { dimensionsOf, ImageWithCredit } from "./ImageWithCredit";
+import { WeaponProfileRow, forBearer } from "./WeaponProfile";
+import { WeaponStrip, rangedCells } from "./WeaponStrip";
 import { generateAnchorId } from "@/lib/anchors";
 import { factionColors, factionInk } from "@/lib/factions";
 import { clsx } from "clsx";
@@ -27,7 +28,13 @@ export type DatafaxData = {
   note: string | null;
   motive_types: { name: string } | null;
   datafax_images: {
-    images: { file_name: string; artist: string | null; title: string };
+    images: {
+      file_name: string;
+      artist: string | null;
+      title: string;
+      width: number | null;
+      height: number | null;
+    };
   }[];
   datafax_weapons: {
     id: number;
@@ -74,7 +81,12 @@ const marker = (index: number): string => MARKERS[index] ?? String(index + 1);
 
 const FACE_HEADING = "font-subtitle text-xl text-2ed-dark-red";
 const SUB_HEADING = "font-subtitle uppercase tracking-wide text-sm";
-const RUN_LABEL = "font-subtitle uppercase text-xs";
+const RUN_LABEL =
+  "shrink-0 w-24 font-subtitle uppercase tracking-widest text-xs";
+const HEAD_CELL = "px-2 py-1 font-subtitle text-xs text-white";
+const FACE_ROW = "bg-card-face even:bg-card-stripe text-sm";
+const DATA_TABLE = "w-full bg-black border-4 border-black border-collapse";
+const LINK = "underline underline-offset-4";
 const MIDDOT = " · ";
 
 type DataRun = { label: string; value: React.ReactNode };
@@ -148,10 +160,10 @@ const Run: React.FC<{
   label: string;
   children: React.ReactNode;
 }> = ({ label, children }): React.JSX.Element => (
-  <span className="whitespace-normal">
-    <span className={clsx(RUN_LABEL, "mr-1.5")}>{label}</span>
-    {children}
-  </span>
+  <div className="flex gap-3">
+    <dt className={RUN_LABEL}>{label}</dt>
+    <dd className="min-w-0">{children}</dd>
+  </div>
 );
 
 export const Datafax: React.FC<{
@@ -167,7 +179,7 @@ export const Datafax: React.FC<{
   unitTypeName,
   titleHref,
 }): React.JSX.Element => {
-  const ink = factionInk[factionSlug ?? ""] ?? "text-2ed-light-yellow";
+  const ink = factionInk[factionSlug ?? ""] ?? "text-2ed-white";
   const [Title, Heading, Subheading] = titleHref
     ? (["h3", "h4", "h5"] as const)
     : (["h4", "h5", "h6"] as const);
@@ -255,6 +267,13 @@ export const Datafax: React.FC<{
           : "linked",
   }));
 
+  const weaponData = datafax.datafax_weapons
+    .map(({ weapons }) => weapons)
+    .filter(
+      (weapon, index, all) =>
+        all.findIndex(({ name }) => name === weapon.name) === index,
+    );
+
   const weaponGroups: {
     key: string;
     shared: boolean;
@@ -291,12 +310,12 @@ export const Datafax: React.FC<{
     );
   }
 
-  const hasWeaponData = Boolean(
-    datafax.datafax_weapons.length || datafax.deployment,
-  );
-
   const hasFrontData = Boolean(
-    image || runs.length || hasWeaponData || datafax.note,
+    image ||
+    runs.length ||
+    weaponGroups.length ||
+    datafax.deployment ||
+    datafax.note,
   );
 
   const hasDamageData = Boolean(
@@ -324,42 +343,28 @@ export const Datafax: React.FC<{
                 >
                   Hit Location Chart ({datafax.location_dice})
                 </Heading>
-                <table className="w-full bg-black border-4 border-black border-collapse text-center">
+                <table className={clsx(DATA_TABLE, "text-center")}>
                   <thead>
                     <tr>
-                      <th
-                        scope="col"
-                        rowSpan={2}
-                        className="px-2 py-1 font-subtitle text-xs text-white"
-                      >
+                      <th scope="col" rowSpan={2} className={HEAD_CELL}>
                         {datafax.location_dice}
                       </th>
                       <th
                         scope="col"
                         rowSpan={2}
-                        className="px-2 py-1 font-subtitle text-xs text-white text-left"
+                        className={clsx(HEAD_CELL, "text-left")}
                       >
                         Location
                       </th>
-                      <th
-                        scope="colgroup"
-                        colSpan={2}
-                        className="px-2 py-1 font-subtitle text-xs text-white"
-                      >
+                      <th scope="colgroup" colSpan={2} className={HEAD_CELL}>
                         Armour
                       </th>
                     </tr>
                     <tr>
-                      <th
-                        scope="col"
-                        className="px-2 py-1 font-subtitle text-xs text-white"
-                      >
+                      <th scope="col" className={HEAD_CELL}>
                         Front
                       </th>
-                      <th
-                        scope="col"
-                        className="px-2 py-1 font-subtitle text-xs text-white"
-                      >
+                      <th scope="col" className={HEAD_CELL}>
                         Side/Rear
                       </th>
                     </tr>
@@ -375,17 +380,14 @@ export const Datafax: React.FC<{
                       );
 
                       return (
-                        <tr
-                          key={location.id}
-                          className="bg-card-face even:bg-card-stripe text-sm"
-                        >
+                        <tr key={location.id} className={FACE_ROW}>
                           <th scope="row" className="px-2 py-1">
                             {range(location.roll_min, location.roll_max)}
                           </th>
                           <td className="px-2 py-1 text-left">
                             {chart ? (
                               <Link
-                                className="underline underline-offset-4"
+                                className={LINK}
                                 href={`#${chartAnchor(chart.name)}`}
                               >
                                 {location.name}
@@ -411,7 +413,7 @@ export const Datafax: React.FC<{
                         <tr key={note}>
                           <td
                             colSpan={4}
-                            className="px-2 py-1 bg-card-face text-xs text-center"
+                            className="px-2 py-1 bg-card-face text-xs text-left"
                           >
                             <sup>{marker(index)}</sup>{" "}
                             <span
@@ -452,29 +454,20 @@ export const Datafax: React.FC<{
           />
         )}
         {Boolean(chart.damage_chart_results.length) && (
-          <table className="w-full bg-black border-4 border-black border-collapse text-left">
+          <table className={clsx(DATA_TABLE, "text-left")}>
             <thead>
               <tr>
-                <th
-                  scope="col"
-                  className="px-2 py-1 font-subtitle text-xs text-white"
-                >
+                <th scope="col" className={HEAD_CELL}>
                   {chart.dice}
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-1 font-subtitle text-xs text-white"
-                >
+                <th scope="col" className={HEAD_CELL}>
                   Effect
                 </th>
               </tr>
             </thead>
             <tbody>
               {chart.damage_chart_results.map((result) => (
-                <tr
-                  key={result.id}
-                  className="bg-card-face even:bg-card-stripe text-sm"
-                >
+                <tr key={result.id} className={FACE_ROW}>
                   <th
                     scope="row"
                     className="px-2 py-1 text-center align-top whitespace-nowrap"
@@ -506,14 +499,14 @@ export const Datafax: React.FC<{
   return (
     <section
       className={clsx(
-        "flex flex-col gap-2 p-2 border-4 border-black shadow-xl",
+        "flex flex-col gap-2 p-2 border-4 border-frame shadow-xl",
         factionColors[factionSlug ?? ""] ?? "bg-2ed-dark-blue",
       )}
     >
       <div className="flex justify-between items-baseline gap-4 px-1">
         <Title
           className={clsx(
-            "font-subtitle uppercase text-2xl leading-tight",
+            "font-subtitle uppercase text-xl md:text-2xl leading-tight",
             ink,
           )}
         >
@@ -534,36 +527,29 @@ export const Datafax: React.FC<{
       </div>
 
       {hasFrontData && (
-        <div className="flex flex-col gap-2 p-3 bg-card-face text-2ed-black">
+        <div className="flex flex-col gap-3 p-3 bg-card-face text-2ed-black">
           <Heading className={FACE_HEADING}>{unitTypeName} data</Heading>
-          <div
-            className={clsx(
-              "grid gap-3",
-              image && "lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]",
-            )}
-          >
+          <div className="flex flex-col md:flex-row gap-4">
             {image && (
-              <ImageWithCredit
-                src={`images/${image.file_name}`}
-                title={image.title}
-                artist={image.artist}
-                aspect="aspect-retro"
-                width="half"
-              />
+              <div className="w-full md:w-56 shrink-0">
+                <ImageWithCredit
+                  src={`images/${image.file_name}`}
+                  title={image.title}
+                  artist={image.artist}
+                  dimensions={dimensionsOf(image)}
+                  aspect="aspect-retro"
+                  width="half"
+                />
+              </div>
             )}
-            <div className="flex flex-col gap-1.5 text-sm">
-              {Boolean(runs.length) && (
-                <p className="flex flex-wrap gap-x-6 gap-y-1">
-                  {runs.map((run) => (
-                    <Run key={run.label} label={run.label}>
-                      {run.value}
-                    </Run>
-                  ))}
-                </p>
-              )}
+            <dl className="flex flex-col gap-1.5 min-w-0 grow text-sm">
+              {runs.map((run) => (
+                <Run key={run.label} label={run.label}>
+                  {run.value}
+                </Run>
+              ))}
               {Boolean(weaponGroups.length) && (
-                <p>
-                  <span className={clsx(RUN_LABEL, "mr-1.5")}>Weapons</span>
+                <Run label="Weapons">
                   {weaponGroups.map((group) => (
                     <Fragment key={group.key}>
                       {group.members.length > 1 && "Either "}
@@ -574,7 +560,7 @@ export const Datafax: React.FC<{
                               <>{weapon.quantity} &times; </>
                             )}
                             <Link
-                              className="underline underline-offset-4"
+                              className={LINK}
                               href={`/wargear/weapons#${generateAnchorId(weapon.weapons.name)}`}
                             >
                               {weapon.weapons.name}
@@ -598,28 +584,57 @@ export const Datafax: React.FC<{
                       {". "}
                     </Fragment>
                   ))}
-                </p>
+                </Run>
               )}
               {datafax.deployment && (
-                <p>
-                  <span className={clsx(RUN_LABEL, "mr-1.5")}>Deployment</span>
-                  {datafax.deployment}
-                </p>
+                <Run label="Deployment">{datafax.deployment}</Run>
               )}
-            </div>
+            </dl>
           </div>
-          {Boolean(datafax.datafax_weapons.length) && (
-            <div className="flex flex-col gap-1">
+          {Boolean(weaponData.length) && (
+            <div className="flex flex-col gap-2">
               <Subheading className={SUB_HEADING}>Weapon data</Subheading>
-              <WeaponDataTable
-                bearer="Vehicle"
-                caption={`${unitName} weapon data`}
-                weapons={datafax.datafax_weapons.map((weapon) => ({
-                  id: weapon.id,
-                  name: weapon.weapons.name,
-                  profiles: weapon.weapons.weapon_profiles,
-                }))}
-              />
+              {weaponData.map((weapon) => {
+                const specials = [
+                  ...new Set(
+                    weapon.weapon_profiles.flatMap((profile) =>
+                      forBearer(profile.weapon_special_rules, "Vehicle").map(
+                        ({ name }) => name,
+                      ),
+                    ),
+                  ),
+                ];
+
+                return (
+                  <WeaponStrip
+                    key={weapon.name}
+                    as="h6"
+                    surface="card"
+                    name={weapon.name}
+                    special={
+                      specials.length
+                        ? specials.map((name, index) => (
+                            <Fragment key={name}>
+                              {index > 0 && MIDDOT}
+                              <Link
+                                className={LINK}
+                                href={`/wargear/weapons#${generateAnchorId(name)}_Rule`}
+                              >
+                                {name}
+                              </Link>
+                            </Fragment>
+                          ))
+                        : undefined
+                    }
+                    profiles={weapon.weapon_profiles.map((profile, index) => ({
+                      key: index,
+                      label:
+                        weapon.weapon_profiles.length > 1 ? profile.name : null,
+                      cells: rangedCells(profile),
+                    }))}
+                  />
+                );
+              })}
             </div>
           )}
           {datafax.note && <p className="text-sm">{datafax.note}</p>}

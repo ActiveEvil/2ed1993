@@ -38,7 +38,7 @@ const ASPECTS = [
     image: {
       src: "images/Dark-Imperium.jpg",
       title: "Dark Imperium",
-      artist: "Geoff Taylor",
+      artist: null,
     },
   },
 ];
@@ -125,8 +125,8 @@ export const Surfaces: React.FC = (): React.JSX.Element => (
 
     <Entry
       title="ImageWithCredit"
-      source="components/ImageWithCredit.tsx &middot; 4 aspects, 3 widths"
-      note="The caption renders only with a known artist; the alt text then names both. Each specimen uses a plate near the aspect it demonstrates, so the box is what is shown. The three widths set the sizes attribute rather than the box. full is 960px from lg; half is 480px; half-from-md is 480px from lg and half the viewport below."
+      source="components/ImageWithCredit.tsx &middot; 4 aspects, 4 widths"
+      note="The one image component. The caption names the artist when one is known and the title alone otherwise; the alt text names both. Every figure is a button that opens the plate in a lightbox unless openable is false, which is only the faction card, whose whole face is already a link. The figure is a container: below 16rem the caption drops to text-2xs with a thinner box, so a small band plate keeps its art. Each specimen uses a plate near the aspect it demonstrates. The four widths set the sizes attribute rather than the box. full is 960px from lg; half is 480px; half-from-md is 480px from lg and half the viewport below; third is 320px from lg, a third from md and half below."
     >
       <div className="grid md:grid-cols-2 gap-4">
         {ASPECTS.map(({ aspect, label, image }) => (
@@ -145,8 +145,8 @@ export const Surfaces: React.FC = (): React.JSX.Element => (
     </Entry>
     <Entry
       title="Gallery"
-      source="components/Gallery.tsx &middot; GalleryImage.tsx"
-      note="Every plate renders at aspect-square whatever its own ratio; the lightbox then shows it whole. A tile is a button, not a link: it opens a real dialog with showModal, so focus trapping, Escape and focus restoration are native. Arrow keys step through the set, and a plate with known dimensions can be zoomed to full size."
+      source="components/Gallery.tsx &middot; Lightbox.tsx"
+      note="A grid of ImageWithCredit tiles sharing one Lightbox. Every plate renders at aspect-square whatever its own ratio; the lightbox then shows it whole. A tile is a button, not a link: it opens a real dialog with showModal, so focus trapping, Escape and focus restoration are native. Arrow keys and the arrows step through the set only when there is more than one plate, and a plate with known dimensions can be zoomed to full size."
     >
       <Gallery images={GALLERY} />
     </Entry>

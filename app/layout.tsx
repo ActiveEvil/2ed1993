@@ -86,7 +86,7 @@ export default async function RootLayout({
           >
             <Insta className="fill-foreground size-8" />
           </a>
-          <div className="font-title text-xs text-center">
+          <div className="max-w-prose font-block text-sm text-center">
             © {new Date().getFullYear()} 2ed1993 (the Warhammer 40,000 2nd
             Edition digital record project).
             <br />

@@ -1,13 +1,13 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { IndexCard } from "@/components/Cards";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { ContentsRow, ContentsTable } from "@/components/ContentsTable";
+import { dimensionsOf } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
+import { TitleBand } from "@/components/TitleBand";
 import { ruleName } from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
-import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
@@ -28,7 +28,7 @@ export default async function Page() {
   ] = await Promise.all([
     supabase
       .from("hero_images")
-      .select("images(file_name, artist, title)")
+      .select("images(file_name, artist, title, width, height)")
       .eq("slug", "rules")
       .single(),
     supabase
@@ -98,32 +98,38 @@ export default async function Page() {
       }))
       .filter(({ categories }) => categories.length > 0);
 
+    const chapters = sections.reduce(
+      (count, { categories }) => count + categories.length,
+      0,
+    );
+
     return (
       <>
         <Breadcrumbs
           crumbs={[{ href: "/", anchor: "2ed1993" }, { anchor: "Rules" }]}
         />
-        <Panel
-          as="main"
-          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
-        >
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Rules
-            </h1>
-          </header>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            title="Rules"
+            eyebrow={chapters === 1 ? "1 chapter" : `${chapters} chapters`}
+            image={{
+              src: `images/${hero.file_name}`,
+              title: hero.title,
+              artist: hero.artist,
+              dimensions: dimensionsOf(hero),
+            }}
           />
-          <div className="flex flex-col gap-7">
+          <div className="flex flex-col">
             {sections.map(({ name: title, numbered, categories }) => {
               const first = categories[0].position + 1;
               const last = categories[categories.length - 1].position + 1;
 
               return (
-                <section key={title} className="flex flex-col gap-4">
+                <section
+                  key={title}
+                  id={generateAnchorId(title)}
+                  className="group flex flex-col"
+                >
                   <SectionBar
                     as="h2"
                     title={title}
@@ -135,28 +141,20 @@ export default async function Page() {
                           : `Chapters ${first}\u2013${last}`
                     }
                   />
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <ContentsTable>
                     {categories.map(({ slug, name, position, entries }) => (
-                      <IndexCard
+                      <ContentsRow
                         key={slug}
+                        number={numbered ? position + 1 : undefined}
+                        title={name}
                         href={`/rules/${slug}`}
-                        title={numbered ? `${position + 1}. ${name}` : name}
-                      >
-                        <ol className="pl-6 text-lg list-decimal">
-                          {entries.map((entry) => (
-                            <li key={entry.anchor}>
-                              <Link
-                                className="hover:underline underline-offset-4"
-                                href={`/rules/${slug}#${entry.anchor}`}
-                              >
-                                {entry.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ol>
-                      </IndexCard>
+                        items={entries.map((entry) => ({
+                          name: entry.name,
+                          href: `/rules/${slug}#${entry.anchor}`,
+                        }))}
+                      />
                     ))}
-                  </div>
+                  </ContentsTable>
                 </section>
               );
             })}

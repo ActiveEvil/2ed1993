@@ -1,9 +1,10 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { CHIP_CLASS } from "@/components/Chip";
+import { SectionHeading } from "@/components/Heading";
 import { Highlighter } from "@/components/Highlighter";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { dimensionsOf } from "@/components/ImageWithCredit";
+import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
-import { SectionBar } from "@/components/SectionBar";
+import { TitleBand } from "@/components/TitleBand";
 import { generateAnchorId } from "@/lib/anchors";
 import { deckColors } from "@/lib/factions";
 import { pageTitle } from "@/lib/metadata";
@@ -28,7 +29,7 @@ export default async function Page() {
   ] = await Promise.all([
     supabase
       .from("hero_images")
-      .select("images(file_name, artist, title)")
+      .select("images(file_name, artist, title, width, height)")
       .eq("slug", "psychic-power-cards")
       .order("position"),
     supabase
@@ -76,114 +77,79 @@ export default async function Page() {
             },
           ]}
         />
-        <main id="main" className="flex flex-col items-center gap-4 w-full">
-          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
-            <header>
-              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-                Psychic Power Cards
-              </h1>
-            </header>
-            <div className="grid grid-cols-2 gap-4">
-              {heros.map((hero) => (
-                <div key={hero.file_name}>
-                  <ImageWithCredit
-                    src={`images/${hero.file_name}`}
-                    title={hero.title}
-                    artist={hero.artist}
-                    aspect="aspect-portrait"
-                    width="half"
-                  />
-                </div>
-              ))}
-            </div>
-            <section className="border-4 border-black">
-              <SectionBar
-                title="The deck"
-                note={`${psychic_power_cards.length} cards \u00b7 ${decks.length} disciplines`}
-              />
-              <div className="flex flex-col gap-2 p-3">
-                {decks.map((deck) => (
-                  <div
-                    key={generateAnchorId(deck.name)}
-                    className="flex flex-col md:flex-row md:items-baseline gap-2"
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            title="Psychic Power Cards"
+            eyebrow={`Card Decks \u00b7 ${psychic_power_cards.length} cards \u00b7 ${decks.length} disciplines`}
+            image={{
+              src: `images/${heros[0].file_name}`,
+              title: heros[0].title,
+              artist: heros[0].artist,
+              dimensions: dimensionsOf(heros[0]),
+            }}
+          />
+          <div className="flex flex-col lg:flex-row">
+            <JumpBar
+              rail
+              items={decks.map(({ name }) => ({
+                id: generateAnchorId(name),
+                label: name,
+              }))}
+            />
+            <div className="flex flex-col gap-12 min-w-0 grow p-4 md:p-8">
+              {decks.map((deck) => {
+                const deckId = generateAnchorId(deck.name);
+
+                return (
+                  <section
+                    id={deckId}
+                    key={deckId}
+                    className="flex flex-col gap-4"
                   >
-                    <span className="shrink-0 md:w-44 font-subtitle text-xs uppercase tracking-[0.14em]">
-                      {deck.name}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {deck.cards.map((card) => (
-                        <a
-                          key={generateAnchorId(card.name)}
-                          href={`#${generateAnchorId(card.name)}`}
-                          className={CHIP_CLASS}
-                        >
-                          {card.name}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </Panel>
-          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
-            {decks.map((deck) => {
-              const deckId = generateAnchorId(deck.name);
+                    <SectionHeading>{deck.name}</SectionHeading>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {deck.cards.map((card) => {
+                        const cardId = generateAnchorId(card.name);
 
-              return (
-                <section
-                  id={deckId}
-                  key={deckId}
-                  className="flex flex-col gap-4"
-                >
-                  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black shadow-lg" />
-                    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-                      {deck.name}
-                    </h2>
-                  </div>
-                  <section className="grid md:grid-cols-2 gap-4">
-                    {deck.cards.map((card) => {
-                      const cardId = generateAnchorId(card.name);
-
-                      return (
-                        <div
-                          key={cardId}
-                          id={cardId}
-                          className={clsx(
-                            "flex flex-col justify-start items-center gap-2 p-4 border-4 border-black target:border-2ed-light-yellow shadow-xl",
-                            deckColors[deck.name],
-                          )}
-                        >
-                          <div className="flex flex-col justify-start items-center gap-4 p-4 h-full bg-card-face text-2ed-black">
-                            <div className="flex justify-between w-full font-subtitle text-lg">
-                              <div>Force {card.force}</div>
-                              {card.range && <div>Range: {card.range}</div>}
-                            </div>
-                            <h3 className="font-title uppercase text-2xl text-2ed-dark-blue text-center">
-                              {card.name}
-                            </h3>
-                            <p
-                              className="text-lg"
-                              dangerouslySetInnerHTML={{
-                                __html: card.description,
-                              }}
-                            />
-                            {card.note && (
-                              <div className="mt-auto font-subtitle uppercase text-2ed-dark-blue text-center">
-                                {card.note}
-                              </div>
+                        return (
+                          <article
+                            key={cardId}
+                            id={cardId}
+                            className={clsx(
+                              "flex flex-col items-center gap-2 p-4 border-4 border-frame target:border-2ed-light-yellow shadow-xl",
+                              deckColors[deck.name],
                             )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                          >
+                            <div className="flex flex-col gap-4 p-4 w-full h-full bg-card-face text-2ed-black">
+                              <div className="flex justify-between gap-4 font-subtitle text-lg">
+                                <span>Force {card.force}</span>
+                                {card.range && <span>Range: {card.range}</span>}
+                              </div>
+                              <h3 className="font-title uppercase text-2xl text-2ed-dark-blue text-center">
+                                {card.name}
+                              </h3>
+                              <p
+                                className="text-lg"
+                                dangerouslySetInnerHTML={{
+                                  __html: card.description,
+                                }}
+                              />
+                              {card.note && (
+                                <p className="mt-auto font-subtitle uppercase text-2ed-dark-blue text-center">
+                                  {card.note}
+                                </p>
+                              )}
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
                   </section>
-                </section>
-              );
-            })}
-          </Panel>
-        </main>
+                );
+              })}
+            </div>
+          </div>
+        </Panel>
       </>
     );
   }

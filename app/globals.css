@@ -18,8 +18,11 @@
     var(--background) 92%,
     var(--foreground)
   );
+  --frame: #000;
 }
 @theme inline {
+  --text-2xs: 0.5rem;
+  --text-2xs--line-height: 0.75rem;
   --aspect-retro: 4 / 3;
   --aspect-portrait: 4 / 5;
   --aspect-square: 1 / 1;
@@ -28,8 +31,10 @@
   --color-accent: var(--house-rule-accent);
   --color-card-face: var(--card-face);
   --color-card-stripe: var(--card-stripe);
+  --color-stripe: var(--stripe);
   --color-leader-ink: var(--leader-ink);
   --color-group-surface: var(--group-surface);
+  --color-frame: var(--frame);
   --color-2ed-black: #2d2d2d;
   --color-2ed-white: #fafafa;
   --color-2ed-light-yellow: #fff20b;
@@ -134,6 +139,22 @@
       }
     }
   }
+  .dynamic-content.measure {
+    h3,
+    h4,
+    p,
+    ul,
+    .text-block,
+    .house-rule,
+    .blockquote-container,
+    .ordered-list li {
+      max-width: var(--container-prose);
+    }
+    .chart h3,
+    .chart p {
+      max-width: none;
+    }
+  }
   .dynamic-content {
     h3 {
       font-family: var(--ibm-plex-sans);
@@ -170,7 +191,7 @@
       gap: calc(var(--spacing) * 2);
       padding: calc(var(--spacing) * 2);
       background-color: var(--color-2ed-light-green);
-      border-color: var(--color-black);
+      border-color: var(--frame);
       border-style: var(--tw-border-style);
       border-width: 4px;
       --tw-shadow:
@@ -265,39 +286,57 @@
         width: 100%;
         table-layout: auto;
         background-color: var(--color-black);
-        border-color: var(--color-black);
+        border-color: var(--frame);
         border-style: var(--tw-border-style);
         border-width: 4px;
         border-collapse: collapse;
         text-align: center;
+        /* The same look as CharacteristicTable inside a ProfileFrame on the
+           army lists, so a profile in prose and one in a list are one thing. */
+        th,
+        td {
+          padding: calc(var(--spacing) * 1);
+          @variant md {
+            padding-inline: calc(var(--spacing) * 2);
+          }
+        }
         thead {
           background-color: var(--color-black);
-          font-size: var(--text-sm);
-          line-height: var(--tw-leading, var(--text-sm--line-height));
           font-family: var(--ibm-plex-sans);
+          --tw-font-weight: var(--font-weight-semibold);
+          font-weight: var(--font-weight-semibold);
+          font-size: var(--text-xs);
+          line-height: var(--tw-leading, var(--text-xs--line-height));
           color: var(--color-white);
         }
         tbody {
           --tw-font-weight: var(--font-weight-semibold);
           font-weight: var(--font-weight-semibold);
-          font-size: var(--text-lg);
-          line-height: var(--tw-leading, var(--text-lg--line-height));
-          /* color: var(--color-foreground); */
+          font-size: var(--text-base);
+          line-height: var(--tw-leading, var(--text-base--line-height));
+          @variant md {
+            font-size: var(--text-lg);
+            line-height: var(--tw-leading, var(--text-lg--line-height));
+          }
           tr:nth-child(odd) td {
             background-color: var(--background);
           }
           tr:nth-child(even) td {
             background-color: var(--stripe);
           }
+          /* A row head on the black stays at body size; a profile name, which
+             the markup sets left on the page background, takes the name size. */
+          th[style*="text-align:left"] {
+            font-size: var(--text-sm);
+            line-height: var(--tw-leading, var(--text-sm--line-height));
+            @variant md {
+              font-size: var(--text-base);
+              line-height: var(--tw-leading, var(--text-base--line-height));
+            }
+          }
         }
         th {
-          min-width: calc(var(--spacing) * 10);
-          padding: calc(var(--spacing) * 2);
           color: var(--color-white);
-        }
-        td {
-          min-width: calc(var(--spacing) * 10);
-          padding: calc(var(--spacing) * 2);
         }
         .empty {
           background: transparent !important;
@@ -307,7 +346,7 @@
     }
     .chart {
       display: grid;
-      border-color: var(--color-black);
+      border-color: var(--frame);
       border-style: var(--tw-border-style);
       border-width: 4px;
       border-bottom: none;
@@ -326,9 +365,9 @@
         color: var(--color-foreground); */
         font-size: var(--text-lg);
         line-height: var(--tw-leading, var(--text-lg--line-height));
-        border-color: var(--color-black);
+        border-color: var(--frame);
         border-bottom-style: var(--tw-border-style);
-        border-bottom-width: 4px;
+        border-bottom-width: 2px;
       }
     }
   }
@@ -349,6 +388,7 @@
       var(--background) 92%,
       var(--foreground)
     );
+    --frame: #000;
   }
 }
 
@@ -365,6 +405,7 @@
     var(--background) 92%,
     var(--foreground)
   );
+  --frame: #000;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -429,6 +470,7 @@ body {
       var(--background) 92%,
       var(--foreground)
     );
+    --frame: #000;
   }
 
   /* Light text takes ink. Unconditional on purpose: browsers drop backgrounds

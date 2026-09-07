@@ -1,10 +1,12 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { IndexCard } from "@/components/Cards";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { ContentsRow, ContentsTable } from "@/components/ContentsTable";
+import { dimensionsOf } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
+import { SectionBar } from "@/components/SectionBar";
+import { TitleBand } from "@/components/TitleBand";
+import { generateAnchorId } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
-import Link from "next/link";
 import { Metadata } from "next/types";
 
 export const revalidate = 3600;
@@ -44,55 +46,88 @@ export function generateMetadata(): Metadata {
   };
 }
 
+const unique = (names: string[]) => [...new Set(names)];
+
 export default async function Page() {
-  const { data: heroImage, error: heroImageError } = await supabase
-    .from("hero_images")
-    .select("images(file_name, artist, title)")
-    .eq("slug", "card-decks")
-    .single();
+  const [
+    { data: heroImage, error: heroImageError },
+    { data: missionRows, error: missionError },
+    { data: strategyRows, error: strategyError },
+    { data: psychicRows, error: psychicError },
+    { data: warpRows, error: warpError },
+  ] = await Promise.all([
+    supabase
+      .from("hero_images")
+      .select("images(file_name, artist, title, width, height)")
+      .eq("slug", "card-decks")
+      .single(),
+    supabase.from("mission_cards").select("origin").order("id"),
+    supabase.from("strategy_cards").select("origin").order("id"),
+    supabase.from("psychic_power_cards").select("deck").order("id"),
+    supabase.from("special_warp_cards").select("id"),
+  ]);
   const hero = heroImage?.images ?? null;
 
-  assertNoQueryErrors("/card-decks", heroImageError);
+  assertNoQueryErrors(
+    "/card-decks",
+    heroImageError,
+    missionError,
+    strategyError,
+    psychicError,
+    warpError,
+  );
 
-  if (hero) {
+  if (hero && missionRows && strategyRows && psychicRows && warpRows) {
+    const groups: Record<string, string[]> = {
+      "mission-cards": unique(missionRows.map(({ origin }) => origin)),
+      "strategy-cards": unique(strategyRows.map(({ origin }) => origin)),
+      "psychic-power-cards": unique(psychicRows.map(({ deck }) => deck)),
+      "special-warp-cards": [],
+    };
+    const total =
+      missionRows.length +
+      strategyRows.length +
+      psychicRows.length +
+      warpRows.length;
+    const deckCount = DECKS.length === 1 ? "1 deck" : `${DECKS.length} decks`;
+    const cardCount = total === 1 ? "1 card" : `${total} cards`;
+
     return (
       <>
         <Breadcrumbs
           crumbs={[{ href: "/", anchor: "2ed1993" }, { anchor: "Card Decks" }]}
         />
-        <Panel
-          as="main"
-          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
-        >
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Card Decks
-            </h1>
-          </header>
-          <ImageWithCredit
-            src={`images/${hero.file_name}`}
-            title={hero.title}
-            artist={hero.artist}
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            title="Card Decks"
+            eyebrow={`${deckCount} \u00b7 ${cardCount}`}
+            image={{
+              src: `images/${hero.file_name}`,
+              title: hero.title,
+              artist: hero.artist,
+              dimensions: dimensionsOf(hero),
+            }}
           />
-          <div className="grid md:grid-cols-2 gap-4">
-            {DECKS.map((deck, index) => (
-              <IndexCard
-                key={deck.slug}
-                href={`/card-decks/${deck.slug}`}
-                title={`${index + 1}. ${deck.name}`}
-              >
-                <p className="text-lg">
-                  Rules:{" "}
-                  <Link
-                    className="font-bold underline underline-offset-4"
-                    href={deck.ruleHref}
-                  >
-                    {deck.ruleName}
-                  </Link>
-                </p>
-              </IndexCard>
-            ))}
-          </div>
+          <section className="group flex flex-col">
+            <SectionBar as="h2" title="Contents" />
+            <ContentsTable>
+              {DECKS.map(({ slug, name, ruleName, ruleHref }, index) => (
+                <ContentsRow
+                  key={slug}
+                  number={index + 1}
+                  title={name}
+                  href={`/card-decks/${slug}`}
+                  items={[
+                    ...groups[slug].map((group) => ({
+                      name: group,
+                      href: `/card-decks/${slug}#${generateAnchorId(group)}`,
+                    })),
+                    { label: "Rules:", name: ruleName, href: ruleHref },
+                  ]}
+                />
+              ))}
+            </ContentsTable>
+          </section>
         </Panel>
       </>
     );

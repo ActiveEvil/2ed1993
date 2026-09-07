@@ -4,6 +4,7 @@ import {
   LabelledTable,
 } from "@/components/CharacteristicProfile";
 import { generateAnchorId, ruleHref } from "@/lib/anchors";
+import { clsx } from "clsx";
 import Link from "next/link";
 import { Fragment } from "react";
 
@@ -239,6 +240,7 @@ export const UnitEquipment: React.FC<{
   rulesSlug?: string | null;
   optionCosts?: ReadonlyMap<number, string>;
   wargearCardsMax?: number | null;
+  entryAnchor?: (unitName: string) => string;
 }> = ({
   unit,
   compact = false,
@@ -247,9 +249,11 @@ export const UnitEquipment: React.FC<{
   rulesSlug,
   optionCosts,
   wargearCardsMax,
+  entryAnchor = generateAnchorId,
 }): React.JSX.Element | null => {
   const profiles = unit.unit_profiles;
   const options = unit.unit_options;
+  const proseClass = clsx("dynamic-content", compact ? "compact" : "measure");
   const specialRules = unit.unit_special_rule_assignments.flatMap(
     (assignment) =>
       assignment.rule
@@ -494,12 +498,12 @@ export const UnitEquipment: React.FC<{
                         {prose &&
                           (blockProse ? (
                             <div
-                              className="dynamic-content compact"
+                              className={proseClass}
                               dangerouslySetInnerHTML={{ __html: prose }}
                             />
                           ) : (
                             <span
-                              className="dynamic-content compact"
+                              className={proseClass}
                               dangerouslySetInnerHTML={{ __html: prose }}
                             />
                           ))}
@@ -624,7 +628,7 @@ export const UnitEquipment: React.FC<{
                           {"upgraded to "}
                           <Link
                             className={LINK}
-                            href={`#${generateAnchorId(option.upgrade.units.name)}`}
+                            href={`#${entryAnchor(option.upgrade.units.name)}`}
                           >
                             {option.upgrade.units.name}
                           </Link>
