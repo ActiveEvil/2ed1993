@@ -1,5 +1,7 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Gallery } from "@/components/Gallery";
+import { Panel } from "@/components/Panel";
+import { TitleBand } from "@/components/TitleBand";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next";
 
@@ -37,23 +39,17 @@ export default async function Page() {
             },
           ]}
         />
-        <main
-          id="main"
-          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8 border-4 border-black shadow-lg"
-        >
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Gallery
-            </h1>
-          </header>
-          <section className="flex flex-col gap-4 w-full text-center text-xl">
-            <p>
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand title="Gallery">
+            <p className="max-w-prose text-lg">
               Miniatures I&apos;ve painted, from my Warhammer 40,000 2nd Edition
               collection.
             </p>
-          </section>
-          <Gallery images={gallery} aspect="aspect-square" />
-        </main>
+          </TitleBand>
+          <div className="p-4 md:p-8">
+            <Gallery images={gallery} aspect="aspect-square" />
+          </div>
+        </Panel>
       </>
     );
   }

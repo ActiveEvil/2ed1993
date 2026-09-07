@@ -36,7 +36,7 @@ export const BackToTop: React.FC = (): React.JSX.Element | null => {
           .querySelector<HTMLElement>('a[href="#main"]')
           ?.focus({ preventScroll: true });
       }}
-      className="fixed bottom-4 right-4 z-40 flex justify-center items-center size-11 bg-2ed-light-yellow border-4 border-black text-black font-subtitle text-xl shadow-lg hover:bg-black hover:text-2ed-light-yellow print:hidden"
+      className="fixed bottom-4 right-4 z-40 flex justify-center items-center size-11 bg-2ed-light-yellow border-4 border-frame text-black font-subtitle text-xl shadow-lg hover:bg-black hover:text-2ed-light-yellow print:hidden"
     >
       <span aria-hidden="true">&uarr;</span>
       <span className="sr-only">Back to top</span>

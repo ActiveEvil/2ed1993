@@ -76,7 +76,7 @@ const BurgerMenu: React.FC<{
           id="main-menu"
           ref={ref}
           className={clsx({
-            "-z-10 collapse absolute inset-y-auto right-2 p-2 bg-background border-4 border-black text-foreground": true,
+            "-z-10 collapse absolute inset-y-auto right-2 p-2 bg-background border-4 border-frame text-foreground": true,
             "z-10 visible": open,
           })}
         >

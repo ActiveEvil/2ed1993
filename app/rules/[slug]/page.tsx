@@ -1,9 +1,11 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CHIP_CLASS } from "@/components/Chip";
+import { SectionHeading } from "@/components/Heading";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
+import { TitleBand } from "@/components/TitleBand";
 import { ruleName } from "@/components/UnitEquipment";
 import { generateAnchorId, ruleHref } from "@/lib/anchors";
 import { joinWithinBudget, pageTitle } from "@/lib/metadata";
@@ -132,17 +134,6 @@ const buildFactionRuleHtml = (
   return parts.join("");
 };
 
-const ChapterHeading: React.FC<{ title: string }> = ({
-  title,
-}): React.JSX.Element => (
-  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
-    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-      {title}
-    </h2>
-  </div>
-);
-
 const GOLDEN_RULE_SLUG = "the-golden-rule";
 
 export async function generateMetadata(props: {
@@ -198,7 +189,7 @@ export default async function Page(props: {
   const { data: category, error: categoryError } = await supabase
     .from("rule_categories")
     .select(
-      "name, faction_id, images(file_name, artist, title), rules(name, rule, position)",
+      "name, faction_id, position, rule_sections(name, numbered), images(file_name, artist, title, width, height), rules(name, rule, position)",
     )
     .eq("slug", params.slug)
     .order("position", { referencedTable: "rules" })
@@ -214,7 +205,15 @@ export default async function Page(props: {
 
     assertNoQueryErrors(CONTEXT, assignmentsError);
 
-    const heros = category.images.slice(0, 2);
+    const hero = category.images[0] ?? null;
+    const eyebrow = [
+      category.rule_sections.name,
+      category.rule_sections.numbered
+        ? `Chapter ${category.position + 1}`
+        : null,
+    ]
+      .filter((part): part is string => part !== null)
+      .join(" \u00b7 ");
 
     const chapterList: {
       key: string;
@@ -287,8 +286,19 @@ export default async function Page(props: {
       subsections: extractSubsections(chapter.rule),
     }));
 
-    const jumpItems = chapters.flatMap(({ id, name }) =>
-      id === null ? [] : [{ id, label: name }],
+    const jumpItems = chapters.flatMap(({ id, name, subsections }) =>
+      id === null
+        ? []
+        : [
+            {
+              id,
+              label: name,
+              subsections: subsections.map((subsection) => ({
+                id: subsection.id,
+                label: subsection.name,
+              })),
+            },
+          ],
     );
 
     return (
@@ -301,74 +311,53 @@ export default async function Page(props: {
             { anchor: category.name },
           ]}
         />
-        <main id="main" className="flex flex-col items-center gap-4 w-full">
-          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
-            <header>
-              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-                {category.name}
-              </h1>
-            </header>
-            {heros.length === 1 && (
-              <ImageWithCredit
-                src={`images/${heros[0].file_name}`}
-                title={heros[0].title}
-                artist={heros[0].artist}
-              />
-            )}
-            {heros.length > 1 && (
-              <div className="grid grid-cols-2 gap-4">
-                {heros.map((hero) => (
-                  <ImageWithCredit
-                    key={hero.file_name}
-                    src={`images/${hero.file_name}`}
-                    title={hero.title}
-                    artist={hero.artist}
-                    aspect="aspect-portrait"
-                    width="half"
-                  />
-                ))}
-              </div>
-            )}
-          </Panel>
-
-          {jumpItems.length > 1 && (
-            <JumpBar
-              className="self-stretch -mx-2 md:-mx-4"
-              items={jumpItems}
-            />
-          )}
-
-          <Panel className="flex flex-col gap-8 md:gap-12 w-full max-w-5xl p-4 md:p-8">
-            {chapters.map((chapter) => (
-              <section
-                key={chapter.key}
-                id={chapter.id ?? undefined}
-                className="flex flex-col justify-center gap-4"
-              >
-                <div className="flex flex-col items-center gap-4 w-full">
-                  <ChapterHeading title={chapter.name} />
-                  {chapter.subsections.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-2">
-                      {chapter.subsections.map((subsection) => (
-                        <HighlighterLink
-                          key={subsection.id}
-                          href={`/rules/${params.slug}#${subsection.id}`}
-                          className={CHIP_CLASS}
-                        >
-                          {subsection.name}
-                        </HighlighterLink>
-                      ))}
-                    </div>
-                  )}
-                </div>
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            title={category.name}
+            eyebrow={eyebrow}
+            image={
+              hero && {
+                src: `images/${hero.file_name}`,
+                title: hero.title,
+                artist: hero.artist,
+                dimensions: dimensionsOf(hero),
+              }
+            }
+          />
+          <div className="flex flex-col lg:flex-row">
+            {jumpItems.length > 1 && <JumpBar rail items={jumpItems} />}
+            <div className="flex flex-col gap-8 md:gap-12 min-w-0 grow p-4 md:p-8">
+              {chapters.map((chapter) => (
                 <section
-                  className="dynamic-content flex flex-col justify-center gap-4"
-                  dangerouslySetInnerHTML={{ __html: chapter.rule }}
-                />
-              </section>
-            ))}
-          </Panel>
-        </main>
+                  key={chapter.key}
+                  id={chapter.id ?? undefined}
+                  className="flex flex-col gap-4"
+                >
+                  <div className="flex flex-col gap-4 w-full">
+                    <SectionHeading>{chapter.name}</SectionHeading>
+                    {chapter.subsections.length > 0 && (
+                      <div className="flex flex-wrap gap-x-2 gap-y-4">
+                        {chapter.subsections.map((subsection) => (
+                          <HighlighterLink
+                            key={subsection.id}
+                            href={`/rules/${params.slug}#${subsection.id}`}
+                            className={CHIP_CLASS}
+                          >
+                            {subsection.name}
+                          </HighlighterLink>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <section
+                    className="dynamic-content measure flex flex-col gap-4"
+                    dangerouslySetInnerHTML={{ __html: chapter.rule }}
+                  />
+                </section>
+              ))}
+            </div>
+          </div>
+        </Panel>
       </>
     );
   }

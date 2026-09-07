@@ -34,14 +34,14 @@ export const StrategyCardRandomiser: React.FC<{
   return (
     <div className="contents print:hidden">
       <SectionBar title="Draw a card" note={`${ids.length} in play`} />
-      <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-mid-blue shadow-lg">
+      <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-dark-blue">
         <p className="text-xl">
           Select which card decks you wish to include and randomly draw one
           card:
         </p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           {cards.map((group) => {
-            const originId = generateAnchorId(group.origin);
+            const originId = `deck-${generateAnchorId(group.origin)}`;
             return (
               <div key={originId} className="flex items-center gap-2">
                 <input
@@ -111,11 +111,11 @@ export const StrategyCardRandomiser: React.FC<{
           </div>
         </div>
       </div>
-      <div className="sticky top-0 z-10 bg-background shadow-lg">
-        <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue">
+      <div className="sticky top-(--jump-offset) z-10 bg-background">
+        <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-dark-blue">
           <button
             type="button"
-            className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
+            className="min-h-11 px-4 py-1 rounded-none bg-2ed-white border-4 border-black text-black font-subtitle"
             onClick={() => {
               if (ids.length) {
                 const href =
@@ -179,14 +179,14 @@ export const MissionCardRandomiser: React.FC<{
   return (
     <div className="contents print:hidden">
       <SectionBar title="Draw a card" note={`${ids.length} in play`} />
-      <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-mid-blue shadow-lg">
+      <div className="flex flex-col items-start gap-4 pt-4 px-4 md:px-8 text-2ed-white bg-2ed-dark-blue">
         <p className="text-xl">
           Select which card decks you wish to include and randomly draw one
           card:
         </p>
         <div className="flex flex-col md:flex-row flex-wrap items-start md:items-center gap-4">
           {cards.map((group) => {
-            const originId = generateAnchorId(group.origin);
+            const originId = `deck-${generateAnchorId(group.origin)}`;
             return (
               <div key={originId} className="flex items-center gap-2">
                 <input
@@ -267,11 +267,11 @@ export const MissionCardRandomiser: React.FC<{
           </div>
         </div>
       </div>
-      <div className="sticky top-0 z-10 bg-background shadow-lg">
-        <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-mid-blue">
+      <div className="sticky top-(--jump-offset) z-10 bg-background">
+        <div className="flex flex-col items-start gap-4 p-4 md:px-8 w-full h-full bg-2ed-dark-blue">
           <button
             type="button"
-            className="px-4 py-1 rounded-none bg-2ed-light-blue border-4 border-black text-black font-subtitle shadow-lg"
+            className="min-h-11 px-4 py-1 rounded-none bg-2ed-white border-4 border-black text-black font-subtitle"
             onClick={() => {
               if (ids.length) {
                 const href =

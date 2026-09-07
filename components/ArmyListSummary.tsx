@@ -58,7 +58,7 @@ export const ArmyListSummary: React.FC<{
     <div className={clsx("flex flex-col gap-4", className)}>
       {Boolean(limited.length) && (
         <div className="dynamic-content">
-          <section className="chart grid-cols-8! max-w-xl">
+          <section className="chart grid-cols-8!">
             <h3 id="Army_Composition_Chart" className="col-span-8">
               Army Composition Chart
             </h3>
@@ -81,7 +81,7 @@ export const ArmyListSummary: React.FC<{
       )}
       {Boolean(allies.length) && (
         <div className="flex flex-col gap-2">
-          <span className="font-subtitle text-xs uppercase tracking-[0.14em]">
+          <span className="font-subtitle text-xs uppercase tracking-widest">
             Allies
           </span>
           <span className="flex flex-wrap gap-2">

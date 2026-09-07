@@ -36,7 +36,7 @@ const CELL = "py-1";
 export const ProfileFrame: React.FC<
   React.PropsWithChildren<{ className?: string }>
 > = ({ className, children }): React.JSX.Element => (
-  <div className={clsx("border-4 border-black", className)}>{children}</div>
+  <div className={clsx("border-4 border-frame", className)}>{children}</div>
 );
 
 export const CharacteristicTable: React.FC<{
@@ -59,7 +59,10 @@ export const CharacteristicTable: React.FC<{
         <thead>
           <tr>
             {named && (
-              <th scope="col" className={clsx(HEAD_CELL, "px-2 text-left")}>
+              <th
+                scope="col"
+                className={clsx(HEAD_CELL, "px-1 md:px-2 text-left")}
+              >
                 Profile
               </th>
             )}
@@ -67,19 +70,22 @@ export const CharacteristicTable: React.FC<{
               <th
                 key={key}
                 scope="col"
-                className={clsx(HEAD_CELL, "w-12 px-2")}
+                className={clsx(HEAD_CELL, "px-1 md:w-12 md:px-2")}
               >
                 {label}
               </th>
             ))}
             {priced && (
-              <th scope="col" className={clsx(HEAD_CELL, "px-2 text-right")}>
+              <th
+                scope="col"
+                className={clsx(HEAD_CELL, "px-1 md:px-2 text-right")}
+              >
                 {costLabel}
               </th>
             )}
           </tr>
         </thead>
-        <tbody className="font-semibold text-lg">
+        <tbody className="font-semibold text-base md:text-lg">
           {rows.map((row, index) => {
             const orAbove =
               index > 0 && row.alternative !== rows[index - 1].alternative;
@@ -96,7 +102,7 @@ export const CharacteristicTable: React.FC<{
                   <th
                     scope="row"
                     className={clsx(
-                      "relative px-2 text-left whitespace-nowrap",
+                      "relative px-1 md:px-2 text-sm md:text-base text-left whitespace-nowrap",
                       orAbove ? "pt-4" : "pt-1",
                       orBelow ? "pb-4" : "pb-1",
                     )}
@@ -105,7 +111,7 @@ export const CharacteristicTable: React.FC<{
                       <>
                         <span
                           aria-hidden="true"
-                          className="absolute -top-3 left-2 text-sm font-subtitle font-normal"
+                          className="absolute -top-3 left-2 text-sm font-subtitle"
                         >
                           {"\u2014or\u2014"}
                         </span>
@@ -122,13 +128,13 @@ export const CharacteristicTable: React.FC<{
                   </th>
                 )}
                 {CHARACTERISTICS.map(({ key }) => (
-                  <td key={key} className={`${CELL} px-2`}>
+                  <td key={key} className={`${CELL} px-1 md:px-2`}>
                     {characteristic(row[key])}
                   </td>
                 ))}
                 {priced && (
                   <td
-                    className={`${CELL} px-2 text-right whitespace-nowrap font-subtitle`}
+                    className={`${CELL} px-1 md:px-2 text-right whitespace-nowrap font-subtitle text-sm md:text-base`}
                   >
                     {row.cost ?? ""}
                   </td>
@@ -182,8 +188,8 @@ export const LabelledRow: React.FC<{
     <th
       scope="row"
       className={clsx(
-        "font-subtitle text-left align-top uppercase tracking-[0.14em]",
-        compact ? "w-16 px-1 py-1 text-xs" : "w-24 px-2 py-1 text-sm",
+        "font-subtitle text-left align-top uppercase tracking-widest text-xs",
+        compact ? "w-16 px-1 py-1" : "w-24 px-2 py-1",
       )}
     >
       <span className={clsx(repeated && "sr-only")}>{label}</span>

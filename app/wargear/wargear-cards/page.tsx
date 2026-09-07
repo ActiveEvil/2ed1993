@@ -1,23 +1,47 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Chip } from "@/components/Chip";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
+import { TitleBand } from "@/components/TitleBand";
+import { forBearer } from "@/components/WeaponProfile";
 import {
-  ArmourProfile,
-  CloseCombatProfile,
-  RangedProfile,
-  SpecialRuleLinks,
-} from "@/components/WeaponProfile";
+  StripCell,
+  WeaponStrip,
+  closeCombatCells,
+  rangedCells,
+} from "@/components/WeaponStrip";
 import { facetHref, generateAnchorId } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Metadata } from "next/types";
+import { Fragment } from "react";
 
 export const revalidate = 3600;
+
+const DASH = "–";
+const MIDDOT = " · ";
+
+const ruleLinks = (
+  href: string,
+  rules: { name: string }[],
+): React.ReactNode | undefined =>
+  rules.length
+    ? rules.map(({ name }, index) => (
+        <Fragment key={name}>
+          {index > 0 && MIDDOT}
+          <Link
+            className="underline underline-offset-4"
+            href={`${href}#${generateAnchorId(name)}_Rule`}
+          >
+            {name}
+          </Link>
+        </Fragment>
+      ))
+    : undefined;
 
 export function generateMetadata(): Metadata {
   return {
@@ -35,7 +59,7 @@ export default async function Page() {
   ] = await Promise.all([
     supabase
       .from("hero_images")
-      .select("images(file_name, artist, title)")
+      .select("images(file_name, artist, title, width, height)")
       .eq("slug", "wargear-cards")
       .maybeSingle(),
     supabase
@@ -75,19 +99,20 @@ export default async function Page() {
           ]}
         />
         <main id="main" className="flex flex-col items-center gap-4 w-full">
-          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
-            <header>
-              <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-                Wargear Cards
-              </h1>
-            </header>
-            {hero && (
-              <ImageWithCredit
-                src={`images/${hero.file_name}`}
-                title={hero.title}
-                artist={hero.artist}
-              />
-            )}
+          <Panel className="flex flex-col w-full max-w-5xl">
+            <TitleBand
+              title="Wargear Cards"
+              eyebrow={`Wargear \u00b7 ${cards.length} cards`}
+              className="border-b-0"
+              image={
+                hero && {
+                  src: `images/${hero.file_name}`,
+                  title: hero.title,
+                  artist: hero.artist,
+                  dimensions: dimensionsOf(hero),
+                }
+              }
+            />
           </Panel>
           <JumpBar
             className="self-stretch -mx-2 md:-mx-4"
@@ -153,7 +178,7 @@ export default async function Page() {
                     data-availability={availabilities
                       .map(({ name }) => name.toLowerCase())
                       .join(" ")}
-                    className="flex flex-col justify-start gap-2 p-4 border-4 border-black bg-2ed-dark-blue target:border-2ed-light-yellow shadow-xl"
+                    className="flex flex-col justify-start gap-2 p-4 border-4 border-frame bg-2ed-dark-blue target:border-2ed-light-yellow shadow-xl"
                   >
                     <div className="flex justify-between items-baseline gap-4 w-full">
                       <HighlighterLink
@@ -184,89 +209,83 @@ export default async function Page() {
                           dangerouslySetInnerHTML={{ __html: rule }}
                         />
                       ))}
-                      {weapons.map((weapon, weaponIndex) =>
-                        weapon.weapon_profiles.map((profile, index) => {
-                          const caption =
-                            [
-                              weapons.length > 1 ? weapon.name : null,
-                              weapon.weapon_profiles.length > 1
-                                ? profile.name
-                                : null,
-                            ]
-                              .filter(Boolean)
-                              .join(" \u2014 ") || null;
-                          const key = `${cardId}_${weaponIndex}_${index}`;
-                          const special = (
-                            <SpecialRuleLinks
-                              href="/wargear/weapons"
-                              rules={profile.weapon_special_rules}
-                              bearer="Infantry"
-                            />
-                          );
+                      {weapons.map((weapon, weaponIndex) => {
+                        const closeCombat =
+                          weapon.weapon_categories.name === "Close combat";
+                        const specials = [
+                          ...new Set(
+                            weapon.weapon_profiles.flatMap((profile) =>
+                              forBearer(
+                                profile.weapon_special_rules,
+                                "Infantry",
+                              ).map(({ name }) => name),
+                            ),
+                          ),
+                        ].map((name) => ({ name }));
 
-                          return weapon.weapon_categories.name ===
-                            "Close combat" ? (
-                            <CloseCombatProfile
-                              key={key}
-                              caption={caption}
-                              strength={profile.strength}
-                              damage={profile.damage}
-                              saveModifier={profile.save_modifier}
-                              armourPenetration={profile.armour_penetration}
-                              special={special}
-                            />
-                          ) : (
-                            <RangedProfile
-                              key={key}
-                              caption={caption}
-                              range={
-                                profile.long_range === "\u2013"
-                                  ? profile.short_range
-                                  : `${profile.short_range} / ${profile.long_range}`
-                              }
-                              toHit={`${profile.short_to_hit} / ${profile.long_to_hit}`}
-                              strength={profile.strength}
-                              damage={profile.damage}
-                              saveModifier={profile.save_modifier}
-                              armourPenetration={profile.armour_penetration}
-                              special={special}
-                            />
-                          );
-                        }),
-                      )}
+                        return (
+                          <WeaponStrip
+                            key={`${cardId}_${weaponIndex}`}
+                            surface="card"
+                            name={weapon.name}
+                            special={ruleLinks("/wargear/weapons", specials)}
+                            profiles={weapon.weapon_profiles.map(
+                              (profile, index) => {
+                                const cells: StripCell[] = closeCombat
+                                  ? closeCombatCells(profile)
+                                  : rangedCells(profile);
+                                if (
+                                  !closeCombat &&
+                                  profile.long_range === DASH
+                                ) {
+                                  cells[0] = {
+                                    ...cells[0],
+                                    value: profile.short_range,
+                                  };
+                                }
+
+                                return {
+                                  key: index,
+                                  label:
+                                    weapon.weapon_profiles.length > 1
+                                      ? profile.name
+                                      : null,
+                                  cells,
+                                };
+                              },
+                            )}
+                          />
+                        );
+                      })}
                       {armourItems.map((armour, armourIndex) => (
-                        <ArmourProfile
+                        <WeaponStrip
                           key={`${cardId}_armour_${armourIndex}`}
-                          caption={armourItems.length > 1 ? armour.name : null}
-                          save={
-                            armour.armour_profiles.length ? (
-                              <span className="flex flex-col">
-                                {armour.armour_profiles.map(
-                                  (profile, index) => (
-                                    <span
-                                      key={`${cardId}_${armourIndex}_${index}`}
-                                    >
-                                      {profile.save}
-                                      {profile.condition && (
-                                        <span className="text-sm">
-                                          {" "}
-                                          {profile.condition}
-                                        </span>
-                                      )}
-                                    </span>
-                                  ),
-                                )}
-                              </span>
-                            ) : (
-                              <>&ndash;</>
-                            )
-                          }
-                          special={
-                            <SpecialRuleLinks
-                              href="/wargear/armour"
-                              rules={armour.armour_special_rules}
-                            />
-                          }
+                          surface="card"
+                          name={armour.name}
+                          special={ruleLinks(
+                            "/wargear/armour",
+                            armour.armour_special_rules,
+                          )}
+                          profiles={[
+                            {
+                              key: armourIndex,
+                              cells: armour.armour_profiles.length
+                                ? armour.armour_profiles.map((profile) => ({
+                                    label: "Save",
+                                    value: (
+                                      <>
+                                        {profile.save}
+                                        {profile.condition && (
+                                          <span className="block font-normal text-sm">
+                                            {profile.condition}
+                                          </span>
+                                        )}
+                                      </>
+                                    ),
+                                  }))
+                                : [{ label: "Save", value: DASH }],
+                            },
+                          ]}
                         />
                       ))}
                       {entries.length === 1 && (

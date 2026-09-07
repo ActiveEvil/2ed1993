@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 
 export const CHIP_CLASS =
   "relative inline-block px-2 border-2 border-foreground font-subtitle " +
-  "text-xs whitespace-nowrap hover:bg-2ed-light-yellow hover:text-black " +
+  "text-xs whitespace-nowrap hover:underline underline-offset-4 " +
   "[tbody:target_&]:border-black [.highlight-target:target_&]:border-black " +
   "after:absolute after:inset-x-0 after:-inset-y-2 after:content-['']";
 

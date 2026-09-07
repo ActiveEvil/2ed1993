@@ -188,6 +188,15 @@ it as its own line under the name.
 section's name contains "Weapons"; item/equipment otherwise ("additional
 equipment from Armour, Assault Weapons, Special Weapons, Grenades").
 
+**`army_list_entries.note` groups adjacent byte-identical notes.** On the
+list page, consecutive entries within a category whose `note` values are the
+same string are rendered as one block on the group surface with the note
+printed once beneath them (`groupBlocks` in the list page). The comparison
+is exact: a note that differs by a character, or an entry between two
+matching notes with no note of its own, breaks the block and each note
+prints again under its own entry. Author a shared note identically on every
+entry it covers, and keep those entries adjacent in `position`.
+
 ## The calls
 
 | Date | Call | Ruling |

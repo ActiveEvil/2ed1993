@@ -24,11 +24,7 @@ export const IndexCard: React.FC<
     >
       {title}
     </Link>
-    {summary && (
-      <p className="pl-3 border-l-8 border-2ed-mid-blue italic text-sm leading-relaxed">
-        {summary}
-      </p>
-    )}
+    {summary && <p className="text-sm">{summary}</p>}
     {children}
   </Panel>
 );
@@ -60,6 +56,8 @@ export const FactionCard: React.FC<{
         title={image.title}
         artist={image.artist}
         aspect="aspect-portrait"
+        width="half"
+        openable={false}
       />
     )}
     {disabled && (

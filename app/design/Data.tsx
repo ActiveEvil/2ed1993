@@ -33,7 +33,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="Table, three columns or fewer"
       source=".dynamic-content .table-container &middot; max-width 36rem"
-      note="The table sits on black, so the 4px collapsed borders are the gaps between cells. Headers are subtitle at 14px in white; cells are block at 18px, weight 600. A cell marked .empty goes transparent. Footnote markers run dagger, double dagger, section."
+      note="The same look as the profile table on an army list: subtitle head at 12px, weight 600, in white on black; cells at 16px, 18px from md, weight 600, padded 4px and 8px across from md, striped --background and --stripe; a row head marked left is the profile name and drops to 14px, 16px from md. A cell marked .empty goes transparent. Footnote markers run dagger, double dagger, section."
     >
       <Fixture html={NARROW_TABLE} />
     </Entry>
@@ -49,7 +49,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="Chart"
       source=".dynamic-content .chart &middot; 6 columns"
-      note="A chart is a six-column grid, not a table. The heading is a black band; each cell draws its own bottom rule, so the frame omits one. It never scrolls. A chart title always carries the word Chart, and gains (D6) where a D6 resolves it."
+      note="A chart is a six-column grid, not a table, and it spans the content column. The heading is a black band; each cell draws its own bottom rule, so the frame omits one. It never scrolls. A chart title always carries the word Chart, and gains (D6) where a D6 resolves it."
     >
       <Fixture html={RANGE_CHART} />
     </Entry>

@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { FactionCard } from "@/components/Cards";
 import type { Image } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
+import { TitleBand } from "@/components/TitleBand";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
@@ -17,15 +18,18 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function Page() {
-  const { data: factions, error: factionsError } = await supabase
+  const { data: factionRows, error: factionsError } = await supabase
     .from("factions")
-    .select("slug, name, images(file_name, artist, title)")
-    .is("parent_faction_id", null)
+    .select("slug, name, parent_faction_id, images(file_name, artist, title)")
     .order("name");
 
   assertNoQueryErrors("/factions", factionsError);
 
-  if (factions) {
+  if (factionRows) {
+    const factions = factionRows.filter(
+      ({ parent_faction_id }) => parent_faction_id === null,
+    );
+    const subfactions = factionRows.length - factions.length;
     return (
       <>
         <Breadcrumbs
@@ -39,16 +43,12 @@ export default async function Page() {
             },
           ]}
         />
-        <Panel
-          as="main"
-          className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8"
-        >
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              Factions
-            </h1>
-          </header>
-          <div className="grid md:grid-cols-2 gap-4">
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            title="Factions"
+            eyebrow={`${factions.length} factions \u00b7 ${subfactions} subfactions`}
+          />
+          <div className="grid md:grid-cols-2 gap-4 p-4 md:p-8">
             {factions.map(({ slug, name, images }) => {
               const image: Image | undefined = images[0] && {
                 src: `images/${images[0].file_name}`,

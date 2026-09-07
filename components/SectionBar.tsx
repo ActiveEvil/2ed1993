@@ -10,13 +10,11 @@ export const SectionBar: React.FC<{
     className={clsx(
       "flex flex-col items-start m-0 px-3 py-2",
       "sm:flex-row sm:justify-between sm:items-baseline sm:gap-4",
-      "bg-black font-subtitle text-sm text-white uppercase tracking-[0.14em]",
+      "bg-black font-subtitle text-sm text-white uppercase tracking-widest",
       className,
     )}
   >
     <span>{title}</span>
-    {note && (
-      <span className="sm:whitespace-nowrap text-2ed-light-yellow">{note}</span>
-    )}
+    {note && <span className="sm:whitespace-nowrap">{note}</span>}
   </Tag>
 );

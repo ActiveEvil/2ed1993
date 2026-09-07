@@ -119,6 +119,12 @@ export const RowFilter: React.FC<{
       const plain = !e.ctrlKey && !e.metaKey && !e.altKey;
       if (e.key === "/" && plain && !isEditable(active)) {
         e.preventDefault();
+        if (input && input.offsetParent === null) {
+          const details = input
+            .closest("[data-jump]")
+            ?.querySelector<HTMLDetailsElement>("details");
+          if (details) details.open = true;
+        }
         input?.focus();
       } else if (e.key === "Escape" && active === input) {
         setQuery("");

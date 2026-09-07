@@ -9,12 +9,13 @@ import {
   CharacteristicTable,
   ProfileFrame,
 } from "@/components/CharacteristicProfile";
+import { SectionHeading } from "@/components/Heading";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { JumpBar } from "@/components/JumpBar";
 import { Logo } from "@/components/Logos";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
-import { SectionBar } from "@/components/SectionBar";
+import { TitleBand } from "@/components/TitleBand";
 import {
   UnitEquipment,
   cards,
@@ -22,7 +23,7 @@ import {
   unitHasEquipment,
 } from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
-import { armyListShortName, pageTitle } from "@/lib/metadata";
+import { armyListShortName, pageTitle, toPlainText } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -100,17 +101,6 @@ type Entry = {
   optionCosts: ReadonlyMap<number, string>;
   search: string;
 };
-
-const toPlainText = (html: string) =>
-  html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&mdash;/g, "—")
-    .replace(/&ndash;/g, "–")
-    .replace(/&apos;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .replace(/\s+/g, " ")
-    .trim();
 
 const formatPoints = (points: number): string =>
   `${points}${points === 1 ? "pt" : "pts"}`;
@@ -433,11 +423,11 @@ const Details: React.FC<{ entry: Entry; showNote: boolean }> = ({
     <div className="flex flex-col gap-1 text-sm">
       {entry.transport && <p>{entry.transport}</p>}
       {note && <p>{note}</p>}
-      {entry.rules.map((text) => (
-        <p key={text}>{text}</p>
+      {entry.rules.map((text, index) => (
+        <p key={index}>{text}</p>
       ))}
-      {entry.extras.map((text) => (
-        <p key={text}>{text}</p>
+      {entry.extras.map((text, index) => (
+        <p key={index}>{text}</p>
       ))}
     </div>
   );
@@ -528,7 +518,12 @@ export default async function Page(props: {
       ),
     }));
 
-    const seenAnchors = new Set<string>();
+    const seenAnchors = new Set<string>([
+      "Equipment",
+      "Army_Composition_Chart",
+      ...categories.map(({ category }) => generateAnchorId(category)),
+      ...stockedSections.map(({ category }) => generateAnchorId(category)),
+    ]);
 
     for (const { entries } of categories) {
       for (const entry of entries) {
@@ -550,6 +545,19 @@ export default async function Page(props: {
         entry.anchor = anchor;
       }
     }
+
+    const anchorByUnit = new Map<string, string>();
+
+    for (const { entries } of categories) {
+      for (const entry of entries) {
+        if (!anchorByUnit.has(entry.name)) {
+          anchorByUnit.set(entry.name, entry.anchor);
+        }
+      }
+    }
+
+    const entryAnchor = (unitName: string): string =>
+      anchorByUnit.get(unitName) ?? generateAnchorId(unitName);
 
     const allies = list.army_list_allies.flatMap((ally) => {
       if (ally.ally_list) {
@@ -636,321 +644,302 @@ export default async function Page(props: {
             },
           ]}
         />
-        <main id="main" className="flex flex-col items-center gap-4 w-full">
-          <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
-            <header className="flex justify-center items-center">
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            heading={
               <Logo
                 as="h1"
-                size="xl"
+                size="lg"
                 title={title}
                 subtitle={subtitle}
                 dropCaps
               />
-            </header>
+            }
+          >
             {list.description && (
               <section
-                className="dynamic-content flex flex-col gap-4"
+                className="dynamic-content measure flex flex-col gap-4"
                 dangerouslySetInnerHTML={{ __html: list.description }}
               />
             )}
-          </Panel>
-          {Boolean(jumpItems.length) && (
-            <JumpBar
-              className="self-stretch -mx-2 md:-mx-4"
-              items={jumpItems}
-              label="Jump to"
-            >
-              {filterableRows > 0 && (
-                <RowFilter
-                  label="Filter"
-                  unit="entries"
-                  total={filterableRows}
-                  placeholder={`e.g. ${[...examples].join(", ")}`}
-                />
-              )}
-            </JumpBar>
-          )}
-          <Panel className="flex flex-col gap-4 w-full max-w-5xl pb-4 md:pb-8">
-            <section data-group className="flex flex-col gap-8">
-              <div className="mt-4 px-4 md:px-8">
-                <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                  <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
-                  <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-                    Army List
-                  </h2>
-                </div>
-              </div>
-
-              <ArmyListSummary
-                bands={bands}
-                allies={allies}
-                className="mx-4 md:mx-8"
-              />
-
-              {categories.length ? (
-                categories.map((section) => {
-                  const { entries } = section;
-
-                  return (
-                    <section
-                      key={section.category}
-                      id={generateAnchorId(section.category)}
-                      data-group
-                      className="flex flex-col gap-4"
-                    >
-                      <SectionBar
-                        as="h2"
-                        title={section.category}
-                        note={section.limit}
-                        className="mx-4 md:mx-8"
-                      />
-
-                      {section.note && (
-                        <div
-                          className="dynamic-content compact mx-4 md:mx-8"
-                          dangerouslySetInnerHTML={{ __html: section.note }}
-                        />
-                      )}
-
-                      {Boolean(section.rules.length) && (
-                        <div className="flex flex-col gap-1 mx-4 md:mx-8 text-sm">
-                          {section.rules.map((text) => (
-                            <p key={text}>{text}</p>
-                          ))}
-                        </div>
-                      )}
-
-                      {entries.length ? (
-                        <div className="flex flex-col gap-6">
-                          {groupRuns(entries).map((run) => (
-                            <div
-                              key={run.entries[0].id}
-                              className="flex flex-col gap-6"
-                            >
-                              {run.group && (
-                                <h3 className="mt-3 px-4 md:px-8 font-subtitle uppercase tracking-[0.14em] text-sm">
-                                  {run.group.name}
-                                </h3>
-                              )}
-                              {groupBlocks(run.entries).map((block) => (
-                                <div
-                                  key={block.entries[0].id}
-                                  className={
-                                    block.note
-                                      ? "flex flex-col gap-3 bg-group-surface pb-4"
-                                      : "flex flex-col gap-3"
-                                  }
-                                >
-                                  <div className="flex flex-col gap-4">
-                                    {block.entries.map((entry) => (
-                                      <article
-                                        key={entry.id}
-                                        id={entry.anchor}
-                                        data-search={entry.search}
-                                        className="group flex min-w-0 flex-col gap-1 py-4 px-4 md:px-8 target:bg-2ed-light-yellow target:text-black"
-                                      >
-                                        <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
-                                          <h4 className="font-subtitle text-xl md:text-2xl">
-                                            <HighlighterLink
-                                              className="hover:underline underline-offset-4"
-                                              href={`${listHref}#${entry.anchor}`}
-                                            >
-                                              {entry.name}
-                                            </HighlighterLink>
-                                          </h4>
-                                          {entry.allowance && (
-                                            <span>{entry.allowance}</span>
-                                          )}
-                                          {entry.datafaxHref && (
-                                            <Link
-                                              href={entry.datafaxHref}
-                                              className="font-subtitle text-xs uppercase tracking-[0.14em] underline underline-offset-4"
-                                            >
-                                              Datafax
-                                            </Link>
-                                          )}
-                                          <span
-                                            className="grow basis-8 border-b-2 border-dotted border-leader-ink"
-                                            aria-hidden="true"
-                                          />
-                                          <span className="whitespace-nowrap">
-                                            {entry.graded
-                                              ? "see grades"
-                                              : entry.cost}
-                                          </span>
-                                        </div>
-                                        <Details
-                                          entry={entry}
-                                          showNote={block.note === null}
-                                        />
-                                        {Boolean(
-                                          entry.rows.length ||
-                                          unitHasEquipment(entry.unit),
-                                        ) && (
-                                          <ProfileFrame className="mt-1 min-w-0">
-                                            {Boolean(entry.rows.length) && (
-                                              <CharacteristicTable
-                                                caption={`${entry.name} profile`}
-                                                rows={entry.rows}
-                                                costLabel="Pts"
-                                              />
-                                            )}
-                                            <UnitEquipment
-                                              unit={entry.unit}
-                                              optionCosts={entry.optionCosts}
-                                              wargearCardsMax={
-                                                entry.wargearCardsMax
-                                              }
-                                              compact
-                                              categoryHref={categoryHref}
-                                              rulesSlug={
-                                                rulesSlugByFaction.get(
-                                                  entry.factionSlug,
-                                                ) ?? null
-                                              }
-                                              className={
-                                                entry.rows.length
-                                                  ? "border-t-4 border-black"
-                                                  : undefined
-                                              }
-                                            />
-                                          </ProfileFrame>
-                                        )}
-                                      </article>
-                                    ))}
-                                  </div>
-                                  {block.note && (
-                                    <p className="px-4 md:px-8 text-sm">
-                                      {block.note}
-                                    </p>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm">No entries transcribed yet.</p>
-                      )}
-                    </section>
-                  );
-                })
-              ) : (
-                <p className="mx-4 md:mx-8">
-                  This army list has not been transcribed yet.
-                </p>
-              )}
-            </section>
-            {Boolean(stockedSections.length) && (
-              <section
-                id="Equipment"
-                data-group
-                className="flex flex-col gap-8"
-              >
-                <div className="mt-4 px-4 md:px-8">
-                  <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                    <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
-                    <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-                      Equipment
-                    </h2>
-                  </div>
-                </div>
-                <ul className="md:columns-3 gap-8 [&>*:nth-child(n+2)]:mt-4 px-4 md:px-8">
-                  {stockedSections.map((section) => (
-                    <li
-                      key={section.category}
-                      data-group
-                      className="flex flex-col gap-2 break-inside-avoid-column"
-                    >
-                      <h3
-                        id={generateAnchorId(section.category)}
-                        className="font-subtitle text-2xl capitalize"
-                      >
-                        {section.category}
-                      </h3>
-                      <p>{section.note}</p>
-                      <ul>
-                        {section.wargear_items.map((item) => {
-                          const target = item.armour
-                            ? {
-                                name: item.armour.name,
-                                href: `/wargear/armour#${generateAnchorId(item.armour.name)}`,
-                              }
-                            : item.weapons
-                              ? {
-                                  name: item.weapons.name,
-                                  href: `/wargear/weapons#${generateAnchorId(item.weapons.name)}`,
-                                }
-                              : item.units
-                                ? {
-                                    name: item.units.name,
-                                    href: `/datafaxes/${item.units.factions?.slug ?? faction.slug}#${generateAnchorId(item.units.name)}`,
-                                  }
-                                : null;
-
-                          if (!target) {
-                            return null;
-                          }
-
-                          const datafaxPoints =
-                            item.units?.datafaxes?.points ?? null;
-                          const price =
-                            item.points !== null
-                              ? formatPoints(item.points)
-                              : datafaxPoints !== null
-                                ? formatPoints(datafaxPoints)
-                                : item.units
-                                  ? "See Datafax"
-                                  : "";
-                          const search = [
-                            target.name,
-                            item.restriction ?? "",
-                            section.category,
-                            price,
-                          ]
-                            .join(" ")
-                            .toLowerCase();
-
-                          return (
-                            <li
-                              key={item.id}
-                              data-search={search}
-                              className="flex items-baseline gap-2 text-lg"
-                            >
-                              <Link
-                                href={target.href}
-                                className="whitespace-nowrap underline underline-offset-4"
-                              >
-                                {target.name}
-                              </Link>
-                              {item.restriction && (
-                                <span className="text-sm">
-                                  ({item.restriction})
-                                </span>
-                              )}
-                              <span
-                                className="flex-1 border-b-2 border-dotted border-leader-ink"
-                                aria-hidden="true"
-                              />
-                              <span className="whitespace-nowrap">{price}</span>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </li>
-                  ))}
-                </ul>
-              </section>
+          </TitleBand>
+          <div className="flex flex-col lg:flex-row">
+            {Boolean(jumpItems.length) && (
+              <JumpBar rail items={jumpItems}>
+                {filterableRows > 0 && (
+                  <RowFilter
+                    label="Filter"
+                    unit="entries"
+                    total={filterableRows}
+                    placeholder={`e.g. ${[...examples].join(", ")}`}
+                  />
+                )}
+              </JumpBar>
             )}
-            <p
-              data-empty
-              hidden
-              className="mx-4 md:mx-8 p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg"
-            >
-              Nothing matches that filter.
-            </p>
-          </Panel>
-        </main>
+            <div className="flex flex-col gap-12 min-w-0 grow p-4 md:p-8">
+              <section data-group className="flex flex-col gap-12">
+                <ArmyListSummary bands={bands} allies={allies} />
+
+                {categories.length ? (
+                  categories.map((section) => {
+                    const { entries } = section;
+
+                    return (
+                      <section
+                        key={section.category}
+                        id={generateAnchorId(section.category)}
+                        data-group
+                        className="flex flex-col gap-4"
+                      >
+                        <SectionHeading>{section.category}</SectionHeading>
+
+                        {section.limit && (
+                          <p className="font-subtitle text-xs uppercase tracking-widest">
+                            {section.limit}
+                          </p>
+                        )}
+
+                        {section.note && (
+                          <div
+                            className="dynamic-content compact"
+                            dangerouslySetInnerHTML={{ __html: section.note }}
+                          />
+                        )}
+
+                        {Boolean(section.rules.length) && (
+                          <div className="flex flex-col gap-1 text-sm">
+                            {section.rules.map((text, index) => (
+                              <p key={index}>{text}</p>
+                            ))}
+                          </div>
+                        )}
+
+                        {entries.length ? (
+                          <div className="flex flex-col gap-6">
+                            {groupRuns(entries).map((run) => (
+                              <div
+                                key={run.entries[0].id}
+                                className="flex flex-col gap-6"
+                              >
+                                {run.group && (
+                                  <h3 className="mt-3 font-subtitle uppercase tracking-widest text-sm">
+                                    {run.group.name}
+                                  </h3>
+                                )}
+                                {groupBlocks(run.entries).map((block) => (
+                                  <div
+                                    key={block.entries[0].id}
+                                    className={
+                                      block.note
+                                        ? "flex flex-col gap-3 bg-group-surface pb-4"
+                                        : "flex flex-col gap-3"
+                                    }
+                                  >
+                                    <div className="flex flex-col gap-4">
+                                      {block.entries.map((entry) => (
+                                        <article
+                                          key={entry.id}
+                                          id={entry.anchor}
+                                          data-search={entry.search}
+                                          className="group flex min-w-0 flex-col gap-1 py-4 px-2 md:px-4 target:bg-2ed-light-yellow target:text-black"
+                                        >
+                                          <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
+                                            <h4 className="font-subtitle text-xl md:text-2xl">
+                                              <HighlighterLink
+                                                className="hover:underline underline-offset-4"
+                                                href={`${listHref}#${entry.anchor}`}
+                                              >
+                                                {entry.name}
+                                              </HighlighterLink>
+                                            </h4>
+                                            {entry.allowance && (
+                                              <span>{entry.allowance}</span>
+                                            )}
+                                            {entry.datafaxHref && (
+                                              <Link
+                                                href={entry.datafaxHref}
+                                                className="font-subtitle text-xs uppercase tracking-widest underline underline-offset-4"
+                                              >
+                                                Datafax
+                                              </Link>
+                                            )}
+                                            <span
+                                              className="grow basis-8 border-b-2 border-dotted border-leader-ink"
+                                              aria-hidden="true"
+                                            />
+                                            <span className="whitespace-nowrap">
+                                              {entry.graded
+                                                ? "see grades"
+                                                : entry.cost}
+                                            </span>
+                                          </div>
+                                          <Details
+                                            entry={entry}
+                                            showNote={block.note === null}
+                                          />
+                                          {Boolean(
+                                            entry.rows.length ||
+                                            unitHasEquipment(entry.unit),
+                                          ) && (
+                                            <ProfileFrame className="mt-1 min-w-0">
+                                              {Boolean(entry.rows.length) && (
+                                                <CharacteristicTable
+                                                  caption={`${entry.name} profile`}
+                                                  rows={entry.rows}
+                                                  costLabel="Pts"
+                                                />
+                                              )}
+                                              <UnitEquipment
+                                                unit={entry.unit}
+                                                optionCosts={entry.optionCosts}
+                                                wargearCardsMax={
+                                                  entry.wargearCardsMax
+                                                }
+                                                compact
+                                                categoryHref={categoryHref}
+                                                entryAnchor={entryAnchor}
+                                                rulesSlug={
+                                                  rulesSlugByFaction.get(
+                                                    entry.factionSlug,
+                                                  ) ?? null
+                                                }
+                                                className={
+                                                  entry.rows.length
+                                                    ? "border-t-4 border-frame"
+                                                    : undefined
+                                                }
+                                              />
+                                            </ProfileFrame>
+                                          )}
+                                        </article>
+                                      ))}
+                                    </div>
+                                    {block.note && (
+                                      <p className="px-2 md:px-4 text-sm">
+                                        {block.note}
+                                      </p>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm">No entries transcribed yet.</p>
+                        )}
+                      </section>
+                    );
+                  })
+                ) : (
+                  <p>This army list has not been transcribed yet.</p>
+                )}
+              </section>
+              {Boolean(stockedSections.length) && (
+                <section
+                  id="Equipment"
+                  data-group
+                  className="flex flex-col gap-8"
+                >
+                  <SectionHeading>Equipment</SectionHeading>
+                  <ul className="md:columns-2 gap-8 space-y-4">
+                    {stockedSections.map((section) => (
+                      <li
+                        key={section.category}
+                        data-group
+                        className="flex flex-col gap-2 break-inside-avoid-column"
+                      >
+                        <h3
+                          id={generateAnchorId(section.category)}
+                          className="font-subtitle text-2xl capitalize"
+                        >
+                          {section.category}
+                        </h3>
+                        <p>{section.note}</p>
+                        <ul>
+                          {section.wargear_items.map((item) => {
+                            const target = item.armour
+                              ? {
+                                  name: item.armour.name,
+                                  href: `/wargear/armour#${generateAnchorId(item.armour.name)}`,
+                                }
+                              : item.weapons
+                                ? {
+                                    name: item.weapons.name,
+                                    href: `/wargear/weapons#${generateAnchorId(item.weapons.name)}`,
+                                  }
+                                : item.units
+                                  ? {
+                                      name: item.units.name,
+                                      href: `/datafaxes/${item.units.factions?.slug ?? faction.slug}#${generateAnchorId(item.units.name)}`,
+                                    }
+                                  : null;
+
+                            if (!target) {
+                              return null;
+                            }
+
+                            const datafaxPoints =
+                              item.units?.datafaxes?.points ?? null;
+                            const price =
+                              item.points !== null
+                                ? formatPoints(item.points)
+                                : datafaxPoints !== null
+                                  ? formatPoints(datafaxPoints)
+                                  : item.units
+                                    ? "See Datafax"
+                                    : "";
+                            const search = [
+                              target.name,
+                              item.restriction ?? "",
+                              section.category,
+                              price,
+                            ]
+                              .join(" ")
+                              .toLowerCase();
+
+                            return (
+                              <li
+                                key={item.id}
+                                data-search={search}
+                                className="flex items-baseline gap-2 text-lg"
+                              >
+                                <Link
+                                  href={target.href}
+                                  className="whitespace-nowrap underline underline-offset-4"
+                                >
+                                  {target.name}
+                                </Link>
+                                {item.restriction && (
+                                  <span className="text-sm">
+                                    ({item.restriction})
+                                  </span>
+                                )}
+                                <span
+                                  className="flex-1 border-b-2 border-dotted border-leader-ink"
+                                  aria-hidden="true"
+                                />
+                                <span className="whitespace-nowrap">
+                                  {price}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              <p
+                data-empty
+                hidden
+                className="p-6 border-4 border-frame bg-2ed-light-green text-2ed-black text-lg"
+              >
+                Nothing matches that filter.
+              </p>
+            </div>
+          </div>
+        </Panel>
       </>
     );
   }

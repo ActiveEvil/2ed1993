@@ -1,10 +1,12 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Datafax } from "@/components/Datafax";
+import { SectionHeading } from "@/components/Heading";
 import { Highlighter } from "@/components/Highlighter";
-import { ImageWithCredit } from "@/components/ImageWithCredit";
+import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
+import { TitleBand } from "@/components/TitleBand";
 import { generateAnchorId } from "@/lib/anchors";
 import { joinWithinBudget } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
@@ -19,7 +21,7 @@ const loadFactions = () =>
   supabase
     .from("factions")
     .select(
-      "id, slug, name, parent_faction_id, images(file_name, artist, title)",
+      "id, slug, name, parent_faction_id, images(file_name, artist, title, width, height)",
     )
     .order("name");
 
@@ -105,7 +107,7 @@ export default async function Page(props: {
   const { data: unitRows, error: unitsError } = await supabase
     .from("units")
     .select(
-      "id, name, faction_id, unit_types(name, plural_name, position), datafaxes(id, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, transport_capacity, open_topped, large_target, capacity_inside, capacity_roof, deployment, location_dice, note, motive_types(name), datafax_images(position, images(file_name, artist, title)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, weapons(name, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, note, position, damage_chart_results(id, roll_min, roll_max, effect, position)))",
+      "id, name, faction_id, unit_types(name, plural_name, position), datafaxes!inner(id, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, transport_capacity, open_topped, large_target, capacity_inside, capacity_roof, deployment, location_dice, note, motive_types(name), datafax_images(position, images(file_name, artist, title, width, height)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, weapons(name, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, note, position, damage_chart_results(id, roll_min, roll_max, effect, position)))",
     )
     .in("faction_id", factionIds)
     .order("name")
@@ -122,7 +124,7 @@ export default async function Page(props: {
 
   assertNoQueryErrors(CONTEXT, unitsError);
 
-  const units = (unitRows ?? []).filter(({ datafaxes }) => datafaxes !== null);
+  const units = unitRows ?? [];
 
   const buckets = new Map<
     string,
@@ -145,9 +147,13 @@ export default async function Page(props: {
     (a, b) => a.position - b.position || a.name.localeCompare(b.name),
   );
 
-  const jumpItems = groups.map(({ pluralName }) => ({
+  const jumpItems = groups.map(({ pluralName, units: members }) => ({
     id: generateAnchorId(pluralName),
     label: pluralName,
+    subsections: members.map(({ name }) => ({
+      id: generateAnchorId(name),
+      label: name,
+    })),
   }));
 
   return (
@@ -160,27 +166,21 @@ export default async function Page(props: {
           { anchor: faction.name },
         ]}
       />
-      <main id="main" className="flex flex-col items-center gap-4 w-full">
-        <Panel className="flex flex-col justify-center gap-8 w-full max-w-5xl p-4 md:p-8">
-          <header>
-            <h1 className="font-title uppercase tracking-wide text-4xl md:text-5xl text-center">
-              {faction.name}
-            </h1>
-          </header>
-          {hero && (
-            <ImageWithCredit
-              src={`images/${hero.file_name}`}
-              title={hero.title}
-              artist={hero.artist}
-            />
-          )}
-        </Panel>
-        {Boolean(groups.length) && (
-          <JumpBar
-            className="self-stretch -mx-2 md:-mx-4"
-            items={jumpItems}
-            label="Jump to"
-          >
+      <Panel as="main" className="flex flex-col w-full max-w-5xl">
+        <TitleBand
+          title={faction.name}
+          eyebrow="Datafaxes"
+          image={
+            hero && {
+              src: `images/${hero.file_name}`,
+              title: hero.title,
+              artist: hero.artist,
+              dimensions: dimensionsOf(hero),
+            }
+          }
+        />
+        <div className="flex flex-col lg:flex-row">
+          <JumpBar rail items={jumpItems}>
             <RowFilter
               label="Filter"
               unit="datafaxes"
@@ -188,34 +188,21 @@ export default async function Page(props: {
               placeholder="e.g. rhino, land raider, bolter"
             />
           </JumpBar>
-        )}
-        {groups.length ? (
-          <Panel className="flex flex-col gap-4 w-full max-w-5xl pb-4 md:pb-8">
+          <div className="flex flex-col gap-12 min-w-0 grow p-4 md:p-8">
             {groups.map((group) => {
               const groupId = generateAnchorId(group.pluralName);
 
               return (
-                <div
+                <section
                   key={groupId}
                   id={groupId}
                   data-group
-                  className="flex flex-col gap-4 mt-4 md:mt-8"
+                  className="flex flex-col gap-4"
                 >
-                  <div className="mt-4 px-4 md:px-8">
-                    <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-                      <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
-                      <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-                        {group.pluralName}
-                      </h2>
-                    </div>
-                  </div>
+                  <SectionHeading>{group.pluralName}</SectionHeading>
                   {group.units.map((unit) => {
                     const unitId = generateAnchorId(unit.name);
                     const datafax = unit.datafaxes;
-
-                    if (!datafax) {
-                      return null;
-                    }
 
                     const search = [
                       unit.name,
@@ -233,7 +220,7 @@ export default async function Page(props: {
                         key={unitId}
                         id={unitId}
                         data-search={search}
-                        className="group highlight-target flex flex-col gap-4 px-4 md:px-8 py-4 target:bg-2ed-light-yellow target:text-black"
+                        className="group flex flex-col target:outline-4 target:outline-offset-4 target:outline-2ed-light-yellow"
                       >
                         <Datafax
                           datafax={datafax}
@@ -245,25 +232,19 @@ export default async function Page(props: {
                       </article>
                     );
                   })}
-                </div>
+                </section>
               );
             })}
             <p
               data-empty
               hidden
-              className="mx-4 md:mx-8 p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg"
+              className="p-6 border-4 border-frame bg-2ed-light-green text-2ed-black text-lg"
             >
               Nothing matches that filter.
             </p>
-          </Panel>
-        ) : (
-          <Panel className="flex flex-col gap-4 w-full max-w-5xl p-4 md:p-8">
-            <p className="p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg">
-              No datafaxes have been added for {faction.name} yet.
-            </p>
-          </Panel>
-        )}
-      </main>
+          </div>
+        </div>
+      </Panel>
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { dimensionsOf } from "@/components/ImageWithCredit";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const { data: heroImages, error } = await supabase
     .from("hero_images")
-    .select("images(file_name, artist, title)")
+    .select("images(file_name, artist, title, width, height)")
     .eq("slug", "not-found")
     .order("position");
 
@@ -79,6 +80,7 @@ export default async function Page() {
                   src={`images/${hero.file_name}`}
                   title={hero.title}
                   artist={hero.artist}
+                  dimensions={dimensionsOf(hero)}
                   aspect="aspect-portrait"
                   width="half"
                 />

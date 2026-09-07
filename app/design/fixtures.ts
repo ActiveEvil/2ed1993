@@ -1,4 +1,4 @@
-export const RANGE_CHART = `<section class="chart" style="grid-template-columns: repeat(6, minmax(0, 1fr));max-width: 36rem;">
+export const RANGE_CHART = `<section class="chart" style="grid-template-columns: repeat(6, minmax(0, 1fr));">
     <h3 id="Range_Chart" style="grid-column: span 6 / span 6;">Range Chart</h3>
     <div style="align-content: center;grid-column: span 2 / span 2;"><strong>Below 24&quot;</strong></div>
     <div style="grid-column: span 4 / span 4;">
@@ -18,7 +18,7 @@ export const RANGE_CHART = `<section class="chart" style="grid-template-columns:
     </div>
 </section>`;
 
-export const PAIRS_CHART = `<section class="chart" style="max-width: 36rem;grid-template-columns: repeat(6, minmax(0, 1fr));">
+export const PAIRS_CHART = `<section class="chart" style="grid-template-columns: repeat(6, minmax(0, 1fr));">
     <h3 style="text-align: center;grid-column: span 1 / span 1;">Scatter Roll</h3>
     <h3 style="text-align: center;grid-column: span 2 / span 2;">Artillery Roll</h3>
     <h3 style="grid-column: span 3 / span 3;">Outcome</h3>
