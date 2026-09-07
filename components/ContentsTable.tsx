@@ -5,7 +5,7 @@ export type ContentsItem = { name: string; href: string; label?: string };
 export const ContentsTable: React.FC<
   { as?: "ol" | "ul" } & React.PropsWithChildren
 > = ({ as: Tag = "ol", children }): React.JSX.Element => (
-  <Tag className="flex flex-col border-y-2 border-frame divide-y-2 divide-frame group-last:border-b-0">
+  <Tag className="flex flex-col border-y-4 border-frame divide-y-4 divide-frame group-last:border-b-0">
     {children}
   </Tag>
 );

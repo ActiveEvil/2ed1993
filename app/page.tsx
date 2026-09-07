@@ -212,7 +212,7 @@ export default async function Page() {
 
         <article className="flex flex-col gap-4 mt-12 px-4 md:px-8 pb-4 md:pb-8">
           <SectionHeading>A Brief History</SectionHeading>
-          <section className="flex flex-col gap-4 text-lg md:block md:columns-2 md:column-gap-8 md:[&>*+*]:mt-8">
+          <section className="columns-md gap-8 space-y-4 text-lg">
             <ImageWithCredit
               src={`images/${hero.file_name}`}
               title={hero.title}
