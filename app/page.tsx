@@ -81,7 +81,7 @@ export default async function Page() {
     decksQuery,
   ]);
   const heros = heroImages?.map(({ images }) => images) ?? [];
-  const [hero, secondImage] = heros;
+  const [hero, second] = heros;
 
   assertNoQueryErrors(
     "/",
@@ -97,6 +97,7 @@ export default async function Page() {
 
   if (
     hero &&
+    second &&
     chapters !== null &&
     sections !== null &&
     factions !== null &&
@@ -211,69 +212,61 @@ export default async function Page() {
 
         <article className="flex flex-col gap-4 mt-12 px-4 md:px-8 pb-4 md:pb-8">
           <SectionHeading>A Brief History</SectionHeading>
-
-          <section className="grid md:grid-cols-3 gap-4 md:gap-8">
-            <div className="flex flex-col gap-4 md:col-span-2 text-lg">
-              <p>
-                Warhammer 40,000 2nd Edition was released in 1993, succeeding
-                Warhammer 40,000: Rogue Trader (1987). Whereas Rogue Trader was
-                a roleplaying and tabletop wargaming hybrid, 2nd Edition
-                established Warhammer 40,000 as the tabletop wargame we know
-                today.
-              </p>
-              <p>
-                Often referred to by collectors as the <i>Red Period</i>,
-                Warhammer 40,000 2nd Edition is visually defined by its bright,
-                high-contrast paint schemes, the introduction of the Goblin
-                Green base, and of course Sci-Fi Cacti!
-              </p>
-              <p>
-                It was also Warhammer 40,000&apos;s <i>Hero Hammer</i>{" "}
-                edition&mdash;where certain characters were effectively an army
-                unto themselves.
-              </p>
-              <p>
-                Although mechanically complex by today&apos;s standards, 2nd
-                Edition significantly streamlined the game. It introduced
-                structured gameplay without the need for a gamemaster. It was
-                the first edition to introduce Codex army books, expanding
-                individual factions with unit profiles, wargear, special
-                characters, and bespoke army lists. The edition also established
-                the foundational lore of the Warhammer 40,000 universe as we
-                would recognise it today.
-              </p>
-              <p>
-                Games were intended to be played on a smaller scale than modern
-                Warhammer 40,000, typically ranging from 500 to 2,000 points per
-                side&mdash;but with a significantly lower model count. This
-                encouraged narrative-driven skirmishes built around mission
-                cards and story hooks rather than strict match-play objectives.
-                Although tournaments did exist, competitive matched play was not
-                yet the default. Games were more likely to revolve around
-                personal campaigns, custom missions, and the scenario cards
-                included in supplements like Dark Millennium.
-              </p>
-            </div>
-            <div className="flex flex-col gap-4">
-              <ImageWithCredit
-                src={`images/${hero.file_name}`}
-                title={hero.title}
-                artist={hero.artist}
-                dimensions={dimensionsOf(hero)}
-                aspect="aspect-retro"
-                width="half-from-md"
-              />
-              {secondImage && (
-                <ImageWithCredit
-                  src={`images/${secondImage.file_name}`}
-                  title={secondImage.title}
-                  artist={secondImage.artist}
-                  dimensions={dimensionsOf(secondImage)}
-                  aspect="aspect-retro"
-                  width="half-from-md"
-                />
-              )}
-            </div>
+          <section className="flex flex-col gap-4 text-lg md:block md:columns-2 md:column-gap-8 md:[&>*+*]:mt-8">
+            <ImageWithCredit
+              src={`images/${hero.file_name}`}
+              title={hero.title}
+              artist={hero.artist}
+              dimensions={dimensionsOf(hero)}
+              aspect="aspect-retro"
+              width="half-from-md"
+            />
+            <p>
+              Warhammer 40,000 2nd Edition was released in 1993, succeeding
+              Warhammer 40,000: Rogue Trader (1987). Whereas Rogue Trader was a
+              roleplaying and tabletop wargaming hybrid, 2nd Edition established
+              Warhammer 40,000 as the tabletop wargame we know today.
+            </p>
+            <p>
+              Often referred to by collectors as the <i>Red Period</i>,
+              Warhammer 40,000 2nd Edition is visually defined by its bright,
+              high-contrast paint schemes, the introduction of the Goblin Green
+              base, and of course Sci-Fi Cacti!
+            </p>
+            <p>
+              It was also Warhammer 40,000&apos;s <i>Hero Hammer</i>{" "}
+              edition&mdash;where certain characters were effectively an army
+              unto themselves.
+            </p>
+            <p>
+              Although mechanically complex by today&apos;s standards, 2nd
+              Edition significantly streamlined the game. It introduced
+              structured gameplay without the need for a gamemaster. It was the
+              first edition to introduce Codex army books, expanding individual
+              factions with unit profiles, wargear, special characters, and
+              bespoke army lists. The edition also established the foundational
+              lore of the Warhammer 40,000 universe as we would recognise it
+              today.
+            </p>
+            <p>
+              Games were intended to be played on a smaller scale than modern
+              Warhammer 40,000, typically ranging from 500 to 2,000 points per
+              side&mdash;but with a significantly lower model count. This
+              encouraged narrative-driven skirmishes built around mission cards
+              and story hooks rather than strict match-play objectives. Although
+              tournaments did exist, competitive matched play was not yet the
+              default. Games were more likely to revolve around personal
+              campaigns, custom missions, and the scenario cards included in
+              supplements like Dark Millennium.
+            </p>
+            <ImageWithCredit
+              src={`images/${second.file_name}`}
+              title={second.title}
+              artist={second.artist}
+              dimensions={dimensionsOf(second)}
+              aspect="aspect-retro"
+              width="half-from-md"
+            />
           </section>
         </article>
       </Panel>
