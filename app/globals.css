@@ -367,7 +367,7 @@
         line-height: var(--tw-leading, var(--text-lg--line-height));
         border-color: var(--frame);
         border-bottom-style: var(--tw-border-style);
-        border-bottom-width: 2px;
+        border-bottom-width: 4px;
       }
     }
   }
