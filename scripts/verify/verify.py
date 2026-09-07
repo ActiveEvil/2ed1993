@@ -64,7 +64,7 @@ def strip_blockquotes(text):
 
 
 def strip_charts(text):
-    return re.sub(r'<section class="chart".*?</section>', " ", text, flags=re.S)
+    return re.sub(r'<section[^>]*class="chart"[^>]*>.*?</section>', " ", text, flags=re.S)
 
 
 def anchor(name):
