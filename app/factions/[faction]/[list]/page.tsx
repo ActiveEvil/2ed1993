@@ -498,7 +498,6 @@ export default async function Page(props: {
       category: section.category,
       min: section.min_percent,
       max: section.max_percent,
-      note: section.note,
     }));
 
     const categories = list.unit_categories.map((section) => ({
@@ -507,7 +506,6 @@ export default async function Page(props: {
         category: section.category,
         min: section.min_percent,
         max: section.max_percent,
-        note: section.note,
       }),
       note: section.note,
       rules: section.army_list_allowance_rules
