@@ -404,6 +404,14 @@ const groupBlocks = (entries: Entry[]): Block[] => {
   return grouped;
 };
 
+const EntryHeading: React.FC<
+  { grouped: boolean; className?: string } & React.PropsWithChildren
+> = ({ grouped, className, children }): React.JSX.Element => {
+  const Tag = grouped ? "h4" : "h3";
+
+  return <Tag className={className}>{children}</Tag>;
+};
+
 const Details: React.FC<{ entry: Entry; showNote: boolean }> = ({
   entry,
   showNote,
@@ -741,31 +749,36 @@ export default async function Page(props: {
                                           data-search={entry.search}
                                           className="group flex min-w-0 flex-col gap-1 py-4 px-2 md:px-4 target:bg-2ed-light-yellow target:text-black"
                                         >
-                                          <div className="flex flex-wrap items-baseline gap-x-3 text-lg">
-                                            <h4 className="font-subtitle text-xl md:text-2xl">
+                                          <div className="flex items-baseline gap-x-3 text-lg">
+                                            <EntryHeading
+                                              grouped={Boolean(run.group)}
+                                              className="min-w-0 shrink font-subtitle text-xl md:text-2xl"
+                                            >
                                               <HighlighterLink
                                                 className="hover:underline underline-offset-4"
                                                 href={`${listHref}#${entry.anchor}`}
                                               >
                                                 {entry.name}
                                               </HighlighterLink>
-                                            </h4>
+                                            </EntryHeading>
                                             {entry.allowance && (
-                                              <span>{entry.allowance}</span>
+                                              <span className="shrink-0">
+                                                {entry.allowance}
+                                              </span>
                                             )}
                                             {entry.datafaxHref && (
                                               <Link
                                                 href={entry.datafaxHref}
-                                                className="font-subtitle text-xs uppercase tracking-widest underline underline-offset-4"
+                                                className="shrink-0 font-subtitle text-xs uppercase tracking-widest underline underline-offset-4"
                                               >
                                                 Datafax
                                               </Link>
                                             )}
                                             <span
-                                              className="grow basis-8 border-b-2 border-dotted border-leader-ink"
+                                              className="grow shrink-0 basis-8 border-b-2 border-dotted border-leader-ink"
                                               aria-hidden="true"
                                             />
-                                            <span className="whitespace-nowrap">
+                                            <span className="shrink-0 whitespace-nowrap">
                                               {entry.graded
                                                 ? "see grades"
                                                 : entry.cost}

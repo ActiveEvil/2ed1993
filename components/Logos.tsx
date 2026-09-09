@@ -15,7 +15,7 @@ export const Logo: React.FC<{
   size?: LogoSize;
   dropCaps?: boolean;
   grayscale?: boolean;
-  as?: "div" | "h1" | "h2";
+  as?: "div" | "h1" | "h2" | "h3";
 }> = ({
   title,
   subtitle,
