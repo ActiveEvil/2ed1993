@@ -184,6 +184,7 @@ export default async function Page(props: {
                       href={`/factions/${slug}`}
                       name={name}
                       image={image}
+                      as="h3"
                     />
                   );
                 })}

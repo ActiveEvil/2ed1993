@@ -56,9 +56,9 @@ export const ArmyListSummary: React.FC<{
       {Boolean(limited.length) && (
         <div className="dynamic-content">
           <section className="chart">
-            <h3 id="Army_Composition_Chart" className="col-span-6">
+            <h2 id="Army_Composition_Chart" className="col-span-6">
               Army Composition Chart
-            </h3>
+            </h2>
             {limited.map((band) => (
               <Fragment key={band.category}>
                 <div className="col-span-3 font-bold text-center content-center">

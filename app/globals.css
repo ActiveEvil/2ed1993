@@ -23,6 +23,7 @@
 @theme inline {
   --text-2xs: 0.5rem;
   --text-2xs--line-height: 0.75rem;
+  --container-prose: 65ch;
   --aspect-retro: 4 / 3;
   --aspect-portrait: 4 / 5;
   --aspect-square: 1 / 1;
@@ -127,6 +128,7 @@
     .chart {
       margin-top: calc(var(--spacing) * 2);
       margin-bottom: calc(var(--spacing) * 2);
+      h2,
       h3 {
         padding: calc(var(--spacing) * 1);
         font-size: var(--text-xs);
@@ -150,6 +152,7 @@
     .ordered-list li {
       max-width: var(--container-prose);
     }
+    .chart h2,
     .chart h3,
     .chart p {
       max-width: none;
@@ -351,6 +354,7 @@
       border-width: 4px;
       border-bottom: none;
       grid-template-columns: repeat(6, minmax(0, 1fr));
+      h2,
       h3 {
         padding: calc(var(--spacing) * 2);
         background-color: var(--color-black);

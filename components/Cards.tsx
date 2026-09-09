@@ -34,7 +34,14 @@ export const FactionCard: React.FC<{
   name: string;
   image?: Image;
   disabled?: boolean;
-}> = ({ href, name, image, disabled }): React.JSX.Element => (
+  as?: "h2" | "h3";
+}> = ({
+  href,
+  name,
+  image,
+  disabled,
+  as: Heading = "h2",
+}): React.JSX.Element => (
   <Link
     className={clsx(
       "@container relative flex flex-col gap-3",
@@ -48,7 +55,7 @@ export const FactionCard: React.FC<{
         image && "absolute inset-0 z-10 mt-8 px-8",
       )}
     >
-      <Logo as="h2" size="md" title={name} />
+      <Logo as={Heading} size="md" title={name} />
     </div>
     {image && (
       <ImageWithCredit

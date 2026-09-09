@@ -54,14 +54,14 @@ export const CharacteristicTable: React.FC<{
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-max bg-black border-collapse text-center">
+      <table className="w-full md:min-w-max bg-black border-collapse text-center">
         <caption className="sr-only">{caption}</caption>
         <thead>
           <tr>
             {named && (
               <th
                 scope="col"
-                className={clsx(HEAD_CELL, "px-1 md:px-2 text-left")}
+                className={clsx(HEAD_CELL, "px-0.5 md:px-2 text-left")}
               >
                 Profile
               </th>
@@ -70,7 +70,7 @@ export const CharacteristicTable: React.FC<{
               <th
                 key={key}
                 scope="col"
-                className={clsx(HEAD_CELL, "px-1 md:w-12 md:px-2")}
+                className={clsx(HEAD_CELL, "px-0.5 md:w-12 md:px-2")}
               >
                 {label}
               </th>
@@ -78,7 +78,7 @@ export const CharacteristicTable: React.FC<{
             {priced && (
               <th
                 scope="col"
-                className={clsx(HEAD_CELL, "px-1 md:px-2 text-right")}
+                className={clsx(HEAD_CELL, "px-0.5 md:px-2 text-right")}
               >
                 {costLabel}
               </th>
@@ -102,7 +102,7 @@ export const CharacteristicTable: React.FC<{
                   <th
                     scope="row"
                     className={clsx(
-                      "relative px-1 md:px-2 text-sm md:text-base text-left whitespace-nowrap",
+                      "relative px-0.5 md:px-2 text-sm md:text-base text-left md:whitespace-nowrap",
                       orAbove ? "pt-4" : "pt-1",
                       orBelow ? "pb-4" : "pb-1",
                     )}
@@ -111,7 +111,7 @@ export const CharacteristicTable: React.FC<{
                       <>
                         <span
                           aria-hidden="true"
-                          className="absolute -top-3 left-2 text-sm font-subtitle"
+                          className="absolute -top-3 left-0.5 md:left-2 text-sm font-subtitle"
                         >
                           {"\u2014or\u2014"}
                         </span>
@@ -128,13 +128,13 @@ export const CharacteristicTable: React.FC<{
                   </th>
                 )}
                 {CHARACTERISTICS.map(({ key }) => (
-                  <td key={key} className={`${CELL} px-1 md:px-2`}>
+                  <td key={key} className={`${CELL} px-0.5 md:px-2`}>
                     {characteristic(row[key])}
                   </td>
                 ))}
                 {priced && (
                   <td
-                    className={`${CELL} px-1 md:px-2 text-right whitespace-nowrap font-subtitle text-sm md:text-base`}
+                    className={`${CELL} px-0.5 md:px-2 text-right whitespace-nowrap font-subtitle text-sm md:text-base`}
                   >
                     {row.cost ?? ""}
                   </td>

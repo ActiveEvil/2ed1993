@@ -15,6 +15,18 @@ export type StripProfile = {
 
 export type StripSurface = "page" | "card";
 
+const SPANS: Partial<Record<number, string[]>> = {
+  4: ["col-span-3", "col-span-3", "col-span-3", "col-span-3"],
+  6: [
+    "col-span-3",
+    "col-span-3",
+    "col-span-1",
+    "col-span-1",
+    "col-span-2",
+    "col-span-2",
+  ],
+};
+
 const SURFACE: Record<StripSurface, { rules: string; cell: string }> = {
   page: {
     rules: "bg-frame",
@@ -78,17 +90,13 @@ export const WeaponStrip: React.FC<
             {profile.label}
           </div>
         )}
-        <dl
-          className={clsx(
-            "grid gap-0.5 md:flex",
-            profile.cells.length === 4 ? "grid-cols-2" : "grid-cols-3",
-          )}
-        >
+        <dl className="grid grid-cols-6 gap-0.5 md:flex">
           {profile.cells.map((cell, index) => (
             <div
               key={index}
               className={clsx(
-                "flex flex-col items-center justify-center gap-0.5 px-2 py-1 text-center",
+                "flex flex-col items-center justify-center gap-0.5 p-0.5 md:px-2 md:py-1 text-center",
+                SPANS[profile.cells.length]?.[index] ?? "col-span-2",
                 cell.wide ? "md:flex-2" : "md:flex-1",
                 SURFACE[surface].cell,
               )}
