@@ -191,6 +191,8 @@ def main():
     if BLOCKQUOTES_STRIPPED:
         print(f"({BLOCKQUOTES_STRIPPED} attributed blockquote(s) stripped before measuring)")
     if args.gate and failures:
+        print(f"\ngate: {len(failures)} unexempt failure(s) — aborting "
+              f"(GATE_SKIP=1 git push bypasses)", file=sys.stderr)
         sys.exit(1)
 
 
