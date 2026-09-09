@@ -77,7 +77,7 @@ const BurgerMenu: React.FC<{
           ref={ref}
           className={clsx({
             "-z-10 collapse absolute inset-y-auto right-2 p-2 bg-background border-4 border-frame text-foreground": true,
-            "z-10 visible": open,
+            "z-40 visible": open,
           })}
         >
           <ul className="flex flex-col gap-4 w-full">{list}</ul>
