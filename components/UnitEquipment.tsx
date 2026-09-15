@@ -585,6 +585,7 @@ export const UnitEquipment: React.FC<{
                     ? (["weapon", "weapons"] as const)
                     : (["item", "equipment"] as const);
                   const cost = optionCosts?.get(option.id) ?? null;
+                  const blockNote = isBlockHtml(option.note);
                   const structured = Boolean(
                     option.profile ||
                     scope ||
@@ -731,7 +732,7 @@ export const UnitEquipment: React.FC<{
                         </>
                       )}
                       {structured && ". "}
-                      {option.note && (
+                      {option.note && !blockNote && (
                         <span
                           className="dynamic-content compact"
                           dangerouslySetInnerHTML={{ __html: option.note }}
@@ -742,6 +743,12 @@ export const UnitEquipment: React.FC<{
                           {" "}
                           <strong>{cost}</strong>
                         </>
+                      )}
+                      {option.note && blockNote && (
+                        <div
+                          className="dynamic-content compact"
+                          dangerouslySetInnerHTML={{ __html: option.note }}
+                        />
                       )}
                       {option.restriction && (
                         <span className="block">{option.restriction}</span>
