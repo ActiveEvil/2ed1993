@@ -96,7 +96,7 @@ export const CharacteristicTable: React.FC<{
             return (
               <tr
                 key={row.id}
-                className="bg-background even:bg-(--stripe) group-target:bg-2ed-light-yellow group-target:even:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]"
+                className="bg-background even:bg-stripe group-target:bg-2ed-light-yellow group-target:even:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]"
               >
                 {named && (
                   <th
@@ -159,7 +159,7 @@ export const LabelledTable: React.FC<{
       className={clsx(
         "w-full border-collapse",
         compact ? "text-sm" : "text-lg",
-        "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-(--stripe)",
+        "[&>tbody:nth-of-type(odd)]:bg-background [&>tbody:nth-of-type(even)]:bg-stripe",
         "group-target:[&>tbody:nth-of-type(odd)]:bg-2ed-light-yellow group-target:[&>tbody:nth-of-type(even)]:bg-[color-mix(in_oklab,var(--color-2ed-light-yellow)_80%,transparent)]",
       )}
     >
