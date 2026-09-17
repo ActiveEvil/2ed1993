@@ -21,7 +21,14 @@
     "for the rest of the game",
     "at the end of the game",
     "+1 victory point",
-    "destroyed or disabled"
+    "destroyed or disabled",
+    "hit on a 4 5 or 6",
+    "on a d6 roll of 1 or 2",
+    "on a score of 4+",
+    "may not move and fire in the same turn",
+    "cannot move and fire in the same turn",
+    "at the end of any movement phase",
+    "roll once to hit"
   ],
   "texts": [
     {
@@ -83,6 +90,11 @@
       "kind": "wargear_card",
       "name": "Night Wing the Psyber Raven",
       "reason": "characteristic line \u2014 digits and abbreviations"
+    },
+    {
+      "kind": "wargear_card",
+      "name": "Immune",
+      "reason": "grenade name list \u2014 six proper names in one order, and nothing else in the sentence"
     }
   ]
 }
