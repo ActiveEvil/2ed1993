@@ -25,19 +25,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BLOCKQUOTES_STRIPPED = 0
 
 
-def words(text):
+def words(text, markup=True):
     """Tokenise, dropping markup — and attributed quotations entirely.
 
     A <blockquote> on this site is verbatim source text BY INTENTION, always
     closed by a <p class="credit"> naming the authors. Measuring it would flag
     deliberate, credited quotation; exempting whole texts instead would hide any
     real copying elsewhere in the same rule. The count is logged so stripping
-    cannot quietly grow."""
+    cannot quietly grow.
+
+    Markup stripping is for site prose only; corpus text is OCR of scanned
+    books whose angle brackets are scanning noise, not tags, and because
+    [^>] matches newlines a single stray < deletes everything up to the
+    next one."""
     global BLOCKQUOTES_STRIPPED
-    text, stripped = re.subn(r"<blockquote\b.*?</blockquote>", " ", text,
-                             flags=re.S | re.I)
-    BLOCKQUOTES_STRIPPED += stripped
-    text = re.sub(r"<[^>]+>", " ", text)
+    if markup:
+        text, stripped = re.subn(r"<blockquote\b.*?</blockquote>", " ", text,
+                                 flags=re.S | re.I)
+        BLOCKQUOTES_STRIPPED += stripped
+        text = re.sub(r"<[^>]+>", " ", text)
     for entity, char in (("&apos;", "'"), ("&mdash;", " "), ("&ndash;", " "),
                          ("&quot;", '"'), ("&amp;", "&"), ("&deg;", " ")):
         text = text.replace(entity, char)
@@ -51,7 +57,7 @@ class Corpus:
             if not name.endswith(".txt"):
                 continue
             with open(os.path.join(directory, name), encoding="utf-8", errors="ignore") as handle:
-                chunk = mask(words(handle.read()), formulas)
+                chunk = mask(words(handle.read(), markup=False), formulas)
             self.spans.append((len(self.tokens), len(self.tokens) + len(chunk), name[:-4]))
             self.tokens += chunk
         self.index = {}
