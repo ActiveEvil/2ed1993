@@ -22,7 +22,7 @@ import {
   ruleName,
   unitHasEquipment,
 } from "@/components/UnitEquipment";
-import { generateAnchorId } from "@/lib/anchors";
+import { generateAnchorId, ruleHref } from "@/lib/anchors";
 import { armyListShortName, pageTitle, toPlainText } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -37,7 +37,7 @@ const loadList = (faction: string, list: string) =>
   supabase
     .from("army_lists")
     .select(
-      "id, name, description, factions!inner(slug, name), unit_categories(category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), units(id, name, factions(slug), datafaxes(id, points), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category))), unit_special_rule_assignments(position, note, rule:unit_special_rules(id, name, rule, rule_id, anchor, rules(id, name, rule_categories(slug))))))), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug), datafaxes(points))))",
+      "id, name, description, factions!inner(slug, name), unit_categories(category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, per_entry:army_list_entries!army_list_allowance_rules_per_entry_id_fkey(units(name))), units(id, name, factions(slug), datafaxes(id, points), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category))), unit_special_rule_assignments(position, note, rule:unit_special_rules(id, name, rule, rule_id, anchor, rules(id, name, rule_categories(slug))))))), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug), datafaxes(points)), special_rule:unit_special_rules(id, name, rule, anchor, rules(name, rule_categories(slug)))))",
     )
     .eq("slug", list)
     .eq("factions.slug", faction)
@@ -79,6 +79,8 @@ const loadRuleCategories = () =>
 
 type List = NonNullable<Awaited<ReturnType<typeof loadList>>["data"]>;
 type RawEntry = List["unit_categories"][number]["army_list_entries"][number];
+type RawItem = List["wargear_categories"][number]["wargear_items"][number];
+type ItemRule = NonNullable<RawItem["special_rule"]>;
 type RawOption = RawEntry["army_list_entry_options"][number];
 
 type Entry = {
@@ -141,6 +143,14 @@ const transportLine = (scope: string | null): string | null =>
 
 const range = (min: number, max: number | null): string =>
   max === null || max === min ? String(min) : `${min}–${max}`;
+
+const ruleAnchor = (rule: ItemRule): string =>
+  rule.anchor ?? generateAnchorId(rule.name);
+
+const ruleTarget = (rule: ItemRule): { name: string; href: string } => ({
+  name: rule.name,
+  href: rule.rules ? ruleHref(rule.rules, rule.anchor) : `#${ruleAnchor(rule)}`,
+});
 
 const shortestName = (names: readonly string[]): string | null =>
   names.reduce<string | null>(
@@ -594,15 +604,33 @@ export default async function Page(props: {
     const stockedItems = stockedSections.flatMap(({ wargear_items }) =>
       wargear_items
         .map(
-          ({ armour, weapons, units }) =>
-            armour?.name ?? weapons?.name ?? units?.name ?? null,
+          ({ armour, weapons, units, special_rule }) =>
+            armour?.name ??
+            weapons?.name ??
+            units?.name ??
+            special_rule?.name ??
+            null,
         )
         .filter((name): name is string => name !== null),
     );
 
+    const itemRules = [
+      ...new Map(
+        stockedSections
+          .flatMap(({ wargear_items }) =>
+            wargear_items.map(({ special_rule }) => special_rule),
+          )
+          .filter(
+            (rule): rule is ItemRule => rule !== null && rule.rule !== null,
+          )
+          .map((rule) => [rule.id, rule]),
+      ).values(),
+    ];
+
     const filterableRows =
       categories.reduce((total, { entries }) => total + entries.length, 0) +
-      stockedItems.length;
+      stockedItems.length +
+      itemRules.length;
 
     const examples = new Set(
       [
@@ -883,7 +911,9 @@ export default async function Page(props: {
                                       name: item.units.name,
                                       href: `/datafaxes/${item.units.factions?.slug ?? faction.slug}#${generateAnchorId(item.units.name)}`,
                                     }
-                                  : null;
+                                  : item.special_rule
+                                    ? ruleTarget(item.special_rule)
+                                    : null;
 
                             if (!target) {
                               return null;
@@ -912,6 +942,11 @@ export default async function Page(props: {
                               <li
                                 key={item.id}
                                 data-search={search}
+                                data-refs={
+                                  item.special_rule?.rule
+                                    ? ruleAnchor(item.special_rule)
+                                    : undefined
+                                }
                                 className="flex items-baseline gap-2 text-lg"
                               >
                                 <Link
@@ -939,6 +974,26 @@ export default async function Page(props: {
                       </li>
                     ))}
                   </ul>
+                  {Boolean(itemRules.length) && (
+                    <div className="flex flex-col gap-2">
+                      {itemRules.map((rule) => (
+                        <article
+                          key={rule.id}
+                          id={ruleAnchor(rule)}
+                          data-search={rule.name.toLowerCase()}
+                          className="flex flex-col gap-1 py-4 px-2 md:px-4 target:bg-2ed-light-yellow target:text-black"
+                        >
+                          <h4 className="font-subtitle text-xl">{rule.name}</h4>
+                          <div
+                            className="dynamic-content measure"
+                            dangerouslySetInnerHTML={{
+                              __html: rule.rule ?? "",
+                            }}
+                          />
+                        </article>
+                      ))}
+                    </div>
+                  )}
                 </section>
               )}
               <p

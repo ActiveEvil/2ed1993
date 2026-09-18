@@ -103,17 +103,55 @@ special rules that say what a model *is*, on the shape `weapon_special_rules`
 and `armour_special_rules` already use. A `unit_special_rules` row either
 carries its own prose (`rule`, HTML), points at a rules-chapter rule
 (`rule_id`), or does both where a printed entry states an exception to a
-shared rule; at least one of the two is required. `anchor` overrides the
-fragment the link lands on where the rule is a subsection of its target
-(Dispersed Formation sits inside Squad Coherency). `name` is unique, so a
-rule the book prints twice for different bearers carries a parenthesised
-qualifier — `Break (Confessor)` — and only the part before the first " ("
-is displayed. `faction_id` is grouping only. The assignment carries the association — one rule, many units, across
-factions where the book shares it (Repair reaches Space Marines, Imperial
-Guard, Imperial Agents and Squats) — with `position` for printed order and
-`note` for the per-unit variable (Hive Mind's 12" against 18"). Rules that
-the core chapters hold are pointers, not copies; faction-specific rules are
-prose; the reader follows the link to the chapter for the full text.
+shared rule; at least one of the two is required. A row with `rule_id` and no
+prose is a **signpost**; a row with both is **prose plus pointer** (Commander
+(Avatar) and Command (Macharius) at Commanders, Save (Boarboyz) at Cavalry).
+`anchor` overrides the fragment the link lands on where the rule is a
+subsection of its target (Dispersed Formation sits inside Squad Coherency).
+`name` is unique, so a rule the book prints twice for different bearers
+carries a parenthesised qualifier — `Break (Electro Priests)` — and the unit
+entry displays only the part before the first " (". `faction_id` is grouping
+only: nothing renders from it. The faction rules pages are built from
+assignments through `units.faction_id`, not from this column, so the ten
+Veteran Abilities rows carry `faction_id` 1 and reach the site through
+`wargear_items.special_rule_id` alone. The assignment carries the association
+— one rule, many units, across factions where the book shares it (Repair
+reaches Space Marines, Imperial Guard, Imperial Agents and Squats) — with
+`position` for printed order and `note` for the per-unit variable (Hive Mind's
+12" against 18"). Rules that the core chapters hold are pointers, not copies;
+faction-specific rules are prose; the reader follows the link to the chapter
+for the full text. A rule that more than one faction carries is a core chapter
+with a signpost, never prose on the row: Repair is a `rules` row in
+`vehicle-rules`, and row 14 points at it.
+
+**The faction rules pages show what the faction's units carry.** A faction
+category (`rule_categories.faction_id` set) renders its authored `rules` rows
+in `position` order, then one chapter per prose row reached through
+`unit_special_rule_assignments` and `units.faction_id`, alphabetically, each
+closing with a "Carried by" line that links every carrier to its army-list
+entry. Settled 18 September:
+
+- **Signposts do not render** — no chapter on the faction page, no entry on
+  the `/rules` index. The unit entry still links them to the core chapter
+  through `ruleHref`. The Chaos signposts that point at authored chapters on
+  the same page drop like any other, so those chapters carry no "Carried by"
+  line.
+- **Prose-plus-pointer rows render as chapters**, opening with "See X in Y."
+- **The chapter heading and its anchor use the full row name**, qualifier
+  included — "Leadership (Macharius)", id `Leadership_Macharius`
+  (`generateAnchorId` drops the brackets). The index lists the same names and
+  links the same anchors; the unit entry keeps the stripped name and links to
+  the full-name anchor.
+- **An empty faction category is hidden.** With no authored rules and no
+  prose chapters, the index omits it and the page and its metadata return
+  not-found; the `rule_categories` row stays. Genestealer Cults is the live
+  case, its units carrying only Fear and Immunity to Psychology.
+- **Veteran Abilities stay on the army-list page**, where they are bought;
+  the faction page is about what units carry.
+- **The Space Marine Rapid Fire Rule and The Space Marine Shaken Rule are
+  authored rows in `space-marines-rules`.** `shooting` and
+  `breaking-rallying` each keep one linked sentence pointing at them, on the
+  rule each sat beside; nothing is copied.
 
 **The rule of thumb: `unit_options` for army-list mechanics,
 `unit_special_rules` for what the model is.** Who commands, who carries the
@@ -179,10 +217,12 @@ A special-rule row renders as the bold rule name, stripped of any bearer
 qualifier — linked to `/rules/<category slug>#<fragment>` by `ruleHref` where
 `rule_id` is set. The fragment is the row's `anchor` where it has one, else
 `generateAnchorId` of the target rule's name, which is the `id` the rules
-page puts on that rule's section. Then ` – `, the rule's own prose, and the
-assignment's note after it. Prose carrying a `<section class="chart">` gets a
-block container and no lead-in dash: the chart is a grid and the cell holds
-it as its own line under the name.
+page puts on that rule's section. A prose-only row links to the faction's
+rules page instead, at `generateAnchorId` of the full row name, which is the
+`id` the faction page puts on its chapter. Then ` – `, the rule's own prose,
+and the assignment's note after it. Prose carrying a
+`<section class="chart">` gets a block container and no lead-in dash: the
+chart is a grid and the cell holds it as its own line under the name.
 
 **The noun follows the sections**: weapon/weapons when every granted
 section's name contains "Weapons"; item/equipment otherwise ("additional
@@ -221,6 +261,7 @@ entry it covers, and keep those entries adjacent in `position`.
 | 2 Sep | Psi-level is the hero level | A psyker character's psi-level is its Wounds value, 1 to 4, unless the profile prints a mastery level; `mastery_level` is set from `w` in that case, the Prime Psyker grades included. |
 | 2 Sep | Characteristics are text | The nine columns are text, not integers, and store the printed value — a rolled characteristic (`D6`) is stored as printed rather than resolved or left null. |
 | 3 Sep | Unit special rules get a join | `unit_special_rules` and `unit_special_rule_assignments`, on the weapon and armour special-rule shape. `rule_id` points at a rules-chapter rule, `rule` carries faction-specific prose, both together carry a printed exception, and the assignment's `note` carries the per-unit variable. |
+| 18 Sep | Faction pages show carried prose | Signposts and empty faction categories do not render; chapter headings and anchors use the full row name; a rule shared across factions is a core chapter with a signpost (Repair to `vehicle-rules`); the Space Marine Rapid Fire and Shaken rules are `space-marines-rules` rows, each leaving one linked sentence behind. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

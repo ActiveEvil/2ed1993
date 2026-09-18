@@ -8,6 +8,7 @@
   ],
   "dup_paragraph": [
     {"key": "rule:psychology:Frenzy", "reason": "Frenzy and Stupidity share a paragraph deliberately, the standing exception"},
-    {"key": "mission:Dawn Raid", "reason": "the standard secondary objective, identical on four missions by design"}
+    {"key": "mission:Dawn Raid", "reason": "the standard secondary objective, identical on four missions by design"},
+    {"key": "weapon:Distort Cannon", "reason": "the field exclusion, stated on the Wraithcannon and the Distort Cannon alike by design, 17 September"}
   ]
 }

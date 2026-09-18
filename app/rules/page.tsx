@@ -4,7 +4,6 @@ import { dimensionsOf } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { TitleBand } from "@/components/TitleBand";
-import { ruleName } from "@/components/UnitEquipment";
 import { generateAnchorId } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
@@ -39,7 +38,7 @@ export default async function Page() {
       .order("position"),
     supabase
       .from("unit_special_rule_assignments")
-      .select("rule:unit_special_rules(name), units!inner(faction_id)"),
+      .select("rule:unit_special_rules(name, rule), units!inner(faction_id)"),
   ]);
   const hero = heroImage?.images ?? null;
 
@@ -59,12 +58,12 @@ export default async function Page() {
     for (const row of assignmentRows ?? []) {
       const faction = row.units.faction_id;
 
-      if (row.rule === null || faction === null) {
+      if (row.rule === null || row.rule.rule === null || faction === null) {
         continue;
       }
 
       const names = unitRuleNames.get(faction) ?? new Set<string>();
-      names.add(ruleName(row.rule.name));
+      names.add(row.rule.name);
       unitRuleNames.set(faction, names);
     }
 
@@ -91,10 +90,10 @@ export default async function Page() {
     const sections = sectionRows
       .map((section) => ({
         ...section,
-        categories: [...section.rule_categories].sort(byPosition).map((c) => ({
-          ...c,
-          entries: chapterEntries(c),
-        })),
+        categories: [...section.rule_categories]
+          .sort(byPosition)
+          .map((c) => ({ ...c, entries: chapterEntries(c) }))
+          .filter((c) => c.faction_id === null || c.entries.length > 0),
       }))
       .filter(({ categories }) => categories.length > 0);
 

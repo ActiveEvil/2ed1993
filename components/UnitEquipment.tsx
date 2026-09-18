@@ -470,7 +470,7 @@ export const UnitEquipment: React.FC<{
                     const href = linked
                       ? ruleHref(linked, row.rule.anchor)
                       : rulesSlug
-                        ? `/rules/${rulesSlug}#${generateAnchorId(display)}`
+                        ? `/rules/${rulesSlug}#${generateAnchorId(row.rule.name)}`
                         : null;
                     const prose = row.rule.rule;
                     const blockProse = isBlockHtml(prose);
