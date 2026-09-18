@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import Link from "next/link";
 import { Fragment } from "react";
 
 export type StripCell = {
@@ -113,6 +114,35 @@ export const WeaponStrip: React.FC<
   </section>
 );
 
+const NOTATION = "/rules/weapon-rules#";
+
+const MARKS = new Map([
+  ["User", "User"],
+  ["User+1", "User"],
+  ["User+2", "User"],
+  ["User+Mastery", "User"],
+  ["S+D6", "S+D6"],
+  ["User S x 2 + 2", "Grenade_Range"],
+  ["Art. Dice", "Artillery_Dice"],
+  ["Varies", "Variable"],
+]);
+
+const mark = (value: string): React.ReactNode => {
+  const anchor = MARKS.get(value);
+
+  return anchor === undefined ? (
+    value
+  ) : (
+    <Link
+      aria-label={`Meaning of ${value}`}
+      className="underline underline-offset-4"
+      href={`${NOTATION}${anchor}`}
+    >
+      {value}
+    </Link>
+  );
+};
+
 export const rangedCells = (profile: {
   short_range: string;
   long_range: string;
@@ -125,12 +155,20 @@ export const rangedCells = (profile: {
 }): StripCell[] => [
   {
     label: "Range",
-    value: `${profile.short_range} / ${profile.long_range}`,
+    value: (
+      <>
+        {mark(profile.short_range)} / {mark(profile.long_range)}
+      </>
+    ),
     wide: true,
   },
   {
     label: "To hit",
-    value: `${profile.short_to_hit} / ${profile.long_to_hit}`,
+    value: (
+      <>
+        {mark(profile.short_to_hit)} / {mark(profile.long_to_hit)}
+      </>
+    ),
     wide: true,
   },
   ...closeCombatCells(profile),
@@ -142,8 +180,8 @@ export const closeCombatCells = (profile: {
   save_modifier: string;
   armour_penetration: string;
 }): StripCell[] => [
-  { label: "Str", value: profile.strength },
-  { label: "Dam", value: profile.damage },
-  { label: "Save Mod", value: profile.save_modifier },
-  { label: "AP", value: profile.armour_penetration },
+  { label: "Str", value: mark(profile.strength) },
+  { label: "Dam", value: mark(profile.damage) },
+  { label: "Save Mod", value: mark(profile.save_modifier) },
+  { label: "AP", value: mark(profile.armour_penetration) },
 ];

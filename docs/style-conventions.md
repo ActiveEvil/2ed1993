@@ -55,6 +55,19 @@ The prose measure); the 36rem chart width is superseded.
 (Emphasis and linking); two Working practice entries added — the row-count guard
 on a batch write, and running the gates on both sides of a write.
 
+**Revised 17 September 2026:** the aside rule scoped against the footnote and
+house-rule shapes, which it had been read as forbidding (Voice); Markup 1
+extended to `unit_categories.note`, with the three wrapping constraints that
+column's block form carries; Sources §3's worked example replaced, the quotation
+in it having been the fan compilation's and not White Dwarf's; a known gap
+recorded in Standing verification suite, where Markup 1 now claims more than
+`verify.py` checks; that replacement itself corrected, the line the OCR lost
+having been recovered on 16 September and the Overwatch turning permission
+reinstated at the firing moment; Sources 5 added, recording the four
+profile-notation rulings (`*` for `Special`, `User` for `As user`, `Varies` for
+`Various`, and `S+D6` for a close-combat weapon printed `Var` with Strength
+`As user`).
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -68,6 +81,19 @@ on a batch write, and running the gates on both sides of a write.
    The weapons and card decks store the inline form freely (81 instances) and
    render identically; that is their established format, not a defect. The
    verify script enforces the rule on `rule:*` kinds only.
+   **Extended 16 September to `unit_categories.note`**, where all twelve band
+   notes take the block form, a paragraph to an idea. Three wrapping constraints
+   apply there, and to any later batch in that column:
+   1. **A tag is atomic** — never break inside `<…>`.
+   2. **A complete `<a href="…">text</a>` is one unbreakable unit** where it
+      fits on a line. Where it does not, the break falls immediately before the
+      `<a` — never inside the tag, never between the tag and its text.
+   3. **118 characters a line, indent included**, so a content budget of 114.
+      Row 4 is the reference point and its own longest line measures 117, which
+      makes 118 a ceiling rather than a target.
+   The first two were learned by breaking them: a plain greedy word-wrap, which
+   does not know a tag is atomic, split nine of the eleven values' `<a>` tags
+   across the line break. It rendered correctly and was still wrong.
 2. **Headings** — `<h3 id="X">Text</h3>`, inline on one line. **Every heading
    carries an id.** Verified: zero id-less headings site-wide — as of 13 August
    verified by script across every text column, not just `rules`.
@@ -168,6 +194,24 @@ Baseline: **`/general-rules`**.
   is direct address by design. The three vetted asides (Psykers, Running, To
   Hit The Target) are recorded in `scripts/verify/exemptions.json`.
 - **Asides are plain `<p>`** — no marker, no dedicated class. Decided 29 July.
+  **Scope, corrected 16 September: the rule governs asides and does not reach
+  the other two shapes.** Three exist, each with its own job:
+  - **Aside** — a remark qualifying the whole note. Plain `<p>`, no marker, no
+    class. This is the 29 July rule, which is right about asides.
+  - **Footnote** — binds a note to one word or clause. `<sup>` marker per
+    Markup 9, running `&dagger;` → `&Dagger;` → `&sect;`, with a `<small><em>`
+    body. Ten `rules` rows store this, counted live 17 September, and the
+    escalation is in use rather than merely documented: one row reaches
+    `&Dagger;` and one `&sect;`.
+  - **House rule** — signals that the source does not grant the content.
+    `<section class="house-rule">` with its label, styled in `globals.css` and
+    listed among the capped elements in the prose measure, so it was designed
+    in. On a site whose discipline is about what the source grants, that signal
+    is load-bearing rather than decorative.
+  Read as a ban on markers, the aside rule cost `unit_options` 253 its dagger in
+  the 15 September sweep. That was the only dagger outside the `rules` deck, so
+  nothing else was hit; 253 itself is moot, its content having since been found
+  unsourced and withdrawn.
 - **"dice", never "die", as the noun.** Clarified 13 August: the *verb* is
   ordinary English — "should that model die" stands. The script flags only
   determiner+die and "die roll".
@@ -316,10 +360,26 @@ material outranks fan compilation, always:
    settles a contradiction between two places in the book, it governs — the
    Overwatch shooting window, and the p20-versus-p22 charge declaration, which it
    resolves as "you charge the closest unengaged model". Where it reports what the
-   Studio does at its own table it is a house rule and carries no weight: the
-   permission for a model on Overwatch to turn in place is introduced with "at the
-   Studio we play a house rule", and was cut on that basis the same day. **Read the
-   framing of the answer, not just its content.**
+   Studio does at its own table it is a house rule and carries no weight. **Read
+   the framing of the answer, not just its content — and read that framing on the
+   page, never in a compilation.**
+
+   **Corrected 17 September: the worked example that stood here was false.** The
+   permission for a model on Overwatch to turn in place was cut on 22 August
+   because the fan compilation introduced it with "at the Studio we play a house
+   rule". WD192 p32, read in full on 17 September, carries no such framing — it is
+   flat clarification, in the same editorial voice as the Overwatch shooting
+   window on the facing page, which the site accepts as errata. A generic
+   house-rule sidebar sits in the left margin beside the paragraph, attached to no
+   question, and is the likely source of the belief. **A compilation can
+   manufacture framing the page does not carry.** The line the OCR lost was
+   recovered from the page image on 16 September
+   (`claude/claude_wd-faq-recovery-and-corrections-2026-09-16.md`), and the
+   permission is printed flat: "A model on overwatch may turn before it fires,
+   unless it is shooting a move or fire weapon". It was reinstated by ruling on
+   16 September at the firing moment only (`rules.38`, Firing On Overwatch). The
+   declaring-moment bar in `rules.41`, "may not move at all, not even to turn on
+   the spot", stands, because the column does not address that moment.
 4. **Fan compilations — never an authority, and never a source.** Three are
    known: `W40K 2nd Ed BattleBible`, `2nd Ed Wargear.pdf` (deleted 8 August),
    and `weapons.pdf` ("The Complete, Concise Rules…", Jason E. Payne). **One
@@ -329,6 +389,17 @@ material outranks fan compilation, always:
    (`Force Weapons`, "that be may be used"), which only a clean-text detector
    could have caught. Nothing more, ever — not a source, not a tiebreaker, not
    a fallback when a GW page is missing.
+5. **Profile notation — four rulings, 17 September.** (a) The site writes `*`
+   wherever a source prints `Special`. `Auto` is a distinct token and is not
+   flattened into it. (b) `User`, never `As user`, in the strength and
+   save-modifier columns alike, and in both it means the user's Strength.
+   `No Save` stays in `save_modifier`. (c) `Varies`, never `Various`. (d) A
+   close-combat weapon printed `Var`, `varies` or `variable` with Strength
+   `As user` is `S+D6` on the site, never `Varies`. This is derived from the
+   close-combat reference table at Codex Chaos folio 145, which prints
+   `variable` for every As-user weapon and a written formula only where the
+   Strength is fixed; the books' shorthand is the formula, and the site writes
+   it out.
 
 **For wargear cards, the codex outranks the base game.** Ruled by Thomas
 8 August. Wording, content and legibility conflicts all resolve codex-first;
@@ -853,6 +924,12 @@ only), nested `<a>`/`<strong>`, duplicate ids within a category, dead
 **Known artefact:** running `verify.py` against a single-text JSON reports a
 false `dead_link`, because the anchor population it checks against is derived
 from the input file. Verify a slice against the full dump, not a slice.
+
+**Known gap, 17 September:** Markup 1 extends the block `<p>` form to
+`unit_categories.note`, but the paragraph-form check still runs on `rule:*`
+kinds only, so that column is documented and unenforced. The band-note batch of
+16 September carried its own block-form regex as a post-write guard, which
+covered those twelve rows and nothing written after them.
 
 **Still manual, by design** — they need judgment: first-mention
 links-then-bold discipline, repeat link groups, mixed-marking series

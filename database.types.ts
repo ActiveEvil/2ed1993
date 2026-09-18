@@ -2143,6 +2143,7 @@ export type Database = {
           points: number | null;
           position: number;
           restriction: string | null;
+          special_rule_id: number | null;
           unit_id: number | null;
           updated_at: string | null;
           wargear_category_id: number;
@@ -2155,6 +2156,7 @@ export type Database = {
           points?: number | null;
           position?: number;
           restriction?: string | null;
+          special_rule_id?: number | null;
           unit_id?: number | null;
           updated_at?: string | null;
           wargear_category_id: number;
@@ -2167,6 +2169,7 @@ export type Database = {
           points?: number | null;
           position?: number;
           restriction?: string | null;
+          special_rule_id?: number | null;
           unit_id?: number | null;
           updated_at?: string | null;
           wargear_category_id?: number;
@@ -2178,6 +2181,13 @@ export type Database = {
             columns: ["armour_id"];
             isOneToOne: false;
             referencedRelation: "armour";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wargear_items_special_rule_id_fkey";
+            columns: ["special_rule_id"];
+            isOneToOne: false;
+            referencedRelation: "unit_special_rules";
             referencedColumns: ["id"];
           },
           {

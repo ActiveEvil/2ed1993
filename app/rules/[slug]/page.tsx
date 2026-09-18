@@ -6,7 +6,6 @@ import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { TitleBand } from "@/components/TitleBand";
-import { ruleName } from "@/components/UnitEquipment";
 import { generateAnchorId, ruleHref } from "@/lib/anchors";
 import { joinWithinBudget, pageTitle } from "@/lib/metadata";
 import { extractSubsections } from "@/lib/sections";
@@ -43,8 +42,8 @@ type Carrier = { id: number; name: string; href: string | null };
 type FactionRule = {
   ruleId: number;
   name: string;
-  anchor: string | null;
-  prose: string | null;
+  anchor: string;
+  prose: string;
   target: NonNullable<AssignmentRow["rule"]>["rules"];
   targetAnchor: string | null;
   carriers: Carrier[];
@@ -67,15 +66,14 @@ const collectFactionRules = (rows: AssignmentRow[]): FactionRule[] => {
   for (const row of rows) {
     const rule = row.rule;
 
-    if (!rule) {
+    if (!rule || rule.rule === null) {
       continue;
     }
 
-    const display = ruleName(rule.name);
     const entry = collected.get(rule.id) ?? {
       ruleId: rule.id,
-      name: display,
-      anchor: generateAnchorId(display),
+      name: rule.name,
+      anchor: generateAnchorId(rule.name),
       prose: rule.rule,
       target: rule.rules,
       targetAnchor: rule.anchor,
@@ -117,9 +115,7 @@ const buildFactionRuleHtml = (
     );
   }
 
-  if (rule.prose) {
-    parts.push(rule.prose);
-  }
+  parts.push(rule.prose);
 
   if (rule.carriers.length > 0) {
     const names = rule.carriers.map((carrier) =>
@@ -161,6 +157,17 @@ export async function generateMetadata(props: {
     }
 
     if (category.rules.length === 0 && category.factions) {
+      const { data: assignments, error: assignmentsError } =
+        category.faction_id === null
+          ? { data: [] as AssignmentRow[], error: null }
+          : await loadFactionRules(category.faction_id);
+
+      assertNoQueryErrors(CONTEXT, assignmentsError);
+
+      if (collectFactionRules(assignments ?? []).length === 0) {
+        notFound();
+      }
+
       return {
         title,
         description: `The special rules carried by ${category.factions.name} units in Warhammer 40,000 2nd Edition, listed with the units that have them.`,
@@ -205,6 +212,16 @@ export default async function Page(props: {
 
     assertNoQueryErrors(CONTEXT, assignmentsError);
 
+    const factionRules = collectFactionRules(assignments ?? []);
+
+    if (
+      category.faction_id !== null &&
+      category.rules.length === 0 &&
+      factionRules.length === 0
+    ) {
+      notFound();
+    }
+
     const hero = category.images[0] ?? null;
     const eyebrow = [
       category.rule_sections.name,
@@ -236,19 +253,8 @@ export default async function Page(props: {
       ),
     );
 
-    for (const rule of collectFactionRules(assignments ?? [])) {
+    for (const rule of factionRules) {
       const anchor = rule.anchor;
-
-      if (anchor === null) {
-        chapterList.push({
-          key: `unit-rule-${rule.ruleId}`,
-          id: null,
-          name: rule.name,
-          rule: buildFactionRuleHtml(rule, params.slug, true),
-        });
-        continue;
-      }
-
       const targetsThisChapter = chapterByAnchor.get(anchor);
 
       if (targetsThisChapter !== undefined) {
