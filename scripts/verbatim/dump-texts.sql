@@ -30,5 +30,7 @@ select json_agg(json_build_object('k', kind, 'n', name, 't', txt)) from (
   union all select 'faction',          f.name,   f.description           from factions f                where f.description is not null
   union all select 'army_list',        al.name,  al.description          from army_lists al             where al.description is not null
   union all select 'wargear_cat',      wc.category, wc.note              from wargear_categories wc     where wc.note is not null
+  union all select 'wargear_cat_heading', wc.category, wc.rules_heading from wargear_categories wc     where wc.rules_heading is not null
+  union all select 'wargear_cat_intro', wc.category, wc.rules_intro     from wargear_categories wc     where wc.rules_intro is not null
   union all select 'equipment_weapon', ew.category, ew.note              from equipment_weapons ew      where ew.note is not null
 ) z (kind, name, txt) where txt is not null and length(txt) > 0;

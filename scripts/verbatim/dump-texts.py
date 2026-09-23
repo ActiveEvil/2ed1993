@@ -95,6 +95,8 @@ add("damage_result", "damage_chart_results", "effect", None, "effect")
 add("faction", "factions", "name,description", "name", "description")
 add("army_list", "army_lists", "name,description", "name", "description")
 add("wargear_cat", "wargear_categories", "category,note", "category", "note")
+add("wargear_cat_heading", "wargear_categories", "category,rules_heading", "category", "rules_heading")
+add("wargear_cat_intro", "wargear_categories", "category,rules_intro", "category", "rules_intro")
 add("equipment_weapon", "equipment_weapons", "category,note", "category", "note")
 
 payload = json.dumps(texts, ensure_ascii=False)
