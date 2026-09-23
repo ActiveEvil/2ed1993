@@ -680,6 +680,7 @@ export default async function Page(props: {
         />
         <Panel as="main" className="flex flex-col w-full max-w-5xl">
           <TitleBand
+            eyebrow="Army List"
             heading={
               <Logo
                 as="h1"
