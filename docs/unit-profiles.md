@@ -14,8 +14,8 @@ The governing principles, all ruled by Thomas:
   gate (`scripts/verbatim/`) enforces it: no run of 8 or more consecutive
   words shared with a source.
 - **Always be specific.** A mechanic is never left implicit because the book
-  left it implicit — "additional", "in place of", "any model", "the whole
-  squad", "up to N", "exactly N" are all distinct and all said. Where the
+  left it implicit — "additional", "in place of", "any model", "all
+  models", "up to N", "exactly N" are all distinct and all said. Where the
   book's wording is ambiguous ("one model"), authoring resolves it and the
   data carries the resolution.
 - **No prose unless strictly necessary.** Structure first; `note` carries
@@ -200,7 +200,7 @@ restriction. The phrasings:
 
 | data | renders |
 | --- | --- |
-| `whole_unit` | the whole squad |
+| `whole_unit` | All models |
 | profile, no count, multi-model profile | Guardian, any model |
 | profile, no count, single-model profile | Sergeant |
 | min = max = N | Guardian, 2 models |
@@ -262,6 +262,7 @@ entry it covers, and keep those entries adjacent in `position`.
 | 2 Sep | Characteristics are text | The nine columns are text, not integers, and store the printed value — a rolled characteristic (`D6`) is stored as printed rather than resolved or left null. |
 | 3 Sep | Unit special rules get a join | `unit_special_rules` and `unit_special_rule_assignments`, on the weapon and armour special-rule shape. `rule_id` points at a rules-chapter rule, `rule` carries faction-specific prose, both together carry a printed exception, and the assignment's `note` carries the per-unit variable. |
 | 18 Sep | Faction pages show carried prose | Signposts and empty faction categories do not render; chapter headings and anchors use the full row name; a rule shared across factions is a core chapter with a signpost (Repair to `vehicle-rules`); the Space Marine Rapid Fire and Shaken rules are `space-marines-rules` rows, each leaving one linked sentence behind. |
+| 18 Sep | Whole-unit phrase | The `whole_unit` lead-in reads "All models" ("Guardian, all models" with a profile). Unit-wide special notes on a multi-model unit (a Chimera transport, a mounted save, a squad-wide rule) are `whole_unit`, never bare "Any model". |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

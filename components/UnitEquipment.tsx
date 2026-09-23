@@ -565,8 +565,8 @@ export const UnitEquipment: React.FC<{
                     : option.models_max === null
                       ? option.whole_unit
                         ? option.profile
-                          ? "the whole squad"
-                          : "The whole squad"
+                          ? "all models"
+                          : "All models"
                         : option.profile
                           ? grantee && grantee.models_max !== 1
                             ? "any model"
