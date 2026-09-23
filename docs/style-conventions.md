@@ -68,6 +68,11 @@ profile-notation rulings (`*` for `Special`, `User` for `As user`, `Varies` for
 `Various`, and `S+D6` for a close-combat weapon printed `Var` with Strength
 `As user`).
 
+**Revised 23 September 2026:** Markup 1 records that the two banner intros and
+`wargear_categories.rules_intro` hold `<p>`-wrapped block HTML; Markup 9 adds
+`wargear_categories.rules_heading` to the plain-JSX fields and records
+`rules_intro` as an HTML column.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -94,6 +99,13 @@ profile-notation rulings (`*` for `Special`, `User` for `As user`, `Varies` for
    The first two were learned by breaking them: a plain greedy word-wrap, which
    does not know a tag is atomic, split nine of the eleven values' `<a>` tags
    across the line break. It rendered correctly and was still wrong.
+   **Banner and category intros, 23 September.** `factions.description`,
+   `army_lists.description` and `wargear_categories.rules_intro` hold block
+   HTML, every run of text inside a `<p>`. The 65ch measure is set on `p`, not
+   on the container, so bare text runs the full width; in the two banner
+   intros, which render into a flex column, each bare run and each bare `<a>`
+   also takes a line of its own. Either `<p>` form renders correctly: the
+   faction descriptions use the block form, the other two the inline form.
 2. **Headings** — `<h3 id="X">Text</h3>`, inline on one line. **Every heading
    carries an id.** Verified: zero id-less headings site-wide — as of 13 August
    verified by script across every text column, not just `rules`.
@@ -169,10 +181,12 @@ profile-notation rulings (`*` for `Special`, `User` for `As user`, `Varies` for
    **Enforced and clean site-wide as of 13 August**: 29 deck texts (psychic,
    warp, faction, mission, wargear card, weapon and the four Blast rules) held
    literal inch marks, apostrophes, em-dashes and one `↑`; all converted to
-   entities by a tag-aware pass that left attribute quotes untouched. **The two
+   entities by a tag-aware pass that left attribute quotes untouched. **The
    plain-JSX fields are the standing exception** and must keep literal
-   characters: `psychic_power_cards.note` and `wargear_categories.note` render
-   as `{value}`, where an entity would display as text.
+   characters: `psychic_power_cards.note`, `wargear_categories.note` and
+   `wargear_categories.rules_heading` render as `{value}`, where an entity
+   would display as text. `wargear_categories.rules_intro`, added beside them
+   on 23 September, is an HTML column, so entities and links apply there.
 
    **`&mdash;` is always tight — no space on either side.** Ruled by Thomas
    8 August. The one permitted exception is markup whitespace: three

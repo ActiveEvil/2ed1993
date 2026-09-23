@@ -15,15 +15,17 @@ link groups, first-mention-links) stay manual — see the doc.
 
 Entity and non-ASCII checks apply only to HTML columns. Rendered fields that are
 plain JSX take literal characters, and an entity there renders as its own
-characters: psychic_power_cards.note, wargear_categories.note,
-army_list_entries.note and the other army-list note columns. The plain_entity
-check catches those; it is the mirror of ampersand and runs only off HTML.
+characters: psychic_power_cards.note, wargear_categories.note and
+rules_heading, army_list_entries.note and the other army-list note columns.
+The plain_entity check catches those; it is the mirror of ampersand and runs
+only off HTML.
 The dump joins the psychic note into the card's text, so `psychic` stays in
 HTML_KINDS and any note needing literal characters belongs in exemptions.
 unit_options.note, damage_charts.note, datafax_locations.note,
-unit_special_rules.rule and unit_special_rule_assignments.note are rendered
-through dangerouslySetInnerHTML, so `unit_wargear`, `damage_chart`,
-`datafax_location`, `unit_rule` and `unit_rule_note` are HTML kinds.
+unit_special_rules.rule, unit_special_rule_assignments.note and
+wargear_categories.rules_intro are rendered through dangerouslySetInnerHTML, so
+`unit_wargear`, `damage_chart`, `datafax_location`, `unit_rule`,
+`unit_rule_note` and `wargear_cat_intro` are HTML kinds.
 A unit rule's prose may carry a D6 chart, so `unit_rule` ids join the
 duplicate_id cross-check under a namespace of their own — every unit rule on
 an army-list page shares that page.
@@ -38,7 +40,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "wargear_card", "mission", "strategy", "psychic", "warp",
               "faction", "damage_result", "unit_wargear", "damage_chart",
-              "datafax_location", "unit_rule", "unit_rule_note", "unit_cat")
+              "datafax_location", "unit_rule", "unit_rule_note", "unit_cat",
+              "wargear_cat_intro")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
             "ldquo", "rdquo", "half", "uarr", "sup2", "AElig"}

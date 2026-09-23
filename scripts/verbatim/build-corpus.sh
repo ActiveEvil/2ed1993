@@ -74,8 +74,10 @@ one() {
     # 150dpi they rendered 421px wide and tesseract read ten words a page.
     # Only pages that would come out under 1200px are scaled up, so every
     # source already in the corpus renders exactly as before. 14 August.
-    dpi="$(pdfinfo "$pdf" | awk '/^Page size/{h=$5}
-      END {d = 150
+    # Rotated pages render with their declared width as height. 23 September.
+    dpi="$(pdfinfo "$pdf" | awk '/^Page size/{w=$3; h=$5} /^Page rot/{r=$3}
+      END {if (r == 90 || r == 270) h = w
+           d = 150
            if (h > 0 && h / 72 * 150 < 1200) { d = int(1700 / (h / 72)); if (d > 600) d = 600 }
            print d}')"
     : > "$tmp/out.txt"
