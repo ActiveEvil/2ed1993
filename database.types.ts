@@ -2110,6 +2110,8 @@ export type Database = {
           id: number;
           note: string | null;
           position: number;
+          rules_heading: string | null;
+          rules_intro: string | null;
         };
         Insert: {
           army_list_id: number;
@@ -2117,6 +2119,8 @@ export type Database = {
           id?: number;
           note?: string | null;
           position?: number;
+          rules_heading?: string | null;
+          rules_intro?: string | null;
         };
         Update: {
           army_list_id?: number;
@@ -2124,6 +2128,8 @@ export type Database = {
           id?: number;
           note?: string | null;
           position?: number;
+          rules_heading?: string | null;
+          rules_intro?: string | null;
         };
         Relationships: [
           {
