@@ -47,7 +47,7 @@ probe() {
 }
 
 # Fan compilations — detector only.
-FAN=("W40K 2nd Ed BattleBible 1.8.4" "2nd Ed Wargear" "weapons")
+FAN=("W40K 2nd Ed BattleBible 1.8.4" "2nd Ed Wargear" "weapons" "White Dwarf Q&A")
 # Genuine text layers: extract, do not OCR. Everything else is image-only and
 # carries a text layer that is unusable OCR sludge — see style-conventions.
 TEXT_LAYER=("Codex Imperialis" "Angels of Death (2ed)" "White Dwarf Q&A" \
