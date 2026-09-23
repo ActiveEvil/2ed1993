@@ -380,9 +380,11 @@ material outranks fan compilation, always:
    16 September at the firing moment only (`rules.38`, Firing On Overwatch). The
    declaring-moment bar in `rules.41`, "may not move at all, not even to turn on
    the spot", stands, because the column does not address that moment.
-4. **Fan compilations — never an authority, and never a source.** Three are
+4. **Fan compilations — never an authority, and never a source.** Four are
    known: `W40K 2nd Ed BattleBible`, `2nd Ed Wargear.pdf` (deleted 8 August),
-   and `weapons.pdf` ("The Complete, Concise Rules…", Jason E. Payne). **One
+   `weapons.pdf` ("The Complete, Concise Rules…", Jason E. Payne), and
+   `White Dwarf Q&A.pdf` (ruled a compilation 15 September; moved to the
+   detector tree 23 September). **One
    permitted use, ruled permanent by Thomas 13 August: pure detectors in the
    verbatim gate**, because they are clean text where GW's own scans are noisy
    OCR. The standing justification is the shared-typo provenance finding
@@ -462,8 +464,8 @@ the codex is also more complete.
   targeter" from the Codex Ultramarines entry into the Wargear-book rules text.
   "Mechanics exact, expression new" has a blind side: expression-new must not
   become content-new.
-- **Six files have genuine text layers** and need no OCR: the three fan
-  compilations, Codex Imperialis, Angels of Death, White Dwarf Q&A. Everything
+- **Six files have genuine text layers** and need no OCR: the four fan
+  compilations, Codex Imperialis, Angels of Death. Everything
   else is image-only and needs rendering plus OCR.
 - **A text layer can be real for only part of a book.** The Basegame Wargear
   book PDF carries a genuine text layer for ~31 of its 120 pages — the whole

@@ -140,10 +140,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const rulesPages: MetadataRoute.Sitemap = [];
     const { data: rule_categories } = await supabase
       .from("rule_categories")
-      .select("slug, created_at, updated_at");
+      .select("slug, created_at, updated_at, faction_id, rules(id)");
+    const { data: assignmentRows } = await supabase
+      .from("unit_special_rule_assignments")
+      .select("rule:unit_special_rules(rule), units!inner(faction_id)");
 
     if (rule_categories) {
+      const factionIdsWithUnitRules = new Set(
+        (assignmentRows ?? [])
+          .filter((row) => row.rule !== null && row.rule.rule !== null)
+          .map(({ units }) => units.faction_id)
+          .filter((id): id is number => id !== null),
+      );
+
       for (const category of rule_categories) {
+        if (
+          category.faction_id !== null &&
+          category.rules.length === 0 &&
+          !factionIdsWithUnitRules.has(category.faction_id)
+        ) {
+          continue;
+        }
+
         rulesPages.push({
           url: `${baseUrl}/rules/${category.slug}`,
           lastModified: new Date(category.updated_at || category.created_at),
