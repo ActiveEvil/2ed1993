@@ -19,7 +19,8 @@ select json_agg(json_build_object('k', kind, 'n', name, 't', txt)) from (
   union all select 'unit_cat',         uc.category, uc.note            from unit_categories uc        where uc.note is not null
   union all select 'entry',            'army_list_entries_row', ale.note from army_list_entries ale   where ale.note is not null
   union all select 'entry_option',     'army_list_entry_options_row', concat_ws(' ', aleo.note, aleo.restriction) from army_list_entry_options aleo where coalesce(aleo.note, aleo.restriction) is not null
-  union all select 'allowance',        'army_list_allowance_rules_row', alar.note from army_list_allowance_rules alar where alar.note is not null
+  union all select 'allowance',        'army_list_allowance_rules_row', concat_ws(' ', alar.note, alar.qualifier, alar.label) from army_list_allowance_rules alar where coalesce(alar.note, alar.qualifier, alar.label) is not null
+  union all select 'allowance_set',    als.name, concat_ws(' ', als.name, als.singular) from army_list_allowance_sets als where als.name is not null
   union all select 'ally',             'army_list_allies_row', ala.note  from army_list_allies ala     where ala.note is not null
   union all select 'wargear_item',     'wargear_items_row', wi.restriction from wargear_items wi      where wi.restriction is not null
   union all select 'datafax',          'datafaxes_row', concat_ws(' ', d.deployment, d.note) from datafaxes d where coalesce(d.deployment, d.note) is not null

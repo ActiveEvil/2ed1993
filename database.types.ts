@@ -232,10 +232,15 @@ export type Database = {
           count: number;
           created_at: string;
           id: number;
+          label: string | null;
           note: string | null;
           per_category_id: number | null;
           per_count: number;
           per_entry_id: number | null;
+          per_rule_id: number | null;
+          per_set_id: number | null;
+          qualifier: string | null;
+          set_id: number | null;
           unit_category_id: number | null;
           updated_at: string | null;
         };
@@ -244,10 +249,15 @@ export type Database = {
           count: number;
           created_at?: string;
           id?: number;
+          label?: string | null;
           note?: string | null;
           per_category_id?: number | null;
           per_count?: number;
           per_entry_id?: number | null;
+          per_rule_id?: number | null;
+          per_set_id?: number | null;
+          qualifier?: string | null;
+          set_id?: number | null;
           unit_category_id?: number | null;
           updated_at?: string | null;
         };
@@ -256,10 +266,15 @@ export type Database = {
           count?: number;
           created_at?: string;
           id?: number;
+          label?: string | null;
           note?: string | null;
           per_category_id?: number | null;
           per_count?: number;
           per_entry_id?: number | null;
+          per_rule_id?: number | null;
+          per_set_id?: number | null;
+          qualifier?: string | null;
+          set_id?: number | null;
           unit_category_id?: number | null;
           updated_at?: string | null;
         };
@@ -286,10 +301,108 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
+            foreignKeyName: "army_list_allowance_rules_per_rule_id_fkey";
+            columns: ["per_rule_id"];
+            isOneToOne: false;
+            referencedRelation: "army_list_allowance_rules";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "army_list_allowance_rules_per_set_id_fkey";
+            columns: ["per_set_id"];
+            isOneToOne: false;
+            referencedRelation: "army_list_allowance_sets";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "army_list_allowance_rules_set_id_fkey";
+            columns: ["set_id"];
+            isOneToOne: false;
+            referencedRelation: "army_list_allowance_sets";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "army_list_allowance_rules_unit_category_id_fkey";
             columns: ["unit_category_id"];
             isOneToOne: false;
             referencedRelation: "unit_categories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      army_list_allowance_set_entries: {
+        Row: {
+          army_list_entry_id: number;
+          created_at: string;
+          position: number;
+          set_id: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          army_list_entry_id: number;
+          created_at?: string;
+          position: number;
+          set_id: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          army_list_entry_id?: number;
+          created_at?: string;
+          position?: number;
+          set_id?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "army_list_allowance_set_entries_army_list_entry_id_fkey";
+            columns: ["army_list_entry_id"];
+            isOneToOne: false;
+            referencedRelation: "army_list_entries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "army_list_allowance_set_entries_set_id_fkey";
+            columns: ["set_id"];
+            isOneToOne: false;
+            referencedRelation: "army_list_allowance_sets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      army_list_allowance_sets: {
+        Row: {
+          army_list_id: number;
+          created_at: string;
+          id: number;
+          name: string | null;
+          position: number;
+          singular: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          army_list_id: number;
+          created_at?: string;
+          id?: number;
+          name?: string | null;
+          position: number;
+          singular?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          army_list_id?: number;
+          created_at?: string;
+          id?: number;
+          name?: string | null;
+          position?: number;
+          singular?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "army_list_allowance_sets_army_list_id_fkey";
+            columns: ["army_list_id"];
+            isOneToOne: false;
+            referencedRelation: "army_lists";
             referencedColumns: ["id"];
           },
         ];
