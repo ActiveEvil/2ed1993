@@ -73,6 +73,10 @@ profile-notation rulings (`*` for `Special`, `User` for `As user`, `Varies` for
 `wargear_categories.rules_heading` to the plain-JSX fields and records
 `rules_intro` as an HTML column.
 
+**Revised 24 September 2026:** Markup 9 records the allowance set `name` and
+`singular` and the allowance rule `qualifier` and `label` as plain-text
+columns.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -187,6 +191,10 @@ profile-notation rulings (`*` for `Special`, `User` for `As user`, `Varies` for
    `wargear_categories.rules_heading` render as `{value}`, where an entity
    would display as text. `wargear_categories.rules_intro`, added beside them
    on 23 September, is an HTML column, so entities and links apply there.
+   The allowance columns added on 24 September are plain text as well:
+   `army_list_allowance_sets.name` and `singular`, and
+   `army_list_allowance_rules.qualifier` and `label`. The allowance generator
+   composes them into sentences, so they take literal characters and no markup.
 
    **`&mdash;` is always tight — no space on either side.** Ruled by Thomas
    8 August. The one permitted exception is markup whitespace: three
