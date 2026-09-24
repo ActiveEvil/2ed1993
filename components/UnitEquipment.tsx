@@ -10,6 +10,7 @@ import { Fragment } from "react";
 
 const DASH = "–";
 const TIMES = "×";
+const OR = "\u2014or\u2014 ";
 const LINK = "underline underline-offset-4";
 const BLOCK_HTML = /<(p|section|ul)(\s|>)/i;
 
@@ -54,6 +55,8 @@ export type EquipmentProfile = {
 export type EquipmentOption = {
   id: number;
   option_group: string;
+  alternative: number;
+  optional: boolean;
   models_min: number | null;
   models_max: number | null;
   models_per: number | null;
@@ -91,6 +94,7 @@ export type SpecialRule = {
 export type SpecialRuleAssignment = {
   position: number;
   note: string | null;
+  unit_profile_id: number | null;
   rule: SpecialRule | null;
 };
 
@@ -220,6 +224,39 @@ const Sections: React.FC<{
   </>
 );
 
+const optionOf = (row: {
+  kind: string;
+  option?: EquipmentOption;
+}): EquipmentOption | null => (row.kind === "option" && row.option) || null;
+
+const alternativesTogether = <
+  Row extends { kind: string; option?: EquipmentOption },
+>(
+  rows: Row[],
+): Row[] => {
+  const ordered: Row[] = [];
+
+  for (const row of rows) {
+    if (ordered.includes(row)) {
+      continue;
+    }
+
+    const alternative = optionOf(row)?.alternative ?? 0;
+
+    ordered.push(
+      row,
+      ...(alternative === 0
+        ? []
+        : rows.filter(
+            (other) =>
+              other !== row && optionOf(other)?.alternative === alternative,
+          )),
+    );
+  }
+
+  return ordered;
+};
+
 export const unitHasEquipment = (unit: EquipmentUnit): boolean =>
   Boolean(
     unit.unit_profiles.some(
@@ -254,6 +291,7 @@ export const UnitEquipment: React.FC<{
   const profiles = unit.unit_profiles;
   const options = unit.unit_options;
   const proseClass = clsx("dynamic-content", compact ? "compact" : "measure");
+  const named = profiles.length > 1;
   const specialRules = unit.unit_special_rule_assignments.flatMap(
     (assignment) =>
       assignment.rule
@@ -263,6 +301,10 @@ export const UnitEquipment: React.FC<{
               key: `Rule-${assignment.rule.id}`,
               note: assignment.note,
               rule: assignment.rule,
+              profile: named
+                ? (profiles.find(({ id }) => id === assignment.unit_profile_id)
+                    ?.name ?? null)
+                : null,
             },
           ]
         : [],
@@ -270,7 +312,6 @@ export const UnitEquipment: React.FC<{
   const isSingleModelUnit = profiles.every(
     (profile) => profile.models_max === 1,
   );
-  const named = profiles.length > 1;
   const armed = profiles.filter(
     (profile) => profile.unit_profile_weapons.length,
   );
@@ -309,6 +350,32 @@ export const UnitEquipment: React.FC<{
         </Link>
       </>
     ) : null;
+
+  const scopeOf = (option: EquipmentOption): string | null => {
+    const grantee = option.profile
+      ? profiles.find(({ name }) => name === option.profile?.name)
+      : undefined;
+
+    return isSingleModelUnit
+      ? null
+      : option.models_max === null
+        ? option.whole_unit
+          ? option.profile
+            ? "all models"
+            : "All models"
+          : option.profile
+            ? grantee && grantee.models_max !== 1
+              ? "any model"
+              : null
+            : "Any model"
+        : option.models_per !== null
+          ? `up to ${option.models_max} in ${option.models_per}`
+          : option.models_min === option.models_max
+            ? `${option.models_max} model${option.models_max === 1 ? "" : "s"}`
+            : option.models_min === null
+              ? `up to ${option.models_max} model${option.models_max === 1 ? "" : "s"}`
+              : `${option.models_min}${DASH}${option.models_max} models`;
+  };
 
   if (
     !armed.length &&
@@ -406,14 +473,14 @@ export const UnitEquipment: React.FC<{
           {
             label: "Wargear",
             rows: wargearRows.length
-              ? wargearRows
+              ? alternativesTogether(wargearRows)
               : wargearAllowanceText
                 ? [{ kind: "allowance" as const, key: "wargear-allowance" }]
                 : [],
           },
           {
             label: "Special",
-            rows: [
+            rows: alternativesTogether([
               ...options
                 .filter(({ option_group }) => option_group === "special")
                 .map((option) => ({
@@ -422,17 +489,19 @@ export const UnitEquipment: React.FC<{
                   option,
                 })),
               ...specialRules,
-            ],
+            ]),
           },
           {
             label: "Support",
-            rows: options
-              .filter(({ option_group }) => option_group === "support")
-              .map((option) => ({
-                kind: "option" as const,
-                key: `Support-${option.id}`,
-                option,
-              })),
+            rows: alternativesTogether(
+              options
+                .filter(({ option_group }) => option_group === "support")
+                .map((option) => ({
+                  kind: "option" as const,
+                  key: `Support-${option.id}`,
+                  option,
+                })),
+            ),
           },
         ].map(
           ({ label, rows }) =>
@@ -483,6 +552,12 @@ export const UnitEquipment: React.FC<{
                         repeated={index > 0}
                         compact={compact}
                       >
+                        {row.profile && (
+                          <>
+                            <strong>{row.profile}</strong>
+                            {` ${DASH} `}
+                          </>
+                        )}
                         <strong className={blockProse ? "block" : undefined}>
                           {href ? (
                             <Link className={LINK} href={href}>
@@ -554,49 +629,58 @@ export const UnitEquipment: React.FC<{
                   }
 
                   const option = row.option;
+                  const previous = index > 0 ? optionOf(rows[index - 1]) : null;
+                  const continuation =
+                    option.alternative !== 0 &&
+                    previous?.alternative === option.alternative;
                   const sections = option.unit_option_categories.map(
                     ({ wargear_categories }) => wargear_categories.category,
                   );
-                  const grantee = option.profile
-                    ? profiles.find(({ name }) => name === option.profile?.name)
-                    : undefined;
-                  const scope = isSingleModelUnit
-                    ? null
-                    : option.models_max === null
-                      ? option.whole_unit
-                        ? option.profile
-                          ? "all models"
-                          : "All models"
-                        : option.profile
-                          ? grantee && grantee.models_max !== 1
-                            ? "any model"
-                            : null
-                          : "Any model"
-                      : option.models_per !== null
-                        ? `up to ${option.models_max} in ${option.models_per}`
-                        : option.models_min === option.models_max
-                          ? `${option.models_max} model${option.models_max === 1 ? "" : "s"}`
-                          : option.models_min === null
-                            ? `up to ${option.models_max} model${option.models_max === 1 ? "" : "s"}`
-                            : `${option.models_min}${DASH}${option.models_max} models`;
-                  const noun = sections.every((section) =>
-                    section.includes("Weapons"),
-                  )
-                    ? (["weapon", "weapons"] as const)
-                    : (["item", "equipment"] as const);
-                  const cost = optionCosts?.get(option.id) ?? null;
-                  const blockNote = isBlockHtml(option.note);
-                  const structured = Boolean(
-                    option.profile ||
-                    scope ||
+                  const scope = scopeOf(option);
+                  const lead =
+                    !continuation ||
+                    !previous ||
+                    previous.profile?.name !== option.profile?.name ||
+                    scopeOf(previous) !== scope;
+                  const granted = Boolean(
                     sections.length ||
                     option.upgrade ||
                     option.grants ||
                     option.grants_armour ||
-                    option.card ||
-                    option.replaces ||
-                    option.replaces_armour,
+                    option.card,
                   );
+                  const members =
+                    option.alternative === 0
+                      ? [option]
+                      : rows
+                          .map(optionOf)
+                          .filter(
+                            (member): member is EquipmentOption =>
+                              member?.alternative === option.alternative,
+                          );
+                  const compulsory = members.every(({ optional }) => !optional);
+                  const crew = option.grant_mode === "crew";
+                  const mustTake =
+                    compulsory && granted && !continuation && !crew;
+                  const noun = sections.every((section) =>
+                    section.includes("Weapons"),
+                  )
+                    ? (["weapon", "weapons"] as const)
+                    : crew
+                      ? (["piece", "pieces"] as const)
+                      : (["item", "equipment"] as const);
+                  const cost = optionCosts?.get(option.id) ?? null;
+                  const blockNote = isBlockHtml(option.note);
+                  const leadIn = lead && Boolean(option.profile || scope);
+                  const structured =
+                    leadIn ||
+                    granted ||
+                    Boolean(option.replaces || option.replaces_armour);
+                  const bare =
+                    !sections.length &&
+                    !option.upgrade &&
+                    !option.replaces &&
+                    !compulsory;
 
                   return (
                     <LabelledRow
@@ -606,24 +690,24 @@ export const UnitEquipment: React.FC<{
                       compact={compact}
                     >
                       {wargearPrefix}
-                      {option.profile && <strong>{option.profile.name}</strong>}
-                      {scope && (
+                      {continuation && (
+                        <span className="font-subtitle">{OR}</span>
+                      )}
+                      {lead && option.profile && (
+                        <strong>{option.profile.name}</strong>
+                      )}
+                      {lead && scope && (
                         <strong>
                           {option.profile && ", "}
                           {scope}
                         </strong>
                       )}
-                      {(option.profile || scope) &&
+                      {leadIn &&
                         Boolean(
-                          sections.length ||
-                          option.upgrade ||
-                          option.grants ||
-                          option.grants_armour ||
-                          option.card ||
-                          option.replaces ||
-                          option.replaces_armour,
+                          granted || option.replaces || option.replaces_armour,
                         ) &&
                         ` ${DASH} `}
+                      {mustTake && (option.upgrade ? "must be " : "must take ")}
                       {option.upgrade && (
                         <>
                           {"upgraded to "}
@@ -637,10 +721,7 @@ export const UnitEquipment: React.FC<{
                       )}
                       {option.grants && (
                         <>
-                          {!sections.length &&
-                            !option.upgrade &&
-                            !option.replaces &&
-                            "equipped with "}
+                          {bare && "equipped with "}
                           {option.quantity !== null &&
                             option.quantity > 1 &&
                             `${option.quantity} ${TIMES} `}
@@ -655,11 +736,7 @@ export const UnitEquipment: React.FC<{
                       {option.grants_armour && (
                         <>
                           {option.grants && ", "}
-                          {!option.grants &&
-                            !sections.length &&
-                            !option.upgrade &&
-                            !option.replaces &&
-                            "equipped with "}
+                          {!option.grants && bare && "equipped with "}
                           <Link
                             className={LINK}
                             href={`/wargear/armour#${generateAnchorId(option.grants_armour.name)}`}
@@ -673,9 +750,7 @@ export const UnitEquipment: React.FC<{
                           {(option.grants || option.grants_armour) && ", "}
                           {!option.grants &&
                             !option.grants_armour &&
-                            !sections.length &&
-                            !option.upgrade &&
-                            !option.replaces &&
+                            bare &&
                             "equipped with "}
                           {option.quantity !== null &&
                             option.quantity > 1 &&
@@ -698,7 +773,9 @@ export const UnitEquipment: React.FC<{
                                 ? "additional or alternative weapons from "
                                 : option.grant_mode === "take_any"
                                   ? "any combination from "
-                                  : ""}
+                                  : crew
+                                    ? `${scope?.endsWith("models") ? "crew" : "crews"} ${option.quantity === null ? noun[1] : option.quantity === 1 ? `one ${noun[0]}` : `${option.quantity} ${noun[1]}`} from `
+                                    : ""}
                           <Sections
                             sections={sections}
                             categoryHref={categoryHref}
