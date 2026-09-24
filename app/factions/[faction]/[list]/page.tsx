@@ -214,10 +214,12 @@ const buildEntry = (
     }
   }
 
+  const grades = profiles.filter(({ alternative }) => alternative >= 0);
+
   const graded =
     entry.points === null &&
-    profiles.length > 1 &&
-    profiles.every(({ id }) => gradeByProfile.has(id));
+    grades.length > 1 &&
+    grades.every(({ id }) => gradeByProfile.has(id));
 
   const wargearCardsMax =
     profiles.length > 0 &&
