@@ -44,7 +44,9 @@ last-resort prose field and should normally be null.
 - `alternative` — profiles with equal values coexist; different values are
   **alternative compositions**. The graded character is the case: Inquisitor
   0, Master Inquisitor 1, Inquisitor Lord 2 — one model at one grade. Same
-  semantics as `unit_profile_weapons.alternative`.
+  semantics as `unit_profile_weapons.alternative`. A negative `alternative`
+  (−1) marks an escort present in every composition: it never takes a "—or—"
+  and needs no grade price.
 - `mastery_level` and `wargear_cards_max` render as a sub-line under the
   profile name ("Mastery 4 · 1 wargear card"). A psyker character with no
   printed level takes its psi-level from `w` — the hero level, 1 to 4 — and
@@ -267,5 +269,5 @@ entry it covers, and keep those entries adjacent in `position`.
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;
 the statements are recorded in the project docs named above and are backfilled
-by `supabase/migrations/20260902090000_backfill_direct_sql_of_27_august.sql`.
+by `supabase/migrations/20260902111750_backfill_direct_sql_of_27_august.sql`.
 From batch 4 onward every schema change goes in as a migration.

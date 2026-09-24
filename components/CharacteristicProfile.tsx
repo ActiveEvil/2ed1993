@@ -30,6 +30,9 @@ export type CharacteristicRow = Characteristics & {
 
 const characteristic = (value: string | null): string => value ?? DASH;
 
+// A negative alternative marks an escort present in every composition.
+const alternates = (a = 0, b = 0): boolean => a !== b && a >= 0 && b >= 0;
+
 const HEAD_CELL = "py-1 font-subtitle text-xs text-white";
 const CELL = "py-1";
 
@@ -88,10 +91,11 @@ export const CharacteristicTable: React.FC<{
         <tbody className="font-semibold text-base md:text-lg">
           {rows.map((row, index) => {
             const orAbove =
-              index > 0 && row.alternative !== rows[index - 1].alternative;
+              index > 0 &&
+              alternates(row.alternative, rows[index - 1].alternative);
             const orBelow =
               index < rows.length - 1 &&
-              rows[index + 1].alternative !== row.alternative;
+              alternates(rows[index + 1].alternative, row.alternative);
 
             return (
               <tr
