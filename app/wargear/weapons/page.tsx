@@ -46,7 +46,7 @@ export default async function Page() {
     supabase
       .from("weapons")
       .select(
-        "id, name, category_id, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
+        "id, name, category_id, counts_as_weapon_id, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
       )
       .order("name")
       .order("position", { referencedTable: "weapon_profiles" }),
@@ -148,22 +148,32 @@ export default async function Page() {
                     <SectionHeading>{section.category}</SectionHeading>
                     {section.items.map((item) => {
                       const weaponId = generateAnchorId(item.name);
+                      const countsAs =
+                        weapons.find(
+                          ({ id }) => id === item.counts_as_weapon_id,
+                        ) ?? null;
+                      const source =
+                        countsAs && !item.weapon_profiles.length
+                          ? countsAs
+                          : item;
+                      const sourceId = generateAnchorId(source.name);
                       const search = [
                         item.name,
-                        ...item.weapon_profiles.flatMap((profile) => [
+                        ...(countsAs ? [countsAs.name] : []),
+                        ...source.weapon_profiles.flatMap((profile) => [
                           profile.name ?? "",
                           ...profile.weapon_special_rules.map(
                             ({ name }) => name,
                           ),
                         ]),
-                        item.profile_description ? "unique rules" : "",
+                        source.profile_description ? "unique rules" : "",
                       ]
                         .join(" ")
                         .toLowerCase();
 
                       const specials = [
                         ...new Set(
-                          item.weapon_profiles.flatMap((profile) =>
+                          source.weapon_profiles.flatMap((profile) =>
                             profile.weapon_special_rules.map(
                               ({ name }) => name,
                             ),
@@ -175,8 +185,8 @@ export default async function Page() {
                         ...specials.map(
                           (name) => `${generateAnchorId(name)}_Rule`,
                         ),
-                        ...(item.profile_description
-                          ? [`${weaponId}_Rules`]
+                        ...(source.profile_description
+                          ? [`${sourceId}_Rules`]
                           : []),
                       ].join(" ");
 
@@ -196,8 +206,25 @@ export default async function Page() {
                             </HighlighterLink>
                           }
                           special={
-                            specials.length || item.profile_description ? (
+                            countsAs ||
+                            specials.length ||
+                            source.profile_description ? (
                               <>
+                                {countsAs && (
+                                  <>
+                                    {"Counts as "}
+                                    <HighlighterLink
+                                      className="underline underline-offset-4"
+                                      href={`/wargear/weapons#${generateAnchorId(countsAs.name)}`}
+                                    >
+                                      {countsAs.name}
+                                    </HighlighterLink>
+                                    {Boolean(
+                                      specials.length ||
+                                      source.profile_description,
+                                    ) && MIDDOT}
+                                  </>
+                                )}
                                 {specials.map((name, index) => (
                                   <Fragment key={name}>
                                     {index > 0 && MIDDOT}
@@ -209,12 +236,12 @@ export default async function Page() {
                                     </HighlighterLink>
                                   </Fragment>
                                 ))}
-                                {item.profile_description && (
+                                {source.profile_description && (
                                   <>
                                     {specials.length > 0 && MIDDOT}
                                     <HighlighterLink
                                       className="underline underline-offset-4"
-                                      href={`/wargear/weapons#${weaponId}_Rules`}
+                                      href={`/wargear/weapons#${sourceId}_Rules`}
                                     >
                                       Unique rules
                                     </HighlighterLink>
@@ -223,11 +250,11 @@ export default async function Page() {
                               </>
                             ) : undefined
                           }
-                          profiles={item.weapon_profiles.map(
+                          profiles={source.weapon_profiles.map(
                             (profile, index) => ({
                               key: index,
                               label:
-                                item.weapon_profiles.length > 1
+                                source.weapon_profiles.length > 1
                                   ? profile.name
                                   : null,
                               cells: closeCombat

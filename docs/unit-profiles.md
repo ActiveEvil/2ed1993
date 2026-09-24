@@ -64,6 +64,13 @@ choice only** — a whole-squad substitution is an option, not a loadout
 alternative, even when free (the Guardian laspistol call). `quantity` covers
 "two laspistols". Position is explicit and follows the printed order.
 
+A weapon the book names but prints no profile for is a `weapons` row with
+`counts_as_weapon_id` pointing at the weapon it fights as (ruling 48: the
+Force Staff counts as a Force Rod). Loadouts, options and wargear lists print
+the book's name and link to its own strip on `/wargear/weapons`, which carries
+the other weapon's profile under a "Counts as Force Rod" line; nothing is
+copied.
+
 **`unit_profile_armour`** — per profile; mixed suits/fields/shields are
 multiple rows. `save_override` carries the save where the printed entry gives
 one the armour itself does not (the Rough Riders mounted 5+, the Eldar aspect
@@ -80,7 +87,10 @@ One row per item. The columns:
     naming the displaced item (constraint: a row naming a `replaces_*` must
     be mode `replace`);
   - `add_or_replace` — the combination ("additional or alternative");
-  - `take_any` — open access to the listed sections.
+  - `take_any` — open access to the listed sections;
+  - `crew` — the models man one item from the sections rather than carry it
+    ("Servitor – crews one weapon from Support Weapons", "Gretchin, all
+    models – crew one piece from Runtherd Artillery").
 - `quantity` — how many of the granted thing; **null means unbounded**
   ("additional weapons" rather than "an additional weapon").
 - Scope, exactly one reading:
@@ -95,6 +105,15 @@ One row per item. The columns:
   `granted_unit_id` (an accompanying unit, e.g. a transport once it exists),
   `to_unit_profile_id` (a **profile upgrade** — the Veteran Sergeant
   pattern).
+- `alternative` — options sharing a non-zero value are alternatives: the
+  model or unit takes one of them (the Beastmen shield or two-handed weapon,
+  the Tarantula's five pairs). 0 is not part of a choice. The semantics are
+  `datafax_weapons.alternative`'s, not the loadout's: a lone non-zero value
+  pairs with nothing.
+- `optional` — false where the option is not a choice. On a row that grants
+  something, the grant is compulsory (a forced card); a `crew` row is
+  compulsory by nature; on a note-only row it is a standing statement (who commands) and
+  changes nothing on the page.
 - `restriction` — a short qualifying line rendered under the row ("The
   leader and/or one other model.").
 - `note` — gate-clean prose for what structure cannot hold; voice per
@@ -120,11 +139,15 @@ Veteran Abilities rows carry `faction_id` 1 and reach the site through
 — one rule, many units, across factions where the book shares it (Repair
 reaches Space Marines, Imperial Guard, Imperial Agents and Squats) — with
 `position` for printed order and `note` for the per-unit variable (Hive Mind's
-12" against 18"). Rules that the core chapters hold are pointers, not copies;
-faction-specific rules are prose; the reader follows the link to the chapter
-for the full text. A rule that more than one faction carries is a core chapter
-with a signpost, never prose on the row: Repair is a `rules` row in
-`vehicle-rules`, and row 14 points at it.
+12" against 18"). `unit_profile_id` gives the rule to one profile rather than
+the whole unit (ruling 46: the Wolf Scout Sergeant is a full Space Marine and
+the Wolf Scouts are not); a composite foreign key keeps the profile inside the
+same unit, and null means every model. A rule still appears once per unit.
+Rules that the core chapters hold are pointers, not copies; faction-specific
+rules are prose; the reader follows the link to the chapter for the full
+text. A rule that more than one faction carries is a core chapter with a
+signpost, never prose on the row: Repair is a `rules` row in `vehicle-rules`,
+and row 14 points at it.
 
 **The faction rules pages show what the faction's units carry.** A faction
 category (`rule_categories.faction_id` set) renders its authored `rules` rows
@@ -226,6 +249,16 @@ and the assignment's note after it. Prose carrying a
 `<section class="chart">` gets a block container and no lead-in dash: the
 chart is a grid and the cell holds it as its own line under the name.
 
+Options sharing a non-zero `alternative` sit together in the order of the
+first, and each after the first opens with an inline **"—or—"**, dropping the
+lead-in when it repeats (*"Servitor, any model – equipped with Hand Flamer"*,
+*"—or— equipped with Laspistol"*). A compulsory grant (`optional` false) reads
+**"must take"** in place of "equipped with" (*"must take Medi-Pack"*),
+except on a `crew` row; in an alternative group the first
+row carries it for the whole choice. A profile-scoped special rule leads with
+the profile, as a per-profile loadout does: *"Wolf Scout Sergeant – Rapid
+Fire"*.
+
 **The noun follows the sections**: weapon/weapons when every granted
 section's name contains "Weapons"; item/equipment otherwise ("additional
 equipment from Armour, Assault Weapons, Special Weapons, Grenades").
@@ -265,6 +298,7 @@ entry it covers, and keep those entries adjacent in `position`.
 | 3 Sep | Unit special rules get a join | `unit_special_rules` and `unit_special_rule_assignments`, on the weapon and armour special-rule shape. `rule_id` points at a rules-chapter rule, `rule` carries faction-specific prose, both together carry a printed exception, and the assignment's `note` carries the per-unit variable. |
 | 18 Sep | Faction pages show carried prose | Signposts and empty faction categories do not render; chapter headings and anchors use the full row name; a rule shared across factions is a core chapter with a signpost (Repair to `vehicle-rules`); the Space Marine Rapid Fire and Shaken rules are `space-marines-rules` rows, each leaving one linked sentence behind. |
 | 18 Sep | Whole-unit phrase | The `whole_unit` lead-in reads "All models" ("Guardian, all models" with a profile). Unit-wide special notes on a multi-model unit (a Chimera transport, a mounted save, a squad-wide rule) are `whole_unit`, never bare "Any model". |
+| 24 Sep | Profile-scoped rules, option choices, counts-as weapons | `unit_special_rule_assignments.unit_profile_id` (ruling 46) prints the rule against its profile; `unit_options.alternative` groups either/or options under "—or—" and `optional` false reads "must take"; `grant_mode` `crew` marks a crew manning a support weapon; `weapons.counts_as_weapon_id` (ruling 48) prints the book's name with the other weapon's profile. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

@@ -2051,6 +2051,7 @@ export type Database = {
           position: number;
           special_rule_id: number;
           unit_id: number;
+          unit_profile_id: number | null;
         };
         Insert: {
           id?: number;
@@ -2058,6 +2059,7 @@ export type Database = {
           position?: number;
           special_rule_id: number;
           unit_id: number;
+          unit_profile_id?: number | null;
         };
         Update: {
           id?: number;
@@ -2065,6 +2067,7 @@ export type Database = {
           position?: number;
           special_rule_id?: number;
           unit_id?: number;
+          unit_profile_id?: number | null;
         };
         Relationships: [
           {
@@ -2080,6 +2083,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "units";
             referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "unit_special_rule_assignments_unit_profile_id_fkey";
+            columns: ["unit_id", "unit_profile_id"];
+            isOneToOne: false;
+            referencedRelation: "unit_profiles";
+            referencedColumns: ["unit_id", "id"];
           },
         ];
       };
