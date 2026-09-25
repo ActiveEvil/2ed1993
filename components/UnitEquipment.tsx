@@ -722,6 +722,15 @@ export const UnitEquipment: React.FC<{
                       {option.grants && (
                         <>
                           {bare && "equipped with "}
+                          {crew &&
+                            !sections.length &&
+                            `${scope?.endsWith("models") ? "crew" : "crews"} ${
+                              option.quantity !== null && option.quantity > 1
+                                ? ""
+                                : /^[aeiou]/i.test(option.grants.name)
+                                  ? "an "
+                                  : "a "
+                            }`}
                           {option.quantity !== null &&
                             option.quantity > 1 &&
                             `${option.quantity} ${TIMES} `}
