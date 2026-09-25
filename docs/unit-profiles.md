@@ -90,7 +90,8 @@ One row per item. The columns:
   - `take_any` — open access to the listed sections;
   - `crew` — the models man one item from the sections rather than carry it
     ("Servitor – crews one weapon from Support Weapons", "Gretchin, all
-    models – crew one piece from Runtherd Artillery").
+    models – crew one piece from Runtherd Artillery"), or man the one weapon
+    the row names ("All models – crew a Rapier Laser Destroyer").
 - `quantity` — how many of the granted thing; **null means unbounded**
   ("additional weapons" rather than "an additional weapon").
 - Scope, exactly one reading:

@@ -38,7 +38,7 @@ const loadList = (faction: string, list: string) =>
   supabase
     .from("army_lists")
     .select(
-      "id, name, description, factions!inner(slug, name), unit_categories(id, category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id), units(id, name, factions(slug), datafaxes(id, points), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, alternative, optional, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category))), unit_special_rule_assignments(position, note, unit_profile_id, rule:unit_special_rules(id, name, rule, rule_id, anchor, rules(id, name, rule_categories(slug))))))), army_list_allowance_sets(id, name, singular, position, army_list_allowance_set_entries(army_list_entry_id, position), army_list_allowance_rules!army_list_allowance_rules_set_id_fkey(id, count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id)), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, rules_heading, rules_intro, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug), datafaxes(points)), special_rule:unit_special_rules(id, name, rule, anchor, rules(name, rule_categories(slug)))))",
+      "id, name, description, factions!inner(slug, name), unit_categories(id, category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id), units(id, name, factions(slug, parent:parent_faction_id(slug)), datafaxes(id, points), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, alternative, optional, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category))), unit_special_rule_assignments(position, note, unit_profile_id, rule:unit_special_rules(id, name, rule, rule_id, anchor, rules(id, name, rule_categories(slug))))))), army_list_allowance_sets(id, name, singular, position, army_list_allowance_set_entries(army_list_entry_id, position), army_list_allowance_rules!army_list_allowance_rules_set_id_fkey(id, count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id)), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, rules_heading, rules_intro, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug, parent:parent_faction_id(slug)), datafaxes(points)), special_rule:unit_special_rules(id, name, rule, anchor, rules(name, rule_categories(slug)))))",
     )
     .eq("slug", list)
     .eq("factions.slug", faction)
@@ -144,6 +144,11 @@ const TRANSPORT_SCOPES: Readonly<Record<string, string>> = {
   squads: "Transport for any squad.",
   characters_and_squads: "Transport for any character or squad.",
 };
+
+const datafaxFactionSlug = (
+  faction: { slug: string; parent: { slug: string } | null } | null,
+  fallback: string,
+): string => faction?.parent?.slug ?? faction?.slug ?? fallback;
 
 const transportLine = (scope: string | null): string | null =>
   scope === null ? null : (TRANSPORT_SCOPES[scope] ?? null);
@@ -343,7 +348,7 @@ const buildEntry = (
           .filter((text): text is string => text !== null),
     rows,
     datafaxHref: datafax
-      ? `/datafaxes/${factionSlug}#${generateAnchorId(entry.units.name)}`
+      ? `/datafaxes/${datafaxFactionSlug(entry.units.factions, listFactionSlug)}#${generateAnchorId(entry.units.name)}`
       : null,
     factionSlug,
     unit: entry.units,
@@ -924,7 +929,7 @@ export default async function Page(props: {
                                 : item.units
                                   ? {
                                       name: item.units.name,
-                                      href: `/datafaxes/${item.units.factions?.slug ?? faction.slug}#${generateAnchorId(item.units.name)}`,
+                                      href: `/datafaxes/${datafaxFactionSlug(item.units.factions, faction.slug)}#${generateAnchorId(item.units.name)}`,
                                     }
                                   : item.special_rule
                                     ? ruleTarget(item.special_rule)
