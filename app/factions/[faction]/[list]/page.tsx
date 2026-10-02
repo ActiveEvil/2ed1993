@@ -171,24 +171,15 @@ const shortestName = (names: readonly string[]): string | null =>
     null,
   );
 
-const profileNotes = (
-  profile: {
-    mastery_level: number | null;
-    wargear_cards_max: number | null;
-    strategy_rating: number | null;
-  },
-  listRating: number | null,
-): string | null => {
+const profileNotes = (profile: {
+  mastery_level: number | null;
+  wargear_cards_max: number | null;
+}): string | null => {
   const notes = [
     profile.mastery_level === null ? null : `Mastery ${profile.mastery_level}`,
     profile.wargear_cards_max === null
       ? null
       : cards(profile.wargear_cards_max),
-    profile.strategy_rating === null ||
-    listRating === null ||
-    profile.strategy_rating === listRating
-      ? null
-      : `Strategy Rating ${profile.strategy_rating}`,
   ].filter((note): note is string => note !== null);
 
   return notes.length ? notes.join(" · ") : null;
@@ -283,21 +274,43 @@ const buildEntry = (
       name: profile.name,
       alternative: profile.alternative,
       count: range(profile.models_min, profile.models_max),
-      note: profileNotes(
-        {
-          mastery_level: profile.mastery_level,
-          wargear_cards_max:
-            wargearCardsMax === null ? profile.wargear_cards_max : null,
-          strategy_rating: profile.strategy_rating,
-        },
-        listRating,
-      ),
+      note: profileNotes({
+        mastery_level: profile.mastery_level,
+        wargear_cards_max:
+          wargearCardsMax === null ? profile.wargear_cards_max : null,
+      }),
       cost: grade ? formatCost(grade.points, grade.basis) : null,
       ...Object.fromEntries(
         CHARACTERISTICS.map(({ key }) => [key, profile[key]]),
       ),
     } as CharacteristicRow;
   });
+
+  const ratingRules = profiles.flatMap((profile) =>
+    profile.strategy_rating === null ||
+    listRating === null ||
+    profile.strategy_rating === listRating
+      ? []
+      : [
+          {
+            position: entry.units.unit_special_rule_assignments.length,
+            note: `${profile.strategy_rating} when commanding the army.`,
+            unit_profile_id: profile.id,
+            rule: {
+              id: -profile.id,
+              name: "Strategy Rating",
+              rule: null,
+              rule_id: null,
+              anchor: "Default_Strategy_Ratings",
+              rules: {
+                id: 11,
+                name: "The Game Steps",
+                rule_categories: { slug: "how-to-play" },
+              },
+            },
+          },
+        ],
+  );
 
   const search = [
     entry.units.name,
@@ -365,7 +378,13 @@ const buildEntry = (
       ? `/datafaxes/${datafaxFactionSlug(entry.units.factions, listFactionSlug)}#${generateAnchorId(entry.units.name)}`
       : null,
     factionSlug,
-    unit: entry.units,
+    unit: {
+      ...entry.units,
+      unit_special_rule_assignments: [
+        ...entry.units.unit_special_rule_assignments,
+        ...ratingRules,
+      ],
+    },
     optionCosts,
     search,
   };
