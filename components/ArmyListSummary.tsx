@@ -35,15 +35,21 @@ export const compositionLimit = (band: CompositionBand): string | null => {
 export const ArmyListSummary: React.FC<{
   bands: CompositionBand[];
   allies: AllyLink[];
+  strategyRating: number | null;
   className?: string;
-}> = ({ bands, allies, className }): React.JSX.Element | null => {
+}> = ({
+  bands,
+  allies,
+  strategyRating,
+  className,
+}): React.JSX.Element | null => {
   const limited = bands.flatMap((band) => {
     const limit = compositionLimit(band);
 
     return limit === null ? [] : [{ category: band.category, limit }];
   });
 
-  if (!limited.length && !allies.length) {
+  if (!limited.length && !allies.length && strategyRating === null) {
     return null;
   }
 
@@ -70,6 +76,17 @@ export const ArmyListSummary: React.FC<{
               </Fragment>
             ))}
           </section>
+        </div>
+      )}
+      {strategyRating !== null && (
+        <div className="flex items-baseline gap-3">
+          <Link
+            href="/rules/how-to-play#Default_Strategy_Ratings"
+            className="font-subtitle text-xs uppercase tracking-widest underline underline-offset-4"
+          >
+            Strategy Rating
+          </Link>
+          <span>{strategyRating}</span>
         </div>
       )}
       {Boolean(allies.length) && (

@@ -51,6 +51,20 @@ last-resort prose field and should normally be null.
   profile name ("Mastery 4 · 1 wargear card"). A psyker character with no
   printed level takes its psi-level from `w` — the hero level, 1 to 4 — and
   `mastery_level` is set from it.
+- `strategy_rating` is the rating a character brings when it leads the army.
+  The default belongs to the faction (`factions.strategy_rating`, from the
+  Default Strategy Ratings table in The Game Steps) and every army list of the
+  faction takes it; a faction with a parent and no rating of its own takes the
+  parent's. Imperial Agents and Necrons have none: the Black Codex prints none
+  for Imperial Agents, whose list other armies draw on, and Necrons have a rule
+  in place of a rating, to be entered with their list. The list page prints the
+  default once, in the summary between the composition chart and Allies, and a
+  profile's rating only where it differs from the list's, on the sub-line after
+  Mastery and wargear cards ("Strategy Rating 6"). A rating the book gives as a
+  roll or a bonus (Macharius's D6, the Ancestor Lord's +D3) is a special rule
+  and the column stays null. Sources: Rulebook p10 for the table; Codex
+  Tyranids p74 and the Black Codex p23 for Genestealer Cults at 1; Codex Chaos
+  for Chaos at 3 with the Chaos Space Marine Commander at 5.
 - `points` is per model of this profile (the graded-character and
   per-model-priced-mob mechanism); not rendered on `/profiles`.
 - The nine characteristics are nullable **text**, as `weapon_profiles` and
@@ -211,11 +225,11 @@ section** (sections alternate base/stripe, so the shade changes exactly at
 each label), one row per item, labels repeated `sr-only` on continuation
 rows. Every lead-in joins its content with ` – `.
 
-Statline: model counts inline (`×1`, `×5–10`); sub-line for Mastery and
-wargear cards; **"—or—"** straddles the boundary between alternative rows
-(absolutely positioned, `aria-hidden`, an `sr-only` "or" kept for screen
-readers), and the rows flanking that boundary take `pt-4`/`pb-4` so it sits
-in clear space.
+Statline: model counts inline (`×1`, `×5–10`); sub-line for Mastery, wargear
+cards and a Strategy Rating that differs from the list's; **"—or—"** straddles
+the boundary between alternative rows (absolutely positioned, `aria-hidden`, an
+`sr-only` "or" kept for screen readers), and the rows flanking that boundary
+take `pt-4`/`pb-4` so it sits in clear space.
 
 WEAPONS and ARMOUR deduplicate to a single unnamed row when every profile
 carries the identical set; otherwise one named row per profile. Loadout
@@ -300,6 +314,7 @@ entry it covers, and keep those entries adjacent in `position`.
 | 18 Sep | Faction pages show carried prose | Signposts and empty faction categories do not render; chapter headings and anchors use the full row name; a rule shared across factions is a core chapter with a signpost (Repair to `vehicle-rules`); the Space Marine Rapid Fire and Shaken rules are `space-marines-rules` rows, each leaving one linked sentence behind. |
 | 18 Sep | Whole-unit phrase | The `whole_unit` lead-in reads "All models" ("Guardian, all models" with a profile). Unit-wide special notes on a multi-model unit (a Chimera transport, a mounted save, a squad-wide rule) are `whole_unit`, never bare "Any model". |
 | 24 Sep | Profile-scoped rules, option choices, counts-as weapons | `unit_special_rule_assignments.unit_profile_id` (ruling 46) prints the rule against its profile; `unit_options.alternative` groups either/or options under "—or—" and `optional` false reads "must take"; `grant_mode` `crew` marks a crew manning a support weapon; `weapons.counts_as_weapon_id` (ruling 48) prints the book's name with the other weapon's profile. |
+| 2 Oct | Strategy Rating | The default sits on `factions` and every list of the faction takes it, inherited from the parent where a faction has none; a character's rating shows only where it differs. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

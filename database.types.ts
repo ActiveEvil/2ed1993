@@ -1168,6 +1168,7 @@ export type Database = {
           name: string;
           parent_faction_id: number | null;
           slug: string;
+          strategy_rating: number | null;
           updated_at: string | null;
         };
         Insert: {
@@ -1177,6 +1178,7 @@ export type Database = {
           name: string;
           parent_faction_id?: number | null;
           slug: string;
+          strategy_rating?: number | null;
           updated_at?: string | null;
         };
         Update: {
@@ -1186,6 +1188,7 @@ export type Database = {
           name?: string;
           parent_faction_id?: number | null;
           slug?: string;
+          strategy_rating?: number | null;
           updated_at?: string | null;
         };
         Relationships: [
