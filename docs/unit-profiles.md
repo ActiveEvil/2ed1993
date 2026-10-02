@@ -59,12 +59,13 @@ last-resort prose field and should normally be null.
   for Imperial Agents, whose list other armies draw on, and Necrons have a rule
   in place of a rating, to be entered with their list. The list page prints the
   default once, in the summary between the composition chart and Allies, and a
-  profile's rating only where it differs from the list's, on the sub-line after
-  Mastery and wargear cards ("Strategy Rating 6"). A rating the book gives as a
-  roll or a bonus (Macharius's D6, the Ancestor Lord's +D3) is a special rule
-  and the column stays null. Sources: Rulebook p10 for the table; Codex
-  Tyranids p74 and the Black Codex p23 for Genestealer Cults at 1; Codex Chaos
-  for Chaos at 3 with the Chaos Space Marine Commander at 5.
+  profile's rating only where it differs from the list's, as a line in the
+  entry's SPECIAL row ("Strategy Rating – 6 when commanding the army."),
+  because the rating applies only when that character commands. A rating the
+  book gives as a roll or a bonus (Macharius's D6, the Ancestor Lord's +D3) is
+  a special rule and the column stays null. Sources: Rulebook p10 for the
+  table; Codex Tyranids p74 and the Black Codex p23 for Genestealer Cults at 1;
+  Codex Chaos for Chaos at 3 with the Chaos Space Marine Commander at 5.
 - `points` is per model of this profile (the graded-character and
   per-model-priced-mob mechanism); not rendered on `/profiles`.
 - The nine characteristics are nullable **text**, as `weapon_profiles` and
@@ -220,16 +221,17 @@ One `ProfileFrame` per entry: the statline table (`text-base` body), a 4px
 divider, then the labelled band (`text-sm`) — WEAPONS, ARMOUR, WARGEAR,
 SPECIAL, SUPPORT, in that order, SPECIAL leading with the
 `unit_special_rule_assignments` rows in `position` order and the
-`unit_options` SPECIAL rows under them, one `tbody` per section, **shading per
-section** (sections alternate base/stripe, so the shade changes exactly at
+`unit_options` SPECIAL rows under them, then a Strategy Rating line where the
+profile's rating differs from the list's, one `tbody` per section, **shading
+per section** (sections alternate base/stripe, so the shade changes exactly at
 each label), one row per item, labels repeated `sr-only` on continuation
 rows. Every lead-in joins its content with ` – `.
 
-Statline: model counts inline (`×1`, `×5–10`); sub-line for Mastery, wargear
-cards and a Strategy Rating that differs from the list's; **"—or—"** straddles
-the boundary between alternative rows (absolutely positioned, `aria-hidden`, an
-`sr-only` "or" kept for screen readers), and the rows flanking that boundary
-take `pt-4`/`pb-4` so it sits in clear space.
+Statline: model counts inline (`×1`, `×5–10`); sub-line for Mastery and
+wargear cards; **"—or—"** straddles the boundary between alternative rows
+(absolutely positioned, `aria-hidden`, an `sr-only` "or" kept for screen
+readers), and the rows flanking that boundary take `pt-4`/`pb-4` so it sits in
+clear space.
 
 WEAPONS and ARMOUR deduplicate to a single unnamed row when every profile
 carries the identical set; otherwise one named row per profile. Loadout
