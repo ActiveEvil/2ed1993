@@ -177,6 +177,12 @@ entry. Settled 18 September:
   through `ruleHref`. The Chaos signposts that point at authored chapters on
   the same page drop like any other, so those chapters carry no "Carried by"
   line.
+- **The Chaos Marks are one authored chapter, `rules` 116 "Chaos
+  Champions"**, first in `chaos-rules`, with an h3 for each Mark. The four
+  Mark rows are signposts into it (`anchor` `Mark_of_Khorne` and so on). A
+  character who serves a god of the player's choice carries the "Chaos
+  Champion" signpost, with a `note`; the Noise Marine Champion carries Mark of
+  Slaanesh. A Mark with no carrier keeps its row for the Codex Chaos list.
 - **Prose-plus-pointer rows render as chapters**, opening with "See X in Y."
 - **The chapter heading and its anchor use the full row name**, qualifier
   included — "Leadership (Macharius)", id `Leadership_Macharius`
