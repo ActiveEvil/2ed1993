@@ -55,14 +55,14 @@ const WORDS = [
   "twelve",
 ];
 
-const number = (n: number): string => WORDS[n - 1] ?? String(n);
+export const number = (n: number): string => WORDS[n - 1] ?? String(n);
 
 const join = (items: readonly string[], conjunction: "and" | "or"): string =>
   items.length > 1
     ? `${items.slice(0, -1).join(", ")} ${conjunction} ${items[items.length - 1]}`
     : (items[0] ?? "");
 
-const plural = (name: string): string => `${name}s`;
+export const plural = (name: string): string => `${name}s`;
 
 const capitalise = (text: string): string =>
   text.charAt(0).toUpperCase() + text.slice(1);

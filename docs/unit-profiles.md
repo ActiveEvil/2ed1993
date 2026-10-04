@@ -213,6 +213,24 @@ rule ("One per model. May not be chosen for Character models."). Insert an
 army list's sections as its first unit needs them; item-less categories do not
 render on the list page.
 
+**Combination items** — a priced `wargear_items` row that comes with extra
+parts (Terminator Armour with Storm Bolter, Targeter and Power Fist) records
+those parts in `wargear_item_components` and nowhere else: one row per part,
+naming exactly one of `weapon_id`, `armour_id` or `wargear_card_id`, with
+`quantity` and `position`. Position follows the order the book prints the
+parts in. The list page builds the bracket after the item's name from those
+rows in `position` order, "with A, B and C", each part linked to its own entry
+as item names are. A quantity above one prints as a word and a plural ("with
+two Death Spinner Monofilament Guns"); the plural adds an s, as the allowance
+lines do. A pair the book prices as one item is one part at quantity 1: Codex
+Space Wolves p55 prints "Lightning Claws (Pair, no other weapons)", so
+Terminator armour with Lightning Claws carries Lightning Claws once.
+`restriction` keeps only what a component cannot say, such as "Harlequins
+only" or the Frag and Krak missiles of the Dark Reaper Exarch's Missile
+Launcher, and follows the parts in the same bracket after a semicolon. Writing
+a part in both places was rejected, because two records of one fact can
+disagree. Ruled by Thomas 4 October 2026.
+
 **Upgrades are both a linked entry and an inline option.** A printed
 upgrade with its own statline (Veteran Sergeants) is authored as its own
 unit — it owns its statline, loadout, armour and wargear access once,
@@ -323,6 +341,7 @@ entry it covers, and keep those entries adjacent in `position`.
 | 18 Sep | Whole-unit phrase | The `whole_unit` lead-in reads "All models" ("Guardian, all models" with a profile). Unit-wide special notes on a multi-model unit (a Chimera transport, a mounted save, a squad-wide rule) are `whole_unit`, never bare "Any model". |
 | 24 Sep | Profile-scoped rules, option choices, counts-as weapons | `unit_special_rule_assignments.unit_profile_id` (ruling 46) prints the rule against its profile; `unit_options.alternative` groups either/or options under "—or—" and `optional` false reads "must take"; `grant_mode` `crew` marks a crew manning a support weapon; `weapons.counts_as_weapon_id` (ruling 48) prints the book's name with the other weapon's profile. |
 | 2 Oct | Strategy Rating | The default sits on `factions` and every list of the faction takes it, inherited from the parent where a faction has none; a character's rating shows only where it differs. |
+| 4 Oct | Combination items | `wargear_item_components` is the one record of an item's extra parts, in printed order, and the list page builds the bracket from it; `restriction` keeps only what a component cannot say, after a semicolon in the same bracket. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;
