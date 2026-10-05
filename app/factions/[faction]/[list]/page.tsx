@@ -39,7 +39,7 @@ const loadList = (faction: string, list: string) =>
   supabase
     .from("army_lists")
     .select(
-      "id, name, published_year, description, factions!inner(slug, name, strategy_rating, parent:parent_faction_id(strategy_rating)), unit_categories(id, category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id), units(id, name, factions(slug, parent:parent_faction_id(slug)), datafaxes(id, points), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, strategy_rating, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, alternative, optional, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category, wargear_items(special_rule_id)))), unit_special_rule_assignments(position, note, unit_profile_id, rule:unit_special_rules(id, name, rule, rule_id, anchor, wargear_items(id), rules(id, name, rule_categories(slug))))))), army_list_allowance_sets(id, name, singular, position, army_list_allowance_set_entries(army_list_entry_id, position), army_list_allowance_rules!army_list_allowance_rules_set_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_set_id, per_rule_id)), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, rules_heading, rules_intro, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug, parent:parent_faction_id(slug)), datafaxes(points)), special_rule:unit_special_rules(id, name, rule, anchor, rules(name, rule_categories(slug))), wargear_item_components(id, position, quantity, weapons(name), armour(name), card:wargear_cards(name))))",
+      "id, name, published_year, description, factions!inner(slug, name, strategy_rating, parent:parent_faction_id(strategy_rating)), unit_categories(id, category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id), units(id, name, factions(slug, parent:parent_faction_id(slug)), unit_types(name), datafaxes(id, points), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, strategy_rating, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, alternative, optional, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name), unit_option_categories(position, wargear_categories(category, wargear_items(special_rule_id)))), unit_special_rule_assignments(position, note, unit_profile_id, rule:unit_special_rules(id, name, rule, rule_id, anchor, wargear_items(id), rules(id, name, rule_categories(slug))))))), army_list_allowance_sets(id, name, singular, position, army_list_allowance_set_entries(army_list_entry_id, position), army_list_allowance_rules!army_list_allowance_rules_set_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id)), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, rules_heading, rules_intro, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug, parent:parent_faction_id(slug)), unit_types(name), datafaxes(points)), special_rule:unit_special_rules(id, name, rule, anchor, rules(name, rule_categories(slug))), wargear_item_components(id, position, quantity, weapons(name), armour(name), card:wargear_cards(name))))",
     )
     .eq("slug", list)
     .eq("factions.slug", faction)
@@ -66,6 +66,10 @@ const loadList = (faction: string, list: string) =>
     })
     .order("position", {
       referencedTable: "unit_categories.army_list_entries.units.unit_options",
+    })
+    .order("position", {
+      referencedTable:
+        "unit_categories.army_list_entries.units.unit_options.unit_option_categories",
     })
     .order("position", {
       referencedTable:
@@ -151,10 +155,21 @@ const TRANSPORT_SCOPES: Readonly<Record<string, string>> = {
   characters_and_squads: "Transport for any character or squad.",
 };
 
-const datafaxFactionSlug = (
-  faction: { slug: string; parent: { slug: string } | null } | null,
-  fallback: string,
-): string => faction?.parent?.slug ?? faction?.slug ?? fallback;
+const datafaxHref = (unit: {
+  name: string;
+  factions: { slug: string; parent: { slug: string } | null } | null;
+  unit_types: { name: string };
+  datafaxes: unknown;
+}): string | null => {
+  const page =
+    unit.unit_types.name === "Fortification"
+      ? "fortifications"
+      : (unit.factions?.parent?.slug ?? unit.factions?.slug);
+
+  return unit.datafaxes && page
+    ? `/datafaxes/${page}#${generateAnchorId(unit.name)}`
+    : null;
+};
 
 const transportLine = (scope: string | null): string | null =>
   scope === null ? null : (TRANSPORT_SCOPES[scope] ?? null);
@@ -427,9 +442,7 @@ const buildEntry = (
           })
           .filter((text): text is string => text !== null),
     rows,
-    datafaxHref: datafax
-      ? `/datafaxes/${datafaxFactionSlug(entry.units.factions, listFactionSlug)}#${generateAnchorId(entry.units.name)}`
-      : null,
+    datafaxHref: datafaxHref(entry.units),
     factionSlug,
     unit: {
       ...entry.units,
@@ -773,7 +786,10 @@ export default async function Page(props: {
         : []),
     ];
 
-    const [subtitle, title] = list.name.split(": ");
+    const separator = list.name.indexOf(": ");
+    const subtitle =
+      separator === -1 ? undefined : list.name.slice(0, separator);
+    const title = separator === -1 ? list.name : list.name.slice(separator + 2);
 
     return (
       <>
@@ -1038,7 +1054,7 @@ export default async function Page(props: {
                                 : item.units
                                   ? {
                                       name: item.units.name,
-                                      href: `/datafaxes/${datafaxFactionSlug(item.units.factions, faction.slug)}#${generateAnchorId(item.units.name)}`,
+                                      href: datafaxHref(item.units),
                                     }
                                   : item.special_rule
                                     ? ruleTarget(item.special_rule)
@@ -1056,7 +1072,7 @@ export default async function Page(props: {
                                 ? formatPoints(item.points)
                                 : datafaxPoints !== null
                                   ? formatPoints(datafaxPoints)
-                                  : item.units
+                                  : item.units && datafaxHref(item.units)
                                     ? "See Datafax"
                                     : "";
                             const search = [
@@ -1082,12 +1098,18 @@ export default async function Page(props: {
                                 }
                                 className="flex items-baseline gap-2 text-lg"
                               >
-                                <Link
-                                  href={target.href}
-                                  className="whitespace-nowrap underline underline-offset-4"
-                                >
-                                  {target.name}
-                                </Link>
+                                {target.href === null ? (
+                                  <span className="whitespace-nowrap">
+                                    {target.name}
+                                  </span>
+                                ) : (
+                                  <Link
+                                    href={target.href}
+                                    className="whitespace-nowrap underline underline-offset-4"
+                                  >
+                                    {target.name}
+                                  </Link>
+                                )}
                                 {(parts.length > 0 || item.restriction) && (
                                   <span className="text-sm">
                                     (

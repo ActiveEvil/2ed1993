@@ -225,15 +225,17 @@ export const MissionCardRandomiser: React.FC<{
               type="checkbox"
               id="Fighting_As_Tyranids"
               checked={fightingAsTyranids}
-              onChange={() => {
-                setFightingAsTyranids(!fightingAsTyranids);
+              onChange={(e) => {
+                const checked = e.target.checked;
+
+                setFightingAsTyranids(checked);
                 setOrigins((previous) => {
                   const next = new Set(previous);
 
-                  if (next.has(originCodexTyranids)) {
-                    next.delete(originCodexTyranids);
-                  } else {
+                  if (checked) {
                     next.add(originCodexTyranids);
+                  } else {
+                    next.delete(originCodexTyranids);
                   }
 
                   return next;

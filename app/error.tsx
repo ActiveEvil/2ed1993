@@ -2,7 +2,8 @@
 
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { startTransition, useEffect } from "react";
 
 export default function Error({
   error,
@@ -11,6 +12,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }): React.JSX.Element {
+  const router = useRouter();
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -55,7 +58,12 @@ export default function Error({
 
         <div className="flex flex-col gap-8 items-start">
           <button
-            onClick={reset}
+            onClick={() =>
+              startTransition(() => {
+                router.refresh();
+                reset();
+              })
+            }
             className="px-4 py-1 rounded-none border-4 border-black font-subtitle shadow-lg"
           >
             Try again

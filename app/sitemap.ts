@@ -1,5 +1,5 @@
 import { hasFactionChapter } from "@/lib/anchors";
-import { supabase } from "@/lib/supabase";
+import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { MetadataRoute } from "next";
 
 export const revalidate = 3600;
@@ -85,98 +85,97 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  try {
-    const factionsPages: MetadataRoute.Sitemap = [];
-    const { data: factions } = await supabase
-      .from("factions")
-      .select(
-        "id, slug, parent_faction_id, created_at, updated_at, army_lists(slug, created_at, updated_at)",
-      );
-    const { data: datafaxUnits } = await supabase
-      .from("units")
-      .select("faction_id, datafaxes!inner(id)");
+  const factionsPages: MetadataRoute.Sitemap = [];
+  const { data: factions, error: factionsError } = await supabase
+    .from("factions")
+    .select(
+      "id, slug, parent_faction_id, created_at, updated_at, army_lists(slug, created_at, updated_at)",
+    );
+  const { data: datafaxUnits, error: datafaxUnitsError } = await supabase
+    .from("units")
+    .select("faction_id, datafaxes!inner(id)");
 
-    if (factions) {
-      const factionIdsWithDatafaxes = new Set(
-        (datafaxUnits ?? [])
-          .map(({ faction_id }) => faction_id)
-          .filter((id): id is number => id !== null),
-      );
-      const hasDatafaxes = (factionId: number): boolean =>
-        factionIdsWithDatafaxes.has(factionId) ||
-        factions.some(
-          (other) =>
-            other.parent_faction_id === factionId &&
-            factionIdsWithDatafaxes.has(other.id),
-        );
+  assertNoQueryErrors("/sitemap.xml", factionsError, datafaxUnitsError);
 
-      for (const faction of factions) {
+  if (factions) {
+    const factionIdsWithDatafaxes = new Set(
+      (datafaxUnits ?? [])
+        .map(({ faction_id }) => faction_id)
+        .filter((id): id is number => id !== null),
+    );
+    const hasDatafaxes = (factionId: number): boolean =>
+      factionIdsWithDatafaxes.has(factionId) ||
+      factions.some(
+        (other) =>
+          other.parent_faction_id === factionId &&
+          factionIdsWithDatafaxes.has(other.id),
+      );
+
+    for (const faction of factions) {
+      factionsPages.push({
+        url: `${baseUrl}/factions/${faction.slug}`,
+        lastModified: new Date(faction.updated_at || faction.created_at),
+        changeFrequency: "weekly",
+        priority: 0.7,
+      });
+
+      if (faction.parent_faction_id === null && hasDatafaxes(faction.id)) {
         factionsPages.push({
-          url: `${baseUrl}/factions/${faction.slug}`,
+          url: `${baseUrl}/datafaxes/${faction.slug}`,
           lastModified: new Date(faction.updated_at || faction.created_at),
+          changeFrequency: "weekly",
+          priority: 0.5,
+        });
+      }
+
+      for (const list of faction.army_lists) {
+        factionsPages.push({
+          url: `${baseUrl}/factions/${faction.slug}/${list.slug}`,
+          lastModified: new Date(list.updated_at || list.created_at),
           changeFrequency: "weekly",
           priority: 0.7,
         });
-
-        if (faction.parent_faction_id === null && hasDatafaxes(faction.id)) {
-          factionsPages.push({
-            url: `${baseUrl}/datafaxes/${faction.slug}`,
-            lastModified: new Date(faction.updated_at || faction.created_at),
-            changeFrequency: "weekly",
-            priority: 0.5,
-          });
-        }
-
-        for (const list of faction.army_lists) {
-          factionsPages.push({
-            url: `${baseUrl}/factions/${faction.slug}/${list.slug}`,
-            lastModified: new Date(list.updated_at || list.created_at),
-            changeFrequency: "weekly",
-            priority: 0.7,
-          });
-        }
       }
     }
-
-    const rulesPages: MetadataRoute.Sitemap = [];
-    const { data: rule_categories } = await supabase
-      .from("rule_categories")
-      .select("slug, created_at, updated_at, faction_id, rules(id)");
-    const { data: assignmentRows } = await supabase
-      .from("unit_special_rule_assignments")
-      .select(
-        "rule:unit_special_rules(rule, wargear_items(id)), units!inner(faction_id)",
-      );
-
-    if (rule_categories) {
-      const factionIdsWithUnitRules = new Set(
-        (assignmentRows ?? [])
-          .filter((row) => row.rule !== null && hasFactionChapter(row.rule))
-          .map(({ units }) => units.faction_id)
-          .filter((id): id is number => id !== null),
-      );
-
-      for (const category of rule_categories) {
-        if (
-          category.faction_id !== null &&
-          category.rules.length === 0 &&
-          !factionIdsWithUnitRules.has(category.faction_id)
-        ) {
-          continue;
-        }
-
-        rulesPages.push({
-          url: `${baseUrl}/rules/${category.slug}`,
-          lastModified: new Date(category.updated_at || category.created_at),
-          changeFrequency: "monthly",
-          priority: 0.7,
-        });
-      }
-    }
-
-    return [...staticPages, ...factionsPages, ...rulesPages];
-  } catch (error) {
-    console.log("Error generating sitemap:", error);
-    return staticPages;
   }
+
+  const rulesPages: MetadataRoute.Sitemap = [];
+  const { data: rule_categories, error: ruleCategoriesError } = await supabase
+    .from("rule_categories")
+    .select("slug, created_at, updated_at, faction_id, rules(id)");
+  const { data: assignmentRows, error: assignmentsError } = await supabase
+    .from("unit_special_rule_assignments")
+    .select(
+      "rule:unit_special_rules(rule, wargear_items(id)), units!inner(faction_id)",
+    );
+
+  assertNoQueryErrors("/sitemap.xml", ruleCategoriesError, assignmentsError);
+
+  if (rule_categories) {
+    const factionIdsWithUnitRules = new Set(
+      (assignmentRows ?? [])
+        .filter((row) => row.rule !== null && hasFactionChapter(row.rule))
+        .map(({ units }) => units.faction_id)
+        .filter((id): id is number => id !== null),
+    );
+
+    for (const category of rule_categories) {
+      if (
+        category.faction_id !== null &&
+        category.rules.length === 0 &&
+        !factionIdsWithUnitRules.has(category.faction_id)
+      ) {
+        continue;
+      }
+
+      rulesPages.push({
+        url: `${baseUrl}/rules/${category.slug}`,
+        lastModified: new Date(category.updated_at || category.created_at),
+        changeFrequency: "monthly",
+        priority: 0.7,
+      });
+    }
+  }
+
+  return [...staticPages, ...factionsPages, ...rulesPages];
 }

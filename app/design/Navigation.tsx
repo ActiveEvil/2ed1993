@@ -143,7 +143,7 @@ export const Navigation: React.FC = (): React.JSX.Element => {
       <Entry
         title="BackToTop"
         source="components/BackToTop.tsx &middot; live bottom right"
-        note="Mounted once in the layout and fixed, so the live one is already here. Not repeated as a specimen: two would stack in the same corner. It appears past one viewport of scroll and returns focus to the skip link."
+        note="Mounted once in the layout and fixed, so the live one is already here. Not repeated as a specimen: two would stack in the same corner. It appears past one viewport of scroll and returns focus to the top of the page."
       />
     </Group>
   );
