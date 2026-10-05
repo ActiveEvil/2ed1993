@@ -578,7 +578,7 @@ export const UnitEquipment: React.FC<{
                           : rulesSlug && !row.rule.wargear_items.length
                             ? `/rules/${rulesSlug}#${generateAnchorId(row.rule.name)}`
                             : null;
-                    const prose = row.rule.rule;
+                    const prose = article === undefined ? row.rule.rule : null;
                     const blockProse = isBlockHtml(prose);
                     const blockNote = isBlockHtml(row.note);
 

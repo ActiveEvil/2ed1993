@@ -200,10 +200,12 @@ entry. Settled 18 September:
   `wargear_items` row, the faction page, the `/rules` index and the sitemap
   leave it out. A unit that carries it links to the rule's article at the foot
   of the Equipment section on the list page being read, at the row's `anchor`
-  or the anchor of its name. On a list that does not stock the rule, the name
-  prints unlinked. Live, this covers Swooping Hawk Wings, Dark Reaper Range
-  Finder and Warp Spider Jump Generator on the Codex Eldar squads; batch 14e
-  adds the Exarch Warrior Powers the Phoenix Lords carry (ELD-67).
+  or the anchor of its name, and prints the name and any assignment note but
+  not the prose, which appears once, in the article. On a list that does not
+  stock the rule, the name prints unlinked and the prose prints in full. Live,
+  this covers Swooping Hawk Wings, Dark Reaper Range Finder and Warp Spider
+  Jump Generator on the Codex Eldar squads; batch 14e adds the Exarch Warrior
+  Powers the Phoenix Lords carry (ELD-67).
 - **The Space Marine Rapid Fire Rule and The Space Marine Shaken Rule are
   authored rows in `space-marines-rules`.** `shooting` and
   `breaking-rallying` each keep one linked sentence pointing at them, on the
@@ -406,7 +408,7 @@ the database refuses one (ELD-47).
 | 5 Oct | Allowance minimums | `army_list_allowance_rules.min_count`: null prints "Up to", equal to `count` prints "Exactly", below it a range; the parts of a merged line with different minimums each state their own amount. |
 | 5 Oct | Ability sections | An option that opens a section of special-rule items reads "one ability from …" (`add`) or "up to two different powers from …" (`take_any` with `quantity`); `whole_unit` true means bought once for the unit and leads with "The unit –". |
 | 5 Oct | Army list names and years | Book first, faction second ("Codex: Eldar", "Codex Army Lists: Eldar"); the list page swaps the split so the logo is unchanged. `army_lists.published_year` orders the faction page, newest first, then name, and shows on the faction page and in the list page eyebrow only; the title, logo and breadcrumb do not carry it. |
-| 5 Oct | Section rules | A special rule that is an item in an Equipment section links from a unit entry to that section's article on the list page and has no chapter on the faction rules page; on a list that does not stock it, the name prints unlinked. |
+| 5 Oct | Section rules | A special rule that is an item in an Equipment section links from a unit entry to that section's article on the list page and has no chapter on the faction rules page; on a list that does not stock it, the name prints unlinked and the prose prints in full. Where it is stocked, the entry prints the name and any assignment note, not the prose, and the article spaces its paragraphs as the entry does. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

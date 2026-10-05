@@ -1158,7 +1158,7 @@ export default async function Page(props: {
                                 {rule.name}
                               </h4>
                               <div
-                                className="dynamic-content measure"
+                                className="dynamic-content measure flex flex-col gap-2"
                                 dangerouslySetInnerHTML={{
                                   __html: rule.rule ?? "",
                                 }}
