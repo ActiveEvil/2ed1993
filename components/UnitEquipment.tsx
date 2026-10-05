@@ -88,6 +88,7 @@ export type SpecialRule = {
   rule: string | null;
   rule_id: number | null;
   anchor: string | null;
+  wargear_items: { id: number }[];
   rules: {
     id: number;
     name: string;
@@ -304,6 +305,7 @@ export const UnitEquipment: React.FC<{
   optionCosts?: ReadonlyMap<number, string>;
   wargearCardsMax?: number | null;
   entryAnchor?: (unitName: string) => string;
+  sectionRules?: ReadonlyMap<number, string>;
 }> = ({
   unit,
   compact = false,
@@ -313,6 +315,7 @@ export const UnitEquipment: React.FC<{
   optionCosts,
   wargearCardsMax,
   entryAnchor = generateAnchorId,
+  sectionRules,
 }): React.JSX.Element | null => {
   const profiles = unit.unit_profiles;
   const options = unit.unit_options;
@@ -566,11 +569,15 @@ export const UnitEquipment: React.FC<{
                   if (row.kind === "rule") {
                     const linked = row.rule.rules;
                     const display = ruleName(row.rule.name);
-                    const href = linked
-                      ? ruleHref(linked, row.rule.anchor)
-                      : rulesSlug
-                        ? `/rules/${rulesSlug}#${generateAnchorId(row.rule.name)}`
-                        : null;
+                    const article = sectionRules?.get(row.rule.id);
+                    const href =
+                      article !== undefined
+                        ? `#${article}`
+                        : linked
+                          ? ruleHref(linked, row.rule.anchor)
+                          : rulesSlug && !row.rule.wargear_items.length
+                            ? `/rules/${rulesSlug}#${generateAnchorId(row.rule.name)}`
+                            : null;
                     const prose = row.rule.rule;
                     const blockProse = isBlockHtml(prose);
                     const blockNote = isBlockHtml(row.note);

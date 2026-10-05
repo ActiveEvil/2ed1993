@@ -6,7 +6,7 @@ import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { TitleBand } from "@/components/TitleBand";
-import { generateAnchorId, ruleHref } from "@/lib/anchors";
+import { generateAnchorId, hasFactionChapter, ruleHref } from "@/lib/anchors";
 import { joinWithinBudget, pageTitle } from "@/lib/metadata";
 import { extractSubsections } from "@/lib/sections";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
@@ -28,7 +28,7 @@ const loadFactionRules = (factionId: number) =>
   supabase
     .from("unit_special_rule_assignments")
     .select(
-      "rule:unit_special_rules(id, name, rule, anchor, rules(id, name, rule_categories(slug, name))), units!inner(id, name, faction_id, army_list_entries(id, unit_categories(army_lists(slug, factions(slug)))))",
+      "rule:unit_special_rules(id, name, rule, anchor, wargear_items(id), rules(id, name, rule_categories(slug, name))), units!inner(id, name, faction_id, army_list_entries(id, unit_categories(army_lists(slug, factions(slug)))))",
     )
     .eq("units.faction_id", factionId)
     .order("id", { referencedTable: "units.army_list_entries" });
@@ -66,7 +66,7 @@ const collectFactionRules = (rows: AssignmentRow[]): FactionRule[] => {
   for (const row of rows) {
     const rule = row.rule;
 
-    if (!rule || rule.rule === null) {
+    if (!rule || rule.rule === null || !hasFactionChapter(rule)) {
       continue;
     }
 

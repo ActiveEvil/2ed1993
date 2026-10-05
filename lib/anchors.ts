@@ -14,6 +14,11 @@ export const ruleHref = (
 ): string =>
   `/rules/${rule.rule_categories.slug}#${anchor ?? generateAnchorId(rule.name)}`;
 
+export const hasFactionChapter = (rule: {
+  rule: string | null;
+  wargear_items: unknown[];
+}): boolean => rule.rule !== null && rule.wargear_items.length === 0;
+
 export const FACET_HASH = "available-";
 
 export const facetHref = (name: string): string =>

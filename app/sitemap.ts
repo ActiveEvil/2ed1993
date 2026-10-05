@@ -1,3 +1,4 @@
+import { hasFactionChapter } from "@/lib/anchors";
 import { supabase } from "@/lib/supabase";
 import { MetadataRoute } from "next";
 
@@ -143,12 +144,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .select("slug, created_at, updated_at, faction_id, rules(id)");
     const { data: assignmentRows } = await supabase
       .from("unit_special_rule_assignments")
-      .select("rule:unit_special_rules(rule), units!inner(faction_id)");
+      .select(
+        "rule:unit_special_rules(rule, wargear_items(id)), units!inner(faction_id)",
+      );
 
     if (rule_categories) {
       const factionIdsWithUnitRules = new Set(
         (assignmentRows ?? [])
-          .filter((row) => row.rule !== null && row.rule.rule !== null)
+          .filter((row) => row.rule !== null && hasFactionChapter(row.rule))
           .map(({ units }) => units.faction_id)
           .filter((id): id is number => id !== null),
       );

@@ -4,7 +4,7 @@ import { dimensionsOf } from "@/components/ImageWithCredit";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
 import { TitleBand } from "@/components/TitleBand";
-import { generateAnchorId } from "@/lib/anchors";
+import { generateAnchorId, hasFactionChapter } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
@@ -38,7 +38,9 @@ export default async function Page() {
       .order("position"),
     supabase
       .from("unit_special_rule_assignments")
-      .select("rule:unit_special_rules(name, rule), units!inner(faction_id)"),
+      .select(
+        "rule:unit_special_rules(name, rule, wargear_items(id)), units!inner(faction_id)",
+      ),
   ]);
   const hero = heroImage?.images ?? null;
 
@@ -58,7 +60,11 @@ export default async function Page() {
     for (const row of assignmentRows ?? []) {
       const faction = row.units.faction_id;
 
-      if (row.rule === null || row.rule.rule === null || faction === null) {
+      if (
+        row.rule === null ||
+        !hasFactionChapter(row.rule) ||
+        faction === null
+      ) {
         continue;
       }
 
