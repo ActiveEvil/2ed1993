@@ -239,6 +239,17 @@ row with `to_unit_profile_id` pointing at it, rendering *"Sergeant –
 upgraded to Veteran Sergeant"* with the name linking to the entry's anchor.
 The upgrade price differs per list and belongs to army list entries.
 
+**Army list names read book first, faction second.** `army_lists.name` is
+"Codex: Eldar" or "Codex Army Lists: Eldar", split at the first ": " into
+subtitle and title on the list page, so the logo shows the faction large with
+the book beneath it. Slugs do not change with the name. The year of
+publication is `army_lists.published_year`, kept out of the name. The faction
+page orders lists by it, newest first, undated lists last, then by name. It
+shows in two places: on the faction page beside each list, and in the list
+page eyebrow after a middle dot. The browser title, the logo and the
+breadcrumb do not carry it, and nothing prints where it is null. Ruled by
+Thomas 5 October 2026.
+
 ## Rendering
 
 One `ProfileFrame` per entry: the statline table (`text-base` body), a 4px
@@ -385,6 +396,7 @@ the database refuses one (ELD-47).
 | 5 Oct | Set members in brackets | A named set's members print in brackets, always singular, after its name on every allowance line that names it, shared final words once; the sentence defining the set is dropped. An unnamed set, or one that is exactly a band, takes no bracket. |
 | 5 Oct | Allowance minimums | `army_list_allowance_rules.min_count`: null prints "Up to", equal to `count` prints "Exactly", below it a range; the parts of a merged line with different minimums each state their own amount. |
 | 5 Oct | Ability sections | An option that opens a section of special-rule items reads "one ability from …" (`add`) or "up to two different powers from …" (`take_any` with `quantity`); `whole_unit` true means bought once for the unit and leads with "The unit –". |
+| 5 Oct | Army list names and years | Book first, faction second ("Codex: Eldar", "Codex Army Lists: Eldar"); the list page swaps the split so the logo is unchanged. `army_lists.published_year` orders the faction page, newest first, then name, and shows on the faction page and in the list page eyebrow only; the title, logo and breadcrumb do not carry it. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

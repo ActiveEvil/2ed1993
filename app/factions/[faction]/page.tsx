@@ -5,7 +5,7 @@ import type { Image } from "@/components/ImageWithCredit";
 import { Logo } from "@/components/Logos";
 import { Panel } from "@/components/Panel";
 import { SectionBar } from "@/components/SectionBar";
-import { TitleBand } from "@/components/TitleBand";
+import { EYEBROW_CLASS, TitleBand } from "@/components/TitleBand";
 import { generateAnchorId } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
@@ -69,9 +69,14 @@ export default async function Page(props: {
   const { data: faction, error: factionError } = await supabase
     .from("factions")
     .select(
-      `id, slug, name, description, army_lists(id, name, slug, unit_categories(category), wargear_categories(category, wargear_items(id)))`,
+      `id, slug, name, description, army_lists(id, name, slug, published_year, unit_categories(category), wargear_categories(category, wargear_items(id)))`,
     )
     .eq("slug", params.faction)
+    .order("published_year", {
+      referencedTable: "army_lists",
+      ascending: false,
+      nullsFirst: false,
+    })
     .order("name", { referencedTable: "army_lists" })
     .order("position", { referencedTable: "army_lists.unit_categories" })
     .order("position", { referencedTable: "army_lists.wargear_categories" })
@@ -97,6 +102,7 @@ export default async function Page(props: {
       return {
         id: list.id,
         name: list.name,
+        year: list.published_year,
         href: `/factions/${faction.slug}/${list.slug}`,
         sections: equipped ? [...sections, "Equipment"] : sections,
       };
@@ -133,19 +139,22 @@ export default async function Page(props: {
             <section className="group flex flex-col">
               <SectionBar as="h2" title="Army Lists" />
               <ContentsTable as="ul">
-                {lists.map(({ id, name, href, sections }) => (
+                {lists.map(({ id, name, year, href, sections }) => (
                   <li
                     key={id}
                     className="flex flex-col md:flex-row gap-2 md:gap-8 px-4 md:px-8 py-4"
                   >
-                    <h3 className="md:w-56 shrink-0 font-subtitle text-lg leading-tight">
-                      <Link
-                        className="hover:underline underline-offset-4"
-                        href={href}
-                      >
-                        {name}
-                      </Link>
-                    </h3>
+                    <div className="md:w-56 shrink-0 flex flex-col gap-1">
+                      <h3 className="font-subtitle text-lg leading-tight">
+                        <Link
+                          className="hover:underline underline-offset-4"
+                          href={href}
+                        >
+                          {name}
+                        </Link>
+                      </h3>
+                      {year && <p className={EYEBROW_CLASS}>{year}</p>}
+                    </div>
                     {sections.length ? (
                       <ul className="flex flex-wrap gap-x-3 gap-y-1 text-base">
                         {sections.map((section) => (

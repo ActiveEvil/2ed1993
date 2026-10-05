@@ -695,6 +695,7 @@ export type Database = {
           faction_id: number;
           id: number;
           name: string;
+          published_year: number | null;
           slug: string;
           updated_at: string | null;
         };
@@ -704,6 +705,7 @@ export type Database = {
           faction_id: number;
           id?: number;
           name: string;
+          published_year?: number | null;
           slug: string;
           updated_at?: string | null;
         };
@@ -713,6 +715,7 @@ export type Database = {
           faction_id?: number;
           id?: number;
           name?: string;
+          published_year?: number | null;
           slug?: string;
           updated_at?: string | null;
         };

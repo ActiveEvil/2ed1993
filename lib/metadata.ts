@@ -68,7 +68,7 @@ export const armyListShortName = (
   name: string,
   factionName: string,
 ): string => {
-  const prefix = `${factionName}: `;
+  const suffix = `: ${factionName}`;
 
-  return name.startsWith(prefix) ? name.slice(prefix.length) : name;
+  return name.endsWith(suffix) ? name.slice(0, -suffix.length) : name;
 };
