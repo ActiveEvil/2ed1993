@@ -3,6 +3,7 @@ import {
   LabelledRow,
   LabelledTable,
 } from "@/components/CharacteristicProfile";
+import { number } from "@/lib/allowance";
 import { generateAnchorId, ruleHref } from "@/lib/anchors";
 import { clsx } from "clsx";
 import Link from "next/link";
@@ -74,7 +75,10 @@ export type EquipmentOption = {
   card: { name: string } | null;
   unit_option_categories: {
     position: number;
-    wargear_categories: { category: string };
+    wargear_categories: {
+      category: string;
+      wargear_items: { special_rule_id: number | null }[];
+    };
   }[];
 };
 
@@ -224,6 +228,28 @@ const Sections: React.FC<{
   </>
 );
 
+const grantsRules = (option: EquipmentOption): boolean =>
+  option.unit_option_categories.length > 0 &&
+  option.unit_option_categories.every(
+    ({ wargear_categories: { wargear_items } }) =>
+      wargear_items.length > 0 &&
+      wargear_items.every(({ special_rule_id }) => special_rule_id !== null),
+  );
+
+const ruleNoun = (sections: string[]): readonly [string, string] => {
+  const words = new Set(
+    sections.map((section) =>
+      section.slice(section.lastIndexOf(" ") + 1).toLowerCase(),
+    ),
+  );
+  const many = words.size === 1 ? [...words][0] : "abilities";
+
+  return [
+    many.endsWith("ies") ? `${many.slice(0, -3)}y` : many.replace(/s$/, ""),
+    many,
+  ];
+};
+
 const optionOf = (row: {
   kind: string;
   option?: EquipmentOption;
@@ -355,6 +381,10 @@ export const UnitEquipment: React.FC<{
     const grantee = option.profile
       ? profiles.find(({ name }) => name === option.profile?.name)
       : undefined;
+
+    if (!isSingleModelUnit && option.whole_unit && grantsRules(option)) {
+      return "The unit";
+    }
 
     return isSingleModelUnit
       ? null
@@ -662,13 +692,20 @@ export const UnitEquipment: React.FC<{
                   const crew = option.grant_mode === "crew";
                   const mustTake =
                     compulsory && granted && !continuation && !crew;
-                  const noun = sections.every((section) =>
-                    section.includes("Weapons"),
-                  )
-                    ? (["weapon", "weapons"] as const)
-                    : crew
-                      ? (["piece", "pieces"] as const)
-                      : (["item", "equipment"] as const);
+                  const rules = grantsRules(option);
+                  const noun = rules
+                    ? ruleNoun(sections)
+                    : sections.every((section) => section.includes("Weapons"))
+                      ? (["weapon", "weapons"] as const)
+                      : crew
+                        ? (["piece", "pieces"] as const)
+                        : (["item", "equipment"] as const);
+                  const counted =
+                    option.quantity === null
+                      ? noun[1]
+                      : option.quantity === 1
+                        ? `one ${noun[0]}`
+                        : `${number(option.quantity)} different ${noun[1]}`;
                   const cost = optionCosts?.get(option.id) ?? null;
                   const blockNote = isBlockHtml(option.note);
                   const leadIn = lead && Boolean(option.profile || scope);
@@ -775,13 +812,17 @@ export const UnitEquipment: React.FC<{
                       {Boolean(sections.length) && (
                         <>
                           {option.grant_mode === "add"
-                            ? `${option.quantity === null ? `additional ${noun[1]}` : option.quantity === 1 ? `an additional ${noun[0]}` : `${option.quantity} additional ${noun[1]}`} from `
+                            ? rules
+                              ? `${counted} from `
+                              : `${option.quantity === null ? `additional ${noun[1]}` : option.quantity === 1 ? `an additional ${noun[0]}` : `${option.quantity} additional ${noun[1]}`} from `
                             : option.grant_mode === "replace"
                               ? `${option.quantity === null ? noun[1] : option.quantity === 1 ? `one ${noun[0]}` : `${option.quantity} ${noun[1]}`} from `
                               : option.grant_mode === "add_or_replace"
                                 ? "additional or alternative weapons from "
                                 : option.grant_mode === "take_any"
-                                  ? "any combination from "
+                                  ? rules
+                                    ? `${option.quantity === null ? `any ${noun[1]}` : `up to ${counted}`} from `
+                                    : "any combination from "
                                   : crew
                                     ? `${scope?.endsWith("models") ? "crew" : "crews"} ${option.quantity === null ? noun[1] : option.quantity === 1 ? `one ${noun[0]}` : `${option.quantity} ${noun[1]}`} from `
                                     : ""}

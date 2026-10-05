@@ -233,6 +233,7 @@ export type Database = {
           created_at: string;
           id: number;
           label: string | null;
+          min_count: number | null;
           note: string | null;
           per_category_id: number | null;
           per_count: number;
@@ -250,6 +251,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           label?: string | null;
+          min_count?: number | null;
           note?: string | null;
           per_category_id?: number | null;
           per_count?: number;
@@ -267,6 +269,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           label?: string | null;
+          min_count?: number | null;
           note?: string | null;
           per_category_id?: number | null;
           per_count?: number;

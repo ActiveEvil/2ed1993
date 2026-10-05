@@ -251,7 +251,7 @@ per section** (sections alternate base/stripe, so the shade changes exactly at
 each label), one row per item, labels repeated `sr-only` on continuation
 rows. Every lead-in joins its content with ` – `.
 
-Statline: model counts inline (`×1`, `×5–10`); sub-line for Mastery and
+Statline: model counts inline (`×1`, `×5–10`, `×9+` where there is no maximum); sub-line for Mastery and
 wargear cards; **"—or—"** straddles the boundary between alternative rows
 (absolutely positioned, `aria-hidden`, an `sr-only` "or" kept for screen
 readers), and the rows flanking that boundary take `pt-4`/`pb-4` so it sits in
@@ -304,6 +304,21 @@ Fire"*.
 section's name contains "Weapons"; item/equipment otherwise ("additional
 equipment from Armour, Assault Weapons, Special Weapons, Grenades").
 
+**An option can open a section of abilities.** A section whose items are all
+special rules (`wargear_items.special_rule_id` set on every item) is read as a
+list of abilities, and the noun is the last word of its name, made singular:
+"ability" for Veteran Abilities, "power" for Exarch Warrior Powers. `add` with a
+`quantity` takes exactly that many, `take_any` with a `quantity` takes up to that
+many, and `take_any` with no `quantity` takes any number. A count above one
+reads "different". `whole_unit` true means the unit buys the ability once,
+whatever its size, and the line leads with "The unit" ("The unit – one ability
+from Veteran Abilities"); otherwise the usual lead-ins apply and the ability is
+per model. `optional` false reads "must take" as elsewhere. The Imperial Guard
+squads carry `add`, quantity 1, `whole_unit` true; the Exarch carries
+`take_any`, quantity 2, `whole_unit` false ("up to two different powers from
+Exarch Warrior Powers"). Both sit under SPECIAL, as the codexes print them
+(VET-3, ELD-62).
+
 **`army_list_entries.note` groups adjacent byte-identical notes.** On the
 list page, consecutive entries within a category whose `note` values are the
 same string are rendered as one block on the group surface with the note
@@ -312,6 +327,30 @@ is exact: a note that differs by a character, or an entry between two
 matching notes with no note of its own, breaks the block and each note
 prints again under its own entry. Author a shared note identically on every
 entry it covers, and keep those entries adjacent in `position`.
+
+**A named allowance set lists its members in brackets.** Wherever an
+allowance line prints a set's name, the members follow it in brackets in
+`position` order: "Anti-grav platforms (Lascannon, Scatter Laser, Heavy Plasma
+Gun, Distort Cannon and Vibro-cannon on Anti-grav Platform): up to one per
+Guardian Squad". Member names in the bracket are always singular. They are
+joined with "and" in the set's own lead and with "or" after "per" ("per clan
+mob (Bad Moons, Blood Axe, Death Skull, Evil Sunz or Snakebite Mob)"). Words
+that end every member's name print once. The bracket repeats on every line
+that names the set, so each line reads on its own, and no separate sentence
+defines the set. A set with no name, or whose
+members are exactly the entries of one band, takes no bracket, because its name
+or the band heading already says what it holds (ELD-46).
+
+**An allowance rule can set a minimum.** `army_list_allowance_rules.min_count`
+is the fewest the army must take per target, on the pattern of `allowance_min`
+on the entry. Null leaves the line as it was, "Up to one per …". Equal to
+`count` the line reads "Exactly one per Eldar Pirates", and below it the line
+prints a range, "One to three per …". "More" follows the number as before
+("Exactly one more per …") and a qualifier still follows a comma. Rules with
+different minimums never share a target list; where the parts of a merged line
+differ, each part states its own amount ("Up to one per Guardian Squad, or
+exactly one per Eldar Pirates"). A rule counted per rule takes no minimum, and
+the database refuses one (ELD-47).
 
 ## The calls
 
@@ -341,7 +380,11 @@ entry it covers, and keep those entries adjacent in `position`.
 | 18 Sep | Whole-unit phrase | The `whole_unit` lead-in reads "All models" ("Guardian, all models" with a profile). Unit-wide special notes on a multi-model unit (a Chimera transport, a mounted save, a squad-wide rule) are `whole_unit`, never bare "Any model". |
 | 24 Sep | Profile-scoped rules, option choices, counts-as weapons | `unit_special_rule_assignments.unit_profile_id` (ruling 46) prints the rule against its profile; `unit_options.alternative` groups either/or options under "—or—" and `optional` false reads "must take"; `grant_mode` `crew` marks a crew manning a support weapon; `weapons.counts_as_weapon_id` (ruling 48) prints the book's name with the other weapon's profile. |
 | 2 Oct | Strategy Rating | The default sits on `factions` and every list of the faction takes it, inherited from the parent where a faction has none; a character's rating shows only where it differs. |
+| 4 Oct | Open-ended sizes | A profile with no `models_max` prints its minimum with a plus (`×9+`), so it no longer reads as a fixed count; a minimum of 0 with no maximum still prints `×0`. |
 | 4 Oct | Combination items | `wargear_item_components` is the one record of an item's extra parts, in printed order, and the list page builds the bracket from it; `restriction` keeps only what a component cannot say, after a semicolon in the same bracket. |
+| 5 Oct | Set members in brackets | A named set's members print in brackets, always singular, after its name on every allowance line that names it, shared final words once; the sentence defining the set is dropped. An unnamed set, or one that is exactly a band, takes no bracket. |
+| 5 Oct | Allowance minimums | `army_list_allowance_rules.min_count`: null prints "Up to", equal to `count` prints "Exactly", below it a range; the parts of a merged line with different minimums each state their own amount. |
+| 5 Oct | Ability sections | An option that opens a section of special-rule items reads "one ability from …" (`add`) or "up to two different powers from …" (`take_any` with `quantity`); `whole_unit` true means bought once for the unit and leads with "The unit –". |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

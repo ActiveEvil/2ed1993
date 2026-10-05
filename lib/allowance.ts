@@ -1,6 +1,7 @@
 type Rule = {
   id: number;
   count: number;
+  min_count: number | null;
   per_count: number;
   note: string | null;
   qualifier: string | null;
@@ -69,6 +70,15 @@ const capitalise = (text: string): string =>
 
 const unique = (items: readonly string[]): string[] => [...new Set(items)];
 
+const suffix = (names: readonly string[][], n = 1): number =>
+  names.every(
+    (name) =>
+      name.length > n &&
+      name[name.length - n] === names[0][names[0].length - n],
+  )
+    ? suffix(names, n + 1)
+    : n - 1;
+
 export const allowances = (
   bands: readonly Band[],
   sets: readonly AllowanceSet[],
@@ -100,11 +110,43 @@ export const allowances = (
   const names = (set: AllowanceSet): string[] =>
     members(set).map(({ units }) => units.name);
 
+  const isBand = (set: AllowanceSet): boolean => {
+    const ids = new Set(members(set).map(({ id }) => id));
+
+    return bands.some(
+      ({ army_list_entries }) =>
+        army_list_entries.length === ids.size &&
+        army_list_entries.every(({ id }) => ids.has(id)),
+    );
+  };
+
+  const listed = (set: AllowanceSet, conjunction: "and" | "or"): string => {
+    const all = names(set).map((name) => name.split(" "));
+    const shared = all.length > 1 ? suffix(all) : 0;
+
+    return shared
+      ? `${join(
+          all.map((name) => name.slice(0, -shared).join(" ")),
+          conjunction,
+        )} ${all[0].slice(-shared).join(" ")}`
+      : join(names(set), conjunction);
+  };
+
+  const called = (
+    name: string,
+    set: AllowanceSet,
+    conjunction: "and" | "or",
+  ): string => (isBand(set) ? name : `${name} (${listed(set, conjunction)})`);
+
   const setSingular = (set: AllowanceSet): string =>
-    set.singular ?? join(names(set), "or");
+    set.singular === null
+      ? join(names(set), "or")
+      : called(set.singular, set, "or");
 
   const setPlural = (set: AllowanceSet, conjunction: "and" | "or"): string =>
-    set.name ?? join(names(set).map(plural), conjunction);
+    set.name === null
+      ? join(names(set).map(plural), conjunction)
+      : called(set.name, set, conjunction);
 
   const homeBand = (set: AllowanceSet): number | undefined => {
     const [first] = set.army_list_allowance_set_entries;
@@ -149,14 +191,23 @@ export const allowances = (
     return null;
   };
 
+  const amount = ({ count, min_count }: Rule): string =>
+    min_count === null
+      ? `up to ${number(count)}`
+      : min_count === count
+        ? `exactly ${number(count)}`
+        : `${number(min_count)} to ${number(count)}`;
+
   const lines = (rules: readonly Rule[], governed: Governed): Line[] => {
     const out: Line[] = [];
     const merged = new Map<
-      number,
-      { id: number; targets: { text: string; order: number }[] }
+      string,
+      { rule: Rule; targets: { text: string; order: number }[] }
     >();
     const counted = new Map<number, { id: number; labels: string[] }>();
     const more = governed.more ? " more" : "";
+    const sentence = (text: string): string =>
+      capitalise(`${governed.lead}${text}`);
 
     const tier = (rule: Rule): string | null => {
       if (rule.per_rule_id === null) {
@@ -193,6 +244,12 @@ export const allowances = (
       const label = tier(rule);
 
       if (label !== null) {
+        if (rule.min_count !== null) {
+          throw new Error(
+            `Allowance rule ${rule.id} counts rule ${rule.per_rule_id} and has a minimum`,
+          );
+        }
+
         if (rule.qualifier !== null) {
           out.push({
             id: rule.id,
@@ -220,23 +277,28 @@ export const allowances = (
       if (rule.qualifier !== null) {
         out.push({
           id: rule.id,
-          text: `${governed.lead}${number(rule.count)}${more} per ${target.text}, ${rule.qualifier}`,
+          text: sentence(
+            `${amount(rule)}${more} per ${target.text}, ${rule.qualifier}`,
+          ),
         });
         continue;
       }
 
-      const group = merged.get(rule.count);
+      const key = `${rule.count}/${rule.min_count}`;
+      const group = merged.get(key);
 
       if (group) {
         group.targets.push(target);
       } else {
-        merged.set(rule.count, { id: rule.id, targets: [target] });
+        merged.set(key, { rule, targets: [target] });
       }
     }
 
-    const parts = [...merged].map(
-      ([count, { targets }]) =>
-        `${number(count)}${more} per ${join(
+    const groups = [...merged.values()];
+    const open = groups.every(({ rule }) => rule.min_count === null);
+    const parts = groups.map(
+      ({ rule, targets }) =>
+        `${open ? number(rule.count) : amount(rule)}${more} per ${join(
           unique(
             [...targets]
               .sort((a, b) => a.order - b.order)
@@ -248,8 +310,8 @@ export const allowances = (
 
     if (parts.length) {
       out.push({
-        id: Math.min(...[...merged.values()].map(({ id }) => id)),
-        text: `${governed.lead}${parts.join(", or ")}`,
+        id: Math.min(...groups.map(({ rule }) => rule.id)),
+        text: sentence(`${open ? "up to " : ""}${parts.join(", or ")}`),
       });
     }
 
@@ -260,40 +322,10 @@ export const allowances = (
     return out.sort((a, b) => a.id - b.id);
   };
 
-  const setLine = (set: AllowanceSet): string | null => {
-    const entries = members(set);
-    const ids = new Set(entries.map(({ id }) => id));
-
-    if (
-      set.name === null ||
-      bands.some(
-        ({ army_list_entries }) =>
-          army_list_entries.length === ids.size &&
-          army_list_entries.every(({ id }) => ids.has(id)),
-      )
-    ) {
-      return null;
-    }
-
-    const all = entries.map(({ units }) => units.name);
-    const last = all.map((name) => name.slice(name.lastIndexOf(" ") + 1));
-    const shared =
-      all.length > 1 &&
-      all.every((name, index) => name.includes(" ") && last[index] === last[0]);
-    const named = shared
-      ? `${join(
-          all.map((name) => name.slice(0, name.lastIndexOf(" "))),
-          "and",
-        )} ${plural(last[0])}`
-      : join(all.map(plural), "and");
-
-    return `${capitalise(set.name)} are the ${named}.`;
-  };
-
   return {
     entry: (entry: Entry): string[] =>
       lines(entry.army_list_allowance_rules, {
-        lead: "Up to ",
+        lead: "",
         more: entry.allowance_max !== null,
         singular: entry.units.name,
         plural: plural(entry.units.name),
@@ -302,26 +334,23 @@ export const allowances = (
       const home = sets.filter((set) => homeBand(set) === band.id);
 
       return [
-        ...home.map(setLine).filter((text): text is string => text !== null),
-        ...[
-          ...lines(band.army_list_allowance_rules, {
-            lead: "Up to ",
+        ...lines(band.army_list_allowance_rules, {
+          lead: "",
+          more: false,
+          singular: null,
+          plural: null,
+        }),
+        ...home.flatMap((set) =>
+          lines(set.army_list_allowance_rules, {
+            lead: `${capitalise(setPlural(set, "and"))}: `,
             more: false,
-            singular: null,
-            plural: null,
+            singular: setSingular(set),
+            plural: setPlural(set, "or"),
           }),
-          ...home.flatMap((set) =>
-            lines(set.army_list_allowance_rules, {
-              lead: `${capitalise(setPlural(set, "and"))}: up to `,
-              more: false,
-              singular: setSingular(set),
-              plural: setPlural(set, "or"),
-            }),
-          ),
-        ]
-          .sort((a, b) => a.id - b.id)
-          .map(({ text }) => text),
-      ];
+        ),
+      ]
+        .sort((a, b) => a.id - b.id)
+        .map(({ text }) => text);
     },
   };
 };
