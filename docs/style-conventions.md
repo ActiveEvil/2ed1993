@@ -847,8 +847,10 @@ output of this file; and it would explode `exemptions.json` from one readable
 entry per line into multi-line objects. Everything else is formatted, and
 `npx prettier --check .` passes clean — keep it that way.
 
-**`2ed1993-schema.sql` is not a true record of the live database.** Read the
-live shape from `information_schema` and `pg_type`.
+**Every schema change goes in as a migration.** `supabase/migrations/` starts
+from a baseline dumped from the live database on 6 October 2026; add to it with
+`supabase migration new` and apply with `supabase db push`, never with SQL run
+directly against the database.
 
 **A new table needs RLS enabled and a public select policy.**
 

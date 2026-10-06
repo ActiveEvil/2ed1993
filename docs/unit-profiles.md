@@ -412,6 +412,7 @@ the database refuses one (ELD-47).
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;
-the statements are recorded in the project docs named above and are backfilled
-by `supabase/migrations/20260902111750_backfill_direct_sql_of_27_august.sql`.
-From batch 4 onward every schema change goes in as a migration.
+the statements are recorded in the project docs named above and were backfilled
+by a 2 September migration. All migrations up to 5 October were folded into a
+single baseline on 6 October; from then on every schema change goes in as a
+migration.
