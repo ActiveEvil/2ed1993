@@ -1,7 +1,7 @@
 "use client";
 
 import { FilterField } from "./FilterField";
-import { FACET_HASH } from "@/lib/anchors";
+import { FACET_HASH, hashId } from "@/lib/anchors";
 import { useEffect, useRef, useState } from "react";
 
 const ROW = "[data-search]";
@@ -81,8 +81,11 @@ export const RowFilter: React.FC<{
 
   useEffect(() => {
     const onHash = () => {
-      const id = decodeURIComponent(window.location.hash.slice(1));
-      if (!id) return;
+      const id = hashId(window.location.hash);
+      if (!id) {
+        setFacet("");
+        return;
+      }
 
       if (id.startsWith(FACET_HASH)) {
         const selected = id.slice(FACET_HASH.length).replace(/-/g, " ");
