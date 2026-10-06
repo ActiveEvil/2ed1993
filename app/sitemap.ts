@@ -93,7 +93,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
   const { data: datafaxUnits, error: datafaxUnitsError } = await supabase
     .from("units")
-    .select("faction_id, datafaxes!inner(id)");
+    .select("faction_id, datafaxes!inner(id), unit_types!inner(name)")
+    .neq("unit_types.name", "Fortification");
 
   assertNoQueryErrors("/sitemap.xml", factionsError, datafaxUnitsError);
 
