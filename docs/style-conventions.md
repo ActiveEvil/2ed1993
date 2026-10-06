@@ -945,7 +945,9 @@ blocks stripped), gendered terms (crewman everywhere; pronouns in `rules`
 only), "die" as a noun (determiner+die and "die roll" — the verb passes),
 second person outside the Golden Rule, inline `<p>` outside `<li>` (`rules`
 only), nested `<a>`/`<strong>`, duplicate ids within a category, dead
-`/rules/…#fragment` links, and duplicate paragraphs across texts.
+`/rules/…#fragment` links, `/rules/…` links to a chapter slug that does not
+exist (from the `chapters` list the dump carries beside `texts`), and duplicate
+paragraphs across texts.
 
 **Known artefact:** running `verify.py` against a single-text JSON reports a
 false `dead_link`, because the anchor population it checks against is derived

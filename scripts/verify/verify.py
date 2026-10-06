@@ -216,7 +216,7 @@ HTML_ONLY = {"tag_balance", "heading_id", "empty_id", "li_id", "stray_ws",
 PLAIN_ONLY = {"plain_entity"}
 
 
-def cross_checks(texts):
+def cross_checks(texts, chapters):
     ids = defaultdict(list)
     for row in texts:
         if row["k"].startswith("rule:"):
@@ -243,6 +243,11 @@ def cross_checks(texts):
             if slug in ids and fragment not in ids[slug]:
                 yield ("dead_link", row["k"], row["n"],
                        f"/rules/{slug}#{fragment} resolves to nothing")
+        if chapters is not None:
+            for match in re.finditer(r'href="/rules/([^"#/?]+)', row["t"]):
+                if match.group(1) not in chapters:
+                    yield ("dead_chapter", row["k"], row["n"],
+                           f"/rules/{match.group(1)} is not a rules chapter")
 
     paragraphs = defaultdict(list)
     for row in texts:
@@ -263,8 +268,14 @@ def main():
     path = args[0] if args else os.path.join(
         os.path.dirname(HERE), "verbatim", "texts.json")
     texts = json.load(open(path, encoding="utf-8"))
+    chapters = None
     if isinstance(texts, dict):
+        if "chapters" in texts:
+            chapters = set(texts["chapters"])
         texts = texts["texts"]
+    if chapters is None:
+        print("no chapter list in the dump, so dead_chapter is skipped; "
+              "re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
@@ -291,7 +302,7 @@ def main():
                     continue
                 failures.append((check, row["k"], row["n"], detail))
 
-    for check, kind, name, detail in cross_checks(texts):
+    for check, kind, name, detail in cross_checks(texts, chapters):
         if excused(check, kind, name, detail):
             excused_count += 1
             if show_exempt:
