@@ -100,7 +100,8 @@ add("wargear_cat_heading", "wargear_categories", "category,rules_heading", "cate
 add("wargear_cat_intro", "wargear_categories", "category,rules_intro", "category", "rules_intro")
 add("equipment_weapon", "equipment_weapons", "category,note", "category", "note")
 
-payload = json.dumps(texts, ensure_ascii=False)
+payload = json.dumps({"texts": texts, "chapters": sorted(categories.values())},
+                     ensure_ascii=False)
 if len(sys.argv) > 1 and sys.argv[1] == "-":
     print(payload)
 else:

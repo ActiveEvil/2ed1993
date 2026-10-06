@@ -1,7 +1,11 @@
--- Every prose column the site renders, as the JSON measure.py expects.
+-- Every prose column the site renders, as the JSON measure.py expects, plus
+-- every rules chapter slug for verify.py.
 -- Run against the live database and save the result as texts.json:
 --   psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json
-select json_agg(json_build_object('k', kind, 'n', name, 't', txt)) from (
+select json_build_object(
+  'texts', json_agg(json_build_object('k', kind, 'n', name, 't', txt)),
+  'chapters', (select json_agg(slug order by slug) from rule_categories)
+) from (
   select 'rule:' || rc.slug, r.name, r.rule from rules r join rule_categories rc on rc.id = r.category_id
   union all select 'weapon',           w.name,   w.profile_description   from weapons w                 where w.profile_description is not null
   union all select 'weapon_rule',      x.name,   x.rule                  from weapon_special_rules x
