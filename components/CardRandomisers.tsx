@@ -1,5 +1,6 @@
 "use client";
 
+import { replaceLocation } from "./RouterHistory";
 import { SectionBar } from "./SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
 import { useState } from "react";
@@ -121,7 +122,7 @@ export const StrategyCardRandomiser: React.FC<{
                 const href =
                   baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
 
-                window.location.replace(new URL(window.location.origin + href));
+                replaceLocation(href);
               }
             }}
           >
@@ -279,7 +280,7 @@ export const MissionCardRandomiser: React.FC<{
                 const href =
                   baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
 
-                window.location.replace(new URL(window.location.origin + href));
+                replaceLocation(href);
               }
             }}
           >

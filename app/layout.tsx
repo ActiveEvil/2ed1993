@@ -1,6 +1,7 @@
 import "./globals.css";
 import { BackToTop } from "@/components/BackToTop";
 import { Insta } from "@/components/Logos";
+import { RouterHistory } from "@/components/RouterHistory";
 import { TopNav } from "@/components/TopNav";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
@@ -92,6 +93,7 @@ export default async function RootLayout({
           </div>
         </footer>
         <BackToTop />
+        <RouterHistory />
         <Analytics />
       </body>
     </html>
