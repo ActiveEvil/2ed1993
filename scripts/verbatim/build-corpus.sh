@@ -92,6 +92,7 @@ one() {
   local words; words="$(wc -w < "$tmp/out.txt" | tr -d ' ')"
   if [ "${words:-0}" -eq 0 ]; then
     printf '  FAILED %-42s 0 words\n' "$base"
+    echo "$base" >> "$FAILED"
     head -3 "$tmp/err" 2>/dev/null | sed 's/^/         /'
   else
     mv "$tmp/out.txt" "$out"
@@ -107,6 +108,7 @@ one() {
 
 echo "source: $SRC"
 probe
+FAILED="$(mktemp)"
 echo "jobs:   $JOBS"
 
 # Batches of JOBS, waiting for each batch. `wait -n` is bash 4+; macOS ships
@@ -123,7 +125,10 @@ wait
 
 gw=$(cat "$HERE"/corpus/gw/*.txt 2>/dev/null | wc -w | tr -d ' ')
 fan=$(cat "$HERE"/corpus/fan/*.txt 2>/dev/null | wc -w | tr -d ' ')
-empty=$(find "$HERE/corpus" -name '*.txt' -size -1k | wc -l | tr -d ' ')
+empty=$(find "$HERE/corpus" -name '*.txt' -size -1024c | wc -l | tr -d ' ')
+failed=$(wc -l < "$FAILED" | tr -d ' ')
+rm -f "$FAILED"
 echo "corpus: $gw GW words, $fan fan words"
-[ "$empty" -gt 0 ] && echo "warning: $empty corpus file(s) under 1k — re-run to retry them"
+[ "$empty" -gt 0 ] && echo "warning: $empty corpus file(s) under 1k — delete and re-run to retry them"
+[ "$failed" -gt 0 ] && { echo "$failed book(s) FAILED — re-run to retry them"; exit 1; }
 exit 0

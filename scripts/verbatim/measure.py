@@ -15,7 +15,7 @@ Corpus lives in corpus/gw and corpus/fan as .txt. GW is the finding; fan
 compilations are a DETECTOR ONLY and never a source to write from — they are
 clean text where GW is noisy OCR, so they catch runs OCR breaks apart.
 """
-import argparse, itertools, json, os, re, sys
+import argparse, html, itertools, json, os, re, sys
 
 THRESHOLD = 8
 NGRAM = 5
@@ -44,9 +44,7 @@ def words(text, markup=True):
                                  flags=re.S | re.I)
         BLOCKQUOTES_STRIPPED += stripped
         text = re.sub(r"<[^>]+>", " ", text)
-    for entity, char in (("&apos;", "'"), ("&mdash;", " "), ("&ndash;", " "),
-                         ("&quot;", '"'), ("&amp;", "&"), ("&deg;", " ")):
-        text = text.replace(entity, char)
+    text = html.unescape(text).replace("\u2019", "'").replace("\u2018", "'")
     return re.findall(r"[a-z0-9+\-']+", text.lower())
 
 
