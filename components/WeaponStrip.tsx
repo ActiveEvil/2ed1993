@@ -17,6 +17,8 @@ export type StripProfile = {
 export type StripSurface = "page" | "card";
 
 const SPANS: Partial<Record<number, string[]>> = {
+  1: ["col-span-6"],
+  2: ["col-span-3", "col-span-3"],
   4: ["col-span-3", "col-span-3", "col-span-3", "col-span-3"],
   6: [
     "col-span-3",

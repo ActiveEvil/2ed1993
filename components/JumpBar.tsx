@@ -1,6 +1,7 @@
 "use client";
 
 import { FILTER_EVENT } from "./RowFilter";
+import { hashId } from "@/lib/anchors";
 import { clsx } from "clsx";
 import { useEffect, useRef, useState } from "react";
 
@@ -64,8 +65,15 @@ export const JumpBar: React.FC<
   useEffect(() => {
     const ids = new Set(items.map(({ id }) => id));
     const onHash = () => {
-      const id = decodeURIComponent(window.location.hash.slice(1));
-      if (ids.has(id)) setActive(id);
+      const id = hashId(window.location.hash);
+      if (ids.has(id)) {
+        setActive(id);
+      } else if (
+        !id &&
+        !items.some((item) => document.getElementById(item.id))
+      ) {
+        setActive(items[0]?.id ?? null);
+      }
     };
 
     requestAnimationFrame(onHash);
