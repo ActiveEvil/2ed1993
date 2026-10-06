@@ -125,7 +125,13 @@ const formatPoints = (points: number): string =>
   `${points}${points === 1 ? "pt" : "pts"}`;
 
 const formatAllowance = (min: number, max: number | null): string | null =>
-  max === null ? null : max === min ? String(min) : `${min}–${max}`;
+  max === null
+    ? min > 0
+      ? `${min}+`
+      : null
+    : max === min
+      ? String(min)
+      : `${min}–${max}`;
 
 const formatCost = (points: number, basis: string | null): string => {
   switch (basis) {
