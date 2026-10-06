@@ -37,6 +37,7 @@ export const JumpBar: React.FC<
   const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
 
   const heightRef = useRef(0);
+  const publishRef = useRef(() => {});
 
   useEffect(() => {
     const element = ref.current;
@@ -51,6 +52,7 @@ export const JumpBar: React.FC<
       heightRef.current = height;
       if (sticky) root.style.setProperty("--jump-bar-height", `${height}px`);
     };
+    publishRef.current = publish;
 
     const observer = new ResizeObserver(publish);
     observer.observe(element);
@@ -158,6 +160,7 @@ export const JumpBar: React.FC<
     const details = detailsRef.current;
     if (!details) return;
     details.open = false;
+    publishRef.current();
     details.querySelector<HTMLElement>("summary")?.focus({
       preventScroll: true,
     });
