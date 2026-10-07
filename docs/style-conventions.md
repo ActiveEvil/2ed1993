@@ -77,6 +77,11 @@ profile-notation rulings (`*` for `Special`, `User` for `As user`, `Varies` for
 `singular` and the allowance rule `qualifier` and `label` as plain-text
 columns.
 
+**Revised 7 October 2026:** the shadow rider corrected to images and
+artefacts; the `text-2xs` caption named as the one exception to the `text-xs`
+floor; the wargear card mat recorded in Surfaces and artefacts and in Yellow;
+the skip-link decision and the `/design` record added to Shell and tokens.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -582,12 +587,13 @@ only the name, and the objective labels on a mission card, are centred. The
 mats are the deck colours: dark blue for mission cards, dark red for
 strategy cards, the discipline colour for psychic powers, mid blue for
 special warp cards, dark blue for wargear cards and the faction colour for
-a datafax. The mission card name sits on its mat in light yellow; every
-other name sits on the face, in dark blue where the original set the
-special warp name in mid blue, because mid blue does not clear AA on the
-dark-scheme card stock. The rider to the shadow rule follows from this: shadows belong to
-Panels and images, and to artefacts, because a printed card floats on the
-page.
+a datafax. The mission card name sits on its mat in light yellow, and the
+wargear card name sits on its mat in white with the points beside it in
+light yellow, as the printed cards set them. Every other name sits on the
+face, in dark blue where the original set the special warp name in mid
+blue, because mid blue does not clear AA on the dark-scheme card stock. The rider to the shadow rule follows from this: shadows belong to images
+and artefacts, because a printed card floats on the page. A Panel, like
+every surface, casts none.
 
 `ImageWithCredit` is the one image component; `GalleryImage` is gone and
 the gallery is a grid of `ImageWithCredit` tiles sharing one `Lightbox`.
@@ -603,8 +609,9 @@ caption and nothing else.
 `2ed-light-yellow` means *current or selected* and nothing else: the current
 nav item, the current rail item, the current target named in the mobile Jump
 bar, the logo ground, and the `:target` highlight (light-yellow at 80% on
-even rows, transient by nature). The one deliberate exception is the mission
-card name on its dark-blue mat, which is a printed cue rather than a state. Notes in a `SectionBar` are
+even rows, transient by nature). Two deliberate exceptions sit on artefact
+mats and are printed cues rather than states: the mission card name, and the
+wargear card points (ruled 7 October 2026). Notes in a `SectionBar` are
 white at `font-normal`. Two controls keep their yellow by decision
 (7 September 2026): the mobile Jump/Close toggle and back-to-top, both of
 which sit over content and were yellow before the refresh; the lightbox
@@ -618,7 +625,8 @@ content or a rail-and-content row. The band carries the art uncropped at
 `aspect-portrait` in a `w-40` column (`w-56` from `lg`), an optional eyebrow
 in Plex `text-xs uppercase tracking-widest`, the H1 in Merriweather (the
 `Logo` on faction and army-list pages), and, on the home and gallery pages
-only, an introductory paragraph. Text never goes below `text-xs`.
+only, an introductory paragraph. Text never goes below `text-xs`, except the image caption's `text-2xs`
+(Surfaces and artefacts).
 
 Pages have a single header type, by decision of 7 September 2026: a
 `TitleBand` with an eyebrow, the title and optional art. The eyebrow carries
@@ -663,6 +671,27 @@ a hidden entry's `data-refs` targets stay visible when a visible entry
 references them; a `data-group` section hides when none of its entries is
 visible; the `data-empty` message shows when nothing matches; and the Jump
 list strikes through a section that the filter has emptied.
+
+### Bypass and focus
+
+The skip link was removed on 7 September 2026 by decision. The heading
+structure is the bypass mechanism for WCAG 2.4.1; this has not been audited
+page by page. Every page's `main` carries `id="main"`, and back-to-top
+returns focus there.
+
+### The `/design` page
+
+`/design` is the rendered record of this section. It shows every component in
+`components/`, page assemblies included, and every class under
+`.dynamic-content`. Each entry names its source file, and specimens use real
+stored content. The page uses the shell, stays `noindex`, is disallowed in
+`robots.ts`, and is kept out of the sitemap and nav. Its scheme switcher lasts
+for the visit only and exists on no other page; the site follows the OS. The
+scheme tokens, card face, striped rows, house rule and contrast table render
+both schemes whatever the switcher says. The contrast table carries the logo
+subtitle as exempt under WCAG 1.4.3 (17 August 2026). `2ed-light-red` and
+`2ed-dark-green` are reserved: declared, shown on `/design`, and used nowhere
+else (7 October 2026).
 
 ## Working practice — hard-won
 

@@ -1,26 +1,21 @@
-import { Panel } from "@/components/Panel";
+import { SectionHeading } from "@/components/Heading";
 import { SectionBar } from "@/components/SectionBar";
+import { generateAnchorId } from "@/lib/anchors";
 import { clsx } from "clsx";
 
-export const LABEL =
-  "font-subtitle text-[11px] uppercase tracking-[0.14em] opacity-60";
+export const LABEL = "font-subtitle text-xs uppercase tracking-widest";
 
-export const Group: React.FC<
-  { id: string; title: string } & React.PropsWithChildren
-> = ({ id, title, children }): React.JSX.Element => (
-  <Panel
-    as="section"
-    id={id}
-    className="flex flex-col gap-8 md:gap-12 w-full max-w-5xl p-4 md:p-8"
+export const Group: React.FC<{ title: string } & React.PropsWithChildren> = ({
+  title,
+  children,
+}): React.JSX.Element => (
+  <section
+    id={generateAnchorId(title)}
+    className="flex flex-col gap-8 md:gap-12"
   >
-    <div className="relative flex flex-col items-center justify-center gap-4 w-full">
-      <hr className="md:absolute -z-10 w-full h-1 bg-black border border-black" />
-      <h2 className="md:px-2 bg-background font-title text-3xl text-center uppercase">
-        {title}
-      </h2>
-    </div>
+    <SectionHeading>{title}</SectionHeading>
     {children}
-  </Panel>
+  </section>
 );
 
 export const Entry: React.FC<
@@ -31,13 +26,13 @@ export const Entry: React.FC<
     note?: React.ReactNode;
   } & React.PropsWithChildren
 > = ({ id, title, source, note, children }): React.JSX.Element => (
-  <section id={id} className="flex flex-col gap-3">
+  <section id={id ?? generateAnchorId(title)} className="flex flex-col gap-3">
     <SectionBar
       title={title}
       note={<span className="whitespace-normal wrap-anywhere">{source}</span>}
     />
     {children}
-    {note && <p className="text-lg">{note}</p>}
+    {note && <p className="max-w-prose text-lg">{note}</p>}
   </section>
 );
 
@@ -51,7 +46,7 @@ export const DualScheme: React.FC<
           key={theme}
           data-theme={theme}
           className={clsx(
-            "flex flex-col gap-3 p-3 bg-background text-foreground border-4 border-black",
+            "flex flex-col gap-3 p-3 bg-background text-foreground border-4 border-frame",
             className,
           )}
         >
@@ -64,12 +59,23 @@ export const DualScheme: React.FC<
   </div>
 );
 
-export const Fixture: React.FC<{ html: string; className?: string }> = ({
-  html,
-  className,
-}): React.JSX.Element => (
+export const Fixture: React.FC<{
+  html: string;
+  measure?: boolean;
+  compact?: boolean;
+  className?: string;
+}> = ({ html, measure, compact, className }): React.JSX.Element => (
   <div
-    className={clsx("dynamic-content flex flex-col gap-4", className)}
+    className={clsx(
+      "dynamic-content flex flex-col gap-4",
+      measure && "measure",
+      compact && "compact",
+      className,
+    )}
     dangerouslySetInnerHTML={{ __html: html }}
   />
 );
+
+export const Source: React.FC<React.PropsWithChildren> = ({
+  children,
+}): React.JSX.Element => <p className={LABEL}>{children}</p>;

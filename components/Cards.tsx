@@ -1,33 +1,9 @@
 import { ImageWithCredit } from "./ImageWithCredit";
 import type { Image } from "./ImageWithCredit";
 import { Logo } from "./Logos";
-import { Panel } from "./Panel";
 import { SectionBar } from "./SectionBar";
 import { clsx } from "clsx";
 import Link from "next/link";
-
-export const IndexCard: React.FC<
-  {
-    href: string;
-    title: string;
-    summary?: string | null;
-    wide?: boolean;
-  } & React.PropsWithChildren
-> = ({ href, title, summary, wide, children }): React.JSX.Element => (
-  <Panel
-    as="article"
-    className={clsx("flex flex-col gap-2 p-4", wide && "col-span-full")}
-  >
-    <Link
-      className="font-subtitle text-2xl leading-tight hover:underline underline-offset-4"
-      href={href}
-    >
-      {title}
-    </Link>
-    {summary && <p className="text-sm">{summary}</p>}
-    {children}
-  </Panel>
-);
 
 export const FactionCard: React.FC<{
   href: string;

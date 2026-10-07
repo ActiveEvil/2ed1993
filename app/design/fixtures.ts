@@ -1,4 +1,15 @@
-export const RANGE_CHART = `<section class="chart" style="grid-template-columns: repeat(6, minmax(0, 1fr));">
+import type { AllyLink, CompositionBand } from "@/components/ArmyListSummary";
+import type { CharacteristicRow } from "@/components/CharacteristicProfile";
+import type { DatafaxData } from "@/components/Datafax";
+import type { Image } from "@/components/ImageWithCredit";
+import type { EquipmentUnit } from "@/components/UnitEquipment";
+import type { WeaponProfileRow } from "@/components/WeaponProfile";
+
+export type Stored = { source: string; html: string };
+
+export const RANGE_CHART: Stored = {
+  source: "rules · Armour Penetration",
+  html: `<section class="chart" style="grid-template-columns: repeat(6, minmax(0, 1fr));;">
     <h3 id="Range_Chart" style="grid-column: span 6 / span 6;">Range Chart</h3>
     <div style="align-content: center;grid-column: span 2 / span 2;"><strong>Below 24&quot;</strong></div>
     <div style="grid-column: span 4 / span 4;">
@@ -16,53 +27,29 @@ export const RANGE_CHART = `<section class="chart" style="grid-template-columns:
     <div style="grid-column: span 4 / span 4;">
         Penetration is reduced by 3.
     </div>
-</section>`;
+</section>`,
+};
 
-export const PAIRS_CHART = `<section class="chart" style="grid-template-columns: repeat(6, minmax(0, 1fr));">
-    <h3 style="text-align: center;grid-column: span 1 / span 1;">Scatter Roll</h3>
-    <h3 style="text-align: center;grid-column: span 2 / span 2;">Artillery Roll</h3>
-    <h3 style="grid-column: span 3 / span 3;">Outcome</h3>
-    <div style="text-align: center;grid-column: span 1 / span 1;">
-        <strong>&uarr;</strong>
-    </div>
-    <div style="text-align: center;grid-column: span 2 / span 2;">
-        <strong>Number</strong>
-    </div>
-    <div style="grid-column: span 3 / span 3;">
-        Move the <strong>Blast Marker</strong> the number of inches rolled on the <strong>Artillery
-            Dice</strong> in the direction indicated by the <strong>Scatter Dice</strong>.
-    </div>
-    <div style="text-align: center;grid-column: span 1 / span 1;">
-        <strong>Hit</strong>
-    </div>
-    <div style="text-align: center;grid-column: span 2 / span 2;">
-        <strong>Number</strong>
-    </div>
-    <div style="grid-column: span 3 / span 3;">
-        The <strong>Blast Marker</strong> does not move.
-    </div>
-    <div style="text-align: center;grid-column: span 1 / span 1;">
-        <strong>&uarr;</strong>
-    </div>
-    <div style="text-align: center;grid-column: span 2 / span 2;">
-        <strong>Misfire</strong>
-    </div>
-    <div style="grid-column: span 3 / span 3;">
-        The projectile was a dud; the shot has no effect at all.
-    </div>
-    <div style="text-align: center;grid-column: span 1 / span 1;">
-        <strong>Hit</strong>
-    </div>
-    <div style="text-align: center;grid-column: span 2 / span 2;">
-        <strong>Misfire</strong>
-    </div>
-    <div style="grid-column: span 3 / span 3;">
-        Place the blast marker over the model that shot and calculate hits as normal. The weapon is
-        destroyed and cannot be used for the rest of the game.
-    </div>
-</section>`;
+export const PAIRS_CHART: Stored = {
+  source: "wargear_cards · Armour Piercing Ammo",
+  html: `<section class="chart" style="grid-template-columns: repeat(6, minmax(0, 1fr));;">
+    <h3 id="Armour_Piercing_Ammo_Chart" style="grid-column: span 6 / span 6;">Armour Piercing Ammo Chart</h3>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">Weapon&apos;s Strength</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">Bonus Penetration Dice</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">1-3</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">+D3</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">4-5</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">+1D6</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">6-7</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">+1D12</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">8-10</div>
+    <div style="text-align: center;align-content: center;grid-column: span 3 / span 3;">+1D20</div>
+</section>`,
+};
 
-export const PROFILE_CHART = `<section class="chart" style="grid-template-columns: repeat(9, minmax(0, 1fr));">
+export const PROFILE_CHART: Stored = {
+  source: "wargear_cards · Night Wing the Psyber Raven",
+  html: `<section class="chart" style="grid-template-columns: repeat(9, minmax(0, 1fr));">
     <div style="padding: calc(var(--spacing) * 1); text-align: center; font-size: var(--text-sm);"><strong>M</strong></div>
     <div style="padding: calc(var(--spacing) * 1); text-align: center; font-size: var(--text-sm);"><strong>WS</strong></div>
     <div style="padding: calc(var(--spacing) * 1); text-align: center; font-size: var(--text-sm);"><strong>BS</strong></div>
@@ -81,9 +68,12 @@ export const PROFILE_CHART = `<section class="chart" style="grid-template-column
     <div style="padding: calc(var(--spacing) * 1); text-align: center; font-size: var(--text-sm);">4</div>
     <div style="padding: calc(var(--spacing) * 1); text-align: center; font-size: var(--text-sm);">1</div>
     <div style="padding: calc(var(--spacing) * 1); text-align: center; font-size: var(--text-sm);">&ndash;</div>
-</section>`;
+</section>`,
+};
 
-export const NARROW_TABLE = `<section class="table-container" style="max-width: 36rem;">
+export const NARROW_TABLE: Stored = {
+  source: "rules · Buildings",
+  html: `<section class="table-container" style="max-width: 36rem;">
     <table>
         <thead>
             <tr>
@@ -125,9 +115,12 @@ export const NARROW_TABLE = `<section class="table-container" style="max-width: 
                 fortifications are constructed from armaplas, ceramite or adamantium.</em>
         </small>
     </p>
-</section>`;
+</section>`,
+};
 
-export const WIDE_TABLE = `<section class="table-container">
+export const WIDE_TABLE: Stored = {
+  source: "rules · Damage",
+  html: `<section class="table-container">
     <table>
         <thead>
             <tr>
@@ -330,9 +323,12 @@ export const WIDE_TABLE = `<section class="table-container">
             </tr>
         </tbody>
     </table>
-</section>`;
+</section>`,
+};
 
-export const BLOCKQUOTE = `<section class="blockquote-container">
+export const BLOCKQUOTE: Stored = {
+  source: "rules · Remember...",
+  html: `<section class="blockquote-container">
     <blockquote>
         <p>
             Warhammer 40,000 is a challenging and involving game, with
@@ -352,21 +348,27 @@ export const BLOCKQUOTE = `<section class="blockquote-container">
     &mdash;Rick Priestley &amp; Andy Chambers,
         <cite>Warhammer 40,000 Rulebook (2nd Edition)</cite>
     </p>
-</section>`;
+</section>`,
+};
 
-export const HOUSE_RULE = `<section class="house-rule">
+export const HOUSE_RULE: Stored = {
+  source: "rules · Running",
+  html: `<section class="house-rule">
     <span class="label">House Rule</span>
     <p>
         It is highly recommended that you disregard this, as it breaks the game. Olden Demon, on YouTube, explains how
         <a href="https://youtu.be/t48UFxFlWeM?si=V-77gjXFmCC-YUvZ&amp;t=308" target="_blank">here</a>.
     </p>
-</section>`;
+</section>`,
+};
 
-export const ORDERED_LIST = `<section class="ordered-list small-markers">
+export const ORDERED_LIST: Stored = {
+  source: "rules · Line of Sight",
+  html: `<section class="ordered-list small-markers">
     <ol>
         <li>
             <p>
-                The target is behind solid <a href="/rules/movement#Terrain">Terrain</a>, such as hills, rock formations, walls, and buildings, which completley cover it. <strong>Line of Sight</strong> blocking terrain is usually agreed by both players during <a href="/rules/how-to-play#Place_Terrain">Terrain Setup</a>.
+                The target is behind solid <a href="/rules/movement#Terrain">Terrain</a>, such as hills, rock formations, walls, and buildings, which completely cover it. <strong>Line of Sight</strong> blocking terrain is usually agreed by both players during <a href="/rules/how-to-play#Place_Terrain">Terrain Setup</a>.
             </p>
         </li>
         <li>
@@ -377,22 +379,557 @@ export const ORDERED_LIST = `<section class="ordered-list small-markers">
         </li>
         <li>
             <p>
-                Any interposing models&mdash;friend or foe&mdash;block <strong>Line of Sight</strong>.
+                An obstacle of about a model&apos;s own height&mdash;a wall, a hedge, a row of scrub&mdash;blocks
+                <strong>Line of Sight</strong>, unless it only partly obscures what stands behind it, as sparse bushes
+                or a chain-link fence do. A model showing above such an obstacle can shoot and be shot at, counting
+                the obstacle as <a href="/rules/shooting#Cover">Cover</a>.
             </p>
+        </li>
+        <li>
             <p>
-                <em>
-                    A common house rule is to allow the second rank of models within the same unit to draw <strong>Line of
-                        Sight</strong> through the first rank, with the exception of <a
-                        href="/rules/weapon-rules#Template_Weapons">Template Weapons</a>.
-                </em>
+                Any interposing models&mdash;friend or foe&mdash;block <strong>Line of Sight</strong>.
             </p>
         </li>
     </ol>
-</section>`;
+</section>`,
+};
 
-export const TEXT_BLOCK = `<section class="text-block">
+export const TEXT_BLOCK: Stored = {
+  source: "rules · Characteristics",
+  html: `<section class="text-block">
   <h4 id="Movement">Movement (M)</h4>
   <p>
   The number of inches a model can move on the tabletop under normal circumstances.
   </p>
-</section>`;
+</section>`,
+};
+
+export const WARBIKE: {
+  source: string;
+  factionSlug: string;
+  unitName: string;
+  unitTypeName: string;
+  datafax: DatafaxData;
+} = {
+  source: "datafaxes · Orks · Warbike",
+  factionSlug: "orks",
+  unitName: "Warbike",
+  unitTypeName: "Vehicle",
+  datafax: {
+    speed_slow: 8,
+    speed_combat: 12,
+    speed_fast: 30,
+    ram_strength: 5,
+    ram_damage: "D4",
+    ram_save_modifier: -2,
+    crew: 1,
+    transport_capacity: null,
+    capacity_inside: null,
+    capacity_roof: null,
+    open_topped: false,
+    large_target: false,
+    deployment: null,
+    location_dice: "D6",
+    note: "No weapon on this card carries a Targeter.",
+    motive_types: { name: "Bikes & Trikes" },
+    datafax_images: [],
+    datafax_weapons: [
+      {
+        id: 78,
+        mount: null,
+        firing_arc_degrees: 90,
+        arc_note: "to the front",
+        linked_group: 1,
+        quantity: 2,
+        alternative: 0,
+        optional: false,
+        points: null,
+        weapons: {
+          name: "Autocannon",
+          weapon_profiles: [
+            {
+              name: null,
+              short_range: "0-20",
+              long_range: "20-72",
+              short_to_hit: "–",
+              long_to_hit: "–",
+              strength: "8",
+              damage: "D6",
+              save_modifier: "-3",
+              armour_penetration: "2D6+8",
+              weapon_special_rules: [
+                { name: "Sustained Fire 1", bearer: null },
+                { name: "Move or Fire", bearer: "Infantry" },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+    datafax_locations: [
+      {
+        id: 75,
+        roll_min: 1,
+        roll_max: 2,
+        name: "Ork Rider",
+        armour_front: null,
+        armour_side_rear: null,
+        damage_chart_id: null,
+        note: 'The rider is hit under the ordinary shooting rules, with <a href="/rules/general-rules#Toughness">Toughness</a> 4, one <a href="/rules/general-rules#Wounds">Wound</a> and <a href="/wargear/armour#Flak_Armour">Flak Armour</a> giving a 6+ save. A dead rider leaves the Warbike <a href="/rules/vehicle-rules#Out_of_Control">Out of Control</a> until it meets terrain it cannot cross, another vehicle, a building or the table edge.',
+      },
+      {
+        id: 76,
+        roll_min: 3,
+        roll_max: 6,
+        name: "Bike",
+        armour_front: 10,
+        armour_side_rear: 12,
+        damage_chart_id: 61,
+        note: null,
+      },
+    ],
+    damage_charts: [
+      {
+        id: 61,
+        name: "Bike",
+        dice: "D6",
+        note: null,
+        damage_chart_results: [
+          {
+            id: 232,
+            roll_min: 1,
+            roll_max: 1,
+            effect:
+              "<p>Both Autocannons are wrecked and cannot be fired again.</p>",
+          },
+          {
+            id: 233,
+            roll_min: 2,
+            roll_max: 2,
+            effect:
+              "<p>The tracks are damaged. From here on the Warbike is held to its <strong>Slow</strong> rate.</p>",
+          },
+          {
+            id: 234,
+            roll_min: 3,
+            roll_max: 3,
+            effect:
+              '<p>The controls are damaged. From now on the bike must pass a D6 roll of 4+ in each of its movement phases: on a success the rider holds it steady and moves normally, otherwise it goes <a href="/rules/vehicle-rules#Out_of_Control">Out of Control</a> for that turn.</p>',
+          },
+          {
+            id: 235,
+            roll_min: 4,
+            roll_max: 4,
+            effect:
+              '<p>The front wheel is torn away and the bike flips, killing the rider. The wreck lands D6&quot; off in a random direction; anything beneath it takes D3 hits at <a href="/rules/general-rules#Strength">Strength</a> 6, saving at -2.</p>',
+          },
+          {
+            id: 236,
+            roll_min: 5,
+            roll_max: 5,
+            effect:
+              '<p>The engine bursts and the rider dies with it. The wreck runs <a href="/rules/vehicle-rules#Out_of_Control">Out of Control</a> for a turn before stopping for good.</p>',
+          },
+          {
+            id: 237,
+            roll_min: 6,
+            roll_max: 6,
+            effect:
+              '<p>The fuel catches and the rider burns. The wreck runs <a href="/rules/vehicle-rules#Out_of_Control">Out of Control</a> next turn and then blows up, dealing D3 <a href="/rules/general-rules#Strength">Strength</a> 8 hits at -3 to every model within 3&quot;.</p>',
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export const ROUGH_RIDERS: {
+  source: string;
+  rulesSlug: string;
+  rows: CharacteristicRow[];
+  unit: EquipmentUnit;
+} = {
+  source:
+    "army_list_entries · Codex Army Lists: Imperial Guard · Squads · Rough Rider Squad",
+  rulesSlug: "imperial-guard-rules",
+  rows: [
+    {
+      id: 49,
+      name: "Rough Rider",
+      alternative: 0,
+      count: "5",
+      note: null,
+      cost: null,
+      m: "4",
+      ws: "3",
+      bs: "3",
+      s: "3",
+      t: "3",
+      w: "1",
+      i: "3",
+      a: "1",
+      ld: "7",
+    },
+    {
+      id: 50,
+      name: "Horse",
+      alternative: 0,
+      count: "5",
+      note: null,
+      cost: null,
+      m: "8",
+      ws: "3",
+      bs: "0",
+      s: "3",
+      t: "3",
+      w: "1",
+      i: "3",
+      a: "1",
+      ld: "5",
+    },
+  ],
+  unit: {
+    name: "Rough Rider Squad",
+    unit_profiles: [
+      {
+        id: 49,
+        name: "Rough Rider",
+        models_max: 5,
+        unit_profile_weapons: [
+          {
+            id: 118,
+            quantity: 1,
+            alternative: 0,
+            position: 0,
+            weapons: { name: "Hunting Lance" },
+          },
+          {
+            id: 117,
+            quantity: 1,
+            alternative: 0,
+            position: 1,
+            weapons: { name: "Laspistol" },
+          },
+          {
+            id: 116,
+            quantity: 1,
+            alternative: 0,
+            position: 2,
+            weapons: { name: "Chainsword" },
+          },
+          {
+            id: 115,
+            quantity: 1,
+            alternative: 0,
+            position: 3,
+            weapons: { name: "Frag Grenade" },
+          },
+        ],
+        unit_profile_armour: [
+          {
+            armour_id: 2,
+            position: 0,
+            alternative: 0,
+            save_override: null,
+            armour: { name: "Flak Armour" },
+          },
+        ],
+        unit_profile_wargear_cards: [],
+      },
+      {
+        id: 50,
+        name: "Horse",
+        models_max: 5,
+        unit_profile_weapons: [],
+        unit_profile_armour: [],
+        unit_profile_wargear_cards: [],
+      },
+    ],
+    unit_options: [
+      {
+        id: 75,
+        option_group: "wargear",
+        alternative: 0,
+        optional: true,
+        models_min: null,
+        models_max: 1,
+        models_per: null,
+        whole_unit: false,
+        quantity: 1,
+        grant_mode: "add",
+        restriction: null,
+        note: null,
+        profile: { name: "Rough Rider" },
+        upgrade: null,
+        replaces: null,
+        grants: null,
+        grants_armour: null,
+        replaces_armour: null,
+        card: null,
+        unit_option_categories: [
+          {
+            position: 0,
+            wargear_categories: {
+              category: "Special Weapons",
+              wargear_items: [
+                { special_rule_id: null },
+                { special_rule_id: null },
+                { special_rule_id: null },
+                { special_rule_id: null },
+              ],
+            },
+          },
+        ],
+      },
+      {
+        id: 59,
+        option_group: "special",
+        alternative: 0,
+        optional: false,
+        models_min: null,
+        models_max: null,
+        models_per: null,
+        whole_unit: true,
+        quantity: 1,
+        grant_mode: null,
+        restriction: null,
+        note: 'The squad has a 5+ <a href="/rules/weapon-rules#Armour_Saves">Armour Save</a> while mounted.',
+        profile: null,
+        upgrade: null,
+        replaces: null,
+        grants: null,
+        grants_armour: null,
+        replaces_armour: null,
+        card: null,
+        unit_option_categories: [],
+      },
+    ],
+    unit_special_rule_assignments: [
+      {
+        position: 1,
+        note: null,
+        unit_profile_id: null,
+        rule: {
+          id: 9,
+          name: "Dispersed Formation",
+          rule: null,
+          rule_id: 9,
+          anchor: "Dispersed_Formation",
+          wargear_items: [],
+          rules: {
+            id: 9,
+            name: "Squad Coherency",
+            rule_categories: { slug: "general-rules" },
+          },
+        },
+      },
+    ],
+  },
+};
+
+export const IMPERIAL_GUARD_SUMMARY: {
+  source: string;
+  bands: CompositionBand[];
+  allies: AllyLink[];
+  strategyRating: number;
+} = {
+  source: "army_lists · Codex: Imperial Guard",
+  bands: [
+    { category: "Command", min: null, max: 50 },
+    { category: "Battle Line", min: 25, max: null },
+    { category: "Support", min: null, max: 25 },
+  ],
+  allies: [
+    {
+      id: 21,
+      name: "Space Marines",
+      href: "/factions/space-marines",
+      note: "Space Wolves, Ultramarines and Angels of Death all qualify.",
+    },
+    {
+      id: 22,
+      name: "Imperial Agents",
+      href: "/factions/imperial-agents",
+      note: null,
+    },
+    { id: 23, name: "Eldar", href: "/factions/eldar", note: "No Avatar." },
+    { id: 24, name: "Squats", href: "/factions/squats", note: null },
+  ],
+  strategyRating: 2,
+};
+
+export const GRENADE_LAUNCHER: {
+  source: string;
+  name: string;
+  profiles: Omit<WeaponProfileRow, "weapon_special_rules">[];
+  specials: string[];
+} = {
+  source: "weapons · Grenade Launcher",
+  name: "Grenade Launcher",
+  profiles: [
+    {
+      name: "Frag",
+      short_range: "0-20",
+      long_range: "20-60",
+      short_to_hit: "–",
+      long_to_hit: "-1",
+      strength: "3",
+      damage: "1",
+      save_modifier: "-1",
+      armour_penetration: "D6+3",
+    },
+    {
+      name: "Krak",
+      short_range: "0-20",
+      long_range: "20-60",
+      short_to_hit: "–",
+      long_to_hit: "-1",
+      strength: "6",
+      damage: "D6",
+      save_modifier: "-3",
+      armour_penetration: "2D6+6",
+    },
+  ],
+  specials: ['Blast 2"'],
+};
+
+export const BLAST_2: {
+  source: string;
+  name: string;
+  html: string;
+  related: { name: string; href: string };
+} = {
+  source: 'weapon_special_rules · Blast 2"',
+  name: 'Blast 2"',
+  html: "<p>This weapon has a <strong>Blast</strong> area of 2&quot;.</p>",
+  related: { name: "Blast Weapons", href: "/rules/weapon-rules#Blast_Weapons" },
+};
+
+export const BUNKER_ASSAULT: {
+  source: string;
+  name: string;
+  description: string;
+  objectives: { heading: string; html: string }[];
+} = {
+  source: "mission_cards · Bunker Assault",
+  name: "Bunker Assault",
+  description:
+    "Patrols have found a cluster of bunkers a short way inside enemy lines. Whoever holds them holds the sector.",
+  objectives: [
+    {
+      heading: "Primary Objective",
+      html: "<p>\nOrders are to raid the sector and take the enemy bunkers.\n</p>\n<p>\n<strong>Each bunker holding at least one friendly model and no enemy models: +5 Victory Points</strong>\n</p>",
+    },
+    {
+      heading: "Secondary Objective",
+      html: "<p>\nA bunker that cannot be taken is to be brought down instead.\n</p>\n<p>\n<strong>For each bunker destroyed: +3 Victory Points</strong>\n</p>",
+    },
+    {
+      heading: "Special Rules",
+      html: "<p>\nWhere either side has taken Bunker Assault, the game runs to 6 turns.\n</p>",
+    },
+  ],
+};
+
+export const STRATEGY_DECKS: {
+  source: string;
+  cards: { origin: string; names: string[] }[];
+} = {
+  source: "strategy_cards · 26 cards from 2 origins",
+  cards: [
+    {
+      origin: "Dark Millennium",
+      names: [
+        "Ambush!",
+        "Barrage",
+        "Booby Traps",
+        "Brilliant Strategy",
+        "Crack Shot",
+        "Craven Cowardice",
+        "Delayed",
+        "Divine Inspiration",
+        "Flank March",
+        "Forced March",
+        "Insane Courage",
+        "Look Out Sir—Aaargh!",
+        "Malfunction",
+        "Reinforcements",
+        "Saved!",
+        "Special Issue",
+        "Traitor",
+        "Virus Outbreak",
+      ],
+    },
+    {
+      origin: "White Dwarf 205",
+      names: [
+        "Bombing Run",
+        "Covering Fire",
+        "Last Gasp",
+        "Minefield",
+        "Sabotage",
+        "Strafing Run",
+        "Surprise Assault",
+        "Ultimate Sacrifice",
+      ],
+    },
+  ],
+};
+
+export const RULES_CONTENTS: {
+  source: string;
+  sections: {
+    name: string;
+    note: string;
+    chapters: {
+      number: number;
+      title: string;
+      slug: string;
+      entries: string[];
+    }[];
+  }[];
+} = {
+  source: "rule_sections · rule_categories · rules",
+  sections: [
+    {
+      name: "Before the Game",
+      note: "Chapters 1–2",
+      chapters: [
+        {
+          number: 1,
+          title: "The Golden Rule",
+          slug: "the-golden-rule",
+          entries: ["Remember..."],
+        },
+        {
+          number: 2,
+          title: "How to Play",
+          slug: "how-to-play",
+          entries: ["Introduction", "The Game Steps"],
+        },
+      ],
+    },
+    {
+      name: "The Turn Sequence",
+      note: "Chapters 3–7",
+      chapters: [],
+    },
+  ],
+};
+
+export const ORKS_BAND: {
+  source: string;
+  title: string;
+  eyebrow: string;
+  image: Image;
+} = {
+  source: "factions · Orks, as /datafaxes/orks shows it",
+  title: "Orks",
+  eyebrow: "Datafaxes",
+  image: {
+    src: "images/2nd-Edition-Ork-Codex.jpg",
+    title: "Codex Orks",
+    artist: "Mark Gibbons",
+    dimensions: { width: 1168, height: 1609 },
+  },
+};

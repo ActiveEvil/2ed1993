@@ -11,6 +11,7 @@ export const Panel: React.FC<
 > = ({ as: Tag = "div", id, className, children }): React.JSX.Element => (
   <Tag
     id={id ?? (Tag === "main" ? "main" : undefined)}
+    tabIndex={Tag === "main" ? -1 : undefined}
     className={clsx("border-4 border-frame", className)}
   >
     {children}

@@ -5,6 +5,9 @@ import { clsx } from "clsx";
 export const EYEBROW_CLASS =
   "font-subtitle text-xs uppercase tracking-widest text-accent";
 
+export const TITLE_CLASS =
+  "font-title uppercase tracking-wide text-3xl md:text-5xl";
+
 export const TitleBand: React.FC<
   {
     title?: string;
@@ -37,11 +40,7 @@ export const TitleBand: React.FC<
     <div className="@container flex flex-col justify-center items-center self-stretch gap-4 min-w-0 grow p-4 lg:p-8">
       <div className="flex flex-col items-center gap-3 min-w-0 text-center">
         {eyebrow && <p className={EYEBROW_CLASS}>{eyebrow}</p>}
-        {heading ?? (
-          <h1 className="font-title uppercase tracking-wide text-3xl md:text-5xl">
-            {title}
-          </h1>
-        )}
+        {heading ?? <h1 className={TITLE_CLASS}>{title}</h1>}
       </div>
       {children && (
         <div className="flex flex-wrap justify-center gap-2 min-w-0">
