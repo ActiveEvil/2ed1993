@@ -80,7 +80,8 @@ columns.
 **Revised 7 October 2026:** the shadow rider corrected to images and
 artefacts; the `text-2xs` caption named as the one exception to the `text-xs`
 floor; the wargear card mat recorded in Surfaces and artefacts and in Yellow;
-the skip-link decision and the `/design` record added to Shell and tokens.
+the skip-link decision and the `/design` record added to Shell and tokens;
+`design.py` added to the verification suite.
 
 **Revised 7 October 2026 (later):** the skip link restored and Bypass and
 focus rewritten; the skip link added to the controls that keep their yellow;
@@ -694,7 +695,7 @@ reaching the content. Back-to-top returns focus to the skip link.
 `/design` is the rendered record of this section. It shows every component in
 `components/`, page assemblies included, and every class under
 `.dynamic-content`. Each entry names its source file, and specimens use real
-stored content. The page uses the shell, stays `noindex`, is disallowed in
+stored content. `scripts/verify/design.py` checks the coverage. The page uses the shell, stays `noindex`, is disallowed in
 `robots.ts`, and is kept out of the sitemap and nav. Its scheme switcher lasts
 for the visit only and exists on no other page; the site follows the OS. The
 scheme tokens, card face, striped rows, house rule and contrast table render
@@ -1008,6 +1009,14 @@ pages (`/wargear/…#X`), whose anchor population isn't derivable from
 the day's fixes (crewman purge, 29-text entity conversion, four chart-title
 renames). The verbatim gate is a separate, complementary control:
 `bash scripts/verbatim/gate.sh`.
+
+`python3 scripts/verify/design.py` checks `/design` and the palette: contrast
+pairs, fixed backgrounds without a text colour, palette hexes outside
+`globals.css`, and the page's coverage of `components/` and
+`.dynamic-content`. Its exemptions share `exemptions.json`. It reads source, so
+two checks are partial: the contrast check sees only the pairs declared in
+`app/design/pairs.json` and the faction mats, and the background check only
+`className` literals on elements with content of their own.
 
 `python3 scripts/verify/headings.py <base-url>` checks every page in the
 sitemap, and `/design`, for one `main` with `id="main"`, one `h1` as the

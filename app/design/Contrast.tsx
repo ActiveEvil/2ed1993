@@ -2,6 +2,7 @@
 
 import { LABEL, factionName } from "./Shared";
 import { contrast, hex, lightnessContrast, toRgb, type Rgb } from "./luminance";
+import declared from "./pairs.json";
 import { factionColors, factionInk } from "@/lib/factions";
 import { useEffect, useRef, useState } from "react";
 
@@ -44,100 +45,7 @@ type Pair = {
 };
 
 const PAIRS: Pair[] = [
-  { where: "Body copy", ink: "foreground", on: "background", size: 18 },
-  { where: "Zebra row", ink: "foreground", on: "stripe", size: 18 },
-  {
-    where: "Note over a grouped run",
-    ink: "foreground",
-    on: "group-surface",
-    size: 14,
-  },
-  {
-    where: "Entry leader dots",
-    ink: "leader-ink",
-    on: "background",
-    graphic: true,
-  },
-  {
-    where: "Entry leader dots on a run",
-    ink: "leader-ink",
-    on: "group-surface",
-    graphic: true,
-  },
-  {
-    where: "ContentsTable chapter number",
-    ink: "leader-ink",
-    on: "background",
-    size: 20,
-    bold: true,
-  },
-  { where: "Chip", ink: "foreground", on: "background", size: 12 },
-  { where: "Table and chart heads", ink: "white", on: "black", size: 12 },
-  {
-    where: "Yellow interaction surfaces",
-    ink: "black",
-    on: "2ed-light-yellow",
-    size: 14,
-  },
-  { where: "Image credit", ink: "black", on: "2ed-light-blue", size: 12 },
-  {
-    where: "House-rule label and eyebrow",
-    ink: "accent",
-    on: "background",
-    size: 12,
-    bold: true,
-  },
-  {
-    where: "Mission card name on its mat",
-    ink: "2ed-light-yellow",
-    on: "2ed-dark-blue",
-    size: 24,
-  },
-  {
-    where: "Wargear card name on its mat",
-    ink: "2ed-white",
-    on: "2ed-dark-blue",
-    size: 24,
-  },
-  {
-    where: "Wargear card points on its mat",
-    ink: "2ed-light-yellow",
-    on: "2ed-dark-blue",
-    size: 18,
-    bold: true,
-  },
-  {
-    where: "Card name on the face",
-    ink: "2ed-dark-blue",
-    on: "card-face",
-    size: 24,
-  },
-  {
-    where: "Card heading and restriction line",
-    ink: "2ed-dark-red",
-    on: "card-face",
-    size: 20,
-    bold: true,
-  },
-  { where: "Card face body", ink: "2ed-black", on: "card-face", size: 18 },
-  {
-    where: "Datafax face row",
-    ink: "2ed-black",
-    on: "card-stripe",
-    size: 14,
-  },
-  {
-    where: "Blockquote and empty-state note",
-    ink: "2ed-black",
-    on: "2ed-light-green",
-    size: 18,
-  },
-  {
-    where: "Randomiser panel",
-    ink: "2ed-white",
-    on: "2ed-dark-blue",
-    size: 20,
-  },
+  ...declared,
   ...FACTION_MATS.map((className) => {
     const slugs = Object.keys(factionColors).filter(
       (key) => factionColors[key] === className,
@@ -152,14 +60,6 @@ const PAIRS: Pair[] = [
       bold: true,
     };
   }),
-  {
-    where: "Logo subtitle at sm",
-    ink: "2ed-dark-red",
-    on: "2ed-light-yellow",
-    size: 10,
-    bold: true,
-    exempt: "logotype, WCAG 1.4.3",
-  },
 ];
 
 const needs = ({ size = 0, bold, graphic }: Pair): number =>
