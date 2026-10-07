@@ -82,6 +82,11 @@ artefacts; the `text-2xs` caption named as the one exception to the `text-xs`
 floor; the wargear card mat recorded in Surfaces and artefacts and in Yellow;
 the skip-link decision and the `/design` record added to Shell and tokens.
 
+**Revised 7 October 2026 (later):** the skip link restored and Bypass and
+focus rewritten; the skip link added to the controls that keep their yellow;
+Markup 2's Characteristics case renamed after the new `Numerical
+Characteristics` heading; `headings.py` added to the verification suite.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -120,7 +125,7 @@ the skip-link decision and the `/design` record added to Shell and tokens.
    verified by script across every text column, not just `rules`.
    **`<h4>` is legitimate for a genuine sub-section nested under an `<h3>`**,
    and is in use in five rules: each individual characteristic under
-   `Characteristics`; the blast-path cases (`Strikes the First Model in its
+   `Numerical Characteristics`; the blast-path cases (`Strikes the First Model in its
    Path`, `Draws a Straight Line`) under `Resolving Psychic Powers` and
    `psychic:Vehicles`; `Mission Cards` / `Scenarios` / `Win Conditions` under
    `The Game Steps`; and `Discarding &amp; Redrawing` under `Dealing Psychic
@@ -612,9 +617,10 @@ bar, the logo ground, and the `:target` highlight (light-yellow at 80% on
 even rows, transient by nature). Two deliberate exceptions sit on artefact
 mats and are printed cues rather than states: the mission card name, and the
 wargear card points (ruled 7 October 2026). Notes in a `SectionBar` are
-white at `font-normal`. Two controls keep their yellow by decision
-(7 September 2026): the mobile Jump/Close toggle and back-to-top, both of
-which sit over content and were yellow before the refresh; the lightbox
+white at `font-normal`. Three controls keep their yellow by decision: the
+mobile Jump/Close toggle and back-to-top (7 September 2026), and the skip
+link (7 October 2026), all of which sit over content and were yellow before
+the refresh; the lightbox
 buttons keep their light blue for the same reason, over a dimmed page. The
 rest — Draw, the filter, the burger — are black or white with a frame. Chips underline on hover like every other link; nothing fills.
 
@@ -674,10 +680,14 @@ list strikes through a section that the filter has emptied.
 
 ### Bypass and focus
 
-The skip link was removed on 7 September 2026 by decision. The heading
-structure is the bypass mechanism for WCAG 2.4.1; this has not been audited
-page by page. Every page's `main` carries `id="main"`, and back-to-top
-returns focus there.
+The page offers two ways past the repeated header. A skip link, the first
+stop on every page and hidden until focused, goes to `main`, which carries
+`id="main"` on every page. The heading structure serves readers who move by
+heading: one `h1` at the start of `main`, and no skipped levels, checked by
+`scripts/verify/headings.py`. The skip link was removed on 7 September 2026
+and restored on 7 October, after an audit of all 71 pages found a sighted
+keyboard user pressing Tab nine or ten times on most desktop pages before
+reaching the content. Back-to-top returns focus to the skip link.
 
 ### The `/design` page
 
@@ -994,3 +1004,8 @@ pages (`/wargear/…#X`), whose anchor population isn't derivable from
 the day's fixes (crewman purge, 29-text entity conversion, four chart-title
 renames). The verbatim gate is a separate, complementary control:
 `bash scripts/verbatim/gate.sh`.
+
+`python3 scripts/verify/headings.py <base-url>` checks every page in the
+sitemap, and `/design`, for one `main` with `id="main"`, one `h1` as the
+first heading in it, no headings outside it, and no skipped levels. It reads
+server-rendered HTML, so it does not count tab stops.

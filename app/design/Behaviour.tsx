@@ -1,4 +1,4 @@
-import { Entry, Fixture, Group, Source } from "./Shared";
+import { Entry, Fixture, Group, LABEL, Source } from "./Shared";
 import { NARROW_TABLE } from "./fixtures";
 import { Chip } from "@/components/Chip";
 
@@ -23,7 +23,7 @@ const PRINT = [
 
 const ACCESS = [
   "44px touch targets on the controls: the burger, BackToTop, the Jump toggle and its rows, the filter input, Draw, the colour scheme buttons and the lightbox controls. A Chip stays 20px and grows a transparent ::after to 36px.",
-  "There is no skip link, by decision of 7 September 2026: the heading structure is the bypass mechanism for WCAG 2.4.1, which has not yet been audited page by page. Every page's main carries id=&quot;main&quot; and tabIndex -1, and BackToTop returns focus there.",
+  "Two ways past the repeated header. The skip link is the first stop on every page, hidden until focused, and goes to the main, which carries id=&quot;main&quot; on every page. The heading structure serves readers who move by heading: one h1 at the start of the main and no skipped levels, checked by scripts/verify/headings.py. BackToTop returns focus to the skip link.",
   "Location is announced rather than only coloured: aria-current=&quot;page&quot; on the nav item and the last breadcrumb, aria-current=&quot;true&quot; on an active Jump item and on a section ancestor in the nav.",
   "The filter count and the lightbox counter are aria-live=&quot;polite&quot;, so the result of typing or stepping is announced.",
   "Every nav carries a label, icon-only controls carry sr-only text, and the Logo fins are aria-hidden.",
@@ -89,6 +89,16 @@ export const Behaviour: React.FC = (): React.JSX.Element => (
     </Entry>
 
     <Entry title="Accessibility" source="rules the components hold to">
+      <Source>app/layout.tsx &middot; the skip link, focused</Source>
+      <div className="flex">
+        <span className="p-2 bg-2ed-light-yellow text-black font-subtitle">
+          Skip to content
+        </span>
+      </div>
+      <p className={LABEL}>
+        A static copy of its focused state. The live one is the first stop on
+        this page: press Tab.
+      </p>
       <List items={ACCESS} />
     </Entry>
   </Group>

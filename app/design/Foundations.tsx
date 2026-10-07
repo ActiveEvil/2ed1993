@@ -68,7 +68,7 @@ const PALETTE = [
   {
     name: "2ed-light-yellow",
     className: "bg-2ed-light-yellow",
-    use: "Current or selected: the current nav and rail item, the active Jump bar chip, the :target highlight and outline, the filter's focus ring, a checked deck in a randomiser, the logo ground and the selected colour scheme. BackToTop and the mobile Jump toggle keep it by decision. Two printed cues on artefact mats: the mission card name and the wargear card points.",
+    use: "Current or selected: the current nav and rail item, the active Jump bar chip, the :target highlight and outline, the filter's focus ring, a checked deck in a randomiser, the logo ground and the selected colour scheme. BackToTop, the mobile Jump toggle and the skip link keep it by decision. Two printed cues on artefact mats: the mission card name and the wargear card points.",
   },
   {
     name: "2ed-dark-yellow",

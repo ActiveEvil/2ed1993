@@ -98,11 +98,7 @@ export default async function Page() {
             { anchor: "Wargear Cards" },
           ]}
         />
-        <main
-          id="main"
-          tabIndex={-1}
-          className="flex flex-col items-center gap-4 w-full"
-        >
+        <main id="main" className="flex flex-col items-center gap-4 w-full">
           <Panel className="flex flex-col w-full max-w-5xl">
             <TitleBand
               title="Wargear Cards"
@@ -185,12 +181,14 @@ export default async function Page() {
                     className="flex flex-col justify-start gap-2 p-4 border-4 border-frame bg-2ed-dark-blue target:border-2ed-light-yellow shadow-xl"
                   >
                     <div className="flex justify-between items-baseline gap-4 w-full">
-                      <HighlighterLink
-                        className="font-subtitle uppercase text-2xl text-2ed-white hover:underline underline-offset-4"
-                        href={`/wargear/wargear-cards#${cardId}`}
-                      >
-                        {card.name}
-                      </HighlighterLink>
+                      <h2>
+                        <HighlighterLink
+                          className="font-subtitle uppercase text-2xl text-2ed-white hover:underline underline-offset-4"
+                          href={`/wargear/wargear-cards#${cardId}`}
+                        >
+                          {card.name}
+                        </HighlighterLink>
+                      </h2>
                       <span className="font-subtitle whitespace-nowrap text-lg text-2ed-light-yellow">
                         {card.points
                           ? `${card.points} Point${card.points === "1" ? "" : "s"}`

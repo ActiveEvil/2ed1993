@@ -54,6 +54,7 @@ export const Logo: React.FC<{
           )}
         </span>
       </span>
+      {subtitle && <span className="sr-only">, </span>}
       {subtitle ? (
         <span
           className={clsx(
