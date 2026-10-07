@@ -78,7 +78,7 @@ export const Surfaces: React.FC = (): React.JSX.Element => (
     <Entry
       title="Panel"
       source="components/Panel.tsx &middot; as, id, className"
-      note='The one box every page sits in: a 4px --frame border, no padding, no layout and no shadow, since a surface casts none. as takes div, section, article or main; rendered as main it takes id="main" and tabIndex -1, so BackToTop can return focus to it. This page is one, so it is not repeated as a specimen.'
+      note='The one box every page sits in: a 4px --frame border, no padding, no layout and no shadow, since a surface casts none. as takes div, section, article or main; rendered as main it takes id="main", the target of the skip link. This page is one, so it is not repeated as a specimen.'
     />
 
     <Entry

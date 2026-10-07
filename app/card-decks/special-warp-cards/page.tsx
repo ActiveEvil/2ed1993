@@ -82,9 +82,9 @@ export default async function Page() {
                   className="flex flex-col items-center gap-2 p-4 border-4 border-frame bg-2ed-mid-blue target:border-2ed-light-yellow shadow-xl"
                 >
                   <div className="flex flex-col gap-4 p-4 w-full h-full bg-card-face text-2ed-black">
-                    <h3 className="font-title uppercase text-2xl text-2ed-dark-blue text-center">
+                    <h2 className="font-title uppercase text-2xl text-2ed-dark-blue text-center">
                       {card.name}
-                    </h3>
+                    </h2>
                     <p
                       className="text-lg"
                       dangerouslySetInnerHTML={{ __html: card.description }}

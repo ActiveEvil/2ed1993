@@ -396,7 +396,11 @@ export const ORDERED_LIST: Stored = {
 
 export const TEXT_BLOCK: Stored = {
   source: "rules · Characteristics",
-  html: `<section class="text-block">
+  html: `<h3 id="Numerical_Characteristics">Numerical Characteristics</h3>
+<p>
+    In Warhammer 40,000 there are many different types of troops, from normal humans to gene enhanced Space Marines, and from haughty but human-like Eldar to the eldritch horror of the Tyranids. To represent this, nearly every model in the game has a set of numerical characteristics.
+</p>
+<section class="text-block">
   <h4 id="Movement">Movement (M)</h4>
   <p>
   The number of inches a model can move on the tabletop under normal circumstances.
