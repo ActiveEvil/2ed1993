@@ -122,14 +122,14 @@ const FACTION_COLOURS = [
     (deck) => deckColors[deck] === className,
   );
   const uses = [
-    slugs.length > 0 && `Datafax mat: ${slugs.map(factionName).join(", ")}.`,
+    slugs.length > 0 &&
+      `Datafax mat: ${slugs.map(factionName).join(", ")}, in ${factionInk[slugs[0]].replace(/^text-/, "")} ink.`,
     decks.length > 0 && `Psychic deck mat: ${decks.join(", ")}.`,
   ].filter(Boolean);
 
   return {
     name: className.replace(/^bg-/, ""),
     className,
-    ink: slugs.length > 0 ? factionInk[slugs[0]] : undefined,
     use: uses.join(" "),
   };
 });
@@ -160,9 +160,8 @@ const SPACING = [
 const Swatch: React.FC<{
   name: string;
   className: string;
-  ink?: string;
   children: React.ReactNode;
-}> = ({ name, className, ink, children }) => {
+}> = ({ name, className, children }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const [value, setValue] = useState<string | null>(null);
 
@@ -176,14 +175,8 @@ const Swatch: React.FC<{
     <li className="flex items-start gap-3">
       <span
         ref={ref}
-        className={clsx(
-          "shrink-0 flex justify-center items-center size-8 border-2 border-frame font-subtitle text-sm",
-          className,
-          ink,
-        )}
-      >
-        {ink && "Aa"}
-      </span>
+        className={clsx("shrink-0 size-8 border-2 border-frame", className)}
+      />
       <span className="flex flex-col">
         <code className="font-subtitle text-xs">
           {name}
@@ -261,11 +254,11 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Faction colours"
       source="globals.css &middot; lib/factions.ts"
-      note="The mats of the psychic decks and the datafaxes, fixed in both schemes. Each swatch carries its datafax ink where it has one; a psychic mat holds no text, since the card face sits on it. The uses are read from lib/factions.ts."
+      note="The mats of the psychic decks and the datafaxes, fixed in both schemes. A datafax mat names the ink its label is set in; a psychic mat names none, since the card face sits on it and the mat holds no text. The contrast table measures each ink on its mat. The uses are read from lib/factions.ts."
     >
       <ul className="grid md:grid-cols-2 gap-3">
-        {FACTION_COLOURS.map(({ name, className, ink, use }) => (
-          <Swatch key={name} name={name} className={className} ink={ink}>
+        {FACTION_COLOURS.map(({ name, className, use }) => (
+          <Swatch key={name} name={name} className={className}>
             {use}
           </Swatch>
         ))}
