@@ -98,7 +98,11 @@ export default async function Page() {
             { anchor: "Wargear Cards" },
           ]}
         />
-        <main id="main" className="flex flex-col items-center gap-4 w-full">
+        <main
+          id="main"
+          tabIndex={-1}
+          className="flex flex-col items-center gap-4 w-full"
+        >
           <Panel className="flex flex-col w-full max-w-5xl">
             <TitleBand
               title="Wargear Cards"

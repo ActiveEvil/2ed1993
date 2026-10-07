@@ -2,29 +2,35 @@
 
 import { LABEL } from "./Shared";
 import { contrast, hex, lightnessContrast, toRgb, type Rgb } from "./luminance";
+import { factionColors, factionInk } from "@/lib/factions";
 import { useEffect, useRef, useState } from "react";
 
-type Token = { key: string; className?: string; style?: React.CSSProperties };
+type Token = { key: string; className: string };
+
+const FACTION_MATS = [...new Set(Object.values(factionColors))];
 
 const TOKENS: Token[] = [
   { key: "background", className: "bg-background" },
   { key: "foreground", className: "bg-foreground" },
   { key: "accent", className: "bg-accent" },
   { key: "card-face", className: "bg-card-face" },
-  { key: "stripe", style: { backgroundColor: "var(--stripe)" } },
-  { key: "leader-ink", style: { backgroundColor: "var(--leader-ink)" } },
-  {
-    key: "group-surface",
-    style: { backgroundColor: "var(--group-surface)" },
-  },
+  { key: "card-stripe", className: "bg-card-stripe" },
+  { key: "stripe", className: "bg-stripe" },
+  { key: "leader-ink", className: "bg-leader-ink" },
+  { key: "group-surface", className: "bg-group-surface" },
   { key: "black", className: "bg-black" },
   { key: "white", className: "bg-white" },
+  { key: "2ed-black", className: "bg-2ed-black" },
   { key: "2ed-white", className: "bg-2ed-white" },
   { key: "2ed-light-yellow", className: "bg-2ed-light-yellow" },
   { key: "2ed-dark-red", className: "bg-2ed-dark-red" },
   { key: "2ed-dark-blue", className: "bg-2ed-dark-blue" },
-  { key: "2ed-mid-blue", className: "bg-2ed-mid-blue" },
   { key: "2ed-light-blue", className: "bg-2ed-light-blue" },
+  { key: "2ed-light-green", className: "bg-2ed-light-green" },
+  ...FACTION_MATS.map((className) => ({
+    key: className.replace(/^bg-/, ""),
+    className,
+  })),
 ];
 
 type Pair = {
@@ -34,6 +40,7 @@ type Pair = {
   size?: number;
   bold?: boolean;
   graphic?: boolean;
+  exempt?: string;
 };
 
 const PAIRS: Pair[] = [
@@ -57,8 +64,15 @@ const PAIRS: Pair[] = [
     on: "group-surface",
     graphic: true,
   },
+  {
+    where: "ContentsTable chapter number",
+    ink: "leader-ink",
+    on: "background",
+    size: 20,
+    bold: true,
+  },
   { where: "Chip", ink: "foreground", on: "background", size: 12 },
-  { where: "Table and chart headers", ink: "white", on: "black", size: 14 },
+  { where: "Table and chart heads", ink: "white", on: "black", size: 12 },
   {
     where: "Yellow interaction surfaces",
     ink: "black",
@@ -67,51 +81,85 @@ const PAIRS: Pair[] = [
   },
   { where: "Image credit", ink: "black", on: "2ed-light-blue", size: 12 },
   {
-    where: "Card title on its frame",
+    where: "House-rule label and eyebrow",
+    ink: "accent",
+    on: "background",
+    size: 12,
+    bold: true,
+  },
+  {
+    where: "Mission card name on its mat",
     ink: "2ed-light-yellow",
     on: "2ed-dark-blue",
     size: 24,
   },
-  { where: "Card heading", ink: "2ed-dark-blue", on: "card-face", size: 24 },
   {
-    where: "Card objective heading",
-    ink: "2ed-dark-red",
-    on: "card-face",
-    size: 20,
+    where: "Wargear card name on its mat",
+    ink: "2ed-white",
+    on: "2ed-dark-blue",
+    size: 24,
+  },
+  {
+    where: "Wargear card points on its mat",
+    ink: "2ed-light-yellow",
+    on: "2ed-dark-blue",
+    size: 18,
     bold: true,
   },
   {
-    where: "Card restriction line",
-    ink: "2ed-dark-red",
-    on: "card-face",
-    size: 20,
-    bold: true,
-  },
-  {
-    where: "Special warp card heading",
-    ink: "2ed-mid-blue",
+    where: "Card name on the face",
+    ink: "2ed-dark-blue",
     on: "card-face",
     size: 24,
   },
   {
-    where: "Randomiser panel",
-    ink: "2ed-white",
-    on: "2ed-mid-blue",
+    where: "Card heading and restriction line",
+    ink: "2ed-dark-red",
+    on: "card-face",
+    size: 20,
+    bold: true,
+  },
+  { where: "Card face body", ink: "2ed-black", on: "card-face", size: 18 },
+  {
+    where: "Datafax face row",
+    ink: "2ed-black",
+    on: "card-stripe",
+    size: 14,
+  },
+  {
+    where: "Blockquote and empty-state note",
+    ink: "2ed-black",
+    on: "2ed-light-green",
     size: 18,
   },
+  {
+    where: "Randomiser panel",
+    ink: "2ed-white",
+    on: "2ed-dark-blue",
+    size: 20,
+  },
+  ...FACTION_MATS.map((className) => {
+    const slug = Object.keys(factionColors).find(
+      (key) => factionColors[key] === className,
+    );
+    const ink = (slug && factionInk[slug]) ?? "text-2ed-white";
+    const name = className.replace(/^bg-faction-/, "");
+
+    return {
+      where: `Datafax label on the ${name} mat`,
+      ink: ink.replace(/^text-/, ""),
+      on: className.replace(/^bg-/, ""),
+      size: 18,
+      bold: true,
+    };
+  }),
   {
     where: "Logo subtitle at sm",
     ink: "2ed-dark-red",
     on: "2ed-light-yellow",
     size: 10,
     bold: true,
-  },
-  {
-    where: "House rule label",
-    ink: "accent",
-    on: "background",
-    size: 12,
-    bold: true,
+    exempt: "logotype, WCAG 1.4.3",
   },
 ];
 
@@ -130,8 +178,8 @@ const Probes: React.FC<{
     aria-hidden="true"
     className="w-0 h-0 overflow-hidden"
   >
-    {TOKENS.map(({ key, className, style }) => (
-      <span key={key} data-token={key} className={className} style={style} />
+    {TOKENS.map(({ key, className }) => (
+      <span key={key} data-token={key} className={className} />
     ))}
   </div>
 );
@@ -178,7 +226,8 @@ export const Contrast: React.FC = (): React.JSX.Element => {
         </span>
         <br />
         <small>
-          {pass ? "passes" : "under AA"} &middot; Lc {lc.toFixed(0)}
+          {pass ? "passes" : pair.exempt ? "exempt" : "under AA"} &middot; Lc{" "}
+          {lc.toFixed(0)}
         </small>
       </td>
     );
@@ -217,7 +266,15 @@ export const Contrast: React.FC = (): React.JSX.Element => {
                       {needs(pair).toFixed(1)}
                       <br />
                       <small>
-                        {pair.graphic ? "non-text" : `${pair.size}px`}
+                        {pair.graphic
+                          ? "non-text"
+                          : `${pair.size}px${pair.bold ? " bold" : ""}`}
+                        {pair.exempt && (
+                          <>
+                            <br />
+                            exempt: {pair.exempt}
+                          </>
+                        )}
                       </small>
                     </td>
                     {cell(pair, read.light)}
@@ -237,10 +294,9 @@ export const Contrast: React.FC = (): React.JSX.Element => {
           </p>
           <p>
             Where the two disagree, the ratio decides conformance and the Lc
-            decides whether a change is worth making. Black ink on the
-            randomiser panel scores 5.52 against the current 3.64 and reads
-            worse, at Lc 39 against Lc 67 &mdash; a pass bought by making the
-            panel harder to read. Check both before moving a colour.
+            decides whether a change is worth making. A colour that passes on
+            the ratio can still read worse than the one it replaces. Check both
+            before moving a colour.
           </p>
         </div>
       )}
