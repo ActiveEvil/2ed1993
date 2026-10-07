@@ -157,11 +157,7 @@ export const TopNav: React.FC = (): React.JSX.Element => {
   ];
 
   return (
-    <header
-      id="top"
-      tabIndex={-1}
-      className="flex justify-center items-center w-full bg-black text-white outline-none print:hidden"
-    >
+    <header className="flex justify-center items-center w-full bg-black text-white print:hidden">
       <nav
         aria-label="Main"
         className="flex justify-center items-center gap-8 w-full max-w-5xl p-4"
