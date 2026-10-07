@@ -5,6 +5,14 @@ import { clsx } from "clsx";
 
 export const LABEL = "font-subtitle text-xs uppercase tracking-widest";
 
+export const factionName = (slug: string): string =>
+  slug
+    .split("-")
+    .map((word, index) =>
+      index > 0 && word === "of" ? word : word[0].toUpperCase() + word.slice(1),
+    )
+    .join(" ");
+
 export const Group: React.FC<{ title: string } & React.PropsWithChildren> = ({
   title,
   children,

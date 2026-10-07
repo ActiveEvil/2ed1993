@@ -1,6 +1,6 @@
 "use client";
 
-import { LABEL } from "./Shared";
+import { LABEL, factionName } from "./Shared";
 import { contrast, hex, lightnessContrast, toRgb, type Rgb } from "./luminance";
 import { factionColors, factionInk } from "@/lib/factions";
 import { useEffect, useRef, useState } from "react";
@@ -139,14 +139,13 @@ const PAIRS: Pair[] = [
     size: 20,
   },
   ...FACTION_MATS.map((className) => {
-    const slug = Object.keys(factionColors).find(
+    const slugs = Object.keys(factionColors).filter(
       (key) => factionColors[key] === className,
     );
-    const ink = (slug && factionInk[slug]) ?? "text-2ed-white";
-    const name = className.replace(/^bg-faction-/, "");
+    const ink = factionInk[slugs[0]] ?? "text-2ed-white";
 
     return {
-      where: `Datafax label on the ${name} mat`,
+      where: `Datafax label on the ${slugs.map(factionName).join(" and ")} mat`,
       ink: ink.replace(/^text-/, ""),
       on: className.replace(/^bg-/, ""),
       size: 18,

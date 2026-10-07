@@ -1,5 +1,5 @@
 import { Contrast } from "./Contrast";
-import { DualScheme, Entry, Group, LABEL } from "./Shared";
+import { DualScheme, Entry, Group, LABEL, factionName } from "./Shared";
 import { hex, toRgb } from "./luminance";
 import { CHIP_CLASS } from "@/components/Chip";
 import { deckColors, factionColors, factionInk } from "@/lib/factions";
@@ -122,7 +122,7 @@ const FACTION_COLOURS = [
     (deck) => deckColors[deck] === className,
   );
   const uses = [
-    slugs.length > 0 && `Datafax mat: ${slugs.join(", ")}.`,
+    slugs.length > 0 && `Datafax mat: ${slugs.map(factionName).join(", ")}.`,
     decks.length > 0 && `Psychic deck mat: ${decks.join(", ")}.`,
   ].filter(Boolean);
 
