@@ -1,0 +1,9 @@
+{
+  "attribution": { "commit": "", "pr": "", "sessionUrl": false },
+  "env": {
+    "GIT_AUTHOR_NAME": "Thomas Reddington",
+    "GIT_AUTHOR_EMAIL": "active_evil@protonmail.com",
+    "GIT_COMMITTER_NAME": "Thomas Reddington",
+    "GIT_COMMITTER_EMAIL": "active_evil@protonmail.com"
+  }
+}

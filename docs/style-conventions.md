@@ -886,8 +886,10 @@ output of this file; and it would explode `exemptions.json` from one readable
 entry per line into multi-line objects. Everything else is formatted, and
 `npx prettier --check .` passes clean — keep it that way.
 
-**`2ed1993-schema.sql` is not a true record of the live database.** Read the
-live shape from `information_schema` and `pg_type`.
+**Every schema change goes in as a migration.** `supabase/migrations/` starts
+from a baseline dumped from the live database on 6 October 2026; add to it with
+`supabase migration new` and apply with `supabase db push`, never with SQL run
+directly against the database.
 
 **A new table needs RLS enabled and a public select policy.**
 
@@ -982,7 +984,9 @@ blocks stripped), gendered terms (crewman everywhere; pronouns in `rules`
 only), "die" as a noun (determiner+die and "die roll" — the verb passes),
 second person outside the Golden Rule, inline `<p>` outside `<li>` (`rules`
 only), nested `<a>`/`<strong>`, duplicate ids within a category, dead
-`/rules/…#fragment` links, and duplicate paragraphs across texts.
+`/rules/…#fragment` links, `/rules/…` links to a chapter slug that does not
+exist (from the `chapters` list the dump carries beside `texts`), and duplicate
+paragraphs across texts.
 
 **Known artefact:** running `verify.py` against a single-text JSON reports a
 false `dead_link`, because the anchor population it checks against is derived

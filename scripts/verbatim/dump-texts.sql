@@ -1,7 +1,11 @@
--- Every prose column the site renders, as the JSON measure.py expects.
+-- Every prose column the site renders, as the JSON measure.py expects, plus
+-- every rules chapter slug for verify.py.
 -- Run against the live database and save the result as texts.json:
 --   psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json
-select json_agg(json_build_object('k', kind, 'n', name, 't', txt)) from (
+select json_build_object(
+  'texts', coalesce(json_agg(json_build_object('k', kind, 'n', name, 't', txt)), '[]'),
+  'chapters', coalesce((select json_agg(slug order by slug) from rule_categories), '[]')
+) from (
   select 'rule:' || rc.slug, r.name, r.rule from rules r join rule_categories rc on rc.id = r.category_id
   union all select 'weapon',           w.name,   w.profile_description   from weapons w                 where w.profile_description is not null
   union all select 'weapon_rule',      x.name,   x.rule                  from weapon_special_rules x
@@ -14,6 +18,7 @@ select json_agg(json_build_object('k', kind, 'n', name, 't', txt)) from (
   union all select 'warp',             sw.name,  sw.description          from special_warp_cards sw
   union all select 'unit',             u.name,   u.profile_description   from units u                   where u.profile_description is not null
   union all select 'unit_wargear',     'unit_options_row', uo.note   from unit_options uo         where uo.note is not null
+  union all select 'unit_option_restriction', 'unit_options_row', uo.restriction from unit_options uo where uo.restriction is not null
   union all select 'unit_rule',        v.name,   v.rule                  from unit_special_rules v      where v.rule is not null
   union all select 'unit_rule_note',   'unit_special_rule_assignments_row', usra.note from unit_special_rule_assignments usra where usra.note is not null
   union all select 'unit_cat',         uc.category, uc.note            from unit_categories uc        where uc.note is not null

@@ -1,3 +1,5 @@
+import { parse } from "node-html-parser";
+
 const TITLE_SUFFIX = " | 2ed1993";
 
 export const pageTitle = (subject: string): string => {
@@ -47,15 +49,7 @@ export const joinWithinBudget = (
 };
 
 export const toPlainText = (html: string, maxLength?: number): string => {
-  const text = html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&mdash;/g, "—")
-    .replace(/&ndash;/g, "–")
-    .replace(/&apos;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .replace(/\s+/g, " ")
-    .trim();
+  const text = parse(html).structuredText.replace(/\s+/g, " ").trim();
 
   if (maxLength === undefined || text.length <= maxLength) {
     return text;

@@ -21,5 +21,13 @@ export const hasFactionChapter = (rule: {
 
 export const FACET_HASH = "available-";
 
+export const hashId = (hash: string): string => {
+  try {
+    return decodeURIComponent(hash.slice(1));
+  } catch {
+    return hash.slice(1);
+  }
+};
+
 export const facetHref = (name: string): string =>
   `#${FACET_HASH}${name.toLowerCase().replace(/\s+/g, "-")}`;

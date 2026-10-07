@@ -1,5 +1,6 @@
 "use client";
 
+import { replaceLocation } from "./RouterHistory";
 import { SectionBar } from "./SectionBar";
 import { generateAnchorId } from "@/lib/anchors";
 import { useState } from "react";
@@ -121,7 +122,7 @@ export const StrategyCardRandomiser: React.FC<{
                 const href =
                   baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
 
-                window.location.replace(new URL(window.location.origin + href));
+                replaceLocation(href);
               }
             }}
           >
@@ -225,15 +226,17 @@ export const MissionCardRandomiser: React.FC<{
               type="checkbox"
               id="Fighting_As_Tyranids"
               checked={fightingAsTyranids}
-              onChange={() => {
-                setFightingAsTyranids(!fightingAsTyranids);
+              onChange={(e) => {
+                const checked = e.target.checked;
+
+                setFightingAsTyranids(checked);
                 setOrigins((previous) => {
                   const next = new Set(previous);
 
-                  if (next.has(originCodexTyranids)) {
-                    next.delete(originCodexTyranids);
-                  } else {
+                  if (checked) {
                     next.add(originCodexTyranids);
+                  } else {
+                    next.delete(originCodexTyranids);
                   }
 
                   return next;
@@ -277,7 +280,7 @@ export const MissionCardRandomiser: React.FC<{
                 const href =
                   baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
 
-                window.location.replace(new URL(window.location.origin + href));
+                replaceLocation(href);
               }
             }}
           >

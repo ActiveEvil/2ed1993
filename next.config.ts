@@ -25,6 +25,8 @@ const nextConfig: NextConfig = {
   images: {
     loader: "custom",
     loaderFile: "./supabase-image-loader.ts",
+    // Supabase image transformations accept widths up to 2500.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 2500],
     qualities: [80, 75],
   },
   poweredByHeader: false,

@@ -12,15 +12,14 @@ export const supabase = createClient<Database>(
   },
 );
 
-const NO_ROWS_RETURNED = "PGRST116";
+const isNoRows = (error: PostgrestError): boolean =>
+  error.code === "PGRST116" && /\bcontains? 0 rows\b/.test(error.details);
 
 export function assertNoQueryErrors(
   context: string,
   ...errors: (PostgrestError | null)[]
 ): void {
-  const failure = errors.find(
-    (error) => error !== null && error.code !== NO_ROWS_RETURNED,
-  );
+  const failure = errors.find((error) => error !== null && !isNoRows(error));
 
   if (failure) {
     throw new Error(`${context}: ${failure.message}`, { cause: failure });

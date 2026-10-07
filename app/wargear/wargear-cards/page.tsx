@@ -53,7 +53,7 @@ export function generateMetadata(): Metadata {
 
 export default async function Page() {
   const [
-    { data: heroImage },
+    { data: heroImage, error: heroImageError },
     { data: cards, error: cardsError },
     { data: availabilityRows, error: availabilityError },
   ] = await Promise.all([
@@ -77,7 +77,12 @@ export default async function Page() {
   ]);
   const hero = heroImage?.images ?? null;
 
-  assertNoQueryErrors("/wargear/wargear-cards", cardsError, availabilityError);
+  assertNoQueryErrors(
+    "/wargear/wargear-cards",
+    heroImageError,
+    cardsError,
+    availabilityError,
+  );
 
   if (cards && availabilityRows) {
     const jumpItems = [

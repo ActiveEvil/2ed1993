@@ -7,6 +7,7 @@ type Rule = {
   qualifier: string | null;
   label: string | null;
   per_entry_id: number | null;
+  per_category_id: number | null;
   per_set_id: number | null;
   per_rule_id: number | null;
 };
@@ -154,14 +155,22 @@ export const allowances = (
     return first && bandOf.get(first.army_list_entry_id);
   };
 
-  const per = (rule: Rule): { text: string; order: number } | null => {
+  const per = (rule: Rule): { text: string; order: number } => {
     const many = rule.per_count > 1;
+
+    if (rule.per_category_id !== null) {
+      throw new Error(
+        `Allowance rule ${rule.id} is counted per unit category, which is not rendered; count it per set instead`,
+      );
+    }
 
     if (rule.per_entry_id !== null) {
       const entry = entryById.get(rule.per_entry_id);
 
       if (!entry) {
-        return null;
+        throw new Error(
+          `Allowance rule ${rule.id} counts entry ${rule.per_entry_id}, which is not on this list`,
+        );
       }
 
       return {
@@ -177,7 +186,9 @@ export const allowances = (
       const [first] = set ? members(set) : [];
 
       if (!set || !first) {
-        return null;
+        throw new Error(
+          `Allowance rule ${rule.id} counts set ${rule.per_set_id}, which has no entries on this list`,
+        );
       }
 
       return {
@@ -188,7 +199,9 @@ export const allowances = (
       };
     }
 
-    return null;
+    throw new Error(
+      `Allowance rule ${rule.id} has neither a note nor anything to count against`,
+    );
   };
 
   const amount = ({ count, min_count }: Rule): string =>
@@ -269,10 +282,6 @@ export const allowances = (
       }
 
       const target = per(rule);
-
-      if (target === null) {
-        continue;
-      }
 
       if (rule.qualifier !== null) {
         out.push({
