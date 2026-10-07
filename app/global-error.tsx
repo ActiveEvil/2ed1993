@@ -5,10 +5,8 @@ import { useEffect } from "react";
 
 export default function GlobalError({
   error,
-  reset,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
 }): React.JSX.Element {
   useEffect(() => {
     console.error(error);
@@ -44,7 +42,7 @@ export default function GlobalError({
 
             <div className="flex flex-col gap-8 items-start">
               <button
-                onClick={reset}
+                onClick={() => window.location.reload()}
                 className="px-4 py-1 rounded-none border-4 border-black font-subtitle shadow-lg"
               >
                 Try again

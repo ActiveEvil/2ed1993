@@ -1,11 +1,12 @@
 "use client";
 
+import { replaceLocation } from "./RouterHistory";
 import { useEffect } from "react";
 
 export const Highlighter: React.FC = (): null => {
   useEffect(() => {
     if (window.location.hash) {
-      window.location.replace(window.location.href);
+      replaceLocation(window.location.href);
     }
   }, []);
 
@@ -38,10 +39,10 @@ export const HighlighterLink: React.FC<
           window.location.pathname + "#",
           window.location.origin,
         );
-        window.location.replace(target);
+        replaceLocation(target);
       } else {
         const target = new URL(href, window.location.origin);
-        window.location.replace(target);
+        replaceLocation(target);
       }
     }}
   >

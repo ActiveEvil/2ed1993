@@ -60,8 +60,10 @@ Roughly 40 tables. The shapes worth knowing: `rules` / `rule_categories` /
 (`mission_cards`, `strategy_cards`, `psychic_power_cards`,
 `special_warp_cards`); `factions`; `images` and the gallery tables.
 
-`2ed1993-schema.sql` is **not** a reliable record of the live database. Read the
-live shape from `information_schema` and `pg_type`.
+The schema lives in `supabase/migrations/`, starting from a baseline dumped from
+the live database on 6 October 2026. Every schema change goes in as a new
+migration (`supabase migration new`, applied with `supabase db push`), never as
+SQL run directly against the database.
 
 ## Layout
 
