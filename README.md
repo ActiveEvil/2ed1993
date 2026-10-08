@@ -70,7 +70,7 @@ SQL run directly against the database.
 ```
 app/                 routes; one folder per section
   rules/[slug]         the eleven rules chapters
-  wargear/             weapons, armour, wargear-cards
+  wargear/             weapons, armour, wargear-cards, vehicle-cards
   card-decks/          four decks
   factions/[slug]
   gallery/

@@ -1,10 +1,14 @@
 -- Every prose column the site renders, as the JSON measure.py expects, plus
--- every rules chapter slug for verify.py.
+-- every rules chapter slug and every card with its availabilities for verify.py.
 -- Run against the live database and save the result as texts.json:
 --   psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json
 select json_build_object(
   'texts', coalesce(json_agg(json_build_object('k', kind, 'n', name, 't', txt)), '[]'),
-  'chapters', coalesce((select json_agg(slug order by slug) from rule_categories), '[]')
+  'chapters', coalesce((select json_agg(slug order by slug) from rule_categories), '[]'),
+  'cards', json_build_object(
+    'wargear-cards', coalesce((select json_agg(json_build_object('n', c.name, 'a', coalesce((select json_agg(a.name order by a.position) from wargear_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.wargear_card_id = c.id), '[]'))) from wargear_cards c), '[]'),
+    'vehicle-cards', coalesce((select json_agg(json_build_object('n', c.name, 'a', coalesce((select json_agg(a.name order by a.position) from vehicle_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.vehicle_card_id = c.id), '[]'))) from vehicle_cards c), '[]')
+  )
 ) from (
   select 'rule:' || rc.slug, r.name, r.rule from rules r join rule_categories rc on rc.id = r.category_id
   union all select 'weapon',           w.name,   w.profile_description   from weapons w                 where w.profile_description is not null
@@ -12,6 +16,7 @@ select json_build_object(
   union all select 'armour',           a.name,   a.profile_description   from armour a                  where a.profile_description is not null
   union all select 'armour_rule',      y.name,   y.rule                  from armour_special_rules y
   union all select 'wargear_card',     c.name,   c.description           from wargear_cards c           where c.description is not null
+  union all select 'vehicle_card',     vc.name,  vc.description          from vehicle_cards vc          where vc.description is not null
   union all select 'mission',          m.name,   concat_ws(' ', m.description, m.primary_objective, m.secondary_objective, m.special_rules) from mission_cards m
   union all select 'strategy',         s.name,   s.description           from strategy_cards s
   union all select 'psychic',          p.name,   concat_ws(' ', p.description, p.note) from psychic_power_cards p

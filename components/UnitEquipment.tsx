@@ -4,7 +4,7 @@ import {
   LabelledTable,
 } from "@/components/CharacteristicProfile";
 import { number } from "@/lib/allowance";
-import { generateAnchorId, ruleHref } from "@/lib/anchors";
+import { generateAnchorId, ruleHref, wargearCardHref } from "@/lib/anchors";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -39,9 +39,16 @@ type ProfileArmour = {
   armour: { name: string };
 };
 
+type WargearCardRef = {
+  name: string;
+  wargear_cards_availabilities: {
+    availabilities: { name: string; position: number } | null;
+  }[];
+};
+
 type ProfileWargearCard = {
   position: number;
-  card: { name: string };
+  card: WargearCardRef;
 };
 
 export type EquipmentProfile = {
@@ -72,7 +79,7 @@ export type EquipmentOption = {
   grants: { name: string } | null;
   grants_armour: { name: string } | null;
   replaces_armour: { name: string } | null;
-  card: { name: string } | null;
+  card: WargearCardRef | null;
   unit_option_categories: {
     position: number;
     wargear_categories: {
@@ -654,10 +661,7 @@ export const UnitEquipment: React.FC<{
                             {` ${DASH} `}
                           </>
                         )}
-                        <Link
-                          className={LINK}
-                          href={`/wargear/wargear-cards#${generateAnchorId(row.card.name)}`}
-                        >
+                        <Link className={LINK} href={wargearCardHref(row.card)}>
                           {row.card.name}
                         </Link>
                         {"."}
@@ -810,7 +814,7 @@ export const UnitEquipment: React.FC<{
                             `${option.quantity} ${TIMES} `}
                           <Link
                             className={LINK}
-                            href={`/wargear/wargear-cards#${generateAnchorId(option.card.name)}`}
+                            href={wargearCardHref(option.card)}
                           >
                             {option.card.name}
                           </Link>

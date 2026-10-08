@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { CardFace, wargearCardPoints } from "@/components/CardFace";
+import { CardFace, vehicleCardPoints } from "@/components/CardFace";
 import { Highlighter } from "@/components/Highlighter";
 import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
@@ -15,9 +15,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return {
-    title: pageTitle("Wargear Cards"),
+    title: pageTitle("Vehicle Cards"),
     description:
-      "The Wargear cards of Warhammer 40,000 2nd Edition, with points value, rarity, restrictions and the weapon or armour profile where a card has one.",
+      "The Vehicle cards of Warhammer 40,000 2nd Edition, with points value, restrictions and the weapon profile where a card has one.",
   };
 }
 
@@ -30,25 +30,24 @@ export default async function Page() {
     supabase
       .from("hero_images")
       .select("images(file_name, artist, title, width, height)")
-      .eq("slug", "wargear-cards")
+      .eq("slug", "vehicle-cards")
       .maybeSingle(),
     supabase
-      .from("wargear_cards")
+      .from("vehicle_cards")
       .select(
-        "id, name, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
+        "id, name, points, restriction, discard_after_use, description, points_bases(name), vehicle_cards_availabilities(availabilities(name, position)), vehicle_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer))))",
       )
       .order("name")
-      .order("position", { referencedTable: "wargear_cards_weapons" })
+      .order("position", { referencedTable: "vehicle_cards_weapons" })
       .order("position", {
-        referencedTable: "wargear_cards_weapons.weapons.weapon_profiles",
-      })
-      .order("position", { referencedTable: "wargear_cards_armour" }),
+        referencedTable: "vehicle_cards_weapons.weapons.weapon_profiles",
+      }),
     supabase.from("availabilities").select("name").order("position"),
   ]);
   const hero = heroImage?.images ?? null;
 
   assertNoQueryErrors(
-    "/wargear/wargear-cards",
+    "/wargear/vehicle-cards",
     heroImageError,
     cardsError,
     availabilityError,
@@ -70,13 +69,13 @@ export default async function Page() {
           crumbs={[
             { href: "/", anchor: "2ed1993" },
             { href: "/wargear", anchor: "Wargear" },
-            { anchor: "Wargear Cards" },
+            { anchor: "Vehicle Cards" },
           ]}
         />
         <main id="main" className="flex flex-col items-center gap-4 w-full">
           <Panel className="flex flex-col w-full max-w-5xl">
             <TitleBand
-              title="Wargear Cards"
+              title="Vehicle Cards"
               eyebrow={`Wargear \u00b7 ${cards.length} cards`}
               className="border-b-0"
               image={
@@ -98,7 +97,7 @@ export default async function Page() {
               label="Filter"
               unit="cards"
               total={cards.length}
-              placeholder="e.g. force sword, psycannon"
+              placeholder="e.g. searchlight, skimmers"
               facetAttribute="availability"
             />
           </JumpBar>
@@ -107,22 +106,21 @@ export default async function Page() {
               {cards.map((card) => (
                 <CardFace
                   key={card.id}
-                  deck="wargear"
+                  deck="vehicle"
                   card={{
                     name: card.name,
-                    points: wargearCardPoints(card.points),
-                    rarity: card.rarity,
+                    points: vehicleCardPoints(
+                      card.points,
+                      card.points_bases?.name ?? null,
+                    ),
                     restriction: card.restriction,
                     discard_after_use: card.discard_after_use,
                     description: card.description,
-                    availabilities: card.wargear_cards_availabilities.map(
+                    availabilities: card.vehicle_cards_availabilities.map(
                       ({ availabilities }) => availabilities,
                     ),
-                    weapons: card.wargear_cards_weapons.map(
+                    weapons: card.vehicle_cards_weapons.map(
                       ({ weapons }) => weapons,
-                    ),
-                    armour: card.wargear_cards_armour.map(
-                      ({ armour }) => armour,
                     ),
                   }}
                 />
@@ -141,5 +139,5 @@ export default async function Page() {
     );
   }
 
-  throw new Error("/wargear/wargear-cards: rendered with no data");
+  throw new Error("/wargear/vehicle-cards: rendered with no data");
 }

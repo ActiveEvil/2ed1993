@@ -53,7 +53,7 @@ const SECTIONS: JumpItem[] = [
     "FactionCard",
     "BackToTop",
   ]),
-  group("Artefacts", ["Card face", "Datafax"]),
+  group("Artefacts", ["Card face", "Wargear and vehicle cards", "Datafax"]),
   group("Data", [
     "Striped rows",
     "WeaponStrip",

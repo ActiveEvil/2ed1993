@@ -71,6 +71,7 @@ add("weapon_rule", "weapon_special_rules", "name,rule", "name", "rule")
 add("armour", "armour", "name,profile_description", "name", "profile_description")
 add("armour_rule", "armour_special_rules", "name,rule", "name", "rule")
 add("wargear_card", "wargear_cards", "name,description", "name", "description")
+add("vehicle_card", "vehicle_cards", "name,description", "name", "description")
 add("mission", "mission_cards",
     "name,description,primary_objective,secondary_objective,special_rules", "name",
     "description", "primary_objective", "secondary_objective", "special_rules")
@@ -101,8 +102,20 @@ add("wargear_cat_heading", "wargear_categories", "category,rules_heading", "cate
 add("wargear_cat_intro", "wargear_categories", "category,rules_intro", "category", "rules_intro")
 add("equipment_weapon", "equipment_weapons", "category,note", "category", "note")
 
-payload = json.dumps({"texts": texts, "chapters": sorted(categories.values())},
-                     ensure_ascii=False)
+def card_rows(table, join):
+    out = []
+    for row in rows(table, f"name,{join}(availabilities(name,position))"):
+        found = sorted((r["availabilities"] for r in row[join] if r["availabilities"]),
+                       key=lambda a: a["position"])
+        out.append({"n": row["name"], "a": [a["name"] for a in found]})
+    return out
+
+
+cards = {"wargear-cards": card_rows("wargear_cards", "wargear_cards_availabilities"),
+         "vehicle-cards": card_rows("vehicle_cards", "vehicle_cards_availabilities")}
+
+payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
+                      "cards": cards}, ensure_ascii=False)
 if len(sys.argv) > 1 and sys.argv[1] == "-":
     print(payload)
 else:
