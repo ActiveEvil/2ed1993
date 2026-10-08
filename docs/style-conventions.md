@@ -94,6 +94,10 @@ card-face chart rule (Markup 7); the vehicle card mats added to Surfaces and
 artefacts; the card anchor form added to Markup 5, with the Targeter link
 moved to it; card-page fragment links added to `verify.py`.
 
+**Revised 8 October 2026 (later):** the two card pages grouped by
+availability, recorded in Surfaces and artefacts; the row filter's
+availability facet retired, so a Chip on a card now links to a section.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -648,9 +652,13 @@ power card takes the discipline colour: `2ed-dark-red` for Any Army,
 A card with several availabilities takes the mat of the first in "Available
 to" order and shows every availability as a chip, so the two Dark Millennium
 Imperial cards that Codex Chaos opens to Chaos keep the Imperium mat (ruled
-8 October 2026). The mission card name sits on its mat in light yellow, the
-wargear card name sits on its mat in white with the points beside it in
-light yellow, as the printed cards set them, and the vehicle card name and
+8 October 2026). Both card pages group their cards by "Available to", one
+section per availability in position order, with the Jump rail listing the
+sections; a card with several availabilities sits once, in the group of its
+first, and keeps every availability as a chip (ruled 8 October 2026). The
+mission card name sits on its mat in light yellow, the wargear card name
+sits on its mat in white with the points beside it in light yellow, as the
+printed cards set them, and the vehicle card name and
 points sit on its mat in that mat's ink from `lib/factions.ts`. Every other
 name sits on the face, in dark blue where the original set the special warp name in mid
 blue, because mid blue does not clear AA on the dark-scheme card stock. The rider to the shadow rule follows from this: shadows belong to images
@@ -697,8 +705,8 @@ the section name, a count of what the page indexes, or both joined by a middle
 dot, as in `Card Decks · 12 cards · 5 sources`; a bare count reads
 `21 chapters`, singular where the number is one. Chip links do not appear
 inside a band, since they duplicated the contents table set out immediately
-below it. `Chip` itself is unchanged and remains the form for in-page facet and
-rule links elsewhere.
+below it. `Chip` itself is unchanged and remains the form for in-page section
+and rule links elsewhere.
 
 Merriweather and IBM Plex Sans are display faces and are each loaded at one
 weight &mdash; 900 and 700 &mdash; by decision (7 September 2026). Hierarchy

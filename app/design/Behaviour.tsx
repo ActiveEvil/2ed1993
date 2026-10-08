@@ -6,8 +6,7 @@ const FILTERING = [
   "Rows opt in with data-search; every term must match. Hiding uses the hidden attribute rather than a class, so layout is unchanged.",
   "A matched row pulls in others through data-refs, so a weapon keeps the special rule it cites.",
   "A group with no visible row hides itself; the data-empty note, light green, shows when nothing matches.",
-  "A facet narrows the rows by one data attribute as well: a link to #available-&lt;name&gt; selects it, as the wargear cards' availability links do, and #available- alone clears it.",
-  "The count reads the total until a term or a facet is set, then n of total.",
+  "The count reads the total until a term is set, then n of total.",
   "Each pass fires 2ed:filter, which is how the Jump bar strikes through sections no longer on the page.",
   "Slash focuses the field, opening the mobile Jump bar if it is closed; Escape clears it. A link to a filtered-out row clears the query first.",
 ];
