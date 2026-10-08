@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CardFace, vehicleCardPoints } from "@/components/CardFace";
+import { SectionHeading } from "@/components/Heading";
 import { Highlighter } from "@/components/Highlighter";
 import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
@@ -54,13 +55,29 @@ export default async function Page() {
   );
 
   if (cards && availabilityRows) {
-    const jumpItems = [
-      { id: facetHref("").slice(1), label: "All" },
-      ...availabilityRows.map(({ name }) => ({
+    const faces = cards.map((card) => ({
+      id: card.id,
+      data: {
+        name: card.name,
+        points: vehicleCardPoints(card.points, card.points_bases?.name ?? null),
+        restriction: card.restriction,
+        discard_after_use: card.discard_after_use,
+        description: card.description,
+        availabilities: card.vehicle_cards_availabilities
+          .map(({ availabilities }) => availabilities)
+          .sort((a, b) => a.position - b.position),
+        weapons: card.vehicle_cards_weapons.map(({ weapons }) => weapons),
+      },
+    }));
+    const groups = availabilityRows
+      .map(({ name }) => ({
+        name,
         id: facetHref(name).slice(1),
-        label: name,
-      })),
-    ];
+        faces: faces.filter(
+          ({ data }) => data.availabilities[0]?.name === name,
+        ),
+      }))
+      .filter((group) => group.faces.length > 0);
 
     return (
       <>
@@ -72,69 +89,58 @@ export default async function Page() {
             { anchor: "Vehicle Cards" },
           ]}
         />
-        <main id="main" className="flex flex-col items-center gap-4 w-full">
-          <Panel className="flex flex-col w-full max-w-5xl">
-            <TitleBand
-              title="Vehicle Cards"
-              eyebrow={`Wargear \u00b7 ${cards.length} cards`}
-              className="border-b-0"
-              image={
-                hero && {
-                  src: `images/${hero.file_name}`,
-                  title: hero.title,
-                  artist: hero.artist,
-                  dimensions: dimensionsOf(hero),
-                }
+        <Panel as="main" className="flex flex-col w-full max-w-5xl">
+          <TitleBand
+            title="Vehicle Cards"
+            eyebrow={`Wargear \u00b7 ${cards.length} cards`}
+            image={
+              hero && {
+                src: `images/${hero.file_name}`,
+                title: hero.title,
+                artist: hero.artist,
+                dimensions: dimensionsOf(hero),
               }
-            />
-          </Panel>
-          <JumpBar
-            className="self-stretch -mx-2 md:-mx-4"
-            items={jumpItems}
-            label="Available to"
-          >
-            <RowFilter
-              label="Filter"
-              unit="cards"
-              total={cards.length}
-              placeholder="e.g. searchlight, skimmers"
-              facetAttribute="availability"
-            />
-          </JumpBar>
-          <Panel className="flex flex-col gap-4 w-full max-w-5xl p-4 md:p-8">
-            <section className="grid md:grid-cols-2 gap-4">
-              {cards.map((card) => (
-                <CardFace
-                  key={card.id}
-                  deck="vehicle"
-                  card={{
-                    name: card.name,
-                    points: vehicleCardPoints(
-                      card.points,
-                      card.points_bases?.name ?? null,
-                    ),
-                    restriction: card.restriction,
-                    discard_after_use: card.discard_after_use,
-                    description: card.description,
-                    availabilities: card.vehicle_cards_availabilities.map(
-                      ({ availabilities }) => availabilities,
-                    ),
-                    weapons: card.vehicle_cards_weapons.map(
-                      ({ weapons }) => weapons,
-                    ),
-                  }}
-                />
-              ))}
-            </section>
-            <p
-              data-empty
-              hidden
-              className="p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg"
+            }
+          />
+          <div className="flex flex-col lg:flex-row">
+            <JumpBar
+              rail
+              label="Available to"
+              items={groups.map(({ id, name }) => ({ id, label: name }))}
             >
-              Nothing matches that filter.
-            </p>
-          </Panel>
-        </main>
+              <RowFilter
+                label="Filter"
+                unit="cards"
+                total={cards.length}
+                placeholder="e.g. searchlight, skimmers"
+              />
+            </JumpBar>
+            <div className="flex flex-col gap-12 min-w-0 grow p-4 md:p-8">
+              {groups.map((group) => (
+                <section
+                  key={group.id}
+                  id={group.id}
+                  data-group
+                  className="flex flex-col gap-4"
+                >
+                  <SectionHeading>{group.name}</SectionHeading>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {group.faces.map(({ id, data }) => (
+                      <CardFace key={id} deck="vehicle" card={data} as="h3" />
+                    ))}
+                  </div>
+                </section>
+              ))}
+              <p
+                data-empty
+                hidden
+                className="p-6 border-4 border-black bg-2ed-light-green text-2ed-black text-lg"
+              >
+                Nothing matches that filter.
+              </p>
+            </div>
+          </div>
+        </Panel>
       </>
     );
   }

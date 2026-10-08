@@ -1,7 +1,7 @@
 "use client";
 
 import { FilterField } from "./FilterField";
-import { FACET_HASH, hashId } from "@/lib/anchors";
+import { hashId } from "@/lib/anchors";
 import { useEffect, useRef, useState } from "react";
 
 const ROW = "[data-search]";
@@ -20,16 +20,8 @@ export const RowFilter: React.FC<{
   unit: string;
   total: number;
   placeholder?: string;
-  facetAttribute?: string;
-}> = ({
-  label,
-  unit,
-  total,
-  placeholder,
-  facetAttribute,
-}): React.JSX.Element => {
+}> = ({ label, unit, total, placeholder }): React.JSX.Element => {
   const [query, setQuery] = useState("");
-  const [facet, setFacet] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
 
@@ -40,11 +32,9 @@ export const RowFilter: React.FC<{
     let shown = 0;
     const matched: HTMLElement[] = [];
     for (const row of rows) {
-      const match =
-        terms.every((term) => (row.dataset.search ?? "").includes(term)) &&
-        (!facet ||
-          !facetAttribute ||
-          (row.dataset[facetAttribute] ?? "").includes(facet));
+      const match = terms.every((term) =>
+        (row.dataset.search ?? "").includes(term),
+      );
       row.hidden = !match;
       if (match) {
         shown += 1;
@@ -72,33 +62,16 @@ export const RowFilter: React.FC<{
     window.dispatchEvent(new Event(FILTER_EVENT));
 
     if (countRef.current) {
-      countRef.current.textContent =
-        terms.length || facet
-          ? `${shown} of ${rows.length}`
-          : `${rows.length} ${unit}`;
+      countRef.current.textContent = terms.length
+        ? `${shown} of ${rows.length}`
+        : `${rows.length} ${unit}`;
     }
-  }, [query, facet, facetAttribute, unit]);
+  }, [query, unit]);
 
   useEffect(() => {
     const onHash = () => {
       const id = hashId(window.location.hash);
-      if (!id) {
-        setFacet("");
-        return;
-      }
-
-      if (id.startsWith(FACET_HASH)) {
-        const selected = id.slice(FACET_HASH.length).replace(/-/g, " ");
-        setFacet(selected);
-        if (!selected) {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname + window.location.search,
-          );
-        }
-        return;
-      }
+      if (!id) return;
 
       const target = document.getElementById(id);
       if (!target || target.offsetParent !== null) return;
