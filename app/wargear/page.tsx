@@ -15,7 +15,7 @@ export function generateMetadata(): Metadata {
   return {
     title: pageTitle("Wargear"),
     description:
-      "The weapons, armour and Wargear cards of Warhammer 40,000 2nd Edition, with profiles, points values and the special rules attached to each.",
+      "The weapons, armour, Wargear cards and Vehicle cards of Warhammer 40,000 2nd Edition, with profiles, points values and the special rules attached to each.",
   };
 }
 
@@ -36,6 +36,7 @@ export default async function Page() {
     { count: weaponTotal, error: weaponTotalError },
     { count: armourTotal, error: armourTotalError },
     { count: cardTotal, error: cardTotalError },
+    { count: vehicleCardTotal, error: vehicleCardTotalError },
   ] = await Promise.all([
     supabase
       .from("hero_images")
@@ -48,6 +49,7 @@ export default async function Page() {
     supabase.from("weapons").select("*", { count: "exact", head: true }),
     supabase.from("armour").select("*", { count: "exact", head: true }),
     supabase.from("wargear_cards").select("*", { count: "exact", head: true }),
+    supabase.from("vehicle_cards").select("*", { count: "exact", head: true }),
   ]);
   const hero = heroImage?.images ?? null;
 
@@ -60,6 +62,7 @@ export default async function Page() {
     weaponTotalError,
     armourTotalError,
     cardTotalError,
+    vehicleCardTotalError,
   );
 
   if (hero && armourCategoryRows && availabilityRows && weaponCategoryRows) {
@@ -69,10 +72,13 @@ export default async function Page() {
     const weapons = weaponTotal ?? 0;
     const armour = armourTotal ?? 0;
     const cards = cardTotal ?? 0;
+    const vehicleCards = vehicleCardTotal ?? 0;
     const weaponCount = weapons === 1 ? "1 weapon" : `${weapons} weapons`;
     const armourCount =
       armour === 1 ? "1 armour type" : `${armour} armour types`;
-    const cardCount = cards === 1 ? "1 card" : `${cards} cards`;
+    const cardCount = cards === 1 ? "1 wargear card" : `${cards} wargear cards`;
+    const vehicleCardCount =
+      vehicleCards === 1 ? "1 vehicle card" : `${vehicleCards} vehicle cards`;
 
     const sections = [
       {
@@ -98,6 +104,11 @@ export default async function Page() {
         href: "/wargear/wargear-cards",
         items: items("/wargear/wargear-cards", availabilities, facetHref),
       },
+      {
+        title: "Vehicle Cards",
+        href: "/wargear/vehicle-cards",
+        items: items("/wargear/vehicle-cards", availabilities, facetHref),
+      },
     ];
 
     return (
@@ -108,7 +119,7 @@ export default async function Page() {
         <Panel as="main" className="flex flex-col w-full max-w-5xl">
           <TitleBand
             title="Wargear"
-            eyebrow={`${weaponCount} \u00b7 ${armourCount} \u00b7 ${cardCount}`}
+            eyebrow={`${weaponCount} \u00b7 ${armourCount} \u00b7 ${cardCount} \u00b7 ${vehicleCardCount}`}
             image={{
               src: `images/${hero.file_name}`,
               title: hero.title,

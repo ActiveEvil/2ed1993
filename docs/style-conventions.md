@@ -88,6 +88,12 @@ focus rewritten; the skip link added to the controls that keep their yellow;
 Markup 2's Characteristics case renamed after the new `Numerical
 Characteristics` heading; `headings.py` added to the verification suite.
 
+**Revised 8 October 2026:** the weapon-link and discard conventions for the
+two card decks added to Sources; the sentence-result exception added to the
+card-face chart rule (Markup 7); the vehicle card mats added to Surfaces and
+artefacts; the card anchor form added to Markup 5, with the Targeter link
+moved to it; card-page fragment links added to `verify.py`.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -146,6 +152,14 @@ Characteristics` heading; `headings.py` added to the verification suite.
    pages are fine and already common** — `psychic#Armour_Penetration` and
    `vehicle-rules#Armour_Penetration` coexist. Do not prefix for that reason
    alone.
+
+   **A card's anchor is its name followed by every availability**, in
+   `availabilities.position` order, on both card pages: `#Ammo_Feed_Imperium`,
+   `#Scythes_Any_Army` beside `#Scythes_Eldar`, `#Combi-Weapon_Imperium_Orks`,
+   `#Bulldozer_Blade_Imperium_Chaos`. Ruled by Thomas 7 October 2026 (VC-4),
+   when two vehicle cards named Scythes needed telling apart. `cardAnchorId`
+   in `lib/anchors.ts` composes it, and every link to a card, in stored text
+   or in code, uses that form.
 6. **Nesting** — a `<p>` inside a `<section>` indents one level, and its
    `<small>` / `<em>` children step in from there. Closing tags each get their
    own line; `</em></small></p>` on one line is wrong.
@@ -157,9 +171,9 @@ Characteristics` heading; `headings.py` added to the verification suite.
    The historical `max-width: 36rem` was removed from every stored chart the
    same day.
 
-   **Inside a card face** (the wargear cards page renders at roughly half page
-   width) the constraint is width per cell, not column count, and the two cases
-   differ:
+   **Inside a card face** (the wargear and vehicle card pages render at
+   roughly half page width) the constraint is width per cell, not column
+   count, and the two cases differ:
 
    - **Label/value charts run their pairs *down*, span 3 + span 3, never
      across.** A four-band row that reads fine on a rules page collapses into
@@ -172,6 +186,13 @@ Characteristics` heading; `headings.py` added to the verification suite.
      destroy the one thing a profile is for — being read as a row. Added
      8 August for **Night Wing the Psyber Raven**, the first card whose subject
      is a model rather than an item.
+   - **A chart whose results are sentences runs span 1 + span 5**, the form
+     of the Out of Control Chart (D6): the roll in the narrow column, the
+     result beside it. The label/value split is for short values; a sentence
+     in half the card's width wraps into a column of fragments. Ruled by
+     Thomas 8 October 2026 for Crystalline Web's Crystalline Spider Damage
+     Chart, the first card chart with sentence results. Supercharged Engine's
+     chart, whose values are dice, stays at span 3 + span 3.
 
    Note that **weapon profiles on a card face are not charts at all.** They are
    the `WeaponStrip` on its `card` surface, rendered by the page component,
@@ -295,10 +316,10 @@ Baseline: **`/general-rules`**.
   that a link can exist is content-new, which Sources forbids outright. Ruled by
   Thomas 1 September.
 - **`Targeter` is capitalised.** It is a wargear card name and links to
-  `/wargear/wargear-cards#Targeter`. Ruled by Thomas 1 September, against the
-  review's recommendation; the four lower-case occurrences in the two army lists
-  were raised the same day, and two remain in older lists (`wargear_categories`
-  5 and 13).
+  `/wargear/wargear-cards#Targeter_Any_Army` (the card anchor form, Markup 5).
+  Ruled by Thomas 1 September, against the review's recommendation; the four
+  lower-case occurrences in the two army lists were raised the same day, and
+  two remain in older lists (`wargear_categories` 5 and 13).
 
 Four standing exemptions from the first-mention rule:
 
@@ -440,6 +461,33 @@ material outranks fan compilation, always:
 8 August. Wording, content and legibility conflicts all resolve codex-first;
 the codex is also more complete.
 
+- **A card that gives its bearer a weapon links the weapon; a card that
+  changes one names it.** Ruled by Thomas 8 October 2026 for both card decks,
+  written from the 147 wargear cards, which already follow it without
+  exception. Where a card puts a weapon in the bearer's hands, the card links
+  a `weapons` row through its weapons join and the face prints the strip;
+  where that weapon is an existing one unchanged, the join points at the
+  existing row (Battle Claw → Power Fist, Claw of the Desert Tigers → Power
+  Sword). Where a card changes or refers to a weapon the bearer already has,
+  the text names it with a link and the join stays empty (Ammo Feed, Inferno
+  Bolts, Chalice of Lives, Photon Beam Searchlight). On the vehicle deck:
+  Heavy Flamer → Heavy Flamer, Storm Bolters → Storm Bolter, Hunter-Killer
+  Missile → its own row, Combi-Bolter → a row of its own, and WD207's Ammo
+  Feed in its text only.
+- **`discard_after_use` is true when the card's own text takes it out of
+  play.** Ruled by Thomas 8 October 2026 for both card decks. A card is
+  played, by choice or when a condition is met, and a card that is then
+  discarded has been used; so the flag is true where the text discards the
+  card, by choice or on a condition, including its item being destroyed,
+  burning out or used up. It is false for loss with the bearer, which rule 90
+  covers for every card, and for an effect that repeats ("once per turn").
+  The face's "Discard after use" line then reads right, the card's text
+  saying when. A weapon destroyed by a misfire or similar result in its own
+  firing rules is not a discard: the result belongs to the shooting, not to
+  the card (Kustom Shoota, Kustom Blasta; ruled 8 October). Read against
+  print for all 147 wargear cards on 8 October 2026: five corrections, every
+  one false to true, and none the other way.
+
 - **Dark Millennium is in scope.** Two DM gaps remained after 2 August; gap 2
   (Space Marine Dreadnoughts) closed 8 August; gap 1 folds into the vehicle
   data model.
@@ -563,9 +611,9 @@ everywhere a profile appears: **Range · To hit · Str · Dam · Save Mod ·
 AP**, in that order. The strip has two surfaces: `page`, framed and ruled
 in `--frame` with `--background` cells and the yellow target highlight, on
 the weapons and armour references; and `card`, ruled in black with
-`--card-face` cells in `text-2ed-black`, inside a wargear card face and a
-datafax (ruled 6 September 2026, replacing the profile tables and the
-datafax weapon data table). On a card the strip carries no `id`, since the
+`--card-face` cells in `text-2ed-black`, inside a wargear or vehicle card
+face and a datafax (ruled 6 September 2026, replacing the profile tables and
+the datafax weapon data table). On a card the strip carries no `id`, since the
 artefact is the anchor; on the page it carries the entry's `id`,
 `data-search` and `data-refs`, so anchors and the filter work exactly as
 they did on the table rows.
@@ -579,24 +627,32 @@ the dark-blue randomiser, and the `WeaponStrip` on the weapons and armour
 references. A surface takes the `--frame` token, casts no shadow, and lays
 its rows out with rules and strips. An artefact is a reproduction of a
 printed object and keeps its printed cues: the mission, strategy, psychic
-power, special warp and wargear cards, and the datafax. An artefact floats
-on the page with `shadow-lg` or `shadow-xl`, sits in a black 4px frame in
+power, special warp, wargear and vehicle cards, and the datafax. An artefact
+floats on the page with `shadow-lg` or `shadow-xl`, sits in a black 4px frame in
 both schemes (still `border-frame`, since the token is black by decision),
 holds a coloured mat around a `--card-face` surface in `text-2ed-black`,
 and centres its name. Its weapon and armour data is the `WeaponStrip` on
 the `card` surface: the black name bar with the special rules
 right-aligned, then the labelled cells on card stock, one strip per weapon
-or armour item on a wargear card and per weapon under the datafax's
-"Weapon data" heading. The hit location chart and damage charts stay
+or armour item on a wargear or vehicle card and per weapon under the
+datafax's "Weapon data" heading. The hit location chart and damage charts stay
 black-headed tables on the datafax face. Body prose on a face is left-set, as the printed cards are;
 only the name, and the objective labels on a mission card, are centred. The
 mats are the deck colours: dark blue for mission cards, dark red for
 strategy cards, the discipline colour for psychic powers, mid blue for
 special warp cards, dark blue for wargear cards and the faction colour for
-a datafax. The mission card name sits on its mat in light yellow, and the
+a datafax. A vehicle card takes its mat from its availability, as a psychic
+power card takes the discipline colour: `2ed-dark-red` for Any Army,
+`faction-imperial-guard` for Imperium (the Space Marine cards included),
+`faction-eldar`, `faction-orks` and `faction-chaos` (ruled 7 October 2026).
+A card with several availabilities takes the mat of the first in "Available
+to" order and shows every availability as a chip, so the two Dark Millennium
+Imperial cards that Codex Chaos opens to Chaos keep the Imperium mat (ruled
+8 October 2026). The mission card name sits on its mat in light yellow, the
 wargear card name sits on its mat in white with the points beside it in
-light yellow, as the printed cards set them. Every other name sits on the
-face, in dark blue where the original set the special warp name in mid
+light yellow, as the printed cards set them, and the vehicle card name and
+points sit on its mat in that mat's ink from `lib/factions.ts`. Every other
+name sits on the face, in dark blue where the original set the special warp name in mid
 blue, because mid blue does not clear AA on the dark-scheme card stock. The rider to the shadow rule follows from this: shadows belong to images
 and artefacts, because a printed card floats on the page. A Panel, like
 every surface, casts none.
@@ -985,9 +1041,11 @@ blocks stripped), gendered terms (crewman everywhere; pronouns in `rules`
 only), "die" as a noun (determiner+die and "die roll" — the verb passes),
 second person outside the Golden Rule, inline `<p>` outside `<li>` (`rules`
 only), nested `<a>`/`<strong>`, duplicate ids within a category, dead
-`/rules/…#fragment` links, `/rules/…` links to a chapter slug that does not
-exist (from the `chapters` list the dump carries beside `texts`), and duplicate
-paragraphs across texts.
+`/rules/…#fragment` links, dead `/wargear/wargear-cards#…` and
+`/wargear/vehicle-cards#…` links (against the card anchors built from the
+`cards` list the dump carries, as `cardAnchorId` builds them), `/rules/…`
+links to a chapter slug that does not exist (from the `chapters` list the
+dump carries beside `texts`), and duplicate paragraphs across texts.
 
 **Known artefact:** running `verify.py` against a single-text JSON reports a
 false `dead_link`, because the anchor population it checks against is derived
@@ -1001,9 +1059,9 @@ covered those twelve rows and nothing written after them.
 
 **Still manual, by design** — they need judgment: first-mention
 links-then-bold discipline, repeat link groups, mixed-marking series
-(exemption 4), links landing inside charts, and fragment links into non-rules
-pages (`/wargear/…#X`), whose anchor population isn't derivable from
-`texts.json`.
+(exemption 4), links landing inside charts, and fragment links into the
+weapons and armour pages (`/wargear/weapons#X`, `/wargear/armour#X`), whose
+anchor population isn't derivable from `texts.json`.
 
 **Baseline, 13 August: the full suite passes at zero unexempt findings** after
 the day's fixes (crewman purge, 29-text entity conversion, four chart-title

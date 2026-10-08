@@ -2235,6 +2235,116 @@ export type Database = {
         };
         Relationships: [];
       };
+      vehicle_cards: {
+        Row: {
+          created_at: string;
+          description: string | null;
+          discard_after_use: boolean;
+          id: number;
+          name: string;
+          origin: string;
+          points: number;
+          points_basis_id: number | null;
+          restriction: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string | null;
+          discard_after_use?: boolean;
+          id?: number;
+          name: string;
+          origin: string;
+          points: number;
+          points_basis_id?: number | null;
+          restriction?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          description?: string | null;
+          discard_after_use?: boolean;
+          id?: number;
+          name?: string;
+          origin?: string;
+          points?: number;
+          points_basis_id?: number | null;
+          restriction?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_cards_points_basis_id_fkey";
+            columns: ["points_basis_id"];
+            isOneToOne: false;
+            referencedRelation: "points_bases";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      vehicle_cards_availabilities: {
+        Row: {
+          availability_id: number;
+          vehicle_card_id: number;
+        };
+        Insert: {
+          availability_id: number;
+          vehicle_card_id: number;
+        };
+        Update: {
+          availability_id?: number;
+          vehicle_card_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_cards_availabilities_availability_id_fkey";
+            columns: ["availability_id"];
+            isOneToOne: false;
+            referencedRelation: "availabilities";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "vehicle_cards_availabilities_vehicle_card_id_fkey";
+            columns: ["vehicle_card_id"];
+            isOneToOne: false;
+            referencedRelation: "vehicle_cards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      vehicle_cards_weapons: {
+        Row: {
+          position: number;
+          vehicle_card_id: number;
+          weapon_id: number;
+        };
+        Insert: {
+          position?: number;
+          vehicle_card_id: number;
+          weapon_id: number;
+        };
+        Update: {
+          position?: number;
+          vehicle_card_id?: number;
+          weapon_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_cards_weapons_vehicle_card_id_fkey";
+            columns: ["vehicle_card_id"];
+            isOneToOne: false;
+            referencedRelation: "vehicle_cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "vehicle_cards_weapons_weapon_id_fkey";
+            columns: ["weapon_id"];
+            isOneToOne: false;
+            referencedRelation: "weapons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       wargear_categories: {
         Row: {
           army_list_id: number;

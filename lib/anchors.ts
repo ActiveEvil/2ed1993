@@ -8,6 +8,33 @@ export const generateAnchorId = (name: string): string =>
     preserveCharacters: ["-", "."],
   });
 
+type Availability = { name: string; position: number };
+
+export const cardAnchorId = (
+  name: string,
+  availabilities: readonly (Availability | null)[],
+): string =>
+  generateAnchorId(
+    [
+      name,
+      ...availabilities
+        .filter((row): row is Availability => row !== null)
+        .sort((a, b) => a.position - b.position)
+        .map((row) => row.name),
+    ].join(" "),
+  );
+
+export const wargearCardHref = (card: {
+  name: string;
+  wargear_cards_availabilities: { availabilities: Availability | null }[];
+}): string =>
+  `/wargear/wargear-cards#${cardAnchorId(
+    card.name,
+    card.wargear_cards_availabilities.map(
+      ({ availabilities }) => availabilities,
+    ),
+  )}`;
+
 export const ruleHref = (
   rule: { name: string; rule_categories: { slug: string } },
   anchor?: string | null,

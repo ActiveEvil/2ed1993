@@ -44,8 +44,9 @@ export default async function Page() {
     .select("id", { count: "exact", head: true })
     .not("parent_faction_id", "is", null);
   const wargearQuery = Promise.all(
-    (["weapons", "armour", "wargear_cards"] as const).map((table) =>
-      supabase.from(table).select("id", { count: "exact", head: true }),
+    (["weapons", "armour", "wargear_cards", "vehicle_cards"] as const).map(
+      (table) =>
+        supabase.from(table).select("id", { count: "exact", head: true }),
     ),
   );
   const decksQuery = Promise.all(
@@ -106,9 +107,8 @@ export default async function Page() {
     wargear.every(({ count }) => count !== null) &&
     decks.every(({ count }) => count !== null)
   ) {
-    const [weaponCount, armourCount, wargearCardCount] = wargear.map(
-      ({ count }) => count ?? 0,
-    );
+    const [weaponCount, armourCount, wargearCardCount, vehicleCardCount] =
+      wargear.map(({ count }) => count ?? 0);
     const cardCount = decks.reduce(
       (total, { count }) => total + (count ?? 0),
       0,
@@ -147,7 +147,7 @@ export default async function Page() {
       {
         href: "/wargear",
         title: "Wargear",
-        stat: `${weaponCount} weapons \u00b7 ${armourCount} armour \u00b7 ${wargearCardCount} wargear cards`,
+        stat: `${weaponCount} weapons \u00b7 ${armourCount} armour \u00b7 ${wargearCardCount} wargear cards \u00b7 ${vehicleCardCount} vehicle cards`,
       },
       {
         href: "/card-decks",

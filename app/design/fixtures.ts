@@ -1,4 +1,5 @@
 import type { AllyLink, CompositionBand } from "@/components/ArmyListSummary";
+import type { CardFaceData } from "@/components/CardFace";
 import type { CharacteristicRow } from "@/components/CharacteristicProfile";
 import type { DatafaxData } from "@/components/Datafax";
 import type { Image } from "@/components/ImageWithCredit";
@@ -807,6 +808,89 @@ export const BLAST_2: {
   name: 'Blast 2"',
   html: "<p>This weapon has a <strong>Blast</strong> area of 2&quot;.</p>",
   related: { name: "Blast Weapons", href: "/rules/weapon-rules#Blast_Weapons" },
+};
+
+export const PSYCANNON: { source: string; card: CardFaceData } = {
+  source: "wargear_cards · Psycannon",
+  card: {
+    name: "Psycannon",
+    points: "30 Points",
+    rarity: "Rare",
+    restriction: null,
+    discard_after_use: false,
+    description: null,
+    availabilities: [{ name: "Imperium", position: 1 }],
+    weapons: [
+      {
+        name: "Psycannon",
+        weapon_categories: { name: "Basic" },
+        profile_description: `<p>
+    The psycannon exists to hurt <a href="/rules/general-rules#Psykers">Psykers</a> and daemons; its workings come from
+    the <a href="/wargear/weapons#Storm_Bolter">Storm Bolter</a>, its bolts steeped in psychic energy.
+</p>
+<p>
+    Its bolts wound a daemon or a <strong>Psyker</strong> without a roll, and a daemon gets no saving throw at all. Any
+    <strong>Psyker</strong> or daemon it damages loses one <a href="/rules/psychic">Psychic Power</a>, chosen at random,
+    for the rest of the battle.
+</p>`,
+        weapon_profiles: [
+          {
+            name: null,
+            short_range: "0-8",
+            long_range: "8-16",
+            short_to_hit: "+2",
+            long_to_hit: "+1",
+            strength: "4",
+            damage: "1",
+            save_modifier: "-2",
+            armour_penetration: "D6+4",
+            weapon_special_rules: [{ name: "Sustained Fire 1", bearer: null }],
+          },
+        ],
+      },
+    ],
+    armour: [],
+  },
+};
+
+export const HUNTER_KILLER_MISSILE: { source: string; card: CardFaceData } = {
+  source: "vehicle_cards · Hunter-Killer Missile, as drafted 8 October 2026",
+  card: {
+    name: "Hunter-Killer Missile",
+    points: "30 Points",
+    restriction: "Imperial vehicles only",
+    discard_after_use: true,
+    description: `<p>
+    Any vehicle may take this card except a <a href="/rules/vehicle-rules#Bikes_and_Trikes">Bike</a>, a <a href="/rules/vehicle-rules#Skimmers">Skimmer</a> or a <a href="/rules/vehicle-rules#Dreadnoughts_and_War_Walkers">Dreadnought</a>.
+</p>
+<p>
+    A single missile meant for heavily armoured targets. A robot brain steers it on to its mark, so it needs no one aboard to launch it.
+</p>`,
+    availabilities: [{ name: "Imperium", position: 1 }],
+    weapons: [
+      {
+        name: "Hunter-Killer Missile",
+        weapon_categories: { name: "Support" },
+        profile_description: `<p>
+    One shot only. The missile may be fired only at a vehicle, a <a href="/rules/vehicle-rules#Dreadnoughts_and_War_Walkers">Dreadnought</a>, a <a href="/rules/buildings-fortifications#Buildings">Building</a> or a similar target, and needs no crew member to fire it. It hits on a D6 roll of 3+ whatever the range, and no <a href="/rules/shooting#Basic_To_Hit_Modifiers">To Hit Modifier</a> applies to it, whether for size, speed, cover or anything else.
+</p>`,
+        weapon_profiles: [
+          {
+            name: null,
+            short_range: "*",
+            long_range: "*",
+            short_to_hit: "*",
+            long_to_hit: "*",
+            strength: "8",
+            damage: "2D10",
+            save_modifier: "-6",
+            armour_penetration: "D6+2D10+8",
+            weapon_special_rules: [],
+          },
+        ],
+      },
+    ],
+  },
 };
 
 export const BUNKER_ASSAULT: {

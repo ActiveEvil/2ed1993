@@ -87,6 +87,41 @@
     "bold": true
   },
   {
+    "where": "Vehicle card name, points and chips on the Any Army mat",
+    "ink": "2ed-white",
+    "on": "2ed-dark-red",
+    "size": 18,
+    "bold": true
+  },
+  {
+    "where": "Vehicle card name, points and chips on the Imperium mat",
+    "ink": "2ed-white",
+    "on": "faction-imperial-guard",
+    "size": 18,
+    "bold": true
+  },
+  {
+    "where": "Vehicle card name, points and chips on the Eldar mat",
+    "ink": "2ed-black",
+    "on": "faction-eldar",
+    "size": 18,
+    "bold": true
+  },
+  {
+    "where": "Vehicle card name, points and chips on the Orks mat",
+    "ink": "2ed-white",
+    "on": "faction-orks",
+    "size": 18,
+    "bold": true
+  },
+  {
+    "where": "Vehicle card name, points and chips on the Chaos mat",
+    "ink": "2ed-white",
+    "on": "faction-chaos",
+    "size": 18,
+    "bold": true
+  },
+  {
     "where": "Card name on the face",
     "ink": "2ed-dark-blue",
     "on": "card-face",

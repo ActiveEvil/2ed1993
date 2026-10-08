@@ -31,14 +31,18 @@ A unit rule's prose may carry a D6 chart, so `unit_rule` ids join the
 duplicate_id cross-check under a namespace of their own — every unit rule on
 an army-list page shares that page.
 Kinds not rendered anywhere yet (unit, equipment_weapon) get voice checks only.
+Links into the two card pages are checked against the card anchors, built
+from the `cards` list the dump carries as lib/anchors.ts builds them: the
+name followed by each availability in position order.
 """
-import json, os, re, sys
+import json, os, re, sys, unicodedata
 from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
-              "wargear_card", "mission", "strategy", "psychic", "warp",
+              "wargear_card", "vehicle_card", "mission", "strategy",
+              "psychic", "warp",
               "faction", "damage_result", "unit_wargear", "damage_chart",
               "datafax_location", "unit_rule", "unit_rule_note", "unit_cat",
               "wargear_cat_intro", "army_list")
@@ -75,6 +79,32 @@ def anchor(name):
     x = re.sub(r"[^A-Za-z0-9 ._-]", "", x)
     x = re.sub(r"\s+", " ", x).strip()
     return x.replace(" ", "_")
+
+
+CARD_PAGES = {"wargear_card": "wargear-cards", "vehicle_card": "vehicle-cards"}
+
+
+def slug(text):
+    """generateAnchorId: @sindresorhus/slugify, `_` separator, case kept,
+    `-` and `.` preserved."""
+    text = unicodedata.normalize("NFKD", text.replace("&", " and "))
+    text = text.encode("ascii", "ignore").decode()
+    text = re.sub(r"([a-zA-Z\d]+)['\u2019]([ts])(\s|$)", r"\1\2\3", text)
+    text = re.sub(r"[^a-zA-Z\d.-]+", "_", text).replace("\\", "")
+    return re.sub(r"_{2,}", "_", text).strip("_")
+
+
+def card_anchors(texts, cards):
+    found = {page: {"available-"} for page in CARD_PAGES.values()}
+    for page, rows in cards.items():
+        for card in rows:
+            found[page].add(slug(" ".join([card["n"], *card["a"]])))
+            found[page].update("available-" + "-".join(a.lower().split())
+                               for a in card["a"])
+    for row in texts:
+        if row["k"] in CARD_PAGES:
+            found[CARD_PAGES[row["k"]]].update(re.findall(r'id="([^"]+)"', row["t"]))
+    return found
 
 
 def check_tag_balance(k, n, t):
@@ -216,7 +246,7 @@ HTML_ONLY = {"tag_balance", "heading_id", "empty_id", "li_id", "stray_ws",
 PLAIN_ONLY = {"plain_entity"}
 
 
-def cross_checks(texts, chapters):
+def cross_checks(texts, chapters, cards):
     ids = defaultdict(list)
     for row in texts:
         if row["k"].startswith("rule:"):
@@ -249,6 +279,16 @@ def cross_checks(texts, chapters):
                     yield ("dead_chapter", row["k"], row["n"],
                            f"/rules/{match.group(1)} is not a rules chapter")
 
+    if cards is not None:
+        anchors = card_anchors(texts, cards)
+        for row in texts:
+            for match in re.finditer(
+                    r'href="/wargear/(wargear-cards|vehicle-cards)#([^"]+)"', row["t"]):
+                page, fragment = match.groups()
+                if fragment not in anchors[page]:
+                    yield ("dead_card_link", row["k"], row["n"],
+                           f"/wargear/{page}#{fragment} resolves to nothing")
+
     paragraphs = defaultdict(list)
     for row in texts:
         for match in re.finditer(r"<p[^>]*>(.*?)</p>", strip_charts(row["t"]), re.S):
@@ -268,13 +308,17 @@ def main():
     path = args[0] if args else os.path.join(
         os.path.dirname(HERE), "verbatim", "texts.json")
     texts = json.load(open(path, encoding="utf-8"))
-    chapters = None
+    chapters = cards = None
     if isinstance(texts, dict):
         if "chapters" in texts:
             chapters = set(texts["chapters"])
+        cards = texts.get("cards")
         texts = texts["texts"]
     if chapters is None:
         print("no chapter list in the dump, so dead_chapter is skipped; "
+              "re-run dump-texts.py")
+    if cards is None:
+        print("no card list in the dump, so dead_card_link is skipped; "
               "re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
@@ -302,7 +346,7 @@ def main():
                     continue
                 failures.append((check, row["k"], row["n"], detail))
 
-    for check, kind, name, detail in cross_checks(texts, chapters):
+    for check, kind, name, detail in cross_checks(texts, chapters, cards):
         if excused(check, kind, name, detail):
             excused_count += 1
             if show_exempt:

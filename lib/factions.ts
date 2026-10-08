@@ -11,6 +11,22 @@ export const deckColors: Record<string, string> = {
   Nurgle: "bg-faction-nurgle",
 };
 
+export const vehicleCardColors: Record<string, string> = {
+  "Any Army": "bg-2ed-dark-red",
+  Imperium: "bg-faction-imperial-guard",
+  Eldar: "bg-faction-eldar",
+  Orks: "bg-faction-orks",
+  Chaos: "bg-faction-chaos",
+};
+
+export const vehicleCardInk: Record<string, string> = {
+  "Any Army": "text-2ed-white border-2ed-white",
+  Imperium: "text-2ed-white border-2ed-white",
+  Eldar: "text-2ed-black border-2ed-black",
+  Orks: "text-2ed-white border-2ed-white",
+  Chaos: "text-2ed-white border-2ed-white",
+};
+
 // The Sisters of Battle codex is mono throughout and their one datafax, the
 // Immolator, is greyscale, so there is no colour to derive. They take the
 // Imperial Agents red rather than a token of their own.
