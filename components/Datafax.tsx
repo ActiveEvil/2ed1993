@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 
 const DASH = "–";
+const DICE_TOP = 6;
 
 export type DatafaxData = {
   speed_slow: number | null;
@@ -154,7 +155,11 @@ const stat = (value: number | null): string =>
   value === null ? DASH : String(value);
 
 const range = (min: number, max: number | null): string =>
-  max === null || max === min ? String(min) : `${min}${DASH}${max}`;
+  max === null || max === min
+    ? String(min)
+    : max === DICE_TOP
+      ? `${min}+`
+      : `${min}${DASH}${max}`;
 
 const Run: React.FC<{
   label: string;
