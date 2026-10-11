@@ -98,6 +98,9 @@ moved to it; card-page fragment links added to `verify.py`.
 availability, recorded in Surfaces and artefacts; the row filter's
 availability facet retired, so a Chip on a card now links to a section.
 
+**Revised 9 October 2026:** the last-result, low-band, total and
+characteristic-chart rules added to the dice-naming rule (Voice).
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -277,6 +280,16 @@ Baseline: **`/general-rules`**.
   "a roll of 4 or more", and never "a D6 roll of 4 or more" — "a D6 roll of
   4+". Ruled by Thomas 14 August for the naming and 1 September for the form;
   each swept site-wide the same day.
+- **The last result of a set is a threshold too.** Where the top band covers
+  more than one score it is written `n+`, never as a closed range:
+  `1-2, 3-4, 5+`. Where it is the single highest score on the dice it stands
+  bare: `1-3, 4-5, 6`. Ruled by Thomas 9 October.
+- **A low band of two or more scores is a range.** "On a 1-2", never "on a 1
+  or 2" or "on a 1, 2 or 3". Ruled by Thomas 9 October.
+- **A total takes the same form as a roll.** "A total of 9+", never "a total
+  of 9 or more". Ruled by Thomas 9 October.
+- **Charts read by a characteristic follow the same rule.** A chart looked up
+  by Strength ends `8+`, not `8-10`. Ruled by Thomas 9 October.
 - **No gendered terms.** "crew member", not "crewman" — the last nine
   "crewman"s site-wide (three weapon texts, six psychic cards) were purged
   13 August. Singular *they* for a model or player of unstated gender.

@@ -28,7 +28,11 @@
     "may not move and fire in the same turn",
     "cannot move and fire in the same turn",
     "at the end of any movement phase",
-    "roll once to hit"
+    "roll once to hit",
+    "on a d6 roll of 4+",
+    "on a d6 roll of 5+",
+    "on a d6 roll of 2+",
+    "on a d6 roll of 1-2"
   ],
   "texts": [
     {
