@@ -45,7 +45,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="WeaponStrip"
       source="components/WeaponStrip.tsx &middot; name, special, profiles, surface"
-      note="A weapon or armour entry outside a table: a black name bar with the special rules right-aligned in white, then label and value cells, one labelled row per profile under a single name bar. From md the cells sit on one line; below md they wrap to three columns, two for the four-cell close-combat and armour strips. The labels are the one abbreviation set: Range, To hit, Str, Dam, Save Mod, AP. On the page surface the strip is ruled in --frame on --background, carries its id, data-search and data-refs, and turns yellow when targeted. On the card surface it is ruled in 2ed-black on --card-face and carries no id, since the artefact is the anchor."
+      note="A weapon or armour entry outside a table: a black name bar with the special rules right-aligned in white, then label and value cells, one labelled row per profile under a single name bar. Once the strip is 28rem wide the cells sit on one line; narrower, they fall into two rows, Range and To hit above the other four, or two by two for the four-cell close-combat and armour strips. The switch follows the strip's own width, so a strip on a card keeps two rows on a wide screen. The labels are the one abbreviation set: Range, To hit, Str, Dam, Save Mod, AP. On the page surface the strip is ruled in --frame on --background, carries its id, data-search and data-refs, and turns yellow when targeted. On the card surface it is ruled in 2ed-black on --card-face and carries no id, since the artefact is the anchor."
     >
       <Source>{GRENADE_LAUNCHER.source} &middot; page surface</Source>
       <WeaponStrip

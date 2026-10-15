@@ -375,6 +375,15 @@ differ, each part states its own amount ("Up to one per Guardian Squad, or
 exactly one per Eldar Pirates"). A rule counted per rule takes no minimum, and
 the database refuses one (ELD-47).
 
+**The commander entry.** Where the commander is compulsory and nothing
+displaces it, the entry is 1-1 with no note (the Black Codex lists). Otherwise
+it is 0-1: where one unit commands and named special characters stand in for
+it, the entry carries the note "Every army has one, unless X or Y commands in
+his place." and each stand-in's entry "Commands the army in the X's place."
+(Codex Imperial Guard, Codex Space Wolves); where more than one entry may
+command, the sentence goes in the Characters band note instead (Codex Eldar,
+Genestealer Cults). Ruled by Thomas 15 October 2026 (ORK-47).
+
 ## The calls
 
 | Date | Call | Ruling |

@@ -176,7 +176,7 @@ export const CardFace: React.FC<{
         </Heading>
         <span
           className={clsx(
-            "font-subtitle whitespace-nowrap text-lg",
+            "font-subtitle text-lg text-right",
             ink.points,
           )}
         >
