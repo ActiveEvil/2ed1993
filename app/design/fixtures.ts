@@ -594,6 +594,7 @@ export const ROUGH_RIDERS: {
     },
   ],
   unit: {
+    id: 35,
     name: "Rough Rider Squad",
     unit_profiles: [
       {
