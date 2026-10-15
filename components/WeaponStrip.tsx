@@ -67,7 +67,7 @@ export const WeaponStrip: React.FC<
   <section
     id={id}
     className={clsx(
-      "group flex flex-col border-4 border-frame",
+      "@container group flex flex-col border-4 border-frame",
       SURFACE[surface].rules,
       className,
     )}
@@ -93,14 +93,14 @@ export const WeaponStrip: React.FC<
             {profile.label}
           </div>
         )}
-        <dl className="grid grid-cols-6 gap-0.5 md:flex">
+        <dl className="grid grid-cols-6 gap-0.5 @md:flex">
           {profile.cells.map((cell, index) => (
             <div
               key={index}
               className={clsx(
-                "flex flex-col items-center justify-center gap-0.5 p-0.5 md:px-2 md:py-1 text-center",
+                "flex flex-col items-center justify-center gap-0.5 p-0.5 @md:px-2 @md:py-1 text-center",
                 SPANS[profile.cells.length]?.[index] ?? "col-span-2",
-                cell.wide ? "md:flex-2" : "md:flex-1",
+                cell.wide ? "@md:flex-2" : "@md:flex-1",
                 SURFACE[surface].cell,
               )}
             >

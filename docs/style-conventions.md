@@ -621,19 +621,23 @@ descriptions (faction, army list) use the same class inside the title band.
 A weapon or armour entry outside a table is a `WeaponStrip`: a black name
 bar with the special rules right-aligned in white, then label/value cells,
 one labelled value row per profile under a single name bar when a weapon has
-more than one. From `md` the cells sit on one line; below `md` they wrap to
-three columns (two for the four-cell close-combat and armour strips) so no
-value breaks mid-way. The cell labels are the one abbreviation set used
-everywhere a profile appears: **Range · To hit · Str · Dam · Save Mod ·
-AP**, in that order. The strip has two surfaces: `page`, framed and ruled
-in `--frame` with `--background` cells and the yellow target highlight, on
-the weapons and armour references; and `card`, ruled in black with
-`--card-face` cells in `text-2ed-black`, inside a wargear or vehicle card
-face and a datafax (ruled 6 September 2026, replacing the profile tables and
-the datafax weapon data table). On a card the strip carries no `id`, since the
-artefact is the anchor; on the page it carries the entry's `id`,
-`data-search` and `data-refs`, so anchors and the filter work exactly as
-they did on the table rows.
+more than one. The strip is a size container: once it is 28rem wide (`@md`)
+the cells sit on one line; narrower, they fall into two rows, Range and To
+hit above Str, Dam, Save Mod and AP, or two by two for the four-cell
+close-combat and armour strips, so no value breaks mid-way. The switch
+follows the strip's width rather than the viewport's, so the strips on a
+wargear or vehicle card keep two rows on a wide screen (ruled 15 October
+2026). The cell labels are the one abbreviation set used everywhere a
+profile appears: **Range · To hit · Str · Dam · Save Mod · AP**, in that
+order. The strip has two surfaces: `page`, framed and ruled in `--frame`
+with `--background` cells and the yellow target highlight, on the weapons
+and armour references; and `card`, ruled in black with `--card-face` cells
+in `text-2ed-black`, inside a wargear or vehicle card face and a datafax
+(ruled 6 September 2026, replacing the profile tables and the datafax weapon
+data table). On a card the strip carries no `id`, since the artefact is the
+anchor; on the page it carries the entry's `id`, `data-search` and
+`data-refs`, so anchors and the filter work exactly as they did on the table
+rows.
 
 ### Surfaces and artefacts
 
