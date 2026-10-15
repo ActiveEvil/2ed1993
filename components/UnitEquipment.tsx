@@ -74,7 +74,7 @@ export type EquipmentOption = {
   restriction: string | null;
   note: string | null;
   profile: { name: string } | null;
-  upgrade: { name: string; units: { name: string } } | null;
+  upgrade: { name: string; units: { id: number; name: string } } | null;
   replaces: { name: string } | null;
   grants: { name: string } | null;
   grants_armour: { name: string } | null;
@@ -111,6 +111,7 @@ export type SpecialRuleAssignment = {
 };
 
 export type EquipmentUnit = {
+  id: number;
   name: string;
   unit_profiles: EquipmentProfile[];
   unit_options: EquipmentOption[];
@@ -759,12 +760,16 @@ export const UnitEquipment: React.FC<{
                       {option.upgrade && (
                         <>
                           {"upgraded to "}
-                          <Link
-                            className={LINK}
-                            href={`#${entryAnchor(option.upgrade.units.name)}`}
-                          >
-                            {option.upgrade.units.name}
-                          </Link>
+                          {option.upgrade.units.id === unit.id ? (
+                            option.upgrade.name
+                          ) : (
+                            <Link
+                              className={LINK}
+                              href={`#${entryAnchor(option.upgrade.units.name)}`}
+                            >
+                              {option.upgrade.units.name}
+                            </Link>
+                          )}
                         </>
                       )}
                       {option.grants && (

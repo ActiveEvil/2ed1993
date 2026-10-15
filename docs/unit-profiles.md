@@ -265,9 +265,10 @@ Thomas 5 October 2026.
 
 One `ProfileFrame` per entry: the statline table (`text-base` body), a 4px
 divider, then the labelled band (`text-sm`) — WEAPONS, ARMOUR, WARGEAR,
-SPECIAL, SUPPORT, in that order, SPECIAL leading with the
-`unit_special_rule_assignments` rows in `position` order and the
-`unit_options` SPECIAL rows under them, then a Strategy Rating line where the
+SPECIAL, SUPPORT, in that order, SPECIAL leading with the `unit_options`
+SPECIAL rows in `position` order and the `unit_special_rule_assignments` rows
+under them (corrected 15 October 2026 to match the component, which has
+rendered this order since the join was added), then a Strategy Rating line where the
 profile's rating differs from the list's, one `tbody` per section, **shading
 per section** (sections alternate base/stripe, so the shade changes exactly at
 each label), one row per item, labels repeated `sr-only` on continuation
