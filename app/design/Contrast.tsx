@@ -184,18 +184,15 @@ export const Contrast: React.FC = (): React.JSX.Element => {
             </table>
           </section>
           <p>
-            The ratio and the verdict are WCAG 2.1, which is what AA means.
-            <strong>Lc</strong> is the same pair measured by APCA, the
-            perceptual model behind the WCAG 3 draft: it accounts for which of
-            the two colours is lighter, where the 2.1 ratio does not. As a
-            guide, Lc 60 is comfortable for body text, Lc 45 for large or bold
-            text, and Lc 30 is the floor for any text at all.
+            The ratio and verdict are WCAG 2.1. <strong>Lc</strong> is the same
+            pair under APCA, the model behind the WCAG 3 draft, which weighs
+            which colour is lighter. Lc 60 suits body text, Lc 45 large or bold
+            text; Lc 30 is the floor.
           </p>
           <p>
-            Where the two disagree, the ratio decides conformance and the Lc
-            decides whether a change is worth making. A colour that passes on
-            the ratio can still read worse than the one it replaces. Check both
-            before moving a colour.
+            Where they disagree, the ratio decides conformance and the Lc
+            whether a change is worth making; a colour can pass the ratio and
+            still read worse than the one it replaces.
           </p>
         </div>
       )}

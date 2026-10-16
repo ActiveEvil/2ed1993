@@ -12,7 +12,7 @@ export const ArmyLists: React.FC = (): React.JSX.Element => (
     <Entry
       title="ArmyListSummary"
       source="components/ArmyListSummary.tsx &middot; bands, allies, strategyRating"
-      note="The head of an army list: the composition bands as an h2 chart, label and value pairs at span 3 and span 3, then the strategy rating and the allies as Chips, with any ally's note beneath. A band with no limit is left out, and with nothing to show the component renders nothing."
+      note="The head of an army list: the composition bands as an h2 chart in span 3 pairs, then the strategy rating and allies as Chips, with any ally note beneath. A band with no limit is omitted; with nothing to show, the component renders nothing."
     >
       <Source>{IMPERIAL_GUARD_SUMMARY.source}</Source>
       <ArmyListSummary
@@ -25,7 +25,7 @@ export const ArmyLists: React.FC = (): React.JSX.Element => (
     <Entry
       title="Army list entry"
       source="components/CharacteristicProfile.tsx &middot; UnitEquipment.tsx"
-      note="A ProfileFrame around the CharacteristicTable and UnitEquipment, as the army-list page sets each entry. The table is black-headed and striped --background and --stripe, the same look as a prose table; each row is headed by its profile name, and an alternative profile is marked —or— above its row. UnitEquipment lays out weapons, armour, options and special rules in a LabelledTable: Plex labels at 12px down the left, compact prose in the cells, groups striped by tbody. Wargear categories link to their section on the list page when the list stocks them; on this page they have nowhere to go, so they are text."
+      note="A ProfileFrame around the CharacteristicTable and UnitEquipment, as on an army-list page. The table is black-headed and striped like a prose table; each row is headed by its profile name, and an alternative profile is marked —or— above its row. UnitEquipment lays out weapons, armour, options and special rules in a LabelledTable: Plex labels at 12px down the left, compact prose in the cells, groups striped by tbody. Wargear categories link to their section on the list page; here they have no target and are text."
     >
       <Source>{ROUGH_RIDERS.source}</Source>
       <ProfileFrame className="min-w-0">

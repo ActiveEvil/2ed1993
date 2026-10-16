@@ -19,7 +19,7 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
     <Entry
       title="Prose, headings and links"
       source=".dynamic-content &middot; .measure &middot; .compact"
-      note="Injected HTML from the database, styled entirely by the .dynamic-content rules; no classes are authored per rule. h3 and h4 switch to Plex, paragraphs and list items are 18px, and links are bolder and underlined at a 4px offset. Rules pages add .measure, which caps headings, paragraphs, lists, house rules and blockquotes at 65ch and leaves charts and tables alone; every prose specimen here is set at it. Army lists and datafaxes add .compact instead: 14px text, tighter paragraphs and smaller chart cells."
+      note="Injected HTML from the database, styled by the .dynamic-content rules alone. h3 and h4 switch to Plex, paragraphs and list items are 18px, links are bolder and underlined at a 4px offset. Rules pages add .measure, capping headings, paragraphs, lists, house rules and blockquotes at 65ch and leaving charts and tables alone; every prose specimen here uses it. Army lists and datafaxes add .compact: 14px text, tighter paragraphs, smaller chart cells."
     >
       <Source>{TEXT_BLOCK.source} &middot; .measure</Source>
       <Fixture html={TEXT_BLOCK.html} measure />
@@ -32,7 +32,7 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
     <Entry
       title="House rule"
       source=".house-rule &middot; follows the accent"
-      note="The one block whose colour follows the scheme, through --house-rule-accent: dark blue in light, light blue in dark. The body is italic, and a strong inside it returns to normal. The label is 12px, which is why the light accent is dark blue rather than mid blue: mid blue falls under AA at that size."
+      note="The one block whose colour follows the scheme, through --house-rule-accent: dark blue in light, light blue in dark. The body is italic; a strong inside returns to normal. The label is 12px, which is why the light accent is dark blue: mid blue fails AA at that size."
     >
       <Source>{HOUSE_RULE.source}</Source>
       <DualScheme>
@@ -43,7 +43,7 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
     <Entry
       title="Blockquote"
       source=".blockquote-container &middot; fixed green"
-      note="Fixed light green with dark ink in both schemes, like a card face. This is the one place source text is reproduced word for word, and it carries a credit and a cite."
+      note="Fixed light green with dark ink in both schemes. The one place source text is reproduced verbatim; it carries a credit and a cite."
     >
       <Source>{BLOCKQUOTE.source}</Source>
       <Fixture html={BLOCKQUOTE.html} measure />
@@ -52,7 +52,7 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
     <Entry
       title="Numbered sequences"
       source=".ordered-list &middot; .small-markers"
-      note='Markers are CSS counters using counters(item, "."), so a nested list numbers 2.1 without the source knowing where it sits. The first child of a step displays inline. .small-markers drops the marker from 24px to 18px.'
+      note='Markers are CSS counters using counters(item, "."), so a nested list numbers 2.1 without the source knowing its depth. The first child of a step displays inline. .small-markers drops the marker from 24px to 18px.'
     >
       <Source>{ORDERED_LIST.source}</Source>
       <Fixture html={ORDERED_LIST.html} measure />
@@ -61,7 +61,7 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
     <Entry
       title="SpecialRuleSection"
       source="components/SpecialRuleSection.tsx &middot; id, name, href, html, related"
-      note="A named rule on the weapons and armour references: a SectionHeading h3 that links to itself, the rule's prose at the measure, and a See line when the rule has a chapter of its own. It carries data-search, so the filter can hide it, and its id is what a strip's data-refs names, so a visible strip keeps the rules it cites. Targeted, the whole section turns light yellow."
+      note="A named rule on the weapons and armour references: a SectionHeading h3 linking to itself, the prose at the measure, and a See line where the rule has its own chapter. It carries data-search for the filter, and its id is what a strip's data-refs names, so a visible strip keeps the rules it cites. Targeted, the section turns light yellow."
     >
       <Source>{BLAST_2.source}</Source>
       <SpecialRuleSection
