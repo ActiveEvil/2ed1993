@@ -710,19 +710,18 @@ caption and nothing else.
 
 `2ed-light-yellow` means *current or selected* and nothing else: the current
 nav item, the current rail item, the current target named in the mobile Jump
-bar, the logo ground, and the `:target` highlight (light-yellow at 80% on
-even rows, transient by nature). A targeted `WeaponStrip` takes
-`2ed-dark-yellow` on its profile label bands instead, since the 80% mix over
-the strip's black ruling reads as olive (ruled 16 October 2026). Two
-deliberate exceptions sit on artefact mats and are printed cues rather than
-states: the mission card name, and the wargear card points (ruled 7 October
-2026). Notes in a `SectionBar` are white at `font-normal`. Three controls
-keep their yellow by decision: the mobile Jump/Close toggle and back-to-top
-(7 September 2026), and the skip link (7 October 2026), all of which sit
-over content and were yellow before the refresh; the lightbox buttons keep
-their light blue for the same reason, over a dimmed page. The rest — Draw,
-the filter, the burger — are black or white with a frame. Chips underline on
-hover like every other link; nothing fills.
+bar, the logo ground, and the `:target` highlight, transient by nature, with
+`2ed-dark-yellow` on even rows and on a strip's profile label bands (ruled
+16 October 2026; light-yellow at 80% read as olive over the black table
+ground). Two deliberate exceptions sit on artefact mats and are printed cues
+rather than states: the mission card name, and the wargear card points
+(ruled 7 October 2026). Notes in a `SectionBar` are white at `font-normal`.
+Three controls keep their yellow by decision: the mobile Jump/Close toggle
+and back-to-top (7 September 2026), and the skip link (7 October 2026), all
+of which sit over content and were yellow before the refresh; the lightbox
+buttons keep their light blue for the same reason, over a dimmed page. The
+rest — Draw, the filter, the burger — are black or white with a frame. Chips
+underline on hover like every other link; nothing fills.
 
 ### The shell: band, rail, Jump bar and filter
 
