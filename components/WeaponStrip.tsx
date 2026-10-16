@@ -86,7 +86,7 @@ export const WeaponStrip: React.FC<
             className={clsx(
               "px-3 py-1 font-subtitle text-xs uppercase tracking-widest",
               surface === "page"
-                ? "bg-stripe group-target:bg-2ed-light-yellow group-target:text-black"
+                ? "bg-stripe group-target:bg-2ed-dark-yellow group-target:text-black"
                 : "bg-card-stripe text-2ed-black",
             )}
           >

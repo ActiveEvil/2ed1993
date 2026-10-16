@@ -26,7 +26,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="Striped rows"
       source="--stripe &middot; --card-stripe"
-      note="--stripe is one definition of the zebra, mixed from the two scheme variables and declared in each, so a nested [data-theme] restripes. Page rows alternate --background and --stripe: prose tables, the CharacteristicTable and the LabelledTable. Rows on a card face alternate --card-face and --card-stripe instead, and keep dark ink in both schemes. A targeted row turns light yellow, its even rows at 80%."
+      note="--stripe is one definition of the zebra, mixed from the two scheme variables and declared in each, so a nested [data-theme] restripes. Page rows alternate --background and --stripe: prose tables, the CharacteristicTable, the LabelledTable. Card-face rows alternate --card-face and --card-stripe and keep dark ink in both schemes. A targeted row turns light yellow, even rows at 80%."
     >
       <DualScheme>
         <div className="flex flex-col bg-background border-4 border-frame">
@@ -45,7 +45,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="WeaponStrip"
       source="components/WeaponStrip.tsx &middot; name, special, profiles, surface"
-      note="A weapon or armour entry outside a table: a black name bar with the special rules right-aligned in white, then label and value cells, one labelled row per profile under a single name bar. Once the strip is 28rem wide the cells sit on one line; narrower, they fall into two rows, Range and To hit above the other four, or two by two for the four-cell close-combat and armour strips. The switch follows the strip's own width, so a strip on a card keeps two rows on a wide screen. The labels are the one abbreviation set: Range, To hit, Str, Dam, Save Mod, AP. On the page surface the strip is ruled in --frame on --background, carries its id, data-search and data-refs, and turns yellow when targeted. On the card surface it is ruled in 2ed-black on --card-face and carries no id, since the artefact is the anchor."
+      note="A weapon or armour entry outside a table: a black name bar with the special rules right-aligned in white, then label and value cells, one row per profile. At 28rem the cells sit on one line; narrower, they fall into two rows, Range and To hit above the rest, or two by two for the four-cell close-combat and armour strips. The switch follows the strip's width, so a card strip keeps two rows on a wide screen. Labels are the one abbreviation set: Range, To hit, Str, Dam, Save Mod, AP. On the page surface the strip rules in --frame, carries id, data-search and data-refs, and turns yellow when targeted. On the card surface it rules in 2ed-black on --card-face and carries no id."
     >
       <Source>{GRENADE_LAUNCHER.source} &middot; page surface</Source>
       <WeaponStrip
@@ -121,7 +121,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="Table, three columns or fewer"
       source=".dynamic-content .table-container &middot; max-width 36rem"
-      note="The same look as the CharacteristicTable on an army list: a Plex head at 12px in white on black; cells in Crimson 600 at 16px, 18px from md, padded 4px and 8px across from md, striped --background and --stripe. A row head marked left is the profile name and drops to 14px, 16px from md. A cell marked .empty goes transparent. Footnote markers run dagger, double dagger, section."
+      note="The CharacteristicTable look: a Plex head at 12px, white on black; cells in Crimson 600 at 16px, 18px from md, padded 4px, 8px across from md, striped --background and --stripe. A row head marked left is the profile name at 14px, 16px from md. A cell marked .empty is transparent. Footnote markers run dagger, double dagger, section."
     >
       <Source>{NARROW_TABLE.source}</Source>
       <Fixture html={NARROW_TABLE.html} />
@@ -130,7 +130,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="Table, wider than three columns"
       source=".dynamic-content .table-container &middot; no max-width"
-      note="The 36rem cap is dropped above three columns; it would crush a twelve-column chart. The container scrolls sideways rather than reflowing, and print lets it run. This one carries the site's only .text-vertical."
+      note="No cap above three columns, which 36rem would crush. The container scrolls sideways; print lets it run. This one carries the site's only .text-vertical."
     >
       <Source>{WIDE_TABLE.source}</Source>
       <Fixture html={WIDE_TABLE.html} />
@@ -139,7 +139,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="Chart"
       source=".dynamic-content .chart &middot; 6 columns"
-      note="A chart is a six-column grid, not a table, and it spans the content column, exempt from the measure. The heading is a black band; each cell draws its own 4px bottom rule in --frame, so the frame omits one. It never scrolls. A chart title always carries the word Chart, and gains (D6) where a D6 resolves it. An h2 takes the same band, for the army composition chart, which heads its own section."
+      note="A six-column grid, not a table, spanning the content column and exempt from the measure. The heading is a black band; each cell draws its own 4px bottom rule in --frame. It never scrolls. A chart title carries the word Chart, with (D6) where a D6 resolves it. An h2 takes the same band on the army composition chart, which heads its own section."
     >
       <Source>{RANGE_CHART.source}</Source>
       <Fixture html={RANGE_CHART.html} measure />
@@ -148,7 +148,7 @@ export const Data: React.FC = (): React.JSX.Element => (
     <Entry
       title="Chart on a card face"
       source="Markup 7 &middot; two cases"
-      note="A card renders at about half page width, so the constraint is width per cell. Label and value pairs run down at span 3 and span 3. A characteristics profile runs across at nine columns, its grid overridden inline and its padding reduced per cell."
+      note="A card renders at about half page width, so width per cell is the constraint. Label and value pairs run down at span 3 and span 3; a characteristics profile runs across at nine columns, grid overridden inline, padding reduced."
     >
       <div className="grid lg:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">

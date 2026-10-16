@@ -139,11 +139,9 @@ export const DesignSystem: React.FC = (): React.JSX.Element => {
       <TitleBand title="Design">
         <p className="max-w-prose text-lg">
           Every component in components/ and every class under .dynamic-content,
-          rendered live. Each entry names the file it comes from, and the
-          content specimens are real stored rows rather than copy written for
-          this page. The colour scheme switcher lasts for the visit only; the
-          site follows the OS everywhere else. Five specimens ignore it and
-          render both schemes.
+          rendered live. Each entry names its file; the specimens are stored
+          rows. The colour scheme switcher lasts for the visit, and five
+          specimens render both schemes regardless.
         </p>
       </TitleBand>
       <div className="flex flex-col lg:flex-row">

@@ -38,7 +38,7 @@ export const Artefacts: React.FC = (): React.JSX.Element => (
     <Entry
       title="Card face"
       source="card-decks/*/page.tsx &middot; components/CardFace.tsx"
-      note="An artefact reproduces a printed object and keeps its printed cues: a black 4px frame in both schemes, a coloured mat around a --card-face surface in 2ed-black, its name centred, and a shadow, because a printed card floats on the page. The face dims in dark rather than following the scheme, and nothing on it may use --foreground. The mats are the deck colours: dark blue for mission and wargear cards, dark red for strategy cards, the discipline colour for psychic powers, mid blue for special warp cards, and the availability colour for vehicle cards. Three names sit on the mat: the mission card's in light yellow, as here, the wargear card's in white with its points beside it in light yellow, and the vehicle card's with its points in the ink of its mat. Every other name sits on the face in dark blue. Wargear and vehicle cards share CardFace; the other decks keep their markup in each deck page."
+      note="An artefact reproduces a printed object: a black 4px frame in both schemes, a coloured mat around a --card-face surface in 2ed-black, its name centred, and a shadow. The face dims in dark rather than following the scheme, and nothing on it uses --foreground. Mats are the deck colours: dark blue for mission and wargear cards, dark red for strategy, the discipline colour for psychic powers, mid blue for special warp, the availability colour for vehicle cards. Three names sit on the mat: the mission card's in light yellow, the wargear card's in white with points in light yellow, the vehicle card's with points in the mat's ink. Every other name sits on the face in dark blue. Wargear and vehicle cards share CardFace; the other decks keep their markup in their deck page."
     >
       <Source>{BUNKER_ASSAULT.source}</Source>
       <DualScheme>
@@ -49,7 +49,7 @@ export const Artefacts: React.FC = (): React.JSX.Element => (
     <Entry
       title="Wargear and vehicle cards"
       source="components/CardFace.tsx &middot; deck, card, as"
-      note="One face for the wargear and vehicle decks. A wargear card sits on dark blue, shows its rarity at the foot and may carry armour strips; its weapons list the special rules for an Infantry bearer. A vehicle card takes the mat of its first availability (dark red for Any Army, then the Imperial Guard, Eldar, Orks and Chaos colours) with its name, points and chips in that mat's ink, has no rarity, and lists the special rules for a Vehicle bearer. Every availability shows as a chip. Both anchor on the name followed by each availability, as Psycannon_Imperium. Each linked weapon's or armour's rules print beneath the card's text, unless that text already links to it."
+      note="One face for both decks. A wargear card sits on dark blue, shows its rarity at the foot, may carry armour strips, and lists special rules for an Infantry bearer. A vehicle card takes the mat of its first availability (dark red for Any Army, then the Imperial Guard, Eldar, Orks and Chaos colours), sets its name, points and chips in that mat's ink, has no rarity, and lists special rules for a Vehicle bearer. Every availability shows as a chip. Both anchor on the name followed by each availability, as Psycannon_Imperium. A linked weapon's or armour's rules print beneath the card text unless that text already links them."
     >
       <Source>
         {PSYCANNON.source} &middot; {HUNTER_KILLER_MISSILE.source}
@@ -63,7 +63,7 @@ export const Artefacts: React.FC = (): React.JSX.Element => (
     <Entry
       title="Datafax"
       source="components/Datafax.tsx &middot; datafax, factionSlug, unitName, unitTypeName, titleHref"
-      note="A vehicle's datafax: the faction colour as the mat, the name and the Datafax label on it in the faction ink from lib/factions.ts, then the data face and the damage face on --card-face. Rows alternate with --card-stripe. Weapon data is the WeaponStrip on its card surface; the hit location and damage charts stay black-headed tables. The two faces balance their blocks into columns by weight. With titleHref the title is an h3 link, as on the datafax pages."
+      note="A vehicle's datafax: the faction colour as mat, the name and Datafax label in the faction ink from lib/factions.ts, then the data and damage faces on --card-face, rows alternating with --card-stripe. Weapon data is the WeaponStrip on its card surface; the hit location and damage charts are black-headed tables. The faces balance their blocks into columns by weight. With titleHref the title is an h3 link."
     >
       <Source>{WARBIKE.source}</Source>
       <Datafax

@@ -857,7 +857,7 @@ export const PSYCANNON: { source: string; card: CardFaceData } = {
 };
 
 export const HUNTER_KILLER_MISSILE: { source: string; card: CardFaceData } = {
-  source: "vehicle_cards · Hunter-Killer Missile, as drafted 8 October 2026",
+  source: "vehicle_cards · Hunter-Killer Missile",
   card: {
     name: "Hunter-Killer Missile",
     points: "30 Points",

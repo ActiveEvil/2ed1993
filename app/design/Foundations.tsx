@@ -15,7 +15,7 @@ const SCHEME_TOKENS = [
   {
     name: "--foreground",
     className: "bg-foreground",
-    use: "Body ink, and the Chip border.",
+    use: "Body ink and the Chip border.",
   },
   {
     name: "--house-rule-accent",
@@ -25,7 +25,7 @@ const SCHEME_TOKENS = [
   {
     name: "--card-face",
     className: "bg-card-face",
-    use: "Printed card stock. Dims in dark rather than following the scheme.",
+    use: "Printed card stock. Dims in dark; does not follow the scheme.",
   },
   {
     name: "--card-stripe",
@@ -35,22 +35,22 @@ const SCHEME_TOKENS = [
   {
     name: "--stripe",
     className: "bg-stripe",
-    use: "85% background, 15% foreground, in oklab. Declared in every scheme block; on :root alone a nested theme cannot change it.",
+    use: "85% background, 15% foreground, in oklab. Declared in every scheme block, or a nested theme could not change it.",
   },
   {
     name: "--leader-ink",
     className: "bg-leader-ink",
-    use: "55% foreground, 45% background, in oklab. The dotted leader that carries an army-list entry across to its points, and the chapter numbers in a ContentsTable.",
+    use: "55% foreground, 45% background, in oklab. The dotted leader from an army-list entry to its points, and the chapter numbers in a ContentsTable.",
   },
   {
     name: "--group-surface",
     className: "bg-group-surface",
-    use: "92% background, 8% foreground, in oklab. The band that holds a note and the run of army-list entries it governs. Lighter than the zebra on purpose: at the zebra's 85% the leader dots fall under 3:1 in light.",
+    use: "92% background, 8% foreground, in oklab. The band behind a note and the army-list entries it governs. Lighter than the zebra: at 85% the leader dots fall under 3:1 in light.",
   },
   {
     name: "--frame",
     className: "bg-frame",
-    use: "Every 4px frame on a page surface. Black in every scheme block and in print by decision; the token keeps that decision in one place.",
+    use: "Every 4px frame on a page surface. Black in every scheme and in print.",
   },
 ];
 
@@ -58,22 +58,22 @@ const PALETTE = [
   {
     name: "2ed-black",
     className: "bg-2ed-black",
-    use: "Body ink in light, page in dark, and the ink on every card face and light-green note. Not the pure black the frames use.",
+    use: "Body ink in light, page in dark, and the ink on every card face and light-green note. Not the frames' pure black.",
   },
   {
     name: "2ed-white",
     className: "bg-2ed-white",
-    use: "Page in light, ink in dark. Kept in both by the filter input, light ink on a dark mat or the randomiser, and the lightbox counter.",
+    use: "Page in light, ink in dark. Fixed in both on the filter input, dark mats, the randomiser and the lightbox counter.",
   },
   {
     name: "2ed-light-yellow",
     className: "bg-2ed-light-yellow",
-    use: "Current or selected: the current nav and rail item, the active Jump bar chip, the :target highlight and outline, the filter's focus ring, a checked deck in a randomiser, the logo ground and the selected colour scheme. BackToTop, the mobile Jump toggle and the skip link keep it by decision. Two printed cues on artefact mats: the mission card name and the wargear card points.",
+    use: "Current or selected: the current nav and rail item, the active Jump chip, the :target highlight, the filter's focus ring, a checked deck, the logo ground and the selected scheme. Also BackToTop, the mobile Jump toggle and the skip link, and two printed cues: the mission card name and the wargear card points.",
   },
   {
     name: "2ed-dark-yellow",
     className: "bg-2ed-dark-yellow",
-    use: "The Logo lettering and its inset and outset borders, and the frame of a targeted mission card.",
+    use: "Logo lettering and its borders, and the frame of a targeted mission card.",
   },
   {
     name: "2ed-dark-red",
@@ -103,7 +103,7 @@ const PALETTE = [
   {
     name: "2ed-light-green",
     className: "bg-2ed-light-green",
-    use: "The blockquote container, and the empty-state note on a filtered page.",
+    use: "The blockquote container and the empty-state note.",
   },
   {
     name: "2ed-dark-green",
@@ -135,7 +135,7 @@ const FACTION_COLOURS = [
 });
 
 const SCALE = [
-  ["2xs / 8px", "The image credit below 16rem, and nothing else"],
+  ["2xs / 8px", "The image credit below 16rem"],
   [
     "xs / 12px",
     "Eyebrows, labels, chips, table heads, image credits, the house-rule label",
@@ -231,7 +231,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Scheme tokens"
       source="globals.css &middot; 9 variables"
-      note="Declared in all four scheme blocks and in print. Eight change between schemes; --frame is black in every one. A page follows the OS unless a [data-theme] ancestor overrides it. The values beside each swatch are read from the browser."
+      note="Declared in all four scheme blocks and in print. Eight change with the scheme; --frame stays black. A [data-theme] ancestor overrides the OS. Values are read from the browser."
     >
       <DualScheme>
         <ul className="flex flex-col gap-3">
@@ -247,7 +247,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Fixed palette"
       source="globals.css &middot; 11 colours"
-      note="The 2ed1993 ink set. None of these respond to the scheme. 2ed-light-red and 2ed-dark-green are reserved: declared, shown here, and used nowhere else."
+      note="The 2ed1993 ink set; none responds to the scheme. 2ed-light-red and 2ed-dark-green are reserved and used nowhere else."
     >
       <ul className="grid md:grid-cols-2 gap-3">
         {PALETTE.map(({ name, className, use }) => (
@@ -261,7 +261,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Faction colours"
       source="globals.css &middot; lib/factions.ts"
-      note="The mats of the datafaxes and the psychic decks, fixed in both schemes and grouped by what sits on them. A datafax mat carries the card's label, so its swatch shows the ink from lib/factions.ts. The three psychic-only mats hold no text, since the card face sits on them, so they have no ink. The uses are read from lib/factions.ts."
+      note="Datafax and psychic deck mats, fixed in both schemes. A datafax mat carries a label, so its swatch shows the ink from lib/factions.ts; a psychic-only mat holds no text and has none. Uses are read from lib/factions.ts."
     >
       <div className="flex flex-col gap-6">
         {[
@@ -291,7 +291,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Ink pairs"
       source="computed from the live variables"
-      note="Measured in the browser from the resolved properties rather than a table of hexes, so it cannot drift from globals.css. AA wants 4.5:1 for body text, 3:1 at 24px or at 18.66px bold, and 3:1 for a non-text mark that carries meaning."
+      note="Measured in the browser from the resolved properties, so the table cannot drift from globals.css. AA needs 4.5:1 for body text, 3:1 from 24px or 18.66px bold, and 3:1 for a meaningful non-text mark."
     >
       <Contrast />
     </Entry>
@@ -299,7 +299,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Type"
       source="layout.tsx &middot; 3 roles"
-      note="font-block is the document default, set once on the body. The other two are named where they are wanted. Text never goes below text-xs, except the image credit's text-2xs."
+      note="font-block is set once on the body; the other two are named where used. Nothing sits below text-xs except the image credit's text-2xs."
     >
       <ul className="flex flex-col gap-4">
         <li className="flex flex-col gap-1">
@@ -320,8 +320,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
           <small>
             Furniture: bars, chips, nav, labels, eyebrows, table heads, the
             other card names, and h3 and h4 in dynamic content. Loaded at 700
-            only, so hierarchy inside it is size, case and tracking; a weight
-            utility on it does nothing.
+            only; hierarchy is size, case and tracking.
           </small>
         </li>
         <li className="flex flex-col gap-1">
@@ -333,8 +332,8 @@ export const Foundations: React.FC = (): React.JSX.Element => (
             circumstances.
           </span>
           <small>
-            Rules text and the footer. 600 carries table and chart cells; 700
-            carries emphasis in a paragraph.
+            Rules text and the footer. 600 for table and chart cells, 700 for
+            emphasis.
           </small>
         </li>
       </ul>
@@ -344,7 +343,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Frame and space"
       source="conventions"
-      note="Content stops at max-w-5xl, and prose at the 65ch measure; the page pads 8px, 16px from md. A bar that reaches the edge uses self-stretch -mx-2 md:-mx-4, not a width calculation."
+      note="Content stops at max-w-5xl, prose at 65ch; the page pads 8px, 16px from md. A bar that reaches the edge uses self-stretch -mx-2 md:-mx-4."
     >
       <ul className="flex flex-col gap-3">
         <li className="flex items-center gap-3">
@@ -352,17 +351,14 @@ export const Foundations: React.FC = (): React.JSX.Element => (
           <span className="flex flex-col">
             <code className="font-subtitle text-xs">border-4 border-frame</code>
             <small>
-              The house frame: panels, images, tables, charts, card frames.
-              Black in both schemes by decision, through --frame.
+              The house frame: panels, images, tables, charts, cards. Black in
+              both schemes through --frame.
             </small>
           </span>
         </li>
         <li className="flex items-center gap-3">
           <span className={CHIP_CLASS}>border-2 border-foreground</span>
-          <small>
-            Chips only: a text-coloured outline in both schemes, the one frame
-            that is not black.
-          </small>
+          <small>Chips only: a text-coloured outline in both schemes.</small>
         </li>
         <li className="flex items-center gap-3">
           <span className="shrink-0 pl-3 border-l-8 border-accent text-sm italic">
@@ -375,8 +371,8 @@ export const Foundations: React.FC = (): React.JSX.Element => (
           <span className="flex flex-col">
             <code className="font-subtitle text-xs">shadow-lg</code>
             <small>
-              Images and artefacts, because a printed card floats on the page. A
-              Panel, like every surface, casts none. Print drops it.
+              Images and artefacts; a printed card floats on the page. Surfaces
+              cast none, and print drops it.
             </small>
           </span>
         </li>
