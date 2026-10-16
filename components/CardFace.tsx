@@ -125,20 +125,22 @@ export const CardFace: React.FC<{
     (a, b) => a.position - b.position,
   );
   const ink = deckInk(deck, availabilities[0]?.name);
-  const rules = [
-    ...weapons.map(({ profile_description }) => profile_description),
-    ...armourItems.map(({ profile_description }) => profile_description),
-  ].filter((rule): rule is string => rule !== null);
   const entries = [
-    ...weapons.map(({ name }) => ({
+    ...weapons.map(({ name, profile_description }) => ({
       name,
       href: `/wargear/weapons#${generateAnchorId(name)}`,
+      rule: profile_description,
     })),
-    ...armourItems.map(({ name }) => ({
+    ...armourItems.map(({ name, profile_description }) => ({
       name,
       href: `/wargear/armour#${generateAnchorId(name)}`,
+      rule: profile_description,
     })),
   ];
+  const rules = entries
+    .filter(({ href }) => !card.description?.includes(`href="${href}"`))
+    .map(({ rule }) => rule)
+    .filter((rule): rule is string => rule !== null);
   const search = [
     card.name,
     card.rarity ?? "",

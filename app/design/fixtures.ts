@@ -672,6 +672,7 @@ export const ROUGH_RIDERS: {
         grants_armour: null,
         replaces_armour: null,
         card: null,
+        vehicle_card: null,
         unit_option_categories: [
           {
             position: 0,
@@ -707,6 +708,7 @@ export const ROUGH_RIDERS: {
         grants_armour: null,
         replaces_armour: null,
         card: null,
+        vehicle_card: null,
         unit_option_categories: [],
       },
     ],
