@@ -51,6 +51,10 @@ last-resort prose field and should normally be null.
   profile name ("Mastery 4 · 1 wargear card"). A psyker character with no
   printed level takes its psi-level from `w` — the hero level, 1 to 4 — and
   `mastery_level` is set from it.
+
+  A null `wargear_cards_max` means the entry prints no card line, and the
+  rank chart in `rules` 90 (Wargear Cards) stands. A `wargear_cards_max` of 0
+  means the entry prints "None", which the page prints as "no wargear cards".
 - `strategy_rating` is the rating a character brings when it leads the army.
   The default belongs to the faction (`factions.strategy_rating`, from the
   Default Strategy Ratings table in The Game Steps) and every army list of the
@@ -121,6 +125,10 @@ One row per item. The columns:
   `granted_unit_id` (an accompanying unit, e.g. a transport once it exists),
   `to_unit_profile_id` (a **profile upgrade** — the Veteran Sergeant
   pattern).
+
+  `vehicle_card_id` grants a vehicle card. It prints as a named wargear card
+  does and links to the card on the vehicle card deck page
+  (`/wargear/vehicle-cards`).
 - `alternative` — options sharing a non-zero value are alternatives: the
   model or unit takes one of them (the Beastmen shield or two-handed weapon,
   the Tarantula's five pairs). 0 is not part of a choice. The semantics are

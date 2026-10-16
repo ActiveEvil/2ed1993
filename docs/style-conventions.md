@@ -256,7 +256,7 @@ Baseline: **`/general-rules`**.
   Hit The Target) are recorded in `scripts/verify/exemptions.json`.
 - **Asides are plain `<p>`** — no marker, no dedicated class. Decided 29 July.
   **Scope, corrected 16 September: the rule governs asides and does not reach
-  the other two shapes.** Three exist, each with its own job:
+  the other two shapes.** Four exist, each with its own job:
   - **Aside** — a remark qualifying the whole note. Plain `<p>`, no marker, no
     class. This is the 29 July rule, which is right about asides.
   - **Footnote** — binds a note to one word or clause. `<sup>` marker per
@@ -269,6 +269,11 @@ Baseline: **`/general-rules`**.
     listed among the capped elements in the prose measure, so it was designed
     in. On a site whose discipline is about what the source grants, that signal
     is load-bearing rather than decorative.
+  - **Source note** — records where two printings disagree, or which of them
+    the site follows. An unmarked `<p><small><em>`: no marker, set small and
+    italic so it reads as editorial rather than as rule. In use before it was
+    written down; recorded 16 October 2026, when `weapons` 68 and 148 and
+    `rules` 90 carried it.
   Read as a ban on markers, the aside rule cost `unit_options` 253 its dagger in
   the 15 September sweep. That was the only dagger outside the `rules` deck, so
   nothing else was hit; 253 itself is moot, its content having since been found
@@ -490,7 +495,12 @@ the codex is also more complete.
   Bolts, Chalice of Lives, Photon Beam Searchlight). On the vehicle deck:
   Heavy Flamer → Heavy Flamer, Storm Bolters → Storm Bolter, Hunter-Killer
   Missile → its own row, Combi-Bolter → a row of its own, and WD207's Ammo
-  Feed in its text only.
+  Feed in its text only. The face prints the rules of each linked weapon or
+  armour beneath the card's own text, except where that text already links to
+  it: the link is the reference, and the rules are not printed twice (ruled 16
+  October 2026, for Combi-Bolter and its Mk 1 Combi-Weapon). A card that
+  relies on its weapon's rules, as Hunter-Killer Missile does, does not link
+  that weapon in its own text.
 - **`discard_after_use` is true when the card's own text takes it out of
   play.** Ruled by Thomas 8 October 2026 for both card decks. A card is
   played, by choice or when a condition is met, and a card that is then
@@ -504,6 +514,11 @@ the codex is also more complete.
   the card (Kustom Shoota, Kustom Blasta; ruled 8 October). Read against
   print for all 147 wargear cards on 8 October 2026: five corrections, every
   one false to true, and none the other way.
+- **`origin` records a card's first printing.** Ruled by Thomas 16 October
+  2026 for every card table. Where a card is printed in more than one place,
+  the first printing is its origin, and later reprints are not recorded. A
+  magazine origin carries its issue number (`Citadel Journal 2`), as VC-10
+  set out.
 
 - **Dark Millennium is in scope.** Two DM gaps remained after 2 August; gap 2
   (Space Marine Dreadnoughts) closed 8 August; gap 1 folds into the vehicle

@@ -4,7 +4,12 @@ import {
   LabelledTable,
 } from "@/components/CharacteristicProfile";
 import { number } from "@/lib/allowance";
-import { generateAnchorId, ruleHref, wargearCardHref } from "@/lib/anchors";
+import {
+  cardAnchorId,
+  generateAnchorId,
+  ruleHref,
+  wargearCardHref,
+} from "@/lib/anchors";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -46,6 +51,21 @@ type WargearCardRef = {
   }[];
 };
 
+type VehicleCardRef = {
+  name: string;
+  vehicle_cards_availabilities: {
+    availabilities: { name: string; position: number } | null;
+  }[];
+};
+
+const vehicleCardHref = (card: VehicleCardRef): string =>
+  `/wargear/vehicle-cards#${cardAnchorId(
+    card.name,
+    card.vehicle_cards_availabilities.map(
+      ({ availabilities }) => availabilities,
+    ),
+  )}`;
+
 type ProfileWargearCard = {
   position: number;
   card: WargearCardRef;
@@ -80,6 +100,7 @@ export type EquipmentOption = {
   grants_armour: { name: string } | null;
   replaces_armour: { name: string } | null;
   card: WargearCardRef | null;
+  vehicle_card: VehicleCardRef | null;
   unit_option_categories: {
     position: number;
     wargear_categories: {
@@ -380,8 +401,7 @@ export const UnitEquipment: React.FC<{
   const wargearAllowanceText =
     wargearCardsMax != null ? (
       <>
-        {"up to "}
-        {wargearCardsMax}{" "}
+        {wargearCardsMax === 0 ? "no " : `up to ${wargearCardsMax} `}
         <Link className={LINK} href="/wargear/wargear-cards">
           {`wargear card${wargearCardsMax === 1 ? "" : "s"}`}
         </Link>
@@ -689,7 +709,8 @@ export const UnitEquipment: React.FC<{
                     option.upgrade ||
                     option.grants ||
                     option.grants_armour ||
-                    option.card,
+                    option.card ||
+                    option.vehicle_card,
                   );
                   const members =
                     option.alternative === 0
@@ -822,6 +843,28 @@ export const UnitEquipment: React.FC<{
                             href={wargearCardHref(option.card)}
                           >
                             {option.card.name}
+                          </Link>
+                        </>
+                      )}
+                      {option.vehicle_card && (
+                        <>
+                          {(option.grants ||
+                            option.grants_armour ||
+                            option.card) &&
+                            ", "}
+                          {!option.grants &&
+                            !option.grants_armour &&
+                            !option.card &&
+                            bare &&
+                            "equipped with "}
+                          {option.quantity !== null &&
+                            option.quantity > 1 &&
+                            `${option.quantity} ${TIMES} `}
+                          <Link
+                            className={LINK}
+                            href={vehicleCardHref(option.vehicle_card)}
+                          >
+                            {option.vehicle_card.name}
                           </Link>
                         </>
                       )}

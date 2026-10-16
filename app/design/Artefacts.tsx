@@ -49,7 +49,7 @@ export const Artefacts: React.FC = (): React.JSX.Element => (
     <Entry
       title="Wargear and vehicle cards"
       source="components/CardFace.tsx &middot; deck, card, as"
-      note="One face for the wargear and vehicle decks. A wargear card sits on dark blue, shows its rarity at the foot and may carry armour strips; its weapons list the special rules for an Infantry bearer. A vehicle card takes the mat of its first availability (dark red for Any Army, then the Imperial Guard, Eldar, Orks and Chaos colours) with its name, points and chips in that mat's ink, has no rarity, and lists the special rules for a Vehicle bearer. Every availability shows as a chip. Both anchor on the name followed by each availability, as Psycannon_Imperium."
+      note="One face for the wargear and vehicle decks. A wargear card sits on dark blue, shows its rarity at the foot and may carry armour strips; its weapons list the special rules for an Infantry bearer. A vehicle card takes the mat of its first availability (dark red for Any Army, then the Imperial Guard, Eldar, Orks and Chaos colours) with its name, points and chips in that mat's ink, has no rarity, and lists the special rules for a Vehicle bearer. Every availability shows as a chip. Both anchor on the name followed by each availability, as Psycannon_Imperium. Each linked weapon's or armour's rules print beneath the card's text, unless that text already links to it."
     >
       <Source>
         {PSYCANNON.source} &middot; {HUNTER_KILLER_MISSILE.source}
