@@ -437,11 +437,7 @@
             background-color: var(--color-2ed-light-yellow);
           }
           tr:nth-child(even) td {
-            background-color: color-mix(
-              in oklab,
-              var(--color-2ed-light-yellow) 80%,
-              transparent
-            );
+            background-color: var(--color-2ed-dark-yellow);
           }
         }
       }
