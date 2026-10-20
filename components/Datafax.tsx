@@ -19,15 +19,23 @@ export type DatafaxData = {
   ram_damage: string | null;
   ram_save_modifier: number | null;
   crew: number | null;
+  crew_detail: string | null;
   transport_capacity: number | null;
+  transport_detail: string | null;
   capacity_inside: number | null;
   capacity_roof: number | null;
   open_topped: boolean | null;
   large_target: boolean | null;
+  points: number | null;
   deployment: string | null;
   location_dice: string;
   note: string | null;
   motive_types: { name: string } | null;
+  datafax_annotations: {
+    id: number;
+    field: string;
+    note: string;
+  }[];
   datafax_images: {
     images: {
       file_name: string;
@@ -47,9 +55,15 @@ export type DatafaxData = {
     alternative: number;
     optional: boolean;
     points: number | null;
+    targeter: boolean;
+    name_as_printed: string | null;
+    datafax_weapon_ammunition: {
+      weapon_profile_id: number;
+      points: number | null;
+    }[];
     weapons: {
       name: string;
-      weapon_profiles: WeaponProfileRow[];
+      weapon_profiles: (WeaponProfileRow & { id: number })[];
     };
   }[];
   datafax_locations: {
@@ -76,7 +90,7 @@ export type DatafaxData = {
   }[];
 };
 
-const MARKERS = ["†", "‡", "§"];
+const MARKERS = ["†", "‡", "§", "¶"];
 
 const marker = (index: number): string => MARKERS[index] ?? String(index + 1);
 
@@ -89,8 +103,9 @@ const FACE_ROW = "bg-card-face even:bg-card-stripe text-sm";
 const DATA_TABLE = "w-full bg-black border-4 border-black border-collapse";
 const LINK = "underline underline-offset-4";
 const MIDDOT = " · ";
+const TARGETER = ", with Targeter";
 
-type DataRun = { label: string; value: React.ReactNode };
+type DataRun = { field?: string; label: string; value: React.ReactNode };
 
 const balance = <Block extends { weight: number }>(
   blocks: Block[],
@@ -128,8 +143,10 @@ const textWeight = (html: string): number => {
   return 26 + Math.ceil(text.length / 58) * 26;
 };
 
-const cost = (value: number): string =>
-  `+${Number.isInteger(value) ? value : value.toFixed(1)} point${value === 1 ? "" : "s"}`;
+const points = (value: number): string =>
+  `${Number.isInteger(value) ? value : value.toFixed(1)} point${value === 1 ? "" : "s"}`;
+
+const cost = (value: number): string => `+${points(value)}`;
 
 const fitting = (weapon: {
   mount: string | null;
@@ -163,11 +180,15 @@ const range = (min: number, max: number | null): string =>
 
 const Run: React.FC<{
   label: string;
+  marker?: React.ReactNode;
   children: React.ReactNode;
-}> = ({ label, children }): React.JSX.Element => (
+}> = ({ label, marker, children }): React.JSX.Element => (
   <div className="flex gap-3">
     <dt className={RUN_LABEL}>{label}</dt>
-    <dd className="min-w-0">{children}</dd>
+    <dd className="min-w-0">
+      {children}
+      {marker}
+    </dd>
   </div>
 );
 
@@ -203,44 +224,61 @@ export const Datafax: React.FC<{
     { label: "Save", value: stat(datafax.ram_save_modifier) },
   ];
 
-  const capacity = [
-    { label: "Crew", value: datafax.crew },
-    { label: "Transport", value: datafax.transport_capacity },
+  const capacity: {
+    field?: string;
+    label: string;
+    value: number | string | null;
+  }[] = [
+    {
+      field: "crew",
+      label: "Crew",
+      value: datafax.crew_detail ?? datafax.crew,
+    },
+    {
+      field: "transport",
+      label: "Transport",
+      value: datafax.transport_detail ?? datafax.transport_capacity,
+    },
     { label: "Inside", value: datafax.capacity_inside },
     { label: "Roof", value: datafax.capacity_roof },
-  ].filter(
-    (entry): entry is { label: string; value: number } => entry.value !== null,
-  );
+  ];
 
-  const flags = [
+  const type = [
+    datafax.motive_types?.name ?? null,
     datafax.open_topped ? "Open topped" : null,
     datafax.large_target ? "Large target" : null,
-  ].filter((flag): flag is string => flag !== null);
+  ].filter((part): part is string => part !== null);
 
   const allRuns: (DataRun | null)[] = [
     speeds.length
       ? {
+          field: "movement",
           label: "Movement",
           value: speeds
             .map(({ label, value }) => `${label} ${value}"`)
             .join(MIDDOT),
         }
       : null,
-    datafax.motive_types
-      ? { label: "Type", value: datafax.motive_types.name }
+    type.length
+      ? { field: "type", label: "Type", value: type.join(MIDDOT) }
       : null,
     datafax.ram_strength !== null ||
     datafax.ram_damage !== null ||
     datafax.ram_save_modifier !== null
       ? {
+          field: "ram",
           label: "Ram value",
           value: ram
             .map(({ label, value }) => `${label} ${value}`)
             .join(MIDDOT),
         }
       : null,
-    ...capacity.map(({ label, value }) => ({ label, value: String(value) })),
-    flags.length ? { label: "Notes", value: flags.join(MIDDOT) } : null,
+    ...capacity.map(({ field, label, value }) =>
+      value === null ? null : { field, label, value: String(value) },
+    ),
+    datafax.points !== null
+      ? { field: "points", label: "Points", value: points(datafax.points) }
+      : null,
   ];
 
   const runs = allRuns.filter((run): run is DataRun => run !== null);
@@ -254,6 +292,14 @@ export const Datafax: React.FC<{
         .filter((note): note is string => note !== null),
     ),
   ];
+
+  const annotationMarker = (field: string | undefined): React.ReactNode =>
+    datafax.datafax_annotations.map(
+      (annotation, index) =>
+        annotation.field === field && (
+          <sup key={annotation.id}>{marker(footnotes.length + index)}</sup>
+        ),
+    );
 
   const chartAnchor = (name: string): string =>
     generateAnchorId(`${unitName} ${name} Damage Chart`);
@@ -273,10 +319,28 @@ export const Datafax: React.FC<{
   }));
 
   const weaponData = datafax.datafax_weapons
-    .map(({ weapons }) => weapons)
+    .map(({ weapons, datafax_weapon_ammunition }) => ({
+      name: weapons.name,
+      profiles: datafax_weapon_ammunition.length
+        ? datafax_weapon_ammunition.flatMap((round) => {
+            const profile = weapons.weapon_profiles.find(
+              ({ id }) => id === round.weapon_profile_id,
+            );
+            return profile ? [{ ...profile, points: round.points }] : [];
+          })
+        : weapons.weapon_profiles.map((profile) => ({
+            ...profile,
+            points: null,
+          })),
+    }))
     .filter(
       (weapon, index, all) =>
-        all.findIndex(({ name }) => name === weapon.name) === index,
+        all.findIndex(
+          ({ name, profiles }) =>
+            name === weapon.name &&
+            profiles.map(({ id }) => id).join() ===
+              weapon.profiles.map(({ id }) => id).join(),
+        ) === index,
     );
 
   const weaponGroups: {
@@ -549,60 +613,93 @@ export const Datafax: React.FC<{
             )}
             <dl className="flex flex-col gap-1.5 min-w-0 grow text-sm">
               {runs.map((run) => (
-                <Run key={run.label} label={run.label}>
+                <Run
+                  key={run.label}
+                  label={run.label}
+                  marker={annotationMarker(run.field)}
+                >
                   {run.value}
                 </Run>
               ))}
               {Boolean(weaponGroups.length) && (
-                <Run label="Weapons">
-                  {weaponGroups.map((group) => (
-                    <Fragment key={group.key}>
-                      {group.members.length > 1 && "Either "}
-                      {joinOr(
-                        group.members.map((weapon) => (
-                          <Fragment key={weapon.id}>
-                            {weapon.quantity > 1 && (
-                              <>{weapon.quantity} &times; </>
-                            )}
-                            <Link
-                              className={LINK}
-                              href={`/wargear/weapons#${generateAnchorId(weapon.weapons.name)}`}
-                            >
-                              {weapon.weapons.name}
-                            </Link>
-                            {weapon.linked && <>, {weapon.linked}</>}
-                            {!group.shared && fitting(weapon)}
-                            {group.members.length > 1 &&
-                              weapon.points !== null && (
-                                <> at {cost(weapon.points)}</>
+                <Run label="Weapons" marker={annotationMarker("weapons")}>
+                  {weaponGroups.map((group) => {
+                    const targeters = group.members.every(
+                      ({ targeter }) => targeter,
+                    );
+
+                    return (
+                      <Fragment key={group.key}>
+                        {group.members.length > 1 && "Either "}
+                        {joinOr(
+                          group.members.map((weapon) => (
+                            <Fragment key={weapon.id}>
+                              {weapon.quantity > 1 && (
+                                <>{weapon.quantity} &times; </>
                               )}
-                          </Fragment>
-                        )),
-                      )}
-                      {group.shared && fitting(group.members[0])}
-                      {group.members.every(({ optional }) => optional) &&
-                        " may be fitted"}
-                      {group.members.length === 1 &&
-                        group.members[0].points !== null && (
-                          <>, at {cost(group.members[0].points)}</>
+                              <Link
+                                className={LINK}
+                                href={`/wargear/weapons#${generateAnchorId(weapon.weapons.name)}`}
+                              >
+                                {weapon.name_as_printed ?? weapon.weapons.name}
+                              </Link>
+                              {weapon.linked && <>, {weapon.linked}</>}
+                              {!group.shared && fitting(weapon)}
+                              {!targeters && weapon.targeter && TARGETER}
+                              {group.members.length > 1 &&
+                                weapon.points !== null && (
+                                  <> at {cost(weapon.points)}</>
+                                )}
+                            </Fragment>
+                          )),
                         )}
-                      {". "}
-                    </Fragment>
-                  ))}
+                        {group.shared && fitting(group.members[0])}
+                        {targeters && TARGETER}
+                        {group.members.every(({ optional }) => optional) &&
+                          " may be fitted"}
+                        {group.members.length === 1 &&
+                          group.members[0].points !== null && (
+                            <>, at {cost(group.members[0].points)}</>
+                          )}
+                        {". "}
+                      </Fragment>
+                    );
+                  })}
                 </Run>
               )}
               {datafax.deployment && (
                 <Run label="Deployment">{datafax.deployment}</Run>
               )}
+              {datafax.note && (
+                <Run label="Special">
+                  <div
+                    className="dynamic-content compact flex flex-col gap-2"
+                    dangerouslySetInnerHTML={{ __html: datafax.note }}
+                  />
+                </Run>
+              )}
             </dl>
           </div>
+          {Boolean(datafax.datafax_annotations.length) && (
+            <div className="flex flex-col gap-1 text-xs">
+              {datafax.datafax_annotations.map((annotation, index) => (
+                <p key={annotation.id}>
+                  <sup>{marker(footnotes.length + index)}</sup>{" "}
+                  <span
+                    className="dynamic-content compact"
+                    dangerouslySetInnerHTML={{ __html: annotation.note }}
+                  />
+                </p>
+              ))}
+            </div>
+          )}
           {Boolean(weaponData.length) && (
             <div className="flex flex-col gap-2">
               <Subheading className={SUB_HEADING}>Weapon data</Subheading>
               {weaponData.map((weapon) => {
                 const specials = [
                   ...new Set(
-                    weapon.weapon_profiles.flatMap((profile) =>
+                    weapon.profiles.flatMap((profile) =>
                       forBearer(profile.weapon_special_rules, "Vehicle").map(
                         ({ name }) => name,
                       ),
@@ -631,10 +728,19 @@ export const Datafax: React.FC<{
                           ))
                         : undefined
                     }
-                    profiles={weapon.weapon_profiles.map((profile, index) => ({
-                      key: index,
+                    profiles={weapon.profiles.map((profile) => ({
+                      key: profile.id,
                       label:
-                        weapon.weapon_profiles.length > 1 ? profile.name : null,
+                        weapon.profiles.length > 1 || profile.points !== null
+                          ? [
+                              profile.name,
+                              profile.points === null
+                                ? null
+                                : cost(profile.points),
+                            ]
+                              .filter((part) => part !== null)
+                              .join(MIDDOT)
+                          : null,
                       cells: rangedCells(profile),
                     }))}
                   />
@@ -642,7 +748,6 @@ export const Datafax: React.FC<{
               })}
             </div>
           )}
-          {datafax.note && <p className="text-sm">{datafax.note}</p>}
         </div>
       )}
 

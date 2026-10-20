@@ -428,15 +428,30 @@ export const WARBIKE: {
     ram_damage: "D4",
     ram_save_modifier: -2,
     crew: 1,
-    transport_capacity: null,
+    crew_detail: "1 Ork rider",
+    transport_capacity: 1,
+    transport_detail: "1 Grot passenger",
     capacity_inside: null,
     capacity_roof: null,
-    open_topped: false,
+    open_topped: true,
     large_target: false,
+    points: 35,
     deployment: null,
     location_dice: "D6",
-    note: "No weapon on this card carries a Targeter.",
+    note: '<p>The rider may fire a pistol as well as the bike&apos;s weapons; see <a href="/rules/vehicle-rules#Bikes">Bikes</a>.</p>',
     motive_types: { name: "Bikes & Trikes" },
+    datafax_annotations: [
+      {
+        id: 1,
+        field: "movement",
+        note: "<p>A Warbike moving at its <strong>Fast</strong> rate cannot turn more than 90&deg; in a turn.</p>",
+      },
+      {
+        id: 2,
+        field: "weapons",
+        note: "<p>The Autocannons fire as one weapon.</p>",
+      },
+    ],
     datafax_images: [],
     datafax_weapons: [
       {
@@ -449,11 +464,15 @@ export const WARBIKE: {
         alternative: 0,
         optional: false,
         points: null,
+        targeter: true,
+        name_as_printed: "Twin Autocannon",
+        datafax_weapon_ammunition: [{ weapon_profile_id: 302, points: 5 }],
         weapons: {
           name: "Autocannon",
           weapon_profiles: [
             {
-              name: null,
+              id: 301,
+              name: "Solid shot",
               short_range: "0-20",
               long_range: "20-72",
               short_to_hit: "–",
@@ -464,6 +483,22 @@ export const WARBIKE: {
               armour_penetration: "2D6+8",
               weapon_special_rules: [
                 { name: "Sustained Fire 1", bearer: null },
+                { name: "Move or Fire", bearer: "Infantry" },
+              ],
+            },
+            {
+              id: 302,
+              name: "Shrapnel",
+              short_range: "0-20",
+              long_range: "20-72",
+              short_to_hit: "–",
+              long_to_hit: "–",
+              strength: "6",
+              damage: "1",
+              save_modifier: "-1",
+              armour_penetration: "D6+6",
+              weapon_special_rules: [
+                { name: "Sustained Fire 2", bearer: null },
                 { name: "Move or Fire", bearer: "Infantry" },
               ],
             },

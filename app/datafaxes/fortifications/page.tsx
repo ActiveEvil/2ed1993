@@ -34,12 +34,16 @@ export default async function Page() {
   const { data: unitRows, error: unitsError } = await supabase
     .from("units")
     .select(
-      "id, name, faction_id, unit_types!inner(name, plural_name, position), datafaxes!inner(id, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, transport_capacity, open_topped, large_target, capacity_inside, capacity_roof, deployment, location_dice, note, motive_types(name), datafax_images(position, images(file_name, artist, title, width, height)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, weapons(name, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, note, position, damage_chart_results(id, roll_min, roll_max, effect, position)))",
+      "id, name, faction_id, unit_types!inner(name, plural_name, position), datafaxes!inner(id, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, crew_detail, transport_capacity, transport_detail, open_topped, large_target, capacity_inside, capacity_roof, points, deployment, location_dice, note, motive_types(name), datafax_annotations(id, field, note, position), datafax_images(position, images(file_name, artist, title, width, height)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, targeter, name_as_printed, datafax_weapon_ammunition(weapon_profile_id, points, position), weapons(name, weapon_profiles(id, name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, note, position, damage_chart_results(id, roll_min, roll_max, effect, position)))",
     )
     .eq("unit_types.name", "Fortification")
     .order("name")
     .order("position", { referencedTable: "datafaxes.datafax_images" })
+    .order("position", { referencedTable: "datafaxes.datafax_annotations" })
     .order("position", { referencedTable: "datafaxes.datafax_weapons" })
+    .order("position", {
+      referencedTable: "datafaxes.datafax_weapons.datafax_weapon_ammunition",
+    })
     .order("position", {
       referencedTable: "datafaxes.datafax_weapons.weapons.weapon_profiles",
     })

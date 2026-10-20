@@ -862,6 +862,38 @@ export type Database = {
           },
         ]
       }
+      datafax_annotations: {
+        Row: {
+          datafax_id: number
+          field: string
+          id: number
+          note: string
+          position: number
+        }
+        Insert: {
+          datafax_id: number
+          field: string
+          id?: number
+          note: string
+          position: number
+        }
+        Update: {
+          datafax_id?: number
+          field?: string
+          id?: number
+          note?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "datafax_annotations_datafax_id_fkey"
+            columns: ["datafax_id"]
+            isOneToOne: false
+            referencedRelation: "datafaxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       datafax_images: {
         Row: {
           datafax_id: number
@@ -968,6 +1000,42 @@ export type Database = {
           },
         ]
       }
+      datafax_weapon_ammunition: {
+        Row: {
+          datafax_weapon_id: number
+          points: number | null
+          position: number
+          weapon_profile_id: number
+        }
+        Insert: {
+          datafax_weapon_id: number
+          points?: number | null
+          position: number
+          weapon_profile_id: number
+        }
+        Update: {
+          datafax_weapon_id?: number
+          points?: number | null
+          position?: number
+          weapon_profile_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "datafax_weapon_ammunition_datafax_weapon_id_fkey"
+            columns: ["datafax_weapon_id"]
+            isOneToOne: false
+            referencedRelation: "datafax_weapons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "datafax_weapon_ammunition_weapon_profile_id_fkey"
+            columns: ["weapon_profile_id"]
+            isOneToOne: false
+            referencedRelation: "weapon_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       datafax_weapons: {
         Row: {
           alternative: number
@@ -978,10 +1046,12 @@ export type Database = {
           id: number
           linked_group: number | null
           mount: string | null
+          name_as_printed: string | null
           optional: boolean
           points: number | null
           position: number
           quantity: number
+          targeter: boolean
           updated_at: string | null
           weapon_id: number
         }
@@ -994,10 +1064,12 @@ export type Database = {
           id?: number
           linked_group?: number | null
           mount?: string | null
+          name_as_printed?: string | null
           optional?: boolean
           points?: number | null
           position: number
           quantity?: number
+          targeter?: boolean
           updated_at?: string | null
           weapon_id: number
         }
@@ -1010,10 +1082,12 @@ export type Database = {
           id?: number
           linked_group?: number | null
           mount?: string | null
+          name_as_printed?: string | null
           optional?: boolean
           points?: number | null
           position?: number
           quantity?: number
+          targeter?: boolean
           updated_at?: string | null
           weapon_id?: number
         }
@@ -1040,6 +1114,7 @@ export type Database = {
           capacity_roof: number | null
           created_at: string
           crew: number | null
+          crew_detail: string | null
           deployment: string | null
           id: number
           large_target: boolean | null
@@ -1056,6 +1131,7 @@ export type Database = {
           speed_fast: number | null
           speed_slow: number | null
           transport_capacity: number | null
+          transport_detail: string | null
           unit_id: number
           updated_at: string | null
         }
@@ -1064,6 +1140,7 @@ export type Database = {
           capacity_roof?: number | null
           created_at?: string
           crew?: number | null
+          crew_detail?: string | null
           deployment?: string | null
           id?: number
           large_target?: boolean | null
@@ -1080,6 +1157,7 @@ export type Database = {
           speed_fast?: number | null
           speed_slow?: number | null
           transport_capacity?: number | null
+          transport_detail?: string | null
           unit_id: number
           updated_at?: string | null
         }
@@ -1088,6 +1166,7 @@ export type Database = {
           capacity_roof?: number | null
           created_at?: string
           crew?: number | null
+          crew_detail?: string | null
           deployment?: string | null
           id?: number
           large_target?: boolean | null
@@ -1104,6 +1183,7 @@ export type Database = {
           speed_fast?: number | null
           speed_slow?: number | null
           transport_capacity?: number | null
+          transport_detail?: string | null
           unit_id?: number
           updated_at?: string | null
         }
