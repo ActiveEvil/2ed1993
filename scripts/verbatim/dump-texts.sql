@@ -33,7 +33,8 @@ select json_build_object(
   union all select 'allowance_set',    als.name, concat_ws(' ', als.name, als.singular) from army_list_allowance_sets als where als.name is not null
   union all select 'ally',             'army_list_allies_row', ala.note  from army_list_allies ala     where ala.note is not null
   union all select 'wargear_item',     'wargear_items_row', wi.restriction from wargear_items wi      where wi.restriction is not null
-  union all select 'datafax',          'datafaxes_row', concat_ws(' ', d.deployment, d.note) from datafaxes d where coalesce(d.deployment, d.note) is not null
+  union all select 'datafax',          'datafaxes_row', concat_ws(' ', d.deployment, d.note, d.transport_detail, d.crew_detail) from datafaxes d where coalesce(d.deployment, d.note, d.transport_detail, d.crew_detail) is not null
+  union all select 'datafax_annotation', 'datafax_annotations_row', da.note from datafax_annotations da
   union all select 'datafax_weapon',   'datafax_weapons_row', dw.arc_note from datafax_weapons dw     where dw.arc_note is not null
   union all select 'datafax_location', dl.name,  dl.note                 from datafax_locations dl     where dl.note is not null
   union all select 'damage_chart',     dc.name,  dc.note                 from damage_charts dc         where dc.note is not null
