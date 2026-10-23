@@ -221,6 +221,16 @@ def check_inline_p(k, n, t):
         yield f"inline <p> outside <li>: {t[match.start():match.start() + 40]!r}"
 
 
+def check_magazine_source(k, n, t):
+    """A magazine aside keeps its citation in data-source, which the renderer
+    lifts into the head; the paragraph no longer opens with it."""
+    for match in re.finditer(
+            r'<section class="house-rule"([^>]*)>\s*<span class="label">'
+            r'(Citadel Journal|White Dwarf)', t):
+        if not re.search(r'\sdata-source="[^"]+"', match.group(1)):
+            yield f"{match.group(2)} aside with no data-source"
+
+
 def check_nesting(k, n, t):
     for tag in ("a", "strong"):
         depth = 0
@@ -240,10 +250,11 @@ PER_TEXT = {
     "gendered": check_gendered,
     "die_noun": check_die, "second_person": check_second_person,
     "inline_p": check_inline_p, "nesting": check_nesting,
+    "magazine_source": check_magazine_source,
 }
 HTML_ONLY = {"tag_balance", "heading_id", "empty_id", "li_id", "stray_ws",
              "chart_title", "spaced_mdash", "ampersand", "non_ascii",
-             "inline_p", "nesting"}
+             "inline_p", "nesting", "magazine_source"}
 PLAIN_ONLY = {"plain_entity"}
 
 

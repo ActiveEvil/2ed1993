@@ -8,8 +8,12 @@ import { useEffect, useRef, useState } from "react";
 export type JumpItem = {
   id: string;
   label: string;
+  marked?: boolean;
   subsections?: { id: string; label: string }[];
 };
+
+const Mark: React.FC<{ marked?: boolean }> = ({ marked }) =>
+  marked ? <span className="mark-rail" aria-hidden="true" /> : null;
 
 const EYEBROW = "shrink-0 font-subtitle text-xs uppercase tracking-widest";
 
@@ -184,7 +188,7 @@ export const JumpBar: React.FC<
         aria-label={label}
         className="flex flex-col max-h-96 overflow-y-auto border-t-2 border-white/25"
       >
-        {items.map(({ id, label: text }) => (
+        {items.map(({ id, label: text, marked }) => (
           <a
             key={id}
             href={`#${id}`}
@@ -202,6 +206,7 @@ export const JumpBar: React.FC<
             )}
           >
             {text}
+            <Mark marked={marked} />
           </a>
         ))}
       </nav>
@@ -231,7 +236,7 @@ export const JumpBar: React.FC<
           >
             <span className={clsx(EYEBROW, "px-2")}>{label}</span>
             <ul className="flex flex-col">
-              {items.map(({ id, label: text, subsections }) => (
+              {items.map(({ id, label: text, marked, subsections }) => (
                 <li key={id} className="flex flex-col">
                   <a
                     href={`#${id}`}
@@ -244,6 +249,7 @@ export const JumpBar: React.FC<
                     )}
                   >
                     {text}
+                    <Mark marked={marked} />
                   </a>
                   {active === id && subsections && subsections.length > 0 && (
                     <ul className="flex flex-col py-1">

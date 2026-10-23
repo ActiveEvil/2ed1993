@@ -1,3 +1,4 @@
+import { magazineHead } from "@/lib/magazine";
 import { clsx } from "clsx";
 
 export const SectionHeading: React.FC<
@@ -16,4 +17,13 @@ export const SectionHeading: React.FC<
   >
     {children}
   </Tag>
+);
+
+export const MagazineBand: React.FC<
+  { source: string } & React.PropsWithChildren
+> = ({ source, children }): React.JSX.Element => (
+  <div className="mag-band">
+    <SectionHeading>{children}</SectionHeading>
+    <span className="mark-cite">{magazineHead(source)}</span>
+  </div>
 );

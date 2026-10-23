@@ -7,6 +7,11 @@
   /* 2ed-dark-blue rather than 2ed-mid-blue: the .label is 12px, and mid-blue on
      this background is 3.64 against the 4.5 AA threshold for small text. */
   --house-rule-accent: #005097;
+  /* The magazine mark is black in both schemes, like the frames; the rail
+     square takes an outline in dark so it stays visible on the page. */
+  --mag-strong: var(--frame);
+  --mag-ink: #fafafa;
+  --mag-outline: transparent;
   /* Card faces are printed card stock rather than page background: they keep
      their dark ink in both schemes and only lose the glare in dark mode. */
   --card-face: #fafafa;
@@ -30,6 +35,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--house-rule-accent);
+  --color-mag-strong: var(--mag-strong);
+  --color-mag-ink: var(--mag-ink);
   --color-card-face: var(--card-face);
   --color-card-stripe: var(--card-stripe);
   --color-stripe: var(--stripe);
@@ -278,6 +285,21 @@
         }
       }
     }
+    .mag-aside {
+      border-left: 0;
+      border-right: calc(var(--spacing) * 4) solid var(--mag-strong);
+      border-bottom: 4px solid var(--mag-strong);
+      padding: 0 calc(var(--spacing) * 3) calc(var(--spacing) * 3) 0;
+      .label {
+        display: none;
+      }
+      p {
+        font-style: normal;
+      }
+      .chart {
+        margin-right: calc(var(--spacing) * 5);
+      }
+    }
     .text-vertical {
       writing-mode: sideways-lr;
     }
@@ -375,6 +397,75 @@
       }
     }
   }
+  .mag {
+    --gutter: calc(var(--spacing) * 5);
+    border-right: calc(var(--spacing) * 4) solid var(--mag-strong);
+    border-bottom: 4px solid var(--mag-strong);
+    padding: 0 var(--gutter) calc(var(--spacing) * 4) 0;
+    @variant md {
+      --gutter: calc(var(--spacing) * 8);
+    }
+    .mag-band,
+    .mark-band {
+      margin-right: calc(-1 * var(--gutter));
+    }
+    .dynamic-content h3 {
+      scroll-margin-top: calc(var(--jump-offset) + var(--spacing));
+    }
+  }
+  .mag-band {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+    background-color: var(--mag-strong);
+    color: var(--mag-ink);
+    h2 {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+  .mark-band {
+    display: flex;
+    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 3);
+    background-color: var(--mag-strong);
+    color: var(--mag-ink);
+  }
+  .mark-cite,
+  .mag-head {
+    font-family: var(--ibm-plex-sans);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .mag-head {
+    padding: calc(var(--spacing) * 1) calc(var(--spacing) * 3);
+    margin-right: calc(var(--spacing) * -3);
+    background-color: var(--mag-strong);
+    color: var(--mag-ink);
+  }
+  .mark-rail {
+    display: inline-block;
+    width: calc(var(--spacing) * 2.5);
+    height: calc(var(--spacing) * 2.5);
+    margin-left: calc(var(--spacing) * 2);
+    vertical-align: middle;
+    background-color: var(--mag-strong);
+    outline: 1px solid var(--mag-outline);
+  }
+  /* The mobile Jump list sits on black, where the square needs its edge. */
+  details .mark-rail {
+    outline-color: var(--color-2ed-white);
+  }
+  [aria-current] .mark-rail {
+    background-color: var(--color-black);
+    outline: 0;
+  }
 }
 
 /* Follows the OS unless a [data-theme] ancestor says otherwise. */
@@ -383,6 +474,9 @@
     --background: #2d2d2d;
     --foreground: #fafafa;
     --house-rule-accent: #6dcef7;
+    --mag-strong: var(--frame);
+    --mag-ink: #fafafa;
+    --mag-outline: var(--foreground);
     --card-face: #d8d8d8;
     --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
@@ -400,6 +494,9 @@
   --background: #2d2d2d;
   --foreground: #fafafa;
   --house-rule-accent: #6dcef7;
+  --mag-strong: var(--frame);
+  --mag-ink: #fafafa;
+  --mag-outline: var(--foreground);
   --card-face: #d8d8d8;
   --card-stripe: color-mix(in oklab, #d8d8d8 93%, #2d2d2d);
   --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
@@ -461,6 +558,9 @@ body {
     --background: #fafafa;
     --foreground: #2d2d2d;
     --house-rule-accent: #005097;
+    --mag-strong: var(--frame);
+    --mag-ink: #fafafa;
+    --mag-outline: transparent;
     --card-face: #fafafa;
     --card-stripe: color-mix(in oklab, #fafafa 93%, #2d2d2d);
     --stripe: color-mix(in oklab, var(--background) 85%, var(--foreground));
@@ -492,7 +592,10 @@ body {
   .bg-2ed-dark-blue,
   .bg-2ed-mid-blue,
   .bg-2ed-dark-red,
-  .bg-2ed-dark-green {
+  .bg-2ed-dark-green,
+  .mag-band,
+  .mark-band,
+  .mag-head {
     background-color: transparent !important;
     color: var(--color-black) !important;
   }

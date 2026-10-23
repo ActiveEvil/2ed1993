@@ -23,6 +23,16 @@ const SCHEME_TOKENS = [
     use: "The house-rule bar and its label, and the TitleBand eyebrow. Dark blue in light, so the 12px label clears AA; light blue in dark.",
   },
   {
+    name: "--mag-strong",
+    className: "bg-mag-strong",
+    use: "The magazine mark: bands, spine, foot and the rail square. The frame colour in both schemes; in dark the rail square takes a 1px outline in the foreground, through --mag-outline.",
+  },
+  {
+    name: "--mag-ink",
+    className: "bg-mag-ink",
+    use: "Text on a magazine band. 2ed-white in both schemes.",
+  },
+  {
     name: "--card-face",
     className: "bg-card-face",
     use: "Printed card stock. Dims in dark; does not follow the scheme.",
@@ -230,8 +240,8 @@ export const Foundations: React.FC = (): React.JSX.Element => (
   <Group title="Foundations">
     <Entry
       title="Scheme tokens"
-      source="globals.css &middot; 9 variables"
-      note="Declared in all four scheme blocks and in print. Eight change with the scheme; --frame stays black. A [data-theme] ancestor overrides the OS. Values are read from the browser."
+      source="globals.css &middot; 11 variables"
+      note="Declared in all four scheme blocks and in print. Eight change with the scheme; --frame, --mag-strong and --mag-ink do not. A [data-theme] ancestor overrides the OS. Values are read from the browser."
     >
       <DualScheme>
         <ul className="flex flex-col gap-3">
@@ -365,6 +375,16 @@ export const Foundations: React.FC = (): React.JSX.Element => (
             border-l-8
           </span>
           <small>The house-rule aside, in the accent.</small>
+        </li>
+        <li className="flex items-center gap-3">
+          <span className="shrink-0 pr-3 border-r-[1rem] border-mag-strong text-sm">
+            border-r
+          </span>
+          <small>
+            The magazine spine, and the rail square
+            <span className="mark-rail" aria-hidden="true" /> that marks a whole
+            magazine rule.
+          </small>
         </li>
         <li className="flex items-center gap-3">
           <span className="shrink-0 size-8 border-4 border-frame shadow-lg" />

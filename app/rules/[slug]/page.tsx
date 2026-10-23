@@ -1,15 +1,17 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CHIP_CLASS } from "@/components/Chip";
-import { SectionHeading } from "@/components/Heading";
+import { MagazineBand, SectionHeading } from "@/components/Heading";
 import { Highlighter, HighlighterLink } from "@/components/Highlighter";
 import { dimensionsOf } from "@/components/ImageWithCredit";
 import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { TitleBand } from "@/components/TitleBand";
 import { generateAnchorId, hasFactionChapter, ruleHref } from "@/lib/anchors";
+import { bandHeadings, markExtensions } from "@/lib/magazine";
 import { joinWithinBudget, pageTitle } from "@/lib/metadata";
 import { extractSubsections } from "@/lib/sections";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
+import { clsx } from "clsx";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 
@@ -196,7 +198,7 @@ export default async function Page(props: {
   const { data: category, error: categoryError } = await supabase
     .from("rule_categories")
     .select(
-      "name, faction_id, position, rule_sections(name, numbered), images(file_name, artist, title, width, height), rules(name, rule, position)",
+      "name, faction_id, position, rule_sections(name, numbered), images(file_name, artist, title, width, height), rules(name, rule, source, position)",
     )
     .eq("slug", params.slug)
     .order("position", { referencedTable: "rules" })
@@ -237,10 +239,17 @@ export default async function Page(props: {
       id: string | null;
       name: string;
       rule: string;
+      source: string | null;
     }[] = category.rules.map((item) => {
       const id = generateAnchorId(item.name);
 
-      return { key: `chapter-${id}`, id, name: item.name, rule: item.rule };
+      return {
+        key: `chapter-${id}`,
+        id,
+        name: item.name,
+        rule: item.rule,
+        source: item.source,
+      };
     });
 
     const chapterByAnchor = new Map(
@@ -274,6 +283,7 @@ export default async function Page(props: {
           id: null,
           name: rule.name,
           rule: html,
+          source: null,
         });
         continue;
       }
@@ -284,21 +294,27 @@ export default async function Page(props: {
         id: anchor,
         name: rule.name,
         rule: html,
+        source: null,
       });
     }
 
     const chapters = chapterList.map((chapter) => ({
       ...chapter,
       subsections: extractSubsections(chapter.rule),
+      html:
+        chapter.source === null
+          ? markExtensions(chapter.rule)
+          : bandHeadings(markExtensions(chapter.rule)),
     }));
 
-    const jumpItems = chapters.flatMap(({ id, name, subsections }) =>
+    const jumpItems = chapters.flatMap(({ id, name, source, subsections }) =>
       id === null
         ? []
         : [
             {
               id,
               label: name,
+              marked: source !== null,
               subsections: subsections.map((subsection) => ({
                 id: subsection.id,
                 label: subsection.name,
@@ -337,10 +353,19 @@ export default async function Page(props: {
                 <section
                   key={chapter.key}
                   id={chapter.id ?? undefined}
-                  className="flex flex-col gap-4"
+                  className={clsx(
+                    "flex flex-col gap-4",
+                    chapter.source !== null && "mag",
+                  )}
                 >
                   <div className="flex flex-col gap-4 w-full">
-                    <SectionHeading>{chapter.name}</SectionHeading>
+                    {chapter.source === null ? (
+                      <SectionHeading>{chapter.name}</SectionHeading>
+                    ) : (
+                      <MagazineBand source={chapter.source}>
+                        {chapter.name}
+                      </MagazineBand>
+                    )}
                     {chapter.subsections.length > 0 && (
                       <div className="flex flex-wrap gap-x-2 gap-y-4">
                         {chapter.subsections.map((subsection) => (
@@ -357,7 +382,7 @@ export default async function Page(props: {
                   </div>
                   <section
                     className="dynamic-content measure flex flex-col gap-4"
-                    dangerouslySetInnerHTML={{ __html: chapter.rule }}
+                    dangerouslySetInnerHTML={{ __html: chapter.html }}
                   />
                 </section>
               ))}

@@ -1,14 +1,18 @@
 import { DualScheme, Entry, Fixture, Group, Source } from "./Shared";
 import {
+  ARID_TERRAIN,
   BLAST_2,
   BLOCKQUOTE,
   HOUSE_RULE,
+  MAGAZINE_ASIDE,
   ORDERED_LIST,
   TEXT_BLOCK,
   WARBIKE,
 } from "./fixtures";
+import { MagazineBand } from "@/components/Heading";
 import { SpecialRuleSection } from "@/components/SpecialRuleSection";
 import { generateAnchorId } from "@/lib/anchors";
+import { bandHeadings, markExtensions } from "@/lib/magazine";
 
 const RULE_ID = `${generateAnchorId(BLAST_2.name)}_Rule`;
 
@@ -37,6 +41,26 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
       <Source>{HOUSE_RULE.source}</Source>
       <DualScheme>
         <Fixture html={HOUSE_RULE.html} measure />
+      </DualScheme>
+    </Entry>
+
+    <Entry
+      title="Magazine material"
+      source=".mag &middot; .mag-aside &middot; --mag-strong on --mag-ink"
+      note="Rules and extensions from Citadel Journal and White Dwarf. A whole rule is a block: the heading row becomes a band carrying the citation from rules.source, with optional added by the renderer; each h3 inside is a slim band joined to the spine; a spine runs down the right edge; a foot closes it. An extension is the same block at the prose width, built from a house-rule aside whose label names the magazine, with the citation lifted from data-source into the head. Black in both schemes, like the frames. The rail marks a whole rule with a square and no words."
+    >
+      <Source>{ARID_TERRAIN.source}</Source>
+      <DualScheme>
+        <section className="mag flex flex-col gap-4">
+          <MagazineBand source={ARID_TERRAIN.citation}>
+            {ARID_TERRAIN.name}
+          </MagazineBand>
+          <Fixture html={bandHeadings(ARID_TERRAIN.html)} measure />
+        </section>
+      </DualScheme>
+      <Source>{MAGAZINE_ASIDE.source}</Source>
+      <DualScheme>
+        <Fixture html={markExtensions(MAGAZINE_ASIDE.html)} measure />
       </DualScheme>
     </Entry>
 

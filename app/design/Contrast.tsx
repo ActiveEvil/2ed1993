@@ -14,6 +14,8 @@ const TOKENS: Token[] = [
   { key: "background", className: "bg-background" },
   { key: "foreground", className: "bg-foreground" },
   { key: "accent", className: "bg-accent" },
+  { key: "mag-strong", className: "bg-mag-strong" },
+  { key: "mag-ink", className: "bg-mag-ink" },
   { key: "card-face", className: "bg-card-face" },
   { key: "card-stripe", className: "bg-card-stripe" },
   { key: "stripe", className: "bg-stripe" },

@@ -269,6 +269,16 @@ Baseline: **`/general-rules`**.
     listed among the capped elements in the prose measure, so it was designed
     in. On a site whose discipline is about what the source grants, that signal
     is load-bearing rather than decorative.
+  - **Magazine material** — rules and extensions taken from Citadel Journal
+    and White Dwarf. Marked with a band and a spine: the citation once, in the
+    band, with "optional" added by the renderer and never written; the spine
+    down the right edge for the length of the material; a foot where core text
+    resumes. A whole rule holds its citation in `rules.source`, null where the
+    rule is not magazine material. An extension is a
+    `<section class="house-rule">` whose label names the magazine, with the
+    citation in a `data-source` attribute rather than opening the paragraph.
+    The House Rule aside is for the site's and the community's rulings only.
+    Ruled by Thomas 23 October 2026.
   - **Source note** — records where two printings disagree, or which of them
     the site follows. An unmarked `<p><small><em>`: no marker, set small and
     italic so it reads as editorial rather than as rule. In use before it was

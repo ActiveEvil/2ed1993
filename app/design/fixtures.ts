@@ -363,6 +363,43 @@ export const HOUSE_RULE: Stored = {
 </section>`,
 };
 
+export const ARID_TERRAIN: Stored & { name: string; citation: string } = {
+  source: "rules · Arid Terrain, abridged",
+  name: "Arid Terrain",
+  citation: "Citadel Journal 16, p13, reader submission",
+  html: `<p>
+    Arid terrain is an optional set of rules for battles fought in desert country, standing beside the ordinary
+    <a href="/rules/movement#Terrain">Terrain</a> rules rather than replacing them. Woods, jungle, rivers and streams
+    do not occur in an arid region; hills and buildings do, and behave as they do anywhere.
+</p>
+<h3 id="Arid_Conditions">Arid Conditions</h3>
+<p>
+    Wind-blown dust and the haze off the ground shorten sight in arid country. Every shot takes -1
+    <a href="/rules/shooting#To_Hit_The_Target">To Hit</a> at <strong>Short Range</strong> and -2 at
+    <strong>Long Range</strong>.
+</p>`,
+};
+
+export const MAGAZINE_ASIDE: Stored = {
+  source: "rules · Vehicles (Shooting Phase), abridged",
+  html: `<p>
+    A vehicle may claim <a href="/rules/shooting#Cover">Cover</a> as troops do, but at least a third of it must be obscured to do so.
+</p>
+<section class="house-rule" data-source="Citadel Journal 7, p37">
+    <span class="label">Citadel Journal</span>
+    <p>
+        There is no <strong>Cover</strong> modifier for a shot at a vehicle. Roll to hit
+        with the modifiers for size and speed only, then roll for location. Where
+        <a href="/rules/shooting#Hard_Cover">Hard Cover</a> stands between the firer and that location, the shot
+        strikes the cover. Roll to penetrate the cover. Cover that is penetrated is destroyed, and rubble is put
+        in its place.
+    </p>
+</section>
+<p>
+    <a href="/rules/weapon-rules#Sustained_Fire">Sustained Fire</a> works against a vehicle exactly as it does against troops.
+</p>`,
+};
+
 export const ORDERED_LIST: Stored = {
   source: "rules · Line of Sight",
   html: `<section class="ordered-list small-markers">

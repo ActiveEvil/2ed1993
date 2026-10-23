@@ -68,6 +68,20 @@
     "bold": true
   },
   {
+    "where": "Magazine band citation",
+    "ink": "mag-ink",
+    "on": "mag-strong",
+    "size": 12,
+    "bold": true
+  },
+  {
+    "where": "Magazine spine, foot and rail square",
+    "ink": "mag-strong",
+    "on": "background",
+    "graphic": true,
+    "exempt": "black in dark by decision, as the frames; the rail square is outlined there"
+  },
+  {
     "where": "Mission card name on its mat",
     "ink": "2ed-light-yellow",
     "on": "2ed-dark-blue",
