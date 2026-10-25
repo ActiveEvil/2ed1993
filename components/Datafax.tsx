@@ -57,6 +57,7 @@ export type DatafaxData = {
     points: number | null;
     targeter: boolean;
     name_as_printed: string | null;
+    built_in_of: number | null;
     datafax_weapon_ammunition: {
       weapon_profile_id: number;
       points: number | null;
@@ -148,11 +149,13 @@ const points = (value: number): string =>
 
 const cost = (value: number): string => `+${points(value)}`;
 
-const fitting = (weapon: {
+type Fitting = {
   mount: string | null;
   firing_arc_degrees: number | null;
   arc_note: string | null;
-}): React.ReactNode => (
+};
+
+const fitting = (weapon: Fitting): React.ReactNode => (
   <>
     {weapon.mount && <>, {weapon.mount}</>}
     {weapon.firing_arc_degrees === null ? (
@@ -163,10 +166,22 @@ const fitting = (weapon: {
   </>
 );
 
-const joinOr = (parts: React.ReactNode[]): React.ReactNode[] =>
-  parts.flatMap((part, index) =>
-    index === 0 ? [part] : [index === parts.length - 1 ? " or " : ", ", part],
-  );
+const sameFitting = (a: Fitting, b: Fitting): boolean =>
+  a.mount === b.mount &&
+  a.firing_arc_degrees === b.firing_arc_degrees &&
+  a.arc_note === b.arc_note;
+
+const joinList =
+  (conjunction: string) =>
+  (parts: React.ReactNode[]): React.ReactNode[] =>
+    parts.flatMap((part, index) =>
+      index === 0
+        ? [part]
+        : [index === parts.length - 1 ? conjunction : ", ", part],
+    );
+
+const joinOr = joinList(" or ");
+const joinAnd = joinList(" and ");
 
 const stat = (value: number | null): string =>
   value === null ? DASH : String(value);
@@ -304,12 +319,16 @@ export const Datafax: React.FC<{
   const chartAnchor = (name: string): string =>
     generateAnchorId(`${unitName} ${name} Damage Chart`);
 
-  const weapons = datafax.datafax_weapons.map((weapon) => ({
+  const mounted = datafax.datafax_weapons.filter(
+    ({ built_in_of }) => built_in_of === null,
+  );
+
+  const weapons = mounted.map((weapon) => ({
     ...weapon,
     linked:
       weapon.linked_group === null
         ? null
-        : datafax.datafax_weapons
+        : mounted
               .filter(
                 ({ linked_group }) => linked_group === weapon.linked_group,
               )
@@ -317,6 +336,50 @@ export const Datafax: React.FC<{
           ? "twin linked"
           : "linked",
   }));
+
+  const builtIn = (parent: (typeof weapons)[number]): React.ReactNode => {
+    const sets: DatafaxData["datafax_weapons"][] = [];
+
+    for (const child of datafax.datafax_weapons) {
+      if (child.built_in_of !== parent.id) continue;
+      const set =
+        child.alternative === 0
+          ? undefined
+          : sets.find(([first]) => first.alternative === child.alternative);
+      if (set) {
+        set.push(child);
+      } else {
+        sets.push([child]);
+      }
+    }
+
+    return (
+      sets.length > 0 && (
+        <>
+          , with built-in{" "}
+          {joinAnd(
+            sets.map((set) => (
+              <Fragment key={set[0].id}>
+                {joinOr(
+                  set.map((child) => (
+                    <Fragment key={child.id}>
+                      <Link
+                        className={LINK}
+                        href={`/wargear/weapons#${generateAnchorId(child.weapons.name)}`}
+                      >
+                        {child.name_as_printed ?? child.weapons.name}
+                      </Link>
+                      {!sameFitting(child, parent) && fitting(child)}
+                    </Fragment>
+                  )),
+                )}
+              </Fragment>
+            )),
+          )}
+        </>
+      )
+    );
+  };
 
   const weaponData = datafax.datafax_weapons
     .map(({ weapons, datafax_weapon_ammunition }) => ({
@@ -371,12 +434,7 @@ export const Datafax: React.FC<{
 
   for (const group of weaponGroups) {
     const [first] = group.members;
-    group.shared = group.members.every(
-      (weapon) =>
-        weapon.mount === first.mount &&
-        weapon.firing_arc_degrees === first.firing_arc_degrees &&
-        weapon.arc_note === first.arc_note,
-    );
+    group.shared = group.members.every((weapon) => sameFitting(weapon, first));
   }
 
   const hasFrontData = Boolean(
@@ -643,6 +701,7 @@ export const Datafax: React.FC<{
                               >
                                 {weapon.name_as_printed ?? weapon.weapons.name}
                               </Link>
+                              {builtIn(weapon)}
                               {weapon.linked && <>, {weapon.linked}</>}
                               {!group.shared && fitting(weapon)}
                               {!targeters && weapon.targeter && TARGETER}

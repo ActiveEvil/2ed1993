@@ -1040,6 +1040,7 @@ export type Database = {
         Row: {
           alternative: number
           arc_note: string | null
+          built_in_of: number | null
           created_at: string
           datafax_id: number
           firing_arc_degrees: number | null
@@ -1058,6 +1059,7 @@ export type Database = {
         Insert: {
           alternative?: number
           arc_note?: string | null
+          built_in_of?: number | null
           created_at?: string
           datafax_id: number
           firing_arc_degrees?: number | null
@@ -1076,6 +1078,7 @@ export type Database = {
         Update: {
           alternative?: number
           arc_note?: string | null
+          built_in_of?: number | null
           created_at?: string
           datafax_id?: number
           firing_arc_degrees?: number | null
@@ -1092,6 +1095,13 @@ export type Database = {
           weapon_id?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "datafax_weapons_built_in_of_fkey"
+            columns: ["built_in_of"]
+            isOneToOne: false
+            referencedRelation: "datafax_weapons"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "datafax_weapons_datafax_id_fkey"
             columns: ["datafax_id"]
