@@ -306,12 +306,12 @@ export const CardFace: React.FC<{
         {card.rarity ? (
           <div className="flex flex-col min-w-0">
             <p className="font-bold text-2ed-white">{card.rarity}</p>
-            <p className={clsx("font-block text-xs", ink.name)}>
+            <p className={clsx("font-block text-sm", ink.name)}>
               {card.origin}
             </p>
           </div>
         ) : (
-          <p className={clsx("font-block text-xs", ink.name)}>{card.origin}</p>
+          <p className={clsx("font-block text-sm", ink.name)}>{card.origin}</p>
         )}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-4 ml-auto">
           {availabilities.map(({ name }) => (
