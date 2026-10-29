@@ -36,7 +36,7 @@ export default async function Page() {
     supabase
       .from("vehicle_cards")
       .select(
-        "id, name, points, restriction, discard_after_use, description, points_bases(name), vehicle_cards_availabilities(availabilities(name, position)), vehicle_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer))))",
+        "id, name, origin, points, restriction, discard_after_use, description, points_bases(name), vehicle_cards_availabilities(availabilities(name, position)), vehicle_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer))))",
       )
       .order("name")
       .order("position", { referencedTable: "vehicle_cards_weapons" })
@@ -59,6 +59,7 @@ export default async function Page() {
       id: card.id,
       data: {
         name: card.name,
+        origin: card.origin,
         points: vehicleCardPoints(card.points, card.points_bases?.name ?? null),
         restriction: card.restriction,
         discard_after_use: card.discard_after_use,

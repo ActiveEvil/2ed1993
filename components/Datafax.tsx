@@ -211,12 +211,14 @@ export const Datafax: React.FC<{
   datafax: DatafaxData;
   factionSlug: string | null;
   unitName: string;
+  origin: string;
   unitTypeName: string;
   titleHref?: string;
 }> = ({
   datafax,
   factionSlug,
   unitName,
+  origin,
   unitTypeName,
   titleHref,
 }): React.JSX.Element => {
@@ -821,6 +823,10 @@ export const Datafax: React.FC<{
           ))}
         </div>
       )}
+
+      <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-4 px-1">
+        <p className={clsx("font-block text-xs", ink)}>{origin}</p>
+      </div>
     </section>
   );
 };

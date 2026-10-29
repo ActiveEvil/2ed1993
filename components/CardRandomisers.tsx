@@ -9,7 +9,7 @@ export const StrategyCardRandomiser: React.FC<{
   baseHref: string;
   cards: {
     origin: string;
-    ids: string[];
+    ids: { name: string; id: string }[];
   }[];
 }> = ({ baseHref, cards }): React.JSX.Element => {
   const [origins, setOrigins] = useState(
@@ -23,12 +23,13 @@ export const StrategyCardRandomiser: React.FC<{
     .flatMap(({ ids }) => ids);
 
   if (excludeVirusOutbreak) {
-    ids = ids.filter((id) => id !== "Virus_Outbreak");
+    ids = ids.filter(({ name }) => name !== "Virus Outbreak");
   }
 
   if (fightingTyranids) {
     ids = ids.filter(
-      (id) => !["Virus_Outbreak", "Malfunction", "Traitor"].includes(id),
+      ({ name }) =>
+        !["Virus Outbreak", "Malfunction", "Traitor"].includes(name),
     );
   }
 
@@ -120,7 +121,9 @@ export const StrategyCardRandomiser: React.FC<{
             onClick={() => {
               if (ids.length) {
                 const href =
-                  baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
+                  baseHref +
+                  "#" +
+                  ids[Math.floor(Math.random() * ids.length)].id;
 
                 replaceLocation(href);
               }
@@ -138,7 +141,7 @@ export const MissionCardRandomiser: React.FC<{
   baseHref: string;
   cards: {
     origin: string;
-    ids: string[];
+    ids: { name: string; id: string }[];
   }[];
 }> = ({ baseHref, cards }): React.JSX.Element => {
   const originCodexTyranids = "Codex: Tyranids";
@@ -157,24 +160,26 @@ export const MissionCardRandomiser: React.FC<{
     .flatMap(({ ids }) => ids);
 
   let ids = allIds.filter(
-    (id) => !["Terrorise", "Tyranid_Attack", "Trap"].includes(id),
+    ({ name }) => !["Terrorise", "Tyranid Attack", "Trap"].includes(name),
   );
 
   if (fightingAsTyranids) {
-    ids = allIds.filter((id) =>
+    ids = allIds.filter(({ name }) =>
       [
-        "Bunker_Assault",
-        "Engage_and_Destroy",
-        "Dawn_Raid",
+        "Bunker Assault",
+        "Engage and Destroy",
+        "Dawn Raid",
         "Terrorise",
-        "Tyranid_Attack",
+        "Tyranid Attack",
         "Trap",
-      ].includes(id),
+      ].includes(name),
     );
   }
 
   if (fightingAsOrks) {
-    ids = ids.filter((id) => !["The_Assassins", "Witch_Hunt"].includes(id));
+    ids = ids.filter(
+      ({ name }) => !["The Assassins", "Witch Hunt"].includes(name),
+    );
   }
 
   return (
@@ -278,7 +283,9 @@ export const MissionCardRandomiser: React.FC<{
             onClick={() => {
               if (ids.length) {
                 const href =
-                  baseHref + "#" + ids[Math.floor(Math.random() * ids.length)];
+                  baseHref +
+                  "#" +
+                  ids[Math.floor(Math.random() * ids.length)].id;
 
                 replaceLocation(href);
               }

@@ -33,7 +33,7 @@ an army-list page shares that page.
 Kinds not rendered anywhere yet (unit, equipment_weapon) get voice checks only.
 Links into the two card pages are checked against the card anchors, built
 from the `cards` list the dump carries as lib/anchors.ts builds them: the
-name followed by each availability in position order. A page's sections are
+name, each availability in position order, then the origin. A page's sections are
 `available-<name>` for each availability that is some card's first.
 """
 import json, os, re, sys, unicodedata
@@ -99,7 +99,7 @@ def card_anchors(texts, cards):
     found = {page: set() for page in CARD_PAGES.values()}
     for page, rows in cards.items():
         for card in rows:
-            found[page].add(slug(" ".join([card["n"], *card["a"]])))
+            found[page].add(slug(" ".join([card["n"], *card["a"], card["o"]])))
             if card["a"]:
                 found[page].add("available-" + "-".join(card["a"][0].lower().split()))
     for row in texts:

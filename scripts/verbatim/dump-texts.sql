@@ -6,8 +6,8 @@ select json_build_object(
   'texts', coalesce(json_agg(json_build_object('k', kind, 'n', name, 't', txt)), '[]'),
   'chapters', coalesce((select json_agg(slug order by slug) from rule_categories), '[]'),
   'cards', json_build_object(
-    'wargear-cards', coalesce((select json_agg(json_build_object('n', c.name, 'a', coalesce((select json_agg(a.name order by a.position) from wargear_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.wargear_card_id = c.id), '[]'))) from wargear_cards c), '[]'),
-    'vehicle-cards', coalesce((select json_agg(json_build_object('n', c.name, 'a', coalesce((select json_agg(a.name order by a.position) from vehicle_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.vehicle_card_id = c.id), '[]'))) from vehicle_cards c), '[]')
+    'wargear-cards', coalesce((select json_agg(json_build_object('n', c.name, 'o', c.origin, 'a', coalesce((select json_agg(a.name order by a.position) from wargear_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.wargear_card_id = c.id), '[]'))) from wargear_cards c), '[]'),
+    'vehicle-cards', coalesce((select json_agg(json_build_object('n', c.name, 'o', c.origin, 'a', coalesce((select json_agg(a.name order by a.position) from vehicle_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.vehicle_card_id = c.id), '[]'))) from vehicle_cards c), '[]')
   )
 ) from (
   select 'rule:' || rc.slug, r.name, r.rule from rules r join rule_categories rc on rc.id = r.category_id

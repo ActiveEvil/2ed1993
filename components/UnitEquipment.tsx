@@ -5,9 +5,9 @@ import {
 } from "@/components/CharacteristicProfile";
 import { number } from "@/lib/allowance";
 import {
-  cardAnchorId,
   generateAnchorId,
   ruleHref,
+  vehicleCardHref,
   wargearCardHref,
 } from "@/lib/anchors";
 import { clsx } from "clsx";
@@ -46,6 +46,7 @@ type ProfileArmour = {
 
 type WargearCardRef = {
   name: string;
+  origin: string;
   wargear_cards_availabilities: {
     availabilities: { name: string; position: number } | null;
   }[];
@@ -53,18 +54,11 @@ type WargearCardRef = {
 
 type VehicleCardRef = {
   name: string;
+  origin: string;
   vehicle_cards_availabilities: {
     availabilities: { name: string; position: number } | null;
   }[];
 };
-
-const vehicleCardHref = (card: VehicleCardRef): string =>
-  `/wargear/vehicle-cards#${cardAnchorId(
-    card.name,
-    card.vehicle_cards_availabilities.map(
-      ({ availabilities }) => availabilities,
-    ),
-  )}`;
 
 type ProfileWargearCard = {
   position: number;

@@ -36,7 +36,7 @@ export default async function Page() {
     supabase
       .from("wargear_cards")
       .select(
-        "id, name, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
+        "id, name, origin, rarity, points, restriction, discard_after_use, description, wargear_cards_availabilities(availabilities(name, position)), wargear_cards_weapons(position, weapons(name, weapon_categories(name), profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), wargear_cards_armour(position, armour(name, profile_description, armour_profiles(save, condition), armour_special_rules(name)))",
       )
       .order("name")
       .order("position", { referencedTable: "wargear_cards_weapons" })
@@ -60,6 +60,7 @@ export default async function Page() {
       id: card.id,
       data: {
         name: card.name,
+        origin: card.origin,
         points: wargearCardPoints(card.points),
         rarity: card.rarity,
         restriction: card.restriction,

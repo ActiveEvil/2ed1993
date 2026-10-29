@@ -38,6 +38,7 @@ export type CardArmour = {
 
 export type CardFaceData = {
   name: string;
+  origin: string;
   points: string;
   rarity?: string | null;
   restriction: string | null;
@@ -118,7 +119,7 @@ export const CardFace: React.FC<{
   as?: "h2" | "h3";
 }> = ({ deck, card, as: Heading = "h2" }): React.JSX.Element => {
   const { path, bearer } = DECKS[deck];
-  const cardId = cardAnchorId(card.name, card.availabilities);
+  const cardId = cardAnchorId(card.name, card.availabilities, card.origin);
   const weapons = card.weapons;
   const armourItems = card.armour ?? [];
   const availabilities = [...card.availabilities].sort(
@@ -143,6 +144,7 @@ export const CardFace: React.FC<{
     .filter((rule): rule is string => rule !== null);
   const search = [
     card.name,
+    card.origin,
     card.rarity ?? "",
     card.restriction ?? "",
     card.discard_after_use ? "discard after use" : "",
@@ -176,12 +178,7 @@ export const CardFace: React.FC<{
             {card.name}
           </HighlighterLink>
         </Heading>
-        <span
-          className={clsx(
-            "font-subtitle text-lg text-right",
-            ink.points,
-          )}
-        >
+        <span className={clsx("font-subtitle text-lg text-right", ink.points)}>
           {card.points}
         </span>
       </div>
@@ -305,16 +302,18 @@ export const CardFace: React.FC<{
           </p>
         )}
       </div>
-      <div
-        className={clsx(
-          "flex flex-wrap items-center gap-x-4 gap-y-4 w-full",
-          card.rarity ? "justify-between" : "justify-end",
+      <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-4 w-full">
+        {card.rarity ? (
+          <div className="flex flex-col min-w-0">
+            <p className="font-bold text-2ed-white">{card.rarity}</p>
+            <p className={clsx("font-block text-xs", ink.name)}>
+              {card.origin}
+            </p>
+          </div>
+        ) : (
+          <p className={clsx("font-block text-xs", ink.name)}>{card.origin}</p>
         )}
-      >
-        {card.rarity && (
-          <p className="font-bold text-2ed-white">{card.rarity}</p>
-        )}
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-4">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-4 ml-auto">
           {availabilities.map(({ name }) => (
             <Chip key={name} href={facetHref(name)} className={ink.chip}>
               {name}

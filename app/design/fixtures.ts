@@ -450,12 +450,14 @@ export const WARBIKE: {
   source: string;
   factionSlug: string;
   unitName: string;
+  origin: string;
   unitTypeName: string;
   datafax: DatafaxData;
 } = {
   source: "datafaxes · Orks · Warbike",
   factionSlug: "orks",
   unitName: "Warbike",
+  origin: "Dark Millennium",
   unitTypeName: "Vehicle",
   datafax: {
     speed_slow: 8,
@@ -890,6 +892,7 @@ export const PSYCANNON: { source: string; card: CardFaceData } = {
   source: "wargear_cards · Psycannon",
   card: {
     name: "Psycannon",
+    origin: "Dark Millennium",
     points: "30 Points",
     rarity: "Rare",
     restriction: null,
@@ -933,6 +936,7 @@ export const HUNTER_KILLER_MISSILE: { source: string; card: CardFaceData } = {
   source: "vehicle_cards · Hunter-Killer Missile",
   card: {
     name: "Hunter-Killer Missile",
+    origin: "Dark Millennium",
     points: "30 Points",
     restriction: "Imperial vehicles only",
     discard_after_use: true,
@@ -972,11 +976,13 @@ export const HUNTER_KILLER_MISSILE: { source: string; card: CardFaceData } = {
 export const BUNKER_ASSAULT: {
   source: string;
   name: string;
+  origin: string;
   description: string;
   objectives: { heading: string; html: string }[];
 } = {
   source: "mission_cards · Bunker Assault",
   name: "Bunker Assault",
+  origin: "White Dwarf 169",
   description:
     "Patrols have found a cluster of bunkers a short way inside enemy lines. Whoever holds them holds the sector.",
   objectives: [

@@ -101,6 +101,27 @@ availability facet retired, so a Chip on a card now links to a section.
 **Revised 9 October 2026:** the last-result, low-band, total and
 characteristic-chart rules added to the dice-naming rule (Voice).
 
+**Revised 15 October 2026:** the `WeaponStrip` made a size container, with
+the two-row form below 28rem, recorded in The strip grammar.
+
+**Revised 16 October 2026:** the Source note added beside the aside (Voice);
+a linked weapon's rules printed once on a card face, and `origin` as a
+card's first printing, added to Sources; `2ed-dark-yellow` on even rows and
+on a strip's label bands recorded in Yellow.
+
+**Revised 23 October 2026:** Magazine material added beside the aside
+(Voice): the band and spine, `rules.source` and `data-source`.
+
+**Revised 29 October 2026:** the magazine conventions added under Voice:
+scope, the citation form and where it lives, the prose register, and
+placement in the chapter; a chart inside a `house-rule` section added to
+Markup 7; the Targeter sentence brought up to date; the shape count beside
+the aside corrected. Later the same day: the origin line on every card and
+datafax added to Surfaces and artefacts (CR-8, CR-9); the card anchor
+extended to carry the origin, and the strategy, mission and datafax anchors
+given the same form (CR-11), in Markup 5; the strategy and mission decks
+made one alphabetical run each (CR-10).
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -160,13 +181,23 @@ characteristic-chart rules added to the dice-naming rule (Voice).
    `vehicle-rules#Armour_Penetration` coexist. Do not prefix for that reason
    alone.
 
-   **A card's anchor is its name followed by every availability**, in
-   `availabilities.position` order, on both card pages: `#Ammo_Feed_Imperium`,
-   `#Scythes_Any_Army` beside `#Scythes_Eldar`, `#Combi-Weapon_Imperium_Orks`,
-   `#Bulldozer_Blade_Imperium_Chaos`. Ruled by Thomas 7 October 2026 (VC-4),
-   when two vehicle cards named Scythes needed telling apart. `cardAnchorId`
-   in `lib/anchors.ts` composes it, and every link to a card, in stored text
-   or in code, uses that form.
+   **A card's anchor is its name, every availability and its origin**: the
+   availabilities in `availabilities.position` order, then the origin as
+   stored, on both card pages: `#Frenzon_Any_Army_Dark_Millennium`,
+   `#Scythes_Any_Army_Dark_Millennium` beside `#Scythes_Eldar_White_Dwarf_207`,
+   `#Lion_Helm_Imperium_Codex_Angels_of_Death`. The slug rules are
+   `generateAnchorId`'s: a colon or an apostrophe becomes a separator, so
+   "Codex: Angels of Death" gives `Codex_Angels_of_Death` and "C'tan Phase
+   Sword" gives `C_tan_Phase_Sword`. The availabilities were ruled by Thomas
+   7 October 2026 (VC-4), when two vehicle cards named Scythes needed telling
+   apart; the origin 29 October 2026 (CR-11), when a second Polymorphine
+   needed the same. A strategy or mission card, which has no availability,
+   anchors on its name and origin (`#Sabotage_White_Dwarf_205`), and so does a
+   datafax, whose faction is in its page path
+   (`/datafaxes/space-marines#Rhino_Dark_Millennium`). `cardAnchorId` and
+   `deckCardAnchorId` in `lib/anchors.ts` compose them, and every link to a
+   card, in stored text or in code, uses that form; the stored links were
+   rewritten with the code.
 6. **Nesting** — a `<p>` inside a `<section>` indents one level, and its
    `<small>` / `<em>` children step in from there. Closing tags each get their
    own line; `</em></small></p>` on one line is wrong.
@@ -177,6 +208,11 @@ characteristic-chart rules added to the dice-naming rule (Voice).
    carries no `max-width`, and no page component wraps one in a `max-w-*`.
    The historical `max-width: 36rem` was removed from every stored chart the
    same day.
+
+   **A chart may sit inside a `house-rule` section**, in this same form,
+   after the paragraph it resolves (ruled 22 October 2026; `rules` 36, 91 and
+   100 carry one). It takes the section's measure, and inside a magazine
+   extension the stylesheet holds it off the spine.
 
    **Inside a card face** (the wargear and vehicle card pages render at
    roughly half page width) the constraint is width per cell, not column
@@ -256,7 +292,7 @@ Baseline: **`/general-rules`**.
   Hit The Target) are recorded in `scripts/verify/exemptions.json`.
 - **Asides are plain `<p>`** — no marker, no dedicated class. Decided 29 July.
   **Scope, corrected 16 September: the rule governs asides and does not reach
-  the other two shapes.** Four exist, each with its own job:
+  the other two shapes.** Five exist, each with its own job:
   - **Aside** — a remark qualifying the whole note. Plain `<p>`, no marker, no
     class. This is the 29 July rule, which is right about asides.
   - **Footnote** — binds a note to one word or clause. `<sup>` marker per
@@ -288,6 +324,28 @@ Baseline: **`/general-rules`**.
   the 15 September sweep. That was the only dagger outside the `rules` deck, so
   nothing else was hit; 253 itself is moot, its content having since been found
   unsourced and withdrawn.
+- **Magazine material is written as rule.** The scope is Citadel Journal
+  content, and White Dwarf material the magazine frames as optional or
+  provisional; second edition only, with reader submissions on the same
+  footing as studio articles. A letters-page suggestion the editors did not
+  take up is not carried. A White Dwarf erratum or Q&A ruling is not magazine
+  material and stays an inline citation in the rule. Ruled by Thomas
+  22 October 2026 (MAG-1); the mark 23 October (MAG-2); placement 24 October
+  (MAG-3).
+  - **The citation reads publication, page, author**: "Citadel Journal 6,
+    p26, reader submission", where "reader submission" stands for any author
+    who is not Journal or Studio staff. It is stored once, in `rules.source`
+    for a whole rule or `data-source` on an extension aside, and never
+    written in the paragraph. The device prints it and adds "optional".
+  - **The paragraph opens on the rule**, in the site's stock forms ("On a
+    1-3", "roll a D6 on the chart below"), with no narrative or editorial
+    framing, and the magazine named nowhere but the citation. Words to
+    avoid: "offers", "lets", "gives", "is not always gone".
+  - **A magazine rule sits where its subject puts it in the chapter**, not
+    at the end.
+  - **The House Rule aside keeps its House Rule meaning.** An extension's
+    label names the magazine; `lib/magazine.ts` marks only those labels, and
+    `verify.py` requires each to carry `data-source`.
 - **"dice", never "die", as the noun.** Clarified 13 August: the *verb* is
   ordinary English — "should that model die" stands. The script flags only
   determiner+die and "die roll".
@@ -351,7 +409,7 @@ Baseline: **`/general-rules`**.
   `/wargear/wargear-cards#Targeter_Any_Army` (the card anchor form, Markup 5).
   Ruled by Thomas 1 September, against the review's recommendation; the four
   lower-case occurrences in the two army lists were raised the same day, and
-  two remain in older lists (`wargear_categories` 5 and 13).
+  the two in `wargear_categories` 5 and 13 on 17 September.
 
 Four standing exemptions from the first-mention rule:
 
@@ -507,8 +565,8 @@ the codex is also more complete.
   Missile → its own row, Combi-Bolter → a row of its own, and WD207's Ammo
   Feed in its text only. The face prints the rules of each linked weapon or
   armour beneath the card's own text, except where that text already links to
-  it: the link is the reference, and the rules are not printed twice (ruled 16
-  October 2026, for Combi-Bolter and its Mk 1 Combi-Weapon). A card that
+  it: the link is the reference, and the rules are not printed twice (ruled
+  16 October 2026, for Combi-Bolter and its Mk 1 Combi-Weapon). A card that
   relies on its weapon's rules, as Hunter-Killer Missile does, does not link
   that weapon in its own text.
 - **`discard_after_use` is true when the card's own text takes it out of
@@ -703,7 +761,22 @@ sits on its mat in white with the points beside it in light yellow, as the
 printed cards set them, and the vehicle card name and
 points sit on its mat in that mat's ink from `lib/factions.ts`. Every other
 name sits on the face, in dark blue where the original set the special warp name in mid
-blue, because mid blue does not clear AA on the dark-scheme card stock. The rider to the shadow rule follows from this: shadows belong to images
+blue, because mid blue does not clear AA on the dark-scheme card stock.
+Every card carries its origin as stored in the foot row on its mat, in
+Crimson `text-xs` at the regular weight and the mat's ink at full strength:
+no label, no border, no link. It is the row's left item on the chips' line
+where the left is free, which is every card but the wargear card; there the
+rarity holds the left and the origin sits directly beneath it in the same
+column, with no line added above it. When the chips do not fit beside it they
+drop whole to a second line and stay at the right. A strategy or mission
+card and a datafax, which had no foot row, gain one holding the origin
+alone. The origin is the site's marking, with the rarity and the chips; it
+is the lightest type on the card and the only serif on the mat, and it
+joins the card's `data-search` string. A card does not carry the magazine
+band: the origin line is its only source marking. The strategy and mission
+decks are one alphabetical run each, with no origin sections; the
+randomiser keeps its origin checkboxes, which read the cards. Ruled by
+Thomas 29 October 2026 (CR-8, CR-9, CR-10). The rider to the shadow rule follows from this: shadows belong to images
 and artefacts, because a printed card floats on the page. A Panel, like
 every surface, casts none.
 
@@ -1095,7 +1168,8 @@ second person outside the Golden Rule, inline `<p>` outside `<li>` (`rules`
 only), nested `<a>`/`<strong>`, duplicate ids within a category, dead
 `/rules/…#fragment` links, dead `/wargear/wargear-cards#…` and
 `/wargear/vehicle-cards#…` links (against the card anchors built from the
-`cards` list the dump carries, as `cardAnchorId` builds them), `/rules/…`
+`cards` list the dump carries, as `cardAnchorId` builds them, so the dump
+and the check carry each card's origin), `/rules/…`
 links to a chapter slug that does not exist (from the `chapters` list the
 dump carries beside `texts`), and duplicate paragraphs across texts.
 

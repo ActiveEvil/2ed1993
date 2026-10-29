@@ -7,7 +7,7 @@ import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { RowFilter } from "@/components/RowFilter";
 import { TitleBand } from "@/components/TitleBand";
-import { generateAnchorId } from "@/lib/anchors";
+import { deckCardAnchorId } from "@/lib/anchors";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { Metadata } from "next/types";
@@ -34,7 +34,7 @@ export default async function Page() {
   const { data: unitRows, error: unitsError } = await supabase
     .from("units")
     .select(
-      "id, name, faction_id, unit_types!inner(name, plural_name, position), datafaxes!inner(id, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, crew_detail, transport_capacity, transport_detail, open_topped, large_target, capacity_inside, capacity_roof, points, deployment, location_dice, note, motive_types(name), datafax_annotations(id, field, note, position), datafax_images(position, images(file_name, artist, title, width, height)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, targeter, name_as_printed, built_in_of, datafax_weapon_ammunition(weapon_profile_id, points, position), weapons(name, weapon_profiles(id, name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, note, position, damage_chart_results(id, roll_min, roll_max, effect, position)))",
+      "id, name, faction_id, unit_types!inner(name, plural_name, position), datafaxes!inner(id, origin, speed_slow, speed_combat, speed_fast, ram_strength, ram_damage, ram_save_modifier, crew, crew_detail, transport_capacity, transport_detail, open_topped, large_target, capacity_inside, capacity_roof, points, deployment, location_dice, note, motive_types(name), datafax_annotations(id, field, note, position), datafax_images(position, images(file_name, artist, title, width, height)), datafax_weapons(id, mount, firing_arc_degrees, arc_note, linked_group, quantity, position, alternative, optional, points, targeter, name_as_printed, built_in_of, datafax_weapon_ammunition(weapon_profile_id, points, position), weapons(name, weapon_profiles(id, name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name, bearer)))), datafax_locations(id, roll_min, roll_max, name, armour_front, armour_side_rear, damage_chart_id, note, position), damage_charts(id, name, dice, note, position, damage_chart_results(id, roll_min, roll_max, effect, position)))",
     )
     .eq("unit_types.name", "Fortification")
     .order("name")
@@ -58,8 +58,8 @@ export default async function Page() {
   const hero = heroImage?.images ?? null;
   const units = unitRows ?? [];
 
-  const jumpItems = units.map(({ name }) => ({
-    id: generateAnchorId(name),
+  const jumpItems = units.map(({ name, datafaxes }) => ({
+    id: deckCardAnchorId(name, datafaxes.origin),
     label: name,
   }));
 
@@ -100,7 +100,10 @@ export default async function Page() {
               <section data-group className="flex flex-col gap-4">
                 <SectionHeading>Fortifications</SectionHeading>
                 {units.map((unit) => {
-                  const unitId = generateAnchorId(unit.name);
+                  const unitId = deckCardAnchorId(
+                    unit.name,
+                    unit.datafaxes.origin,
+                  );
                   const datafax = unit.datafaxes;
 
                   const search = [
@@ -125,6 +128,7 @@ export default async function Page() {
                         datafax={datafax}
                         factionSlug={null}
                         unitName={unit.name}
+                        origin={unit.datafaxes.origin}
                         unitTypeName="Fortification"
                         titleHref={`/datafaxes/fortifications#${unitId}`}
                       />

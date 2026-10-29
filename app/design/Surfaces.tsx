@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/Heading";
 import { ImageWithCredit } from "@/components/ImageWithCredit";
 import { SectionBar } from "@/components/SectionBar";
 import { EYEBROW_CLASS, TITLE_CLASS, TitleBand } from "@/components/TitleBand";
-import { generateAnchorId } from "@/lib/anchors";
+import { deckCardAnchorId, generateAnchorId } from "@/lib/anchors";
 
 const ASPECTS = [
   {
@@ -192,7 +192,10 @@ export const Surfaces: React.FC = (): React.JSX.Element => (
           baseHref="/card-decks/strategy-cards"
           cards={STRATEGY_DECKS.cards.map(({ origin, names }) => ({
             origin,
-            ids: names.map((name) => generateAnchorId(name)),
+            ids: names.map((name) => ({
+              name,
+              id: deckCardAnchorId(name, origin),
+            })),
           }))}
         />
       </div>

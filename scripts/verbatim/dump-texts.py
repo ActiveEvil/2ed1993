@@ -105,10 +105,10 @@ add("equipment_weapon", "equipment_weapons", "category,note", "category", "note"
 
 def card_rows(table, join):
     out = []
-    for row in rows(table, f"name,{join}(availabilities(name,position))"):
+    for row in rows(table, f"name,origin,{join}(availabilities(name,position))"):
         found = sorted((r["availabilities"] for r in row[join] if r["availabilities"]),
                        key=lambda a: a["position"])
-        out.append({"n": row["name"], "a": [a["name"] for a in found]})
+        out.append({"n": row["name"], "o": row["origin"], "a": [a["name"] for a in found]})
     return out
 
 
