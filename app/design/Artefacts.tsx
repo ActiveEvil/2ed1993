@@ -32,7 +32,7 @@ const MissionCard: React.FC = () => (
       ))}
     </div>
     <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-4 w-full">
-      <p className="font-block text-xs text-2ed-white">
+      <p className="font-block text-sm text-2ed-white">
         {BUNKER_ASSAULT.origin}
       </p>
     </div>
