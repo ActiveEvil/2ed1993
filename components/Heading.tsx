@@ -1,4 +1,4 @@
-import { magazineHead } from "@/lib/magazine";
+import { magazineHead, magazineInitials } from "@/lib/magazine";
 import { clsx } from "clsx";
 
 export const SectionHeading: React.FC<
@@ -27,3 +27,16 @@ export const MagazineBand: React.FC<
     <span className="mark-cite">{magazineHead(source)}</span>
   </div>
 );
+
+export const MagazineHead: React.FC<{ source: string }> = ({
+  source,
+}): React.JSX.Element => <div className="mag-head">{magazineHead(source)}</div>;
+
+export const MagazineMark: React.FC<{ source?: string | null }> = ({
+  source,
+}) =>
+  source ? (
+    <span className="mark-rail" aria-hidden="true">
+      {magazineInitials(source)}
+    </span>
+  ) : null;

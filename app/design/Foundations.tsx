@@ -381,9 +381,12 @@ export const Foundations: React.FC = (): React.JSX.Element => (
             border-r
           </span>
           <small>
-            The magazine spine, and the rail square
-            <span className="mark-rail" aria-hidden="true" /> that marks a whole
-            magazine rule.
+            The magazine spine, and the initials
+            <span className="mark-rail" aria-hidden="true">
+              CJ
+            </span>{" "}
+            that mark a whole magazine rule in the rail, or a magazine unit on
+            its entry row.
           </small>
         </li>
         <li className="flex items-center gap-3">

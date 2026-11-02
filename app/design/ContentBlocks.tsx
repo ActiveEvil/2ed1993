@@ -47,7 +47,7 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
     <Entry
       title="Magazine material"
       source=".mag &middot; .mag-aside &middot; --mag-strong on --mag-ink"
-      note="Rules and extensions from Citadel Journal and White Dwarf. A whole rule is a block: the heading row becomes a band carrying the citation from rules.source, with optional added by the renderer; each h3 inside is a slim band joined to the spine; a spine runs down the right edge; a foot closes it. An extension is the same block at the prose width, built from a house-rule aside whose label names the magazine, with the citation lifted from data-source into the head. Black in both schemes, like the frames. The rail marks a whole rule with a square and no words."
+      note="Rules and extensions from Citadel Journal and White Dwarf. A whole rule is a block: the heading row becomes a band carrying the citation from rules.source; each h3 inside is a slim band joined to the spine; a spine runs down the right edge; a foot closes it. An extension is the same block at the prose width, built from a house-rule aside whose label names the magazine, with the citation lifted from data-source into the head. Black in both schemes, like the frames. The rail marks a whole rule with the publication's initials, CJ or WD, in a 1px box. On an army list the same device reaches a magazine unit (units.source: the head, spine and foot on its ProfileFrame, the initials on its entry row) and a whole magazine list (army_lists.source: the head at the top of the list, the spine and foot round its content, its units unmarked). A magazine option on a codex entry is an extension aside, as in a rule."
     >
       <Source>{ARID_TERRAIN.source}</Source>
       <DualScheme>

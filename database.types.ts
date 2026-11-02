@@ -724,6 +724,7 @@ export type Database = {
           name: string
           published_year: number | null
           slug: string
+          source: string | null
           updated_at: string | null
         }
         Insert: {
@@ -734,6 +735,7 @@ export type Database = {
           name: string
           published_year?: number | null
           slug: string
+          source?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -744,6 +746,7 @@ export type Database = {
           name?: string
           published_year?: number | null
           slug?: string
+          source?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -2315,6 +2318,7 @@ export type Database = {
           name: string
           points: number | null
           profile_description: string | null
+          source: string | null
           unit_category_id: number | null
           unit_type_id: number
           updated_at: string | null
@@ -2326,6 +2330,7 @@ export type Database = {
           name: string
           points?: number | null
           profile_description?: string | null
+          source?: string | null
           unit_category_id?: number | null
           unit_type_id: number
           updated_at?: string | null
@@ -2337,6 +2342,7 @@ export type Database = {
           name?: string
           points?: number | null
           profile_description?: string | null
+          source?: string | null
           unit_category_id?: number | null
           unit_type_id?: number
           updated_at?: string | null

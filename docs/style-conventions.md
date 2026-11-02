@@ -122,6 +122,12 @@ extended to carry the origin, and the strategy, mission and datafax anchors
 given the same form (CR-11), in Markup 5; the strategy and mission decks
 made one alphabetical run each (CR-10).
 
+**Revised 2 November 2026:** the magazine mark extended to units, whole
+lists and army-list entries (Voice): `units.source`, `army_lists.source`,
+the head on a profile block and the mark on an entry row. Later the same
+day: the mark made the publication's initials in a box in place of the
+square, and "optional" dropped from the band and head.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -307,14 +313,27 @@ Baseline: **`/general-rules`**.
     is load-bearing rather than decorative.
   - **Magazine material** — rules and extensions taken from Citadel Journal
     and White Dwarf. Marked with a band and a spine: the citation once, in the
-    band, with "optional" added by the renderer and never written; the spine
-    down the right edge for the length of the material; a foot where core text
-    resumes. A whole rule holds its citation in `rules.source`, null where the
-    rule is not magazine material. An extension is a
+    band, and nothing added to it; the spine down the right edge for the
+    length of the material; a foot where core text resumes. A whole rule
+    holds its citation in `rules.source`, null where the rule is not magazine
+    material. An extension is a
     `<section class="house-rule">` whose label names the magazine, with the
     citation in a `data-source` attribute rather than opening the paragraph.
     The House Rule aside is for the site's and the community's rulings only.
-    Ruled by Thomas 23 October 2026.
+    Ruled by Thomas 23 October 2026. Extended 1 November (MAG-4 to MAG-7) to
+    army lists: a unit that exists only because of a magazine article holds
+    its citation in `units.source`, and its profile block carries the head,
+    spine and foot, with the mark on its entry row and no band there;
+    a whole magazine list holds its citation in `army_lists.source`, the head
+    standing at the top of the list and the spine and foot round its content,
+    and its units carry no source of their own. A magazine option on a codex
+    entry is an extension aside in the entry's text. Where a magazine entry
+    replaces a codex entry in terms, both are shown, the magazine entry's
+    note naming the codex entry it stands in for. The mark itself is the
+    publication's initials, CJ or WD, in a 1px box: in the rail beside a whole
+    rule and on an entry row beside a magazine unit. It carries no words
+    beyond the initials. Ruled by Thomas 2 November 2026, with "optional"
+    dropped from the band and head the same day.
   - **Source note** — records where two printings disagree, or which of them
     the site follows. An unmarked `<p><small><em>`: no marker, set small and
     italic so it reads as editorial rather than as rule. In use before it was
@@ -331,12 +350,12 @@ Baseline: **`/general-rules`**.
   take up is not carried. A White Dwarf erratum or Q&A ruling is not magazine
   material and stays an inline citation in the rule. Ruled by Thomas
   22 October 2026 (MAG-1); the mark 23 October (MAG-2); placement 24 October
-  (MAG-3).
+  (MAG-3); the initials and the band without "optional" 2 November.
   - **The citation reads publication, page, author**: "Citadel Journal 6,
     p26, reader submission", where "reader submission" stands for any author
     who is not Journal or Studio staff. It is stored once, in `rules.source`
     for a whole rule or `data-source` on an extension aside, and never
-    written in the paragraph. The device prints it and adds "optional".
+    written in the paragraph. The device prints it as written.
   - **The paragraph opens on the rule**, in the site's stock forms ("On a
     1-3", "roll a D6 on the chart below"), with no narrative or editorial
     framing, and the magazine named nowhere but the citation. Words to

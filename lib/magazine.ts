@@ -1,5 +1,7 @@
-export const magazineHead = (citation: string): string =>
-  `${citation}, optional`;
+export const magazineHead = (citation: string): string => citation;
+
+export const magazineInitials = (citation: string): string =>
+  citation.startsWith("Citadel Journal") ? "CJ" : "WD";
 
 const ASIDE =
   /<section class="house-rule"((?:\s+[a-z-]+="[^"]*")*)>(\s*<span class="label">(Citadel Journal|White Dwarf)[^<]*<\/span>)/g;

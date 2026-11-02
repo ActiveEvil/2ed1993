@@ -314,7 +314,7 @@ export default async function Page(props: {
             {
               id,
               label: name,
-              marked: source !== null,
+              source,
               subsections: subsections.map((subsection) => ({
                 id: subsection.id,
                 label: subsection.name,

@@ -75,11 +75,11 @@
     "bold": true
   },
   {
-    "where": "Magazine spine, foot and rail square",
+    "where": "Magazine spine, foot and the box round the initials",
     "ink": "mag-strong",
     "on": "background",
     "graphic": true,
-    "exempt": "black in dark by decision, as the frames; the rail square is outlined there"
+    "exempt": "black in dark by decision, as the frames; the box is outlined there"
   },
   {
     "where": "Mission card name on its mat",

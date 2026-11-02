@@ -483,12 +483,12 @@ export const WARBIKE: {
       {
         id: 1,
         field: "movement",
-        note: "<p>A Warbike moving at its <strong>Fast</strong> rate cannot turn more than 90&deg; in a turn.</p>",
+        note: "A Warbike moving at its <strong>Fast</strong> rate cannot turn more than 90&deg; in a turn.",
       },
       {
         id: 2,
         field: "weapons",
-        note: "<p>The Autocannons fire as one weapon.</p>",
+        note: "The Autocannons fire as one weapon.",
       },
     ],
     datafax_images: [],
