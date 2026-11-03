@@ -2016,6 +2016,45 @@ export type Database = {
           },
         ]
       }
+      unit_profile_vehicle_cards: {
+        Row: {
+          created_at: string
+          position: number
+          unit_profile_id: number
+          updated_at: string | null
+          vehicle_card_id: number
+        }
+        Insert: {
+          created_at?: string
+          position?: number
+          unit_profile_id: number
+          updated_at?: string | null
+          vehicle_card_id: number
+        }
+        Update: {
+          created_at?: string
+          position?: number
+          unit_profile_id?: number
+          updated_at?: string | null
+          vehicle_card_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_profile_vehicle_cards_unit_profile_id_fkey"
+            columns: ["unit_profile_id"]
+            isOneToOne: false
+            referencedRelation: "unit_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_profile_vehicle_cards_vehicle_card_id_fkey"
+            columns: ["vehicle_card_id"]
+            isOneToOne: false
+            referencedRelation: "vehicle_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       unit_profile_wargear_cards: {
         Row: {
           created_at: string

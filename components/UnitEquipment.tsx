@@ -65,6 +65,11 @@ type ProfileWargearCard = {
   card: WargearCardRef;
 };
 
+type ProfileVehicleCard = {
+  position: number;
+  card: VehicleCardRef;
+};
+
 export type EquipmentProfile = {
   id: number;
   name: string;
@@ -72,6 +77,7 @@ export type EquipmentProfile = {
   unit_profile_weapons: ProfileWeapon[];
   unit_profile_armour: ProfileArmour[];
   unit_profile_wargear_cards: ProfileWargearCard[];
+  unit_profile_vehicle_cards: ProfileVehicleCard[];
 };
 
 export type EquipmentOption = {
@@ -313,7 +319,8 @@ export const unitHasEquipment = (unit: EquipmentUnit): boolean =>
       (profile) =>
         profile.unit_profile_weapons.length ||
         profile.unit_profile_armour.length ||
-        profile.unit_profile_wargear_cards.length,
+        profile.unit_profile_wargear_cards.length ||
+        profile.unit_profile_vehicle_cards.length,
     ) ||
     unit.unit_options.length ||
     unit.unit_special_rule_assignments.length,
@@ -388,10 +395,34 @@ export const UnitEquipment: React.FC<{
   const wargearCardGrants = profiles.flatMap((profile) =>
     profile.unit_profile_wargear_cards.map((entry) => ({
       key: `wargear-card-${profile.id}-${entry.position}`,
-      profile,
-      card: entry.card,
+      owner: named ? profile.name : null,
+      name: entry.card.name,
+      href: wargearCardHref(entry.card),
     })),
   );
+  const vehicleCardGrants = [
+    ...profiles.flatMap((profile) =>
+      profile.unit_profile_vehicle_cards.map((entry) => ({
+        key: `vehicle-card-${profile.id}-${entry.position}`,
+        owner: named ? profile.name : null,
+        name: entry.card.name,
+        href: vehicleCardHref(entry.card),
+      })),
+    ),
+    ...options.flatMap((option) =>
+      option.vehicle_card
+        ? [
+            {
+              key: `vehicle-card-option-${option.id}`,
+              owner: option.profile?.name ?? null,
+              name: option.vehicle_card.name,
+              href: vehicleCardHref(option.vehicle_card),
+            },
+          ]
+        : [],
+    ),
+  ];
+  const listed = options.filter((option) => !option.vehicle_card);
   const wargearAllowanceText =
     wargearCardsMax != null ? (
       <>
@@ -438,6 +469,7 @@ export const UnitEquipment: React.FC<{
     !options.length &&
     !specialRules.length &&
     !wargearCardGrants.length &&
+    !vehicleCardGrants.length &&
     !wargearAllowanceText
   ) {
     return null;
@@ -512,10 +544,11 @@ export const UnitEquipment: React.FC<{
           ...wargearCardGrants.map((grant) => ({
             kind: "card" as const,
             key: grant.key,
-            profile: grant.profile,
-            card: grant.card,
+            owner: grant.owner,
+            name: grant.name,
+            href: grant.href,
           })),
-          ...options
+          ...listed
             .filter(({ option_group }) => option_group === "wargear")
             .map((option) => ({
               kind: "option" as const,
@@ -534,9 +567,16 @@ export const UnitEquipment: React.FC<{
                 : [],
           },
           {
+            label: "Vehicle",
+            rows: vehicleCardGrants.map((grant) => ({
+              kind: "card" as const,
+              ...grant,
+            })),
+          },
+          {
             label: "Special",
             rows: alternativesTogether([
-              ...options
+              ...listed
                 .filter(({ option_group }) => option_group === "special")
                 .map((option) => ({
                   kind: "option" as const,
@@ -549,7 +589,7 @@ export const UnitEquipment: React.FC<{
           {
             label: "Support",
             rows: alternativesTogether(
-              options
+              listed
                 .filter(({ option_group }) => option_group === "support")
                 .map((option) => ({
                   kind: "option" as const,
@@ -584,6 +624,7 @@ export const UnitEquipment: React.FC<{
                         compact={compact}
                       >
                         {wargearAllowanceText}
+                        {"."}
                       </LabelledRow>
                     );
                   }
@@ -670,14 +711,14 @@ export const UnitEquipment: React.FC<{
                         compact={compact}
                       >
                         {wargearPrefix}
-                        {named && (
+                        {row.owner && (
                           <>
-                            <strong>{row.profile.name}</strong>
+                            <strong>{row.owner}</strong>
                             {` ${DASH} `}
                           </>
                         )}
-                        <Link className={LINK} href={wargearCardHref(row.card)}>
-                          {row.card.name}
+                        <Link className={LINK} href={row.href}>
+                          {row.name}
                         </Link>
                         {"."}
                       </LabelledRow>
@@ -703,8 +744,7 @@ export const UnitEquipment: React.FC<{
                     option.upgrade ||
                     option.grants ||
                     option.grants_armour ||
-                    option.card ||
-                    option.vehicle_card,
+                    option.card,
                   );
                   const members =
                     option.alternative === 0
@@ -837,28 +877,6 @@ export const UnitEquipment: React.FC<{
                             href={wargearCardHref(option.card)}
                           >
                             {option.card.name}
-                          </Link>
-                        </>
-                      )}
-                      {option.vehicle_card && (
-                        <>
-                          {(option.grants ||
-                            option.grants_armour ||
-                            option.card) &&
-                            ", "}
-                          {!option.grants &&
-                            !option.grants_armour &&
-                            !option.card &&
-                            bare &&
-                            "equipped with "}
-                          {option.quantity !== null &&
-                            option.quantity > 1 &&
-                            `${option.quantity} ${TIMES} `}
-                          <Link
-                            className={LINK}
-                            href={vehicleCardHref(option.vehicle_card)}
-                          >
-                            {option.vehicle_card.name}
                           </Link>
                         </>
                       )}

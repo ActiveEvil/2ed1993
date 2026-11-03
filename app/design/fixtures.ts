@@ -716,6 +716,7 @@ export const ROUGH_RIDERS: {
           },
         ],
         unit_profile_wargear_cards: [],
+        unit_profile_vehicle_cards: [],
       },
       {
         id: 50,
@@ -724,6 +725,7 @@ export const ROUGH_RIDERS: {
         unit_profile_weapons: [],
         unit_profile_armour: [],
         unit_profile_wargear_cards: [],
+        unit_profile_vehicle_cards: [],
       },
     ],
     unit_options: [
