@@ -35,6 +35,10 @@ Links into the two card pages are checked against the card anchors, built
 from the `cards` list the dump carries as lib/anchors.ts builds them: the
 name, each availability in position order, then the origin. A page's sections are
 `available-<name>` for each availability that is some card's first.
+card_points, double_grant and priced_grant read the `grants` block and hold
+the card-pricing ruling of 3 November: a compulsory unit_options card grant
+adds the card's points to the entry, and a profile grant is included in the
+unit's price.
 """
 import json, os, re, sys, unicodedata
 from collections import defaultdict
@@ -314,17 +318,60 @@ def cross_checks(texts, chapters, cards):
             yield "dup_paragraph", first[0], first[1], names
 
 
+NUMERIC = re.compile(r"^\d+(\.\d+)?$")
+
+
+def grant_checks(grants):
+    cards = {kind: {c["id"]: c for c in grants["cards"][kind]}
+             for kind in ("wc", "vc")}
+
+    def card(kind, ident):
+        return cards[kind].get(ident, {"n": f"{kind} {ident}", "p": None})
+
+    def held(row):
+        return [(kind, row[kind]) for kind in ("wc", "vc") if row.get(kind)]
+
+    profiled = {(row["u"], kind, ident)
+                for row in grants["profiles"] for kind, ident in held(row)}
+    compulsory = {}
+    for row in grants["options"]:
+        for kind, ident in held(row):
+            name = card(kind, ident)["n"]
+            if not row["opt"]:
+                compulsory[row["id"]] = (row["u"], kind, ident)
+                points = card(kind, ident)["p"]
+                if points is None or not NUMERIC.match(str(points)):
+                    yield ("card_points", "unit", row["un"],
+                           f"unit_options {row['id']}: {name} has points {points!r}")
+            if (row["u"], kind, ident) in profiled:
+                yield ("double_grant", "unit", row["un"],
+                       f"unit_options {row['id']}: {name} is also a profile grant")
+
+    forced = profiled | set(compulsory.values())
+    for row in grants["entry_options"]:
+        if row.get("wc") and (row["u"], "wc", row["wc"]) in forced:
+            yield ("priced_grant", "unit", row["un"],
+                   f"army_list_entry_options {row['id']}: prices "
+                   f"{card('wc', row['wc'])['n']}, which the unit must carry")
+        if row.get("uo") in compulsory:
+            _, kind, ident = compulsory[row["uo"]]
+            yield ("priced_grant", "unit", row["un"],
+                   f"army_list_entry_options {row['id']}: prices unit_options "
+                   f"{row['uo']}, a compulsory grant of {card(kind, ident)['n']}")
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     show_exempt = "--list" in sys.argv
     path = args[0] if args else os.path.join(
         os.path.dirname(HERE), "verbatim", "texts.json")
     texts = json.load(open(path, encoding="utf-8"))
-    chapters = cards = None
+    chapters = cards = grants = None
     if isinstance(texts, dict):
         if "chapters" in texts:
             chapters = set(texts["chapters"])
         cards = texts.get("cards")
+        grants = texts.get("grants")
         texts = texts["texts"]
     if chapters is None:
         print("no chapter list in the dump, so dead_chapter is skipped; "
@@ -332,6 +379,9 @@ def main():
     if cards is None:
         print("no card list in the dump, so dead_card_link is skipped; "
               "re-run dump-texts.py")
+    if grants is None:
+        print("no grants in the dump, so card_points, double_grant and "
+              "priced_grant are skipped; re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
@@ -358,7 +408,10 @@ def main():
                     continue
                 failures.append((check, row["k"], row["n"], detail))
 
-    for check, kind, name, detail in cross_checks(texts, chapters, cards):
+    found = list(cross_checks(texts, chapters, cards))
+    if grants is not None:
+        found += grant_checks(grants)
+    for check, kind, name, detail in found:
         if excused(check, kind, name, detail):
             excused_count += 1
             if show_exempt:

@@ -115,8 +115,40 @@ def card_rows(table, join):
 cards = {"wargear-cards": card_rows("wargear_cards", "wargear_cards_availabilities"),
          "vehicle-cards": card_rows("vehicle_cards", "vehicle_cards_availabilities")}
 
+def card_ids(row):
+    return {k: row[c] for k, c in (("wc", "wargear_card_id"), ("vc", "vehicle_card_id"))
+            if row.get(c)}
+
+
+units = {u["id"]: u["name"] for u in rows("units", "id,name")}
+profile_units = {p["id"]: p["unit_id"] for p in rows("unit_profiles", "id,unit_id")}
+entry_units = {e["id"]: e["unit_id"] for e in rows("army_list_entries", "id,unit_id")}
+grant_options = [
+    {"id": o["id"], "u": o["unit_id"], "un": units[o["unit_id"]],
+     "opt": o["optional"], **card_ids(o)}
+    for o in rows("unit_options", "id,unit_id,optional,wargear_card_id,vehicle_card_id")
+    if card_ids(o)]
+grant_profiles = [
+    {"u": profile_units[g["unit_profile_id"]],
+     "un": units[profile_units[g["unit_profile_id"]]], **card_ids(g)}
+    for table, column in (("unit_profile_wargear_cards", "wargear_card_id"),
+                          ("unit_profile_vehicle_cards", "vehicle_card_id"))
+    for g in rows(table, f"unit_profile_id,{column}")]
+grant_entries = [
+    {"id": e["id"], "u": entry_units[e["army_list_entry_id"]],
+     "un": units[entry_units[e["army_list_entry_id"]]],
+     "wc": e["wargear_card_id"], "uo": e["unit_option_id"]}
+    for e in rows("army_list_entry_options", "id,army_list_entry_id,wargear_card_id,unit_option_id")
+    if e["wargear_card_id"] or e["unit_option_id"]]
+grants = {
+    "options": grant_options, "profiles": grant_profiles, "entry_options": grant_entries,
+    "cards": {"wc": [{"id": c["id"], "n": c["name"], "p": c["points"]}
+                     for c in rows("wargear_cards", "id,name,points")],
+              "vc": [{"id": c["id"], "n": c["name"], "p": c["points"]}
+                     for c in rows("vehicle_cards", "id,name,points")]}}
+
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
-                      "cards": cards}, ensure_ascii=False)
+                      "cards": cards, "grants": grants}, ensure_ascii=False)
 if len(sys.argv) > 1 and sys.argv[1] == "-":
     print(payload)
 else:

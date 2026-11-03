@@ -1,5 +1,6 @@
 -- Every prose column the site renders, as the JSON measure.py expects, plus
--- every rules chapter slug and every card with its availabilities for verify.py.
+-- every rules chapter slug, every card with its availabilities, and the card
+-- grants and prices for verify.py.
 -- Run against the live database and save the result as texts.json:
 --   psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json
 select json_build_object(
@@ -8,6 +9,15 @@ select json_build_object(
   'cards', json_build_object(
     'wargear-cards', coalesce((select json_agg(json_build_object('n', c.name, 'o', c.origin, 'a', coalesce((select json_agg(a.name order by a.position) from wargear_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.wargear_card_id = c.id), '[]'))) from wargear_cards c), '[]'),
     'vehicle-cards', coalesce((select json_agg(json_build_object('n', c.name, 'o', c.origin, 'a', coalesce((select json_agg(a.name order by a.position) from vehicle_cards_availabilities ca join availabilities a on a.id = ca.availability_id where ca.vehicle_card_id = c.id), '[]'))) from vehicle_cards c), '[]')
+  ),
+  'grants', json_build_object(
+    'options', coalesce((select json_agg(json_strip_nulls(json_build_object('id', uo.id, 'u', uo.unit_id, 'un', u.name, 'opt', uo.optional, 'wc', uo.wargear_card_id, 'vc', uo.vehicle_card_id))) from unit_options uo join units u on u.id = uo.unit_id where coalesce(uo.wargear_card_id, uo.vehicle_card_id) is not null), '[]'),
+    'profiles', coalesce((select json_agg(json_strip_nulls(json_build_object('u', p.unit_id, 'un', u.name, 'wc', g.wc, 'vc', g.vc))) from (select unit_profile_id, wargear_card_id wc, null::integer vc from unit_profile_wargear_cards union all select unit_profile_id, null, vehicle_card_id from unit_profile_vehicle_cards) g join unit_profiles p on p.id = g.unit_profile_id join units u on u.id = p.unit_id), '[]'),
+    'entry_options', coalesce((select json_agg(json_strip_nulls(json_build_object('id', o.id, 'u', e.unit_id, 'un', u.name, 'wc', o.wargear_card_id, 'uo', o.unit_option_id))) from army_list_entry_options o join army_list_entries e on e.id = o.army_list_entry_id join units u on u.id = e.unit_id where coalesce(o.wargear_card_id, o.unit_option_id) is not null), '[]'),
+    'cards', json_build_object(
+      'wc', coalesce((select json_agg(json_build_object('id', c.id, 'n', c.name, 'p', c.points)) from wargear_cards c), '[]'),
+      'vc', coalesce((select json_agg(json_build_object('id', c.id, 'n', c.name, 'p', c.points)) from vehicle_cards c), '[]')
+    )
   )
 ) from (
   select 'rule:' || rc.slug, r.name, r.rule from rules r join rule_categories rc on rc.id = r.category_id
