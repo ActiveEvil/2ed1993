@@ -33,6 +33,7 @@ import {
   ruleHref,
   wargearCardHref,
 } from "@/lib/anchors";
+import { splitExtensions } from "@/lib/magazine";
 import { armyListShortName, pageTitle, toPlainText } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
@@ -124,6 +125,8 @@ type Entry = {
   graded: boolean;
   wargearCardsMax: number | null;
   note: string | null;
+  extensions: string;
+  framed: boolean;
   source: string | null;
   transport: string | null;
   rules: string[];
@@ -408,6 +411,15 @@ const buildEntry = (
         ],
   );
 
+  const note = splitExtensions(entry.note ?? "");
+  const unit = {
+    ...entry.units,
+    unit_special_rule_assignments: [
+      ...entry.units.unit_special_rule_assignments,
+      ...ratingRules,
+    ],
+  };
+
   const search = [
     entry.units.name,
     category,
@@ -446,7 +458,9 @@ const buildEntry = (
     cost,
     graded,
     wargearCardsMax,
-    note: entry.note,
+    note: note.prose || null,
+    extensions: note.extensions,
+    framed: Boolean(rows.length || unitHasEquipment(unit)),
     source: listSource === null ? entry.units.source : null,
     transport: transportLine(entry.transport_scope),
     rules: allowance.entry(entry),
@@ -474,13 +488,7 @@ const buildEntry = (
     rows,
     datafaxHref: datafaxHref(entry.units),
     factionSlug,
-    unit: {
-      ...entry.units,
-      unit_special_rule_assignments: [
-        ...entry.units.unit_special_rule_assignments,
-        ...ratingRules,
-      ],
-    },
+    unit,
     optionCosts,
     search,
   };
@@ -547,11 +555,14 @@ const EntryHeading: React.FC<
   return <Tag className={className}>{children}</Tag>;
 };
 
-const Details: React.FC<{ entry: Entry; showNote: boolean }> = ({
-  entry,
-  showNote,
-}): React.JSX.Element | null => {
-  const note = showNote ? entry.note : null;
+const Details: React.FC<{
+  entry: Entry;
+  showNote: boolean;
+  showExtensions: boolean;
+}> = ({ entry, showNote, showExtensions }): React.JSX.Element | null => {
+  const note =
+    (showNote ? (entry.note ?? "") : "") +
+    (showExtensions ? entry.extensions : "");
 
   if (
     !note &&
@@ -565,7 +576,12 @@ const Details: React.FC<{ entry: Entry; showNote: boolean }> = ({
   return (
     <div className="flex flex-col gap-1 text-sm">
       {entry.transport && <p>{entry.transport}</p>}
-      {note && <p>{note}</p>}
+      {note && (
+        <div
+          className="dynamic-content compact"
+          dangerouslySetInnerHTML={{ __html: note }}
+        />
+      )}
       {entry.rules.map((text, index) => (
         <p key={index}>{text}</p>
       ))}
@@ -1000,11 +1016,9 @@ export default async function Page(props: {
                                           <Details
                                             entry={entry}
                                             showNote={block.note === null}
+                                            showExtensions={!entry.framed}
                                           />
-                                          {Boolean(
-                                            entry.rows.length ||
-                                            unitHasEquipment(entry.unit),
-                                          ) && (
+                                          {entry.framed && (
                                             <ProfileFrame
                                               className={clsx(
                                                 "mt-1 min-w-0",
@@ -1045,15 +1059,26 @@ export default async function Page(props: {
                                                     : undefined
                                                 }
                                               />
+                                              {entry.extensions && (
+                                                <div
+                                                  className="dynamic-content compact"
+                                                  dangerouslySetInnerHTML={{
+                                                    __html: entry.extensions,
+                                                  }}
+                                                />
+                                              )}
                                             </ProfileFrame>
                                           )}
                                         </article>
                                       ))}
                                     </div>
                                     {block.note && (
-                                      <p className="px-2 md:px-4 text-sm">
-                                        {block.note}
-                                      </p>
+                                      <div
+                                        className="dynamic-content compact px-2 md:px-4 text-sm"
+                                        dangerouslySetInnerHTML={{
+                                          __html: block.note,
+                                        }}
+                                      />
                                     )}
                                   </div>
                                 ))}

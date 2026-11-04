@@ -8,13 +8,32 @@ const ASIDE =
 
 const CHART = /<section class="chart"[^>]*>[\s\S]*?<\/section>/g;
 
+const MAGAZINE_SECTION =
+  /<section class="house-rule"(?:\s+[a-z-]+="[^"]*")*>\s*<span class="label">(?:Citadel Journal|White Dwarf)[\s\S]*?<\/section>/g;
+
 export const markExtensions = (html: string): string =>
   html.replace(ASIDE, (_, attrs: string, label: string, magazine: string) => {
     const source = /\sdata-source="([^"]*)"/.exec(attrs)?.[1];
     const head = magazineHead(source || magazine);
 
+    if (/\sdata-kind="removal"/.test(attrs)) {
+      return `<section class="house-rule mag-note"${attrs}>${label}<span class="mark-cite"><span class="mark-rail" aria-hidden="true">${magazineInitials(head)}</span>${head}</span>`;
+    }
+
     return `<section class="house-rule mag-aside"${attrs}>${label}<div class="mag-head">${head}</div>`;
   });
+
+// The magazine sections of a text, marked, and the text without them.
+export const splitExtensions = (
+  html: string,
+): { prose: string; extensions: string } => {
+  const extensions = (html.match(MAGAZINE_SECTION) ?? []).join("");
+
+  return {
+    prose: html.replace(MAGAZINE_SECTION, "").trim(),
+    extensions: markExtensions(extensions),
+  };
+};
 
 export const bandHeadings = (html: string): string => {
   const out: string[] = [];

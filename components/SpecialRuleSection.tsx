@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/Heading";
 import { HighlighterLink } from "@/components/Highlighter";
+import { markExtensions } from "@/lib/magazine";
 import Link from "next/link";
 
 export const SpecialRuleSection: React.FC<{
@@ -24,7 +25,7 @@ export const SpecialRuleSection: React.FC<{
     </SectionHeading>
     <section
       className="dynamic-content measure flex flex-col gap-4"
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: markExtensions(html) }}
     />
     {related && (
       <p className="max-w-prose text-lg">

@@ -128,6 +128,12 @@ the head on a profile block and the mark on an entry row. Later the same
 day: the mark made the publication's initials in a box in place of the
 square, and "optional" dropped from the band and head.
 
+**Revised 4 November 2026:** the removal note (`.mag-note`) added beside the
+extension aside, and `data-kind` on the section (Voice); a magazine block
+last inside a ProfileFrame inset from the frame; `army_list_entries.note`
+made an HTML column (Markup 9, Emphasis and linking); a White Dwarf Q&A that
+changes a rule made an aside (Voice).
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -276,6 +282,9 @@ square, and "optional" dropped from the band and head.
    `army_list_allowance_sets.name` and `singular`, and
    `army_list_allowance_rules.qualifier` and `label`. The allowance generator
    composes them into sentences, so they take literal characters and no markup.
+   `army_list_entries.note` is an HTML column from 4 November 2026, rendered
+   through `markExtensions` so that it can carry a magazine aside or removal
+   note; its existing rows take entities, swept the same day.
 
    **`&mdash;` is always tight — no space on either side.** Ruled by Thomas
    8 August. The one permitted exception is markup whitespace: three
@@ -334,6 +343,19 @@ Baseline: **`/general-rules`**.
     rule and on an entry row beside a magazine unit. It carries no words
     beyond the initials. Ruled by Thomas 2 November 2026, with "optional"
     dropped from the band and head the same day.
+    An aside on a codex entry records an addition: an option, rule, profile
+    or restriction the codex entry lacks (MAG-8). A removal, something a
+    pre-codex printing had that the codex then dropped or reworked (MAG-9),
+    takes the quieter removal note: the same `house-rule` section with
+    `data-source` and `data-kind="removal"`, which `lib/magazine.ts` renders
+    as `.mag-note` — no head; the citation in the row's ink with the initials
+    box in front, then the text; the spine and foot as the aside has.
+    `verify.py` accepts `data-kind` only from its known set. A removal note
+    goes at the very end of the entry: in `army_list_entries.note`, and where
+    the entry has a profile block the renderer moves any magazine block in
+    that note to the last place inside the ProfileFrame, inset from the
+    frame's border by `--spacing * 2`, so the block's own spine stands clear
+    of the frame. Ruled by Thomas 4 November 2026.
   - **Source note** — records where two printings disagree, or which of them
     the site follows. An unmarked `<p><small><em>`: no marker, set small and
     italic so it reads as editorial rather than as rule. In use before it was
@@ -347,10 +369,13 @@ Baseline: **`/general-rules`**.
   content, and White Dwarf material the magazine frames as optional or
   provisional; second edition only, with reader submissions on the same
   footing as studio articles. A letters-page suggestion the editors did not
-  take up is not carried. A White Dwarf erratum or Q&A ruling is not magazine
-  material and stays an inline citation in the rule. Ruled by Thomas
-  22 October 2026 (MAG-1); the mark 23 October (MAG-2); placement 24 October
-  (MAG-3); the initials and the band without "optional" 2 November.
+  take up is not carried. A White Dwarf erratum or Q&A answer that confirms
+  the printed rule is not magazine material and stays an inline citation in
+  the rule; a Q&A answer that changes what the rule does is an extension
+  aside, cited "White Dwarf 192, p33" with no author status, a Studio answer
+  carrying none. Ruled by Thomas 22 October 2026 (MAG-1); the mark 23 October
+  (MAG-2); placement 24 October (MAG-3); the initials and the band without
+  "optional" 2 November; the Q&A distinction 4 November.
   - **The citation reads publication, page, author**: "Citadel Journal 6,
     p26, reader submission", where "reader submission" stands for any author
     who is not Journal or Studio staff. It is stored once, in `rules.source`
@@ -420,8 +445,9 @@ Baseline: **`/general-rules`**.
   the one the data holds** — `weapons` records **Multimelta**, not
   "multi-melta", and **Boltgun**, so a vehicle's "bolters" have no target and
   stay unmarked. Where a column is plain JSX (`wargear_categories.note`,
-  `army_list_entries.note`, `datafaxes.note`) the capitalisation still applies
-  and the link cannot. **"Where possible" is a real limit**: inventing a name so
+  `datafaxes.note`) the capitalisation still applies and the link cannot;
+  `army_list_entries.note` became an HTML column 4 November 2026 and links
+  as the rest do. **"Where possible" is a real limit**: inventing a name so
   that a link can exist is content-new, which Sources forbids outright. Ruled by
   Thomas 1 September.
 - **`Targeter` is capitalised.** It is a wargear card name and links to
@@ -1190,7 +1216,11 @@ only), nested `<a>`/`<strong>`, duplicate ids within a category, dead
 `cards` list the dump carries, as `cardAnchorId` builds them, so the dump
 and the check carry each card's origin), `/rules/…`
 links to a chapter slug that does not exist (from the `chapters` list the
-dump carries beside `texts`), and duplicate paragraphs across texts.
+dump carries beside `texts`), duplicate paragraphs across texts, a magazine
+aside without `data-source` or with a `data-kind` outside the known set,
+and, from the `sources` list the dump carries, every `rules.source`,
+`units.source` and `army_lists.source` in the citation form and no unit
+with a source on a list that has one (MAG-5).
 
 **Known artefact:** running `verify.py` against a single-text JSON reports a
 false `dead_link`, because the anchor population it checks against is derived

@@ -24,8 +24,10 @@ Five checks, each reading source rather than a rendered page:
   design_components  every file in components/ is imported by app/design/ or by
                      app/layout.tsx; type-only imports do not count.
   design_fixtures    every class under .dynamic-content in globals.css appears on
-                     /design: in a class attribute in app/design/fixtures.ts, or
-                     as a measure or compact prop on a Fixture.
+                     /design: in a class attribute in app/design/fixtures.ts, in
+                     one lib/magazine.ts writes (its output is what the magazine
+                     fixtures render), or as a measure or compact prop on a
+                     Fixture.
 
 Exit 1 on any unexempt finding. Exemptions live in exemptions.json beside this
 file under the check names above. Each entry's key is the subject a finding
@@ -392,8 +394,9 @@ def check_fixtures():
             classes.update(re.findall(r"\.([a-zA-Z][\w-]*)", selector))
     classes.discard("dynamic-content")
 
-    shown = {name for value in re.findall(r'class="([^"]*)"',
-                                          read("app", "design", "fixtures.ts"))
+    shown = {name for source in (read("app", "design", "fixtures.ts"),
+                                 read("lib", "magazine.ts"))
+             for value in re.findall(r'class="([^"]*)"', source)
              for name in value.split()}
     for _, text in files(os.path.join("app", "design"), (".tsx",)):
         shown.update(re.findall(r"<Fixture\b[^>]*?\b(measure|compact)\b", text, re.S))

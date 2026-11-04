@@ -39,7 +39,9 @@ const CELL = "py-1";
 export const ProfileFrame: React.FC<
   React.PropsWithChildren<{ className?: string }>
 > = ({ className, children }): React.JSX.Element => (
-  <div className={clsx("border-4 border-frame", className)}>{children}</div>
+  <div className={clsx("profile-frame border-4 border-frame", className)}>
+    {children}
+  </div>
 );
 
 export const CharacteristicTable: React.FC<{

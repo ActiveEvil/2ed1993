@@ -300,6 +300,28 @@
         margin-right: calc(var(--spacing) * 5);
       }
     }
+    .mag-note {
+      gap: calc(var(--spacing) * 1);
+      border-left: 0;
+      border-right: calc(var(--spacing) * 4) solid var(--mag-strong);
+      border-bottom: 4px solid var(--mag-strong);
+      padding: 0 calc(var(--spacing) * 3) calc(var(--spacing) * 3) 0;
+      .label {
+        display: none;
+      }
+      .mark-cite {
+        display: block;
+      }
+      .mark-rail {
+        margin-left: 0;
+        margin-right: calc(var(--spacing) * 2);
+      }
+      p {
+        font-style: normal;
+        font-size: var(--text-sm);
+        line-height: var(--tw-leading, var(--text-sm--line-height));
+      }
+    }
     .text-vertical {
       writing-mode: sideways-lr;
     }
@@ -425,6 +447,13 @@
       @variant md {
         padding-left: calc(var(--spacing) * 2);
       }
+    }
+  }
+  /* A magazine block last in a frame stands clear of the frame's border. */
+  .profile-frame {
+    .mag-aside,
+    .mag-note {
+      margin: calc(var(--spacing) * 2);
     }
   }
   .mag-band {

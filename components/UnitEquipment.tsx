@@ -10,6 +10,7 @@ import {
   vehicleCardHref,
   wargearCardHref,
 } from "@/lib/anchors";
+import { markExtensions } from "@/lib/magazine";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -641,9 +642,13 @@ export const UnitEquipment: React.FC<{
                           : rulesSlug && !row.rule.wargear_items.length
                             ? `/rules/${rulesSlug}#${generateAnchorId(row.rule.name)}`
                             : null;
-                    const prose = article === undefined ? row.rule.rule : null;
+                    const prose =
+                      article === undefined && row.rule.rule
+                        ? markExtensions(row.rule.rule)
+                        : null;
+                    const note = row.note ? markExtensions(row.note) : null;
                     const blockProse = isBlockHtml(prose);
-                    const blockNote = isBlockHtml(row.note);
+                    const blockNote = isBlockHtml(note);
 
                     return (
                       <LabelledRow
@@ -667,9 +672,7 @@ export const UnitEquipment: React.FC<{
                             display
                           )}
                         </strong>
-                        {!blockProse &&
-                          Boolean(prose || row.note) &&
-                          ` ${DASH} `}
+                        {!blockProse && Boolean(prose || note) && ` ${DASH} `}
                         {prose &&
                           (blockProse ? (
                             <div
@@ -682,18 +685,18 @@ export const UnitEquipment: React.FC<{
                               dangerouslySetInnerHTML={{ __html: prose }}
                             />
                           ))}
-                        {row.note && (
+                        {note && (
                           <>
                             {prose && !blockProse && " "}
                             {blockNote ? (
                               <div
                                 className="dynamic-content compact"
-                                dangerouslySetInnerHTML={{ __html: row.note }}
+                                dangerouslySetInnerHTML={{ __html: note }}
                               />
                             ) : (
                               <span
                                 className="dynamic-content compact"
-                                dangerouslySetInnerHTML={{ __html: row.note }}
+                                dangerouslySetInnerHTML={{ __html: note }}
                               />
                             )}
                           </>
@@ -774,7 +777,8 @@ export const UnitEquipment: React.FC<{
                         ? `one ${noun[0]}`
                         : `${number(option.quantity)} different ${noun[1]}`;
                   const cost = optionCosts?.get(option.id) ?? null;
-                  const blockNote = isBlockHtml(option.note);
+                  const note = option.note ? markExtensions(option.note) : null;
+                  const blockNote = isBlockHtml(note);
                   const leadIn = lead && Boolean(option.profile || scope);
                   const structured =
                     leadIn ||
@@ -930,10 +934,10 @@ export const UnitEquipment: React.FC<{
                         </>
                       )}
                       {structured && ". "}
-                      {option.note && !blockNote && (
+                      {note && !blockNote && (
                         <span
                           className="dynamic-content compact"
-                          dangerouslySetInnerHTML={{ __html: option.note }}
+                          dangerouslySetInnerHTML={{ __html: note }}
                         />
                       )}
                       {cost && (
@@ -942,10 +946,10 @@ export const UnitEquipment: React.FC<{
                           <strong>{cost}</strong>
                         </>
                       )}
-                      {option.note && blockNote && (
+                      {note && blockNote && (
                         <div
                           className="dynamic-content compact"
-                          dangerouslySetInnerHTML={{ __html: option.note }}
+                          dangerouslySetInnerHTML={{ __html: note }}
                         />
                       )}
                       {option.restriction && (

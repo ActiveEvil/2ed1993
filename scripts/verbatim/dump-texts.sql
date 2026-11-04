@@ -1,6 +1,6 @@
 -- Every prose column the site renders, as the JSON measure.py expects, plus
--- every rules chapter slug, every card with its availabilities, and the card
--- grants and prices for verify.py.
+-- every rules chapter slug, every card with its availabilities, the card
+-- grants and prices, and the magazine sources for verify.py.
 -- Run against the live database and save the result as texts.json:
 --   psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json
 select json_build_object(
@@ -18,6 +18,11 @@ select json_build_object(
       'wc', coalesce((select json_agg(json_build_object('id', c.id, 'n', c.name, 'p', c.points)) from wargear_cards c), '[]'),
       'vc', coalesce((select json_agg(json_build_object('id', c.id, 'n', c.name, 'p', c.points)) from vehicle_cards c), '[]')
     )
+  ),
+  'sources', json_build_object(
+    'rules', coalesce((select json_agg(json_build_object('n', r.name, 's', r.source)) from rules r where r.source is not null), '[]'),
+    'army_lists', coalesce((select json_agg(json_build_object('n', al.name, 's', al.source)) from army_lists al where al.source is not null), '[]'),
+    'units', coalesce((select json_agg(json_build_object('n', u.name, 's', u.source, 'l', coalesce((select json_agg(distinct al.source) from army_list_entries ale join unit_categories uc on uc.id = ale.unit_category_id join army_lists al on al.id = uc.army_list_id where ale.unit_id = u.id and al.source is not null), '[]'))) from units u where u.source is not null), '[]')
   )
 ) from (
   select 'rule:' || rc.slug, r.name, r.rule from rules r join rule_categories rc on rc.id = r.category_id

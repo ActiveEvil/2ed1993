@@ -147,8 +147,24 @@ grants = {
               "vc": [{"id": c["id"], "n": c["name"], "p": c["points"]}
                      for c in rows("vehicle_cards", "id,name,points")]}}
 
+list_sources = {l["id"]: l["source"] for l in rows("army_lists", "id,source") if l["source"]}
+category_lists = {c["id"]: c["army_list_id"] for c in rows("unit_categories", "id,army_list_id")}
+unit_lists = {}
+for e in rows("army_list_entries", "unit_id,unit_category_id"):
+    source = list_sources.get(category_lists[e["unit_category_id"]])
+    if source:
+        unit_lists.setdefault(e["unit_id"], set()).add(source)
+sources = {
+    "rules": [{"n": r["name"], "s": r["source"]}
+              for r in rows("rules", "name,source") if r["source"]],
+    "army_lists": [{"n": l["name"], "s": l["source"]}
+                   for l in rows("army_lists", "name,source") if l["source"]],
+    "units": [{"n": u["name"], "s": u["source"], "l": sorted(unit_lists.get(u["id"], ()))}
+              for u in rows("units", "id,name,source") if u["source"]]}
+
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
-                      "cards": cards, "grants": grants}, ensure_ascii=False)
+                      "cards": cards, "grants": grants, "sources": sources},
+                     ensure_ascii=False)
 if len(sys.argv) > 1 and sys.argv[1] == "-":
     print(payload)
 else:

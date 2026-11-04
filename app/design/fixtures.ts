@@ -400,6 +400,20 @@ export const MAGAZINE_ASIDE: Stored = {
 </p>`,
 };
 
+export const MAGAZINE_NOTE: Stored = {
+  source:
+    "army_list_entries · Leman Russ Battle Tank (Codex: Imperial Guard), draft",
+  html: `<section class="house-rule" data-source="White Dwarf 178, p26" data-kind="removal">
+    <span class="label">White Dwarf</span>
+    <p>
+        The battle cannon gunner could be upgraded to a Tank Commander for +10 points, a champion with one
+        <a href="/wargear/wargear-cards">Wargear card</a>, and the whole crew could exchange
+        <a href="/wargear/armour#Flak_Armour">Flak Armour</a> for <a href="/wargear/armour#Carapace_Armour">Carapace Armour</a>
+        for +15 points. Codex Imperial Guard carried neither.
+    </p>
+</section>`,
+};
+
 export const ORDERED_LIST: Stored = {
   source: "rules · Line of Sight",
   html: `<section class="ordered-list small-markers">

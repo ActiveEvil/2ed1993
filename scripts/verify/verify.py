@@ -16,17 +16,17 @@ link groups, first-mention-links) stay manual — see the doc.
 Entity and non-ASCII checks apply only to HTML columns. Rendered fields that are
 plain JSX take literal characters, and an entity there renders as its own
 characters: psychic_power_cards.note, wargear_categories.note and
-rules_heading, army_list_entries.note and the other army-list note columns.
+rules_heading, and the army-list note columns other than army_list_entries.note.
 The plain_entity check catches those; it is the mirror of ampersand and runs
 only off HTML.
 The dump joins the psychic note into the card's text, so `psychic` stays in
 HTML_KINDS and any note needing literal characters belongs in exemptions.
 unit_options.note, damage_charts.note, datafax_locations.note,
 unit_special_rules.rule, unit_special_rule_assignments.note,
-wargear_categories.rules_intro and army_lists.description are rendered through
-dangerouslySetInnerHTML, so `unit_wargear`, `damage_chart`, `datafax_location`,
-`unit_rule`, `unit_rule_note`, `wargear_cat_intro` and `army_list` are HTML
-kinds.
+wargear_categories.rules_intro, army_lists.description and, since 4 November,
+army_list_entries.note are rendered through dangerouslySetInnerHTML, so
+`unit_wargear`, `damage_chart`, `datafax_location`, `unit_rule`,
+`unit_rule_note`, `wargear_cat_intro`, `army_list` and `entry` are HTML kinds.
 A unit rule's prose may carry a D6 chart, so `unit_rule` ids join the
 duplicate_id cross-check under a namespace of their own — every unit rule on
 an army-list page shares that page.
@@ -39,6 +39,9 @@ card_points, double_grant and priced_grant read the `grants` block and hold
 the card-pricing ruling of 3 November: a compulsory unit_options card grant
 adds the card's points to the entry, and a profile grant is included in the
 unit's price.
+magazine_citation and unit_on_magazine_list read the `sources` block: every
+rules.source, units.source and army_lists.source takes the citation form, and
+no unit on a list that has a source carries a source of its own (MAG-5).
 """
 import json, os, re, sys, unicodedata
 from collections import defaultdict
@@ -50,7 +53,7 @@ HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "psychic", "warp",
               "faction", "damage_result", "unit_wargear", "damage_chart",
               "datafax_location", "unit_rule", "unit_rule_note", "unit_cat",
-              "wargear_cat_intro", "army_list")
+              "wargear_cat_intro", "army_list", "entry")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
             "ldquo", "rdquo", "half", "uarr", "sup2", "AElig"}
@@ -225,14 +228,21 @@ def check_inline_p(k, n, t):
         yield f"inline <p> outside <li>: {t[match.start():match.start() + 40]!r}"
 
 
+ASIDE_KINDS = {"removal"}
+
+
 def check_magazine_source(k, n, t):
     """A magazine aside keeps its citation in data-source, which the renderer
-    lifts into the head; the paragraph no longer opens with it."""
+    lifts into the head; the paragraph no longer opens with it. data-kind, where
+    present, names a form the renderer knows."""
     for match in re.finditer(
             r'<section class="house-rule"([^>]*)>\s*<span class="label">'
             r'(Citadel Journal|White Dwarf)', t):
         if not re.search(r'\sdata-source="[^"]+"', match.group(1)):
             yield f"{match.group(2)} aside with no data-source"
+        kind = re.search(r'\sdata-kind="([^"]*)"', match.group(1))
+        if kind and kind.group(1) not in ASIDE_KINDS:
+            yield f"{match.group(2)} aside with data-kind {kind.group(1)!r}"
 
 
 def check_nesting(k, n, t):
@@ -319,6 +329,19 @@ def cross_checks(texts, chapters, cards):
 
 
 NUMERIC = re.compile(r"^\d+(\.\d+)?$")
+CITATION = re.compile(r"^(Citadel Journal|White Dwarf) \d+, pp?\d+(–\d+)?(, reader submission)?$")
+
+
+def source_checks(sources):
+    for kind in ("rules", "army_lists", "units"):
+        for row in sources[kind]:
+            if not CITATION.match(row["s"]):
+                yield ("magazine_citation", kind, row["n"],
+                       f"source {row['s']!r} is not in the citation form")
+    for row in sources["units"]:
+        if row["l"]:
+            yield ("unit_on_magazine_list", "units", row["n"],
+                   f"carries a source on a list with its own: {', '.join(row['l'])}")
 
 
 def grant_checks(grants):
@@ -366,12 +389,13 @@ def main():
     path = args[0] if args else os.path.join(
         os.path.dirname(HERE), "verbatim", "texts.json")
     texts = json.load(open(path, encoding="utf-8"))
-    chapters = cards = grants = None
+    chapters = cards = grants = sources = None
     if isinstance(texts, dict):
         if "chapters" in texts:
             chapters = set(texts["chapters"])
         cards = texts.get("cards")
         grants = texts.get("grants")
+        sources = texts.get("sources")
         texts = texts["texts"]
     if chapters is None:
         print("no chapter list in the dump, so dead_chapter is skipped; "
@@ -382,6 +406,9 @@ def main():
     if grants is None:
         print("no grants in the dump, so card_points, double_grant and "
               "priced_grant are skipped; re-run dump-texts.py")
+    if sources is None:
+        print("no sources in the dump, so magazine_citation and "
+              "unit_on_magazine_list are skipped; re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
@@ -411,6 +438,8 @@ def main():
     found = list(cross_checks(texts, chapters, cards))
     if grants is not None:
         found += grant_checks(grants)
+    if sources is not None:
+        found += source_checks(sources)
     for check, kind, name, detail in found:
         if excused(check, kind, name, detail):
             excused_count += 1
