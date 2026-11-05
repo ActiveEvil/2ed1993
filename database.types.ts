@@ -363,6 +363,7 @@ export type Database = {
       army_list_allowance_set_entries: {
         Row: {
           army_list_entry_id: number
+          count_as: number
           created_at: string
           position: number
           set_id: number
@@ -370,6 +371,7 @@ export type Database = {
         }
         Insert: {
           army_list_entry_id: number
+          count_as?: number
           created_at?: string
           position: number
           set_id: number
@@ -377,6 +379,7 @@ export type Database = {
         }
         Update: {
           army_list_entry_id?: number
+          count_as?: number
           created_at?: string
           position?: number
           set_id?: number

@@ -64,7 +64,7 @@ HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "wargear_cat_intro", "army_list", "entry")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
-            "ldquo", "rdquo", "half", "uarr", "sup2", "AElig"}
+            "ldquo", "rdquo", "uarr", "sup2", "AElig"}
 PAIRED = ("p", "a", "li", "em", "h3", "h4", "strong", "tr", "td", "th",
           "sup", "section", "div", "table", "thead", "tbody", "ol", "ul",
           "blockquote", "small")

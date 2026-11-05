@@ -134,6 +134,9 @@ last inside a ProfileFrame inset from the frame; `army_list_entries.note`
 made an HTML column (Markup 9, Emphasis and linking); a White Dwarf Q&A that
 changes a rule made an aside (Voice).
 
+**Revised 5 November 2026:** `&half;` removed from the permitted-entity list
+and inch measurements recorded as decimal (Markup 9).
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -265,9 +268,11 @@ changes a rule made an aside (Voice).
    copy, no literal em-dashes, no bare `&` — including inside `href` values.
    **The full permitted-entity list, settled 13 August:** `&quot;` `&apos;`
    `&mdash;` `&ndash;` `&deg;` `&amp;` `&dagger;` `&Dagger;` `&sect;`
-   `&times;` `&divide;` `&ldquo;` `&rdquo;` `&half;` `&uarr;` `&sup2;`
-   `&AElig;`. Footnote markers run `&dagger;` → `&Dagger;` → `&sect;`, each in
-   a `<sup>`.
+   `&times;` `&divide;` `&ldquo;` `&rdquo;` `&uarr;` `&sup2;` `&AElig;`.
+   Footnote markers run `&dagger;` → `&Dagger;` → `&sect;`, each in a `<sup>`.
+   **Inch measurements are decimal**: `1.5&quot;`, `0.5&quot;`, never a
+   fraction entity (`&half;` left the list 5 November 2026; its one use, in
+   `rules` 33, was converted the same day).
 
    **Enforced and clean site-wide as of 13 August**: 29 deck texts (psychic,
    warp, faction, mission, wargear card, weapon and the four Blast rules) held

@@ -29,7 +29,10 @@ type AllowanceSet = {
   id: number;
   name: string | null;
   singular: string | null;
-  army_list_allowance_set_entries: readonly { army_list_entry_id: number }[];
+  army_list_allowance_set_entries: readonly {
+    army_list_entry_id: number;
+    count_as: number;
+  }[];
   army_list_allowance_rules: readonly Rule[];
 };
 
@@ -102,18 +105,23 @@ export const allowances = (
     ].map((rule) => [rule.id, rule]),
   );
 
-  const members = (set: AllowanceSet): Entry[] =>
-    set.army_list_allowance_set_entries.flatMap(({ army_list_entry_id }) => {
-      const entry = entryById.get(army_list_entry_id);
+  const members = (set: AllowanceSet): { entry: Entry; weight: number }[] =>
+    set.army_list_allowance_set_entries.flatMap(
+      ({ army_list_entry_id, count_as }) => {
+        const entry = entryById.get(army_list_entry_id);
 
-      return entry ? [entry] : [];
-    });
+        return entry ? [{ entry, weight: count_as }] : [];
+      },
+    );
 
   const names = (set: AllowanceSet): string[] =>
-    members(set).map(({ units }) => units.name);
+    members(set).map(({ entry }) => entry.units.name);
+
+  const weighted = (name: string, weight: number): string =>
+    weight > 1 ? `${name}, which counts as ${number(weight)}` : name;
 
   const isBand = (set: AllowanceSet): boolean => {
-    const ids = new Set(members(set).map(({ id }) => id));
+    const ids = new Set(members(set).map(({ entry }) => entry.id));
 
     return bands.some(
       ({ army_list_entries }) =>
@@ -123,15 +131,21 @@ export const allowances = (
   };
 
   const listed = (set: AllowanceSet, conjunction: "and" | "or"): string => {
+    const weights = members(set).map(({ weight }) => weight);
     const all = names(set).map((name) => name.split(" "));
     const shared = all.length > 1 ? suffix(all) : 0;
 
     return shared
       ? `${join(
-          all.map((name) => name.slice(0, -shared).join(" ")),
+          all.map((name, index) =>
+            weighted(name.slice(0, -shared).join(" "), weights[index]),
+          ),
           conjunction,
         )} ${all[0].slice(-shared).join(" ")}`
-      : join(names(set), conjunction);
+      : join(
+          names(set).map((name, index) => weighted(name, weights[index])),
+          conjunction,
+        );
   };
 
   const called = (
@@ -196,7 +210,7 @@ export const allowances = (
         text: many
           ? `${number(rule.per_count)} ${setPlural(set, "or")}`
           : setSingular(set),
-        order: pageOrder.get(first.id) ?? Infinity,
+        order: pageOrder.get(first.entry.id) ?? Infinity,
       };
     }
 

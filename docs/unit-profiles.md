@@ -370,7 +370,12 @@ that end every member's name print once. The bracket repeats on every line
 that names the set, so each line reads on its own, and no separate sentence
 defines the set. A set with no name, or whose
 members are exactly the entries of one band, takes no bracket, because its name
-or the band heading already says what it holds (ELD-46).
+or the band heading already says what it holds (ELD-46). A member that stands
+for more than one of the set's counted thing
+(`army_list_allowance_set_entries.count_as` above 1) says so after its name in
+the bracket: "Exodite Lords (Exodite Lord and Exodite Lords on Carnosaur, which
+counts as two): up to one per Exodite Dragon Knights". Put such a member last
+in `position`, so the clause follows the name it qualifies.
 
 **An allowance rule can set a minimum.** `army_list_allowance_rules.min_count`
 is the fewest the army must take per target, on the pattern of `allowance_min`
@@ -427,6 +432,7 @@ Genestealer Cults). Ruled by Thomas 15 October 2026 (ORK-47).
 | 5 Oct | Ability sections | An option that opens a section of special-rule items reads "one ability from …" (`add`) or "up to two different powers from …" (`take_any` with `quantity`); `whole_unit` true means bought once for the unit and leads with "The unit –". |
 | 5 Oct | Army list names and years | Book first, faction second ("Codex: Eldar", "Codex Army Lists: Eldar"); the list page swaps the split so the logo is unchanged. `army_lists.published_year` orders the faction page, newest first, then name, and shows on the faction page and in the list page eyebrow only; the title, logo and breadcrumb do not carry it. |
 | 5 Oct | Section rules | A special rule that is an item in an Equipment section links from a unit entry to that section's article on the list page and has no chapter on the faction rules page; on a list that does not stock it, the name prints unlinked and the prose prints in full. Where it is stocked, the entry prints the name and any assignment note, not the prose, and the article spaces its paragraphs as the entry does. |
+| 5 Nov | Weighted set members | `army_list_allowance_set_entries.count_as` (integer, default 1) is how many of the set's counted thing one of the entry stands for; the bracket says "which counts as two" after the member's name. First use: the Exodite Lords set on Codex: Eldar, where the Carnosaur's two riders count against the one-Lord-per-Dragon-Knights-squad rule (CAR-10). |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;
