@@ -46,7 +46,13 @@ last-resort prose field and should normally be null.
   0, Master Inquisitor 1, Inquisitor Lord 2 — one model at one grade. Same
   semantics as `unit_profile_weapons.alternative`. A negative `alternative`
   (−1) marks an escort present in every composition: it never takes a "—or—"
-  and needs no grade price.
+  and needs no grade price. Where the army list entry prices itself and its
+  profiles are priced as compulsory options too — the Exodite Lords on
+  Carnosaur, 167 points with a 38-point Champion and a 102-point Mighty Hero
+  who must both ride — the Points column prints each rider's price and the
+  entry's own points on the mount's row, and the entry row carries the total
+  (307pts). A priced profile that is optional keeps its price in the column
+  and stays out of the total.
 - `mastery_level` and `wargear_cards_max` render as a sub-line under the
   profile name ("Mastery 4 · 1 wargear card"). A psyker character with no
   printed level takes its psi-level from `w` — the hero level, 1 to 4 — and
@@ -432,6 +438,7 @@ Genestealer Cults). Ruled by Thomas 15 October 2026 (ORK-47).
 | 5 Oct | Ability sections | An option that opens a section of special-rule items reads "one ability from …" (`add`) or "up to two different powers from …" (`take_any` with `quantity`); `whole_unit` true means bought once for the unit and leads with "The unit –". |
 | 5 Oct | Army list names and years | Book first, faction second ("Codex: Eldar", "Codex Army Lists: Eldar"); the list page swaps the split so the logo is unchanged. `army_lists.published_year` orders the faction page, newest first, then name, and shows on the faction page and in the list page eyebrow only; the title, logo and breadcrumb do not carry it. |
 | 5 Oct | Section rules | A special rule that is an item in an Equipment section links from a unit entry to that section's article on the list page and has no chapter on the faction rules page; on a list that does not stock it, the name prints unlinked and the prose prints in full. Where it is stocked, the entry prints the name and any assignment note, not the prose, and the article spaces its paragraphs as the entry does. |
+| 5 Nov | Mounted riders | An entry with its own `points` and compulsory profile-priced `army_list_entry_options` prints each rider's price in the Points column, the entry's points on the unpriced mount row (the first one, if several; nowhere if none), and the sum on the entry row. Optional profile prices print in the column and are left out of the total. Graded entries (`points` null) are unchanged. First use: the Exodite Lords on Carnosaur. |
 | 5 Nov | Weighted set members | `army_list_allowance_set_entries.count_as` (integer, default 1) is how many of the set's counted thing one of the entry stands for; the bracket says "which counts as two" after the member's name. First use: the Exodite Lords set on Codex: Eldar, where the Carnosaur's two riders count against the one-Lord-per-Dragon-Knights-squad rule (CAR-10). |
 
 Schema changes to these tables were applied as plain SQL with explicit

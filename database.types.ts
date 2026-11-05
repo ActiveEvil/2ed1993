@@ -563,6 +563,7 @@ export type Database = {
           id: number
           models_max: number | null
           note: string | null
+          optional: boolean
           points: number | null
           points_basis_id: number | null
           points_percent: number | null
@@ -589,6 +590,7 @@ export type Database = {
           id?: number
           models_max?: number | null
           note?: string | null
+          optional?: boolean
           points?: number | null
           points_basis_id?: number | null
           points_percent?: number | null
@@ -615,6 +617,7 @@ export type Database = {
           id?: number
           models_max?: number | null
           note?: string | null
+          optional?: boolean
           points?: number | null
           points_basis_id?: number | null
           points_percent?: number | null
