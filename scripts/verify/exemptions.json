@@ -11,6 +11,10 @@
     {"key": "mission:Dawn Raid", "reason": "the standard secondary objective, identical on four missions by design"},
     {"key": "weapon:Distort Cannon", "reason": "the field exclusion, stated on the Wraithcannon and the Distort Cannon alike by design, 17 September"}
   ],
+  "section_limit": [
+    {"key": "wargear_cat:1:Command Weapons", "reason": "\"Only where an entry allows.\" states no limit; the entries carry it, LB-14 design 2.1"},
+    {"key": "wargear_cat:1:Veteran Abilities", "reason": "\"One price per unit, whatever its size.\" is a price, not a count; any number may be taken, LB-14 design 2.1"}
+  ],
   "design_components": [
     {"key": "components/FilterField.tsx", "reason": "rendered through RowFilter in the JumpBar specimen"},
     {"key": "components/Lightbox.tsx", "reason": "rendered through Gallery, ruled 7 October"},

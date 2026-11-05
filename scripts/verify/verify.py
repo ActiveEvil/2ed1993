@@ -42,6 +42,14 @@ unit's price.
 magazine_citation and unit_on_magazine_list read the `sources` block: every
 rules.source, units.source and army_lists.source takes the citation form, and
 no unit on a list that has a source carries a source of its own (MAG-5).
+The checks named section_* and requirement_*, entry_option_compulsory and
+alternative_max read the `requirements` block and hold LB-14 (the design of
+4 November, sections 2 and 4.2). section_limit reads a section note's opening
+sentence against its limit columns through LIMIT_VOCABULARY. section_opener
+reports a section no unit option opens, and an "X only" sentence that
+disagrees with the units and profiles that open it; sections 78 to 80 are
+held to FIXED_OPENERS instead. The requirement checks repeat the table's
+per-kind constraints so that a dump from any branch reports by list.
 """
 import json, os, re, sys, unicodedata
 from collections import defaultdict
@@ -372,6 +380,12 @@ def grant_checks(grants):
 
     forced = profiled | set(compulsory.values())
     for row in grants["entry_options"]:
+        if row.get("opt") is False and row.get("wc"):
+            points = card("wc", row["wc"])["p"]
+            if points is None or not NUMERIC.match(str(points)):
+                yield ("entry_option_compulsory", "unit", row["un"],
+                       f"army_list_entry_options {row['id']}: {card('wc', row['wc'])['n']} "
+                       f"has points {points!r}")
         if row.get("wc") and (row["u"], "wc", row["wc"]) in forced:
             yield ("priced_grant", "unit", row["un"],
                    f"army_list_entry_options {row['id']}: prices "
@@ -383,19 +397,196 @@ def grant_checks(grants):
                    f"{row['uo']}, a compulsory grant of {card(kind, ident)['n']}")
 
 
+LIMIT_VOCABULARY = {
+    "One per model.": ("model", 1, False, False),
+    "One item per model.": ("model", 1, False, False),
+    "Any number per model.": ("model", None, False, False),
+    "One item per crew.": ("crew", 1, False, False),
+    "One per weapons team.": ("team", 1, False, False),
+    "One per support team.": ("team", 1, False, False),
+    "Any number per Squad.": ("unit", None, False, False),
+    "Two per model.": ("model", 2, False, False),
+    "One item or combination per model.": ("model", 1, True, False),
+    "Up to two per model, each a different power.": ("model", 2, False, True),
+}
+FIXED_OPENERS = {78: {315}, 79: {315}, 80: {311}}
+SUBJECT_ITEMS = {"wargear_item_id", "unit_option_id", "entry_option_id"}
+TARGET_ITEMS = {"target_wargear_item_id", "target_unit_option_id", "target_entry_option_id"}
+
+
+def stem(name):
+    name = re.sub(r"\s+models?$", "", name.strip()).lower()
+    return name[:-1] if name[-1:] in ("s", "z") else name
+
+
+def section_checks(req):
+    openers = defaultdict(list)
+    for row in req["openers"]:
+        openers[row["c"]].append(row)
+    for section in req["sections"]:
+        label = f"{section['l']}:{section['n']}"
+        head = f"wargear_categories {section['id']}"
+        note = section.get("note") or ""
+        sentences = re.split(r"(?<=\.)\s+", note.strip())
+        found = (section.get("scope"), section.get("max"),
+                 section.get("combo", False), section.get("distinct", False))
+        expected = LIMIT_VOCABULARY.get(sentences[0])
+        if section.get("scope") is None:
+            yield "section_limit", "wargear_cat", label, f"{head}: limit_scope is null"
+        if expected is None:
+            yield ("section_limit", "wargear_cat", label,
+                   f"{head}: opening sentence {sentences[0]!r} is not in the vocabulary")
+        elif found != expected or section.get("min") is not None:
+            yield ("section_limit", "wargear_cat", label,
+                   f"{head}: {sentences[0]!r} reads {expected}, columns hold {found}"
+                   f" with limit_min {section.get('min')!r}")
+
+        links = openers[section["id"]]
+        if not links:
+            yield "section_opener", "wargear_cat", label, f"{head}: no unit option opens it"
+            continue
+        if section["id"] in FIXED_OPENERS:
+            ids = {row["uo"] for row in links}
+            if ids != FIXED_OPENERS[section["id"]]:
+                yield ("section_opener", "wargear_cat", label,
+                       f"{head}: opened by unit_options {sorted(ids)}, fixed at "
+                       f"{sorted(FIXED_OPENERS[section['id']])}")
+            continue
+        for sentence in sentences[1:]:
+            match = re.match(r"^(.+) only\.$", sentence)
+            if not match:
+                continue
+            named = [stem(n) for n in re.split(r",\s*|\s+and\s+", match.group(1))]
+            held = {row["uo"]: f"{row['un']} {row.get('pn', '')}".lower() for row in links}
+            for name in named:
+                if not any(name in text for text in held.values()):
+                    yield ("section_opener", "wargear_cat", label,
+                           f"{head}: {sentence!r} names {name!r}, which no opener is")
+            for option, text in held.items():
+                if not any(name in text for name in named):
+                    yield ("section_opener", "wargear_cat", label,
+                           f"{head}: unit_options {option} ({text.strip()}) opens it "
+                           f"against {sentence!r}")
+
+
+def kind_ok(row):
+    subjects = {s["c"] for s in row["s"]}
+    targets = {t["c"] for t in row["t"]}
+    mode, count, label = row.get("mode"), row.get("count"), row.get("label")
+    kind = row["k"]
+    if kind == "requires_unit":
+        return (subjects <= {"entry_id", "set_id", "unit_option_id", "entry_option_id", "ally_id"}
+                and bool(targets) and targets <= {"target_entry_id", "target_set_id",
+                                                  "target_unit_option_id",
+                                                  "target_entry_option_id"}
+                and mode in (None, "unless_transporting") and label is None)
+    if kind == "commander":
+        return (subjects == {"entry_id"} and count is not None and mode in ("must", "may")
+                and not targets & {"target_set_id", "target_category_id"})
+    if kind == "transport":
+        return (subjects == {"entry_id"} and bool(targets & {"target_entry_id", "target_set_id"})
+                and mode in ("squads", "characters"))
+    if kind == "band_reassignment":
+        return (subjects <= {"entry_id", "unit_category_id"} and "target_category_id" in targets
+                and mode in ("rider", "always"))
+    if kind == "pairing":
+        return (subjects <= SUBJECT_ITEMS and targets <= TARGET_ITEMS
+                and mode in ("requires", "excludes", "exclusive")
+                and (mode == "exclusive") == (not targets))
+    if kind == "attachment":
+        return (subjects == {"entry_id"} and bool(targets & {"target_entry_id", "target_set_id"})
+                and mode in ("must", "may"))
+    if kind == "army_cap":
+        return (subjects <= {"entry_id", "set_id", "unit_category_id", "unit_option_id"}
+                and count is not None and mode in ("models", "units", "points", "options")
+                and not (mode == "units" and "entry_id" in subjects))
+    if kind == "army_variant":
+        return (subjects == {"unit_category_id"} and label is not None
+                and row.get("variant") is None)
+    if kind == "ally_scope":
+        need = {"requires": "target_entry_id", "excludes_unit": "target_unit_id",
+                "excludes_ally": "target_ally_id"}
+        if subjects != {"ally_id"} or mode not in (*need, "commanders"):
+            return False
+        if mode == "commanders":
+            return count is not None and not targets & set(need.values())
+        return need[mode] in targets
+    if kind == "substitution":
+        return subjects == {"entry_id"} and "target_entry_id" in targets and mode is None
+    if kind == "unit_composition":
+        return (subjects == {"entry_id"} and "target_entry_id" in targets
+                and mode == "mounted_with")
+    return False
+
+
+def requirement_checks(req):
+    rows = {row["id"]: row for row in req["rows"]}
+    transports = {s["id"] for row in req["rows"] if row["k"] == "transport"
+                  for s in row["s"] if s["c"] == "entry_id"}
+    pairs = defaultdict(set)
+    for row in req["rows"]:
+        if row["k"] in ("attachment", "requires_unit"):
+            for s in row["s"]:
+                for t in row["t"]:
+                    pairs[(s["c"], s["id"], t["c"], t["id"])].add(
+                        (row["k"], row.get("mode")))
+
+    for row in req["rows"]:
+        subject = row["s"][0]["n"] if row["s"] else "?"
+        label = f"{row['l']}:{subject}"
+        head = f"army_list_requirements {row['id']}"
+        if len(row["s"]) != 1 or len(row["t"]) > 1 or (
+                (row.get("variant") is None) != (row.get("under") is None)):
+            yield ("requirement_kind", row["k"], label,
+                   f"{head}: needs one subject, at most one target and a variant pair")
+        elif not kind_ok(row):
+            yield "requirement_kind", row["k"], label, f"{head}: fails the {row['k']} check"
+        for ref in row["s"] + row["t"]:
+            if "l" in ref and ref["l"] != row["l"]:
+                yield ("requirement_list", row["k"], label,
+                       f"{head}: {ref['c']} {ref['id']} is on list {ref['l']}, the row on {row['l']}")
+        if row.get("variant") is not None:
+            variant = rows.get(row["variant"])
+            if not variant or variant["k"] != "army_variant" or variant["l"] != row["l"]:
+                yield ("requirement_variant", row["k"], label,
+                       f"{head}: variant_id {row['variant']} is not an army_variant on list {row['l']}")
+        if row["k"] == "attachment" and row.get("mode") == "must":
+            for s in row["s"]:
+                for t in row["t"]:
+                    if any(k == "requires_unit" for k, _ in pairs[(s["c"], s["id"], t["c"], t["id"])]):
+                        yield ("requirement_redundant", row["k"], label,
+                               f"{head}: a requires_unit row repeats this attachment")
+        if row["k"] == "requires_unit" and row.get("mode") == "unless_transporting":
+            if not any(s["c"] == "entry_id" and s["id"] in transports for s in row["s"]):
+                yield ("requirement_transport", row["k"], label,
+                       f"{head}: unless_transporting on a subject with no transport rows")
+
+
+def alternative_checks(req):
+    groups = defaultdict(set)
+    for row in req["alternatives"]:
+        groups[(row["d"], row["a"])].add(row.get("max"))
+    for (datafax, alternative), found in sorted(groups.items()):
+        if len(found) > 1:
+            yield ("alternative_max", "datafax", str(datafax),
+                   f"datafax_weapons alternative {alternative}: rows disagree, "
+                   f"{sorted(found, key=str)}")
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     show_exempt = "--list" in sys.argv
     path = args[0] if args else os.path.join(
         os.path.dirname(HERE), "verbatim", "texts.json")
     texts = json.load(open(path, encoding="utf-8"))
-    chapters = cards = grants = sources = None
+    chapters = cards = grants = sources = requirements = None
     if isinstance(texts, dict):
         if "chapters" in texts:
             chapters = set(texts["chapters"])
         cards = texts.get("cards")
         grants = texts.get("grants")
         sources = texts.get("sources")
+        requirements = texts.get("requirements")
         texts = texts["texts"]
     if chapters is None:
         print("no chapter list in the dump, so dead_chapter is skipped; "
@@ -409,6 +600,9 @@ def main():
     if sources is None:
         print("no sources in the dump, so magazine_citation and "
               "unit_on_magazine_list are skipped; re-run dump-texts.py")
+    if requirements is None:
+        print("no requirements in the dump, so the section, requirement and "
+              "alternative_max checks are skipped; re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
@@ -440,6 +634,10 @@ def main():
         found += grant_checks(grants)
     if sources is not None:
         found += source_checks(sources)
+    if requirements is not None:
+        found += section_checks(requirements)
+        found += requirement_checks(requirements)
+        found += alternative_checks(requirements)
     for check, kind, name, detail in found:
         if excused(check, kind, name, detail):
             excused_count += 1

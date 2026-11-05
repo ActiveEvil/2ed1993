@@ -1,6 +1,6 @@
 type Rule = {
   id: number;
-  count: number;
+  count: number | null;
   min_count: number | null;
   per_count: number;
   note: string | null;
@@ -36,6 +36,7 @@ type AllowanceSet = {
 type Governed = {
   lead: string;
   more: boolean;
+  army: boolean;
   singular: string | null;
   plural: string | null;
 };
@@ -204,12 +205,43 @@ export const allowances = (
     );
   };
 
-  const amount = ({ count, min_count }: Rule): string =>
-    min_count === null
-      ? `up to ${number(count)}`
-      : min_count === count
-        ? `exactly ${number(count)}`
-        : `${number(min_count)} to ${number(count)}`;
+  const ceiling = (rule: Rule): number => {
+    if (rule.count === null) {
+      throw new Error(
+        `Allowance rule ${rule.id} has no upper count and is not an army-wide minimum`,
+      );
+    }
+
+    return rule.count;
+  };
+
+  const amount = (rule: Rule): string =>
+    rule.min_count === null
+      ? `up to ${number(ceiling(rule))}`
+      : rule.count === null
+        ? `at least ${number(rule.min_count)}`
+        : rule.min_count === rule.count
+          ? `exactly ${number(rule.count)}`
+          : `${number(rule.min_count)} to ${number(rule.count)}`;
+
+  const armyWide = (rule: Rule, governed: Governed): string | null => {
+    if (
+      !governed.army ||
+      rule.min_count === null ||
+      rule.per_entry_id !== null ||
+      rule.per_category_id !== null ||
+      rule.per_set_id !== null
+    ) {
+      return null;
+    }
+
+    const subject =
+      (rule.count ?? rule.min_count) === 1
+        ? governed.singular
+        : governed.plural;
+
+    return `The army takes ${amount(rule)} ${subject}`;
+  };
 
   const lines = (rules: readonly Rule[], governed: Governed): Line[] => {
     const out: Line[] = [];
@@ -266,18 +298,25 @@ export const allowances = (
         if (rule.qualifier !== null) {
           out.push({
             id: rule.id,
-            text: `${each([label], rule.count)}, ${rule.qualifier}`,
+            text: `${each([label], ceiling(rule))}, ${rule.qualifier}`,
           });
         } else {
-          const group = counted.get(rule.count);
+          const group = counted.get(ceiling(rule));
 
           if (group) {
             group.labels.push(label);
           } else {
-            counted.set(rule.count, { id: rule.id, labels: [label] });
+            counted.set(ceiling(rule), { id: rule.id, labels: [label] });
           }
         }
 
+        continue;
+      }
+
+      const minimum = armyWide(rule, governed);
+
+      if (minimum !== null) {
+        out.push({ id: rule.id, text: minimum });
         continue;
       }
 
@@ -307,7 +346,7 @@ export const allowances = (
     const open = groups.every(({ rule }) => rule.min_count === null);
     const parts = groups.map(
       ({ rule, targets }) =>
-        `${open ? number(rule.count) : amount(rule)}${more} per ${join(
+        `${open ? number(ceiling(rule)) : amount(rule)}${more} per ${join(
           unique(
             [...targets]
               .sort((a, b) => a.order - b.order)
@@ -336,6 +375,7 @@ export const allowances = (
       lines(entry.army_list_allowance_rules, {
         lead: "",
         more: entry.allowance_max !== null,
+        army: false,
         singular: entry.units.name,
         plural: plural(entry.units.name),
       }).map(({ text }) => text),
@@ -346,6 +386,7 @@ export const allowances = (
         ...lines(band.army_list_allowance_rules, {
           lead: "",
           more: false,
+          army: false,
           singular: null,
           plural: null,
         }),
@@ -353,6 +394,7 @@ export const allowances = (
           lines(set.army_list_allowance_rules, {
             lead: `${capitalise(setPlural(set, "and"))}: `,
             more: false,
+            army: true,
             singular: setSingular(set),
             plural: setPlural(set, "or"),
           }),

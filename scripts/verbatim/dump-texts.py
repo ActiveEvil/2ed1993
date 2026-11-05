@@ -134,12 +134,13 @@ grant_profiles = [
     for table, column in (("unit_profile_wargear_cards", "wargear_card_id"),
                           ("unit_profile_vehicle_cards", "vehicle_card_id"))
     for g in rows(table, f"unit_profile_id,{column}")]
+entry_options = rows("army_list_entry_options",
+                     "id,army_list_entry_id,optional,wargear_card_id,unit_option_id")
 grant_entries = [
     {"id": e["id"], "u": entry_units[e["army_list_entry_id"]],
-     "un": units[entry_units[e["army_list_entry_id"]]],
+     "un": units[entry_units[e["army_list_entry_id"]]], "opt": e["optional"],
      "wc": e["wargear_card_id"], "uo": e["unit_option_id"]}
-    for e in rows("army_list_entry_options", "id,army_list_entry_id,wargear_card_id,unit_option_id")
-    if e["wargear_card_id"] or e["unit_option_id"]]
+    for e in entry_options if e["wargear_card_id"] or e["unit_option_id"]]
 grants = {
     "options": grant_options, "profiles": grant_profiles, "entry_options": grant_entries,
     "cards": {"wc": [{"id": c["id"], "n": c["name"], "p": c["points"]}
@@ -162,8 +163,84 @@ sources = {
     "units": [{"n": u["name"], "s": u["source"], "l": sorted(unit_lists.get(u["id"], ()))}
               for u in rows("units", "id,name,source") if u["source"]]}
 
+entry_lists = {e["id"]: category_lists[e["unit_category_id"]]
+               for e in rows("army_list_entries", "id,unit_category_id")}
+items = sorted(rows("wargear_items", "id,wargear_category_id,restriction,"
+                    "weapons(name),armour(name),units(name)"), key=lambda i: i["id"])
+sections = sorted(rows("wargear_categories", "id,army_list_id,category,note,limit_scope,"
+                       "limit_max,limit_min,combination_counts_as_one,distinct_items"),
+                  key=lambda c: c["id"])
+section_lists = {c["id"]: c["army_list_id"] for c in sections}
+profiles = {p["id"]: p["name"] for p in rows("unit_profiles", "id,name")}
+option_units = {o["id"]: o for o in rows("unit_options", "id,unit_id,unit_profile_id")}
+faction_names = {f["id"]: f["name"] for f in rows("factions", "id,name")}
+list_names = {l["id"]: l["name"] for l in rows("army_lists", "id,name")}
+refs = {
+    "entry": {i: (units[entry_units[i]], l) for i, l in entry_lists.items()},
+    "set": {s["id"]: (s["name"] or s["singular"], s["army_list_id"])
+            for s in rows("army_list_allowance_sets", "id,army_list_id,name,singular")},
+    "band": {c["id"]: (c["category"], c["army_list_id"])
+             for c in rows("unit_categories", "id,army_list_id,category")},
+    "entry_option": {o["id"]: (units[entry_units[o["army_list_entry_id"]]],
+                               entry_lists[o["army_list_entry_id"]]) for o in entry_options},
+    "unit_option": {i: (units[o["unit_id"]], None) for i, o in option_units.items()},
+    "item": {i["id"]: ((i["weapons"] or i["armour"] or i["units"] or {}).get("name"),
+                       section_lists[i["wargear_category_id"]]) for i in items},
+    "ally": {a["id"]: (faction_names.get(a["ally_faction_id"]) or
+                       list_names.get(a["ally_army_list_id"]), a["army_list_id"])
+             for a in rows("army_list_allies", "id,army_list_id,ally_faction_id,ally_army_list_id")},
+    "profile": {i: (n, None) for i, n in profiles.items()},
+    "unit": {i: (n, None) for i, n in units.items()}}
+SUBJECTS = (("entry_id", "entry"), ("set_id", "set"), ("unit_category_id", "band"),
+            ("entry_option_id", "entry_option"), ("unit_option_id", "unit_option"),
+            ("wargear_item_id", "item"), ("ally_id", "ally"))
+TARGETS = (("target_entry_id", "entry"), ("target_set_id", "set"),
+           ("target_category_id", "band"), ("target_profile_id", "profile"),
+           ("target_wargear_item_id", "item"), ("target_unit_id", "unit"),
+           ("target_ally_id", "ally"), ("target_unit_option_id", "unit_option"),
+           ("target_entry_option_id", "entry_option"))
+
+
+def stripped(row):
+    return {k: v for k, v in row.items() if v is not None}
+
+
+def resolved(row, columns):
+    return [stripped({"c": c, "id": row[c], "n": refs[kind][row[c]][0],
+                      "l": refs[kind][row[c]][1]})
+            for c, kind in columns if row[c] is not None]
+
+
+requirements = {
+    "rows": [stripped({"id": r["id"], "k": r["kind"], "l": r["army_list_id"],
+                       "s": resolved(r, SUBJECTS), "t": resolved(r, TARGETS),
+                       "mode": r["mode"], "count": r["count"], "label": r["label"],
+                       "variant": r["variant_id"], "under": r["under_variant"]})
+             for r in sorted(rows("army_list_requirements", "*"), key=lambda r: r["id"])],
+    "sections": [stripped({"id": c["id"], "l": c["army_list_id"], "n": c["category"],
+                           "note": c["note"], "scope": c["limit_scope"],
+                           "max": c["limit_max"], "min": c["limit_min"],
+                           "combo": c["combination_counts_as_one"],
+                           "distinct": c["distinct_items"]}) for c in sections],
+    "openers": sorted(
+        (stripped({"c": link["wargear_category_id"], "uo": link["unit_option_id"],
+                   "u": option_units[link["unit_option_id"]]["unit_id"],
+                   "un": units[option_units[link["unit_option_id"]]["unit_id"]],
+                   "p": option_units[link["unit_option_id"]]["unit_profile_id"],
+                   "pn": profiles.get(option_units[link["unit_option_id"]]["unit_profile_id"])})
+         for link in rows("unit_option_categories", "unit_option_id,wargear_category_id")),
+        key=lambda o: (o["c"], o["uo"])),
+    "items": [stripped({"id": i["id"], "c": i["wargear_category_id"], "r": i["restriction"]})
+              for i in items],
+    "alternatives": sorted(
+        (stripped({"id": w["id"], "d": w["datafax_id"], "a": w["alternative"],
+                   "max": w["alternative_max"]})
+         for w in rows("datafax_weapons", "id,datafax_id,alternative,alternative_max")
+         if w["alternative"]), key=lambda w: w["id"])}
+
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
-                      "cards": cards, "grants": grants, "sources": sources},
+                      "cards": cards, "grants": grants, "sources": sources,
+                      "requirements": requirements},
                      ensure_ascii=False)
 if len(sys.argv) > 1 and sys.argv[1] == "-":
     print(payload)
