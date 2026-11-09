@@ -4,6 +4,7 @@ import { WeaponProfileRow, forBearer } from "./WeaponProfile";
 import { WeaponStrip, rangedCells } from "./WeaponStrip";
 import { generateAnchorId } from "@/lib/anchors";
 import { factionColors, factionInk } from "@/lib/factions";
+import { markExtensions } from "@/lib/magazine";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -735,7 +736,9 @@ export const Datafax: React.FC<{
                 <Run label="Special">
                   <div
                     className="dynamic-content compact flex flex-col gap-2"
-                    dangerouslySetInnerHTML={{ __html: datafax.note }}
+                    dangerouslySetInnerHTML={{
+                      __html: markExtensions(datafax.note),
+                    }}
                   />
                 </Run>
               )}
@@ -748,7 +751,9 @@ export const Datafax: React.FC<{
                   <sup>{marker(footnotes.length + index)}</sup>{" "}
                   <span
                     className="dynamic-content compact"
-                    dangerouslySetInnerHTML={{ __html: annotation.note }}
+                    dangerouslySetInnerHTML={{
+                      __html: markExtensions(annotation.note),
+                    }}
                   />
                 </p>
               ))}
