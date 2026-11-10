@@ -314,6 +314,9 @@ const buildEntry = (
 
   const grades = profiles.filter(({ alternative }) => alternative >= 0);
 
+  const soldSingly =
+    grades.length === 0 || grades.some(({ models_min }) => models_min <= 1);
+
   const graded =
     entry.points === null &&
     grades.length > 1 &&
@@ -482,7 +485,7 @@ const buildEntry = (
     extensions: note.extensions,
     framed: Boolean(rows.length || unitHasEquipment(unit)),
     source: listSource === null ? entry.units.source : null,
-    transport: transportLine(entry.transport_scope),
+    transport: soldSingly ? transportLine(entry.transport_scope) : null,
     rules: allowance.entry(entry),
     extras: graded
       ? []
