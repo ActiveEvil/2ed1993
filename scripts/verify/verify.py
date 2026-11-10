@@ -63,6 +63,9 @@ only such an entry does. replaced_weapons reports an option that holds
 weapons both in replaces_weapon_id and in unit_option_replaced_weapons.
 requirement_profile also holds a substitution's target_profile_id to the
 target entry's unit (BF-18).
+The third migration (army_list_requirements_3) adds the attachment mode
+leads. requirement_leader holds BF-32: a leads row carries no count, and no
+entry has both a must and a leads row to the same target.
 armour_bars holds BF-17 and BF-19: an armour flagged bars_bike is on no
 profile of a unit whose datafax has the Bikes & Trikes motive type,
 BIKE_MOTIVE_TYPE, and on no profile that a compulsory unit option gives such a
@@ -520,7 +523,7 @@ def kind_ok(row):
                     mode == "excludes" and subjects <= {"wargear_item_id", "unit_option_id"})))
     if kind == "attachment":
         return (subjects == {"entry_id"} and bool(targets & {"target_entry_id", "target_set_id"})
-                and mode in ("must", "may"))
+                and mode in ("must", "may", "leads"))
     if kind == "army_cap":
         return (subjects <= {"entry_id", "set_id", "unit_category_id", "unit_option_id"}
                 and count is not None and mode in ("models", "units", "points", "options")
@@ -579,12 +582,21 @@ def requirement_checks(req):
             if not variant or variant["k"] != "army_variant" or variant["l"] != row["l"]:
                 yield ("requirement_variant", row["k"], label,
                        f"{head}: variant_id {row['variant']} is not an army_variant on list {row['l']}")
-        if row["k"] == "attachment" and row.get("mode") == "must":
+        if row["k"] == "attachment" and row.get("mode") in ("must", "leads"):
             for s in row["s"]:
                 for t in row["t"]:
                     if any(k == "requires_unit" for k, _ in pairs[(s["c"], s["id"], t["c"], t["id"])]):
                         yield ("requirement_redundant", row["k"], label,
                                f"{head}: a requires_unit row repeats this attachment")
+        if row["k"] == "attachment" and row.get("mode") == "leads":
+            if row.get("count") is not None:
+                yield ("requirement_leader", row["k"], label,
+                       f"{head}: a leads row carries count {row['count']}, and a leader brings none")
+            for s in row["s"]:
+                for t in row["t"]:
+                    if ("attachment", "must") in pairs[(s["c"], s["id"], t["c"], t["id"])]:
+                        yield ("requirement_leader", row["k"], label,
+                               f"{head}: a must row attaches the same entry to this target")
         profile = row.get("sp")
         if profile and profile["u"] != profile.get("eu"):
             yield ("requirement_profile", row["k"], label,
