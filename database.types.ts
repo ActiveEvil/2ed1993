@@ -39,8 +39,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliations: {
+        Row: {
+          army_list_id: number
+          created_at: string
+          id: number
+          label: string
+          name: string
+          position: number
+          updated_at: string | null
+        }
+        Insert: {
+          army_list_id: number
+          created_at?: string
+          id?: number
+          label: string
+          name: string
+          position?: number
+          updated_at?: string | null
+        }
+        Update: {
+          army_list_id?: number
+          created_at?: string
+          id?: number
+          label?: string
+          name?: string
+          position?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliations_army_list_id_fkey"
+            columns: ["army_list_id"]
+            isOneToOne: false
+            referencedRelation: "army_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       armour: {
         Row: {
+          bars_bike: boolean
+          bars_jump_pack: boolean
           category_id: number
           created_at: string
           id: number
@@ -49,6 +89,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          bars_bike?: boolean
+          bars_jump_pack?: boolean
           category_id: number
           created_at?: string
           id?: number
@@ -57,6 +99,8 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          bars_bike?: boolean
+          bars_jump_pack?: boolean
           category_id?: number
           created_at?: string
           id?: number
@@ -204,7 +248,9 @@ export type Database = {
           ally_faction_id: number | null
           army_list_id: number
           created_at: string
+          display: boolean
           id: number
+          mode: string | null
           note: string | null
           position: number
           updated_at: string | null
@@ -214,7 +260,9 @@ export type Database = {
           ally_faction_id?: number | null
           army_list_id: number
           created_at?: string
+          display?: boolean
           id?: number
+          mode?: string | null
           note?: string | null
           position?: number
           updated_at?: string | null
@@ -224,7 +272,9 @@ export type Database = {
           ally_faction_id?: number | null
           army_list_id?: number
           created_at?: string
+          display?: boolean
           id?: number
+          mode?: string | null
           note?: string | null
           position?: number
           updated_at?: string | null
@@ -256,8 +306,9 @@ export type Database = {
       army_list_allowance_rules: {
         Row: {
           army_list_entry_id: number | null
-          count: number
+          count: number | null
           created_at: string
+          deduction: number
           id: number
           label: string | null
           min_count: number | null
@@ -274,8 +325,9 @@ export type Database = {
         }
         Insert: {
           army_list_entry_id?: number | null
-          count: number
+          count?: number | null
           created_at?: string
+          deduction?: number
           id?: number
           label?: string | null
           min_count?: number | null
@@ -292,8 +344,9 @@ export type Database = {
         }
         Update: {
           army_list_entry_id?: number | null
-          count?: number
+          count?: number | null
           created_at?: string
+          deduction?: number
           id?: number
           label?: string | null
           min_count?: number | null
@@ -442,51 +495,73 @@ export type Database = {
       }
       army_list_entries: {
         Row: {
+          affiliation_id: number | null
+          affiliation_label: string | null
           allowance_max: number | null
           allowance_min: number
+          allowed_as_ally: boolean
           created_at: string
           entry_group_id: number | null
           id: number
+          mastery_level_max: number | null
           note: string | null
           points: number | null
           points_basis_id: number | null
           position: number
+          squadron_max: number | null
           transport_scope: string | null
           unit_category_id: number
           unit_id: number
           updated_at: string | null
         }
         Insert: {
+          affiliation_id?: number | null
+          affiliation_label?: string | null
           allowance_max?: number | null
           allowance_min?: number
+          allowed_as_ally?: boolean
           created_at?: string
           entry_group_id?: number | null
           id?: number
+          mastery_level_max?: number | null
           note?: string | null
           points?: number | null
           points_basis_id?: number | null
           position: number
+          squadron_max?: number | null
           transport_scope?: string | null
           unit_category_id: number
           unit_id: number
           updated_at?: string | null
         }
         Update: {
+          affiliation_id?: number | null
+          affiliation_label?: string | null
           allowance_max?: number | null
           allowance_min?: number
+          allowed_as_ally?: boolean
           created_at?: string
           entry_group_id?: number | null
           id?: number
+          mastery_level_max?: number | null
           note?: string | null
           points?: number | null
           points_basis_id?: number | null
           position?: number
+          squadron_max?: number | null
           transport_scope?: string | null
           unit_category_id?: number
           unit_id?: number
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "army_list_entries_affiliation_id_fkey"
+            columns: ["affiliation_id"]
+            isOneToOne: false
+            referencedRelation: "affiliations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "army_list_entries_entry_group_id_fkey"
             columns: ["entry_group_id"]
@@ -721,6 +796,236 @@ export type Database = {
           },
         ]
       }
+      army_list_requirements: {
+        Row: {
+          ally_id: number | null
+          army_list_id: number
+          count: number | null
+          created_at: string
+          entry_id: number | null
+          entry_option_id: number | null
+          id: number
+          kind: string
+          label: string | null
+          mode: string | null
+          note: string | null
+          position: number
+          set_id: number | null
+          subject_profile_id: number | null
+          target_ally_id: number | null
+          target_category_id: number | null
+          target_entry_id: number | null
+          target_entry_option_id: number | null
+          target_profile_id: number | null
+          target_set_id: number | null
+          target_unit_id: number | null
+          target_unit_option_id: number | null
+          target_wargear_item_id: number | null
+          under_variant: boolean | null
+          unit_category_id: number | null
+          unit_option_id: number | null
+          updated_at: string | null
+          variant_id: number | null
+          wargear_item_id: number | null
+        }
+        Insert: {
+          ally_id?: number | null
+          army_list_id: number
+          count?: number | null
+          created_at?: string
+          entry_id?: number | null
+          entry_option_id?: number | null
+          id?: number
+          kind: string
+          label?: string | null
+          mode?: string | null
+          note?: string | null
+          position?: number
+          set_id?: number | null
+          subject_profile_id?: number | null
+          target_ally_id?: number | null
+          target_category_id?: number | null
+          target_entry_id?: number | null
+          target_entry_option_id?: number | null
+          target_profile_id?: number | null
+          target_set_id?: number | null
+          target_unit_id?: number | null
+          target_unit_option_id?: number | null
+          target_wargear_item_id?: number | null
+          under_variant?: boolean | null
+          unit_category_id?: number | null
+          unit_option_id?: number | null
+          updated_at?: string | null
+          variant_id?: number | null
+          wargear_item_id?: number | null
+        }
+        Update: {
+          ally_id?: number | null
+          army_list_id?: number
+          count?: number | null
+          created_at?: string
+          entry_id?: number | null
+          entry_option_id?: number | null
+          id?: number
+          kind?: string
+          label?: string | null
+          mode?: string | null
+          note?: string | null
+          position?: number
+          set_id?: number | null
+          subject_profile_id?: number | null
+          target_ally_id?: number | null
+          target_category_id?: number | null
+          target_entry_id?: number | null
+          target_entry_option_id?: number | null
+          target_profile_id?: number | null
+          target_set_id?: number | null
+          target_unit_id?: number | null
+          target_unit_option_id?: number | null
+          target_wargear_item_id?: number | null
+          under_variant?: boolean | null
+          unit_category_id?: number | null
+          unit_option_id?: number | null
+          updated_at?: string | null
+          variant_id?: number | null
+          wargear_item_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "army_list_requirements_ally_id_fkey"
+            columns: ["ally_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_allies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_army_list_id_fkey"
+            columns: ["army_list_id"]
+            isOneToOne: false
+            referencedRelation: "army_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_entry_option_id_fkey"
+            columns: ["entry_option_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_entry_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_set_id_fkey"
+            columns: ["set_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_allowance_sets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_subject_profile_id_fkey"
+            columns: ["subject_profile_id"]
+            isOneToOne: false
+            referencedRelation: "unit_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_ally_id_fkey"
+            columns: ["target_ally_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_allies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_category_id_fkey"
+            columns: ["target_category_id"]
+            isOneToOne: false
+            referencedRelation: "unit_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_entry_id_fkey"
+            columns: ["target_entry_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_entry_option_id_fkey"
+            columns: ["target_entry_option_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_entry_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_profile_id_fkey"
+            columns: ["target_profile_id"]
+            isOneToOne: false
+            referencedRelation: "unit_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_set_id_fkey"
+            columns: ["target_set_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_allowance_sets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_unit_id_fkey"
+            columns: ["target_unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_unit_option_id_fkey"
+            columns: ["target_unit_option_id"]
+            isOneToOne: false
+            referencedRelation: "unit_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_wargear_item_id_fkey"
+            columns: ["target_wargear_item_id"]
+            isOneToOne: false
+            referencedRelation: "wargear_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_unit_category_id_fkey"
+            columns: ["unit_category_id"]
+            isOneToOne: false
+            referencedRelation: "unit_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_unit_option_id_fkey"
+            columns: ["unit_option_id"]
+            isOneToOne: false
+            referencedRelation: "unit_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_requirements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_wargear_item_id_fkey"
+            columns: ["wargear_item_id"]
+            isOneToOne: false
+            referencedRelation: "wargear_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       army_lists: {
         Row: {
           created_at: string
@@ -873,25 +1178,31 @@ export type Database = {
       }
       datafax_annotations: {
         Row: {
+          created_at: string
           datafax_id: number
           field: string
           id: number
           note: string
           position: number
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string
           datafax_id: number
           field: string
           id?: number
           note: string
-          position: number
+          position?: number
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string
           datafax_id?: number
           field?: string
           id?: number
           note?: string
           position?: number
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -1019,7 +1330,7 @@ export type Database = {
         Insert: {
           datafax_weapon_id: number
           points?: number | null
-          position: number
+          position?: number
           weapon_profile_id: number
         }
         Update: {
@@ -1048,6 +1359,7 @@ export type Database = {
       datafax_weapons: {
         Row: {
           alternative: number
+          alternative_max: number | null
           arc_note: string | null
           built_in_of: number | null
           created_at: string
@@ -1058,6 +1370,7 @@ export type Database = {
           mount: string | null
           name_as_printed: string | null
           optional: boolean
+          per_models: number | null
           points: number | null
           position: number
           quantity: number
@@ -1067,6 +1380,7 @@ export type Database = {
         }
         Insert: {
           alternative?: number
+          alternative_max?: number | null
           arc_note?: string | null
           built_in_of?: number | null
           created_at?: string
@@ -1077,6 +1391,7 @@ export type Database = {
           mount?: string | null
           name_as_printed?: string | null
           optional?: boolean
+          per_models?: number | null
           points?: number | null
           position: number
           quantity?: number
@@ -1086,6 +1401,7 @@ export type Database = {
         }
         Update: {
           alternative?: number
+          alternative_max?: number | null
           arc_note?: string | null
           built_in_of?: number | null
           created_at?: string
@@ -1096,6 +1412,7 @@ export type Database = {
           mount?: string | null
           name_as_printed?: string | null
           optional?: boolean
+          per_models?: number | null
           points?: number | null
           position?: number
           quantity?: number
@@ -1822,8 +2139,42 @@ export type Database = {
           },
         ]
       }
+      unit_option_replaced_weapons: {
+        Row: {
+          position: number
+          unit_option_id: number
+          weapon_id: number
+        }
+        Insert: {
+          position?: number
+          unit_option_id: number
+          weapon_id: number
+        }
+        Update: {
+          position?: number
+          unit_option_id?: number
+          weapon_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_option_replaced_weapons_unit_option_id_fkey"
+            columns: ["unit_option_id"]
+            isOneToOne: false
+            referencedRelation: "unit_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unit_option_replaced_weapons_weapon_id_fkey"
+            columns: ["weapon_id"]
+            isOneToOne: false
+            referencedRelation: "weapons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       unit_options: {
         Row: {
+          affiliation_id: number | null
           alternative: number
           armour_id: number | null
           created_at: string
@@ -1836,6 +2187,7 @@ export type Database = {
           note: string | null
           option_group: string
           optional: boolean
+          per_half: boolean
           position: number
           quantity: number | null
           replaces_armour_id: number | null
@@ -1851,6 +2203,7 @@ export type Database = {
           whole_unit: boolean
         }
         Insert: {
+          affiliation_id?: number | null
           alternative?: number
           armour_id?: number | null
           created_at?: string
@@ -1863,6 +2216,7 @@ export type Database = {
           note?: string | null
           option_group: string
           optional?: boolean
+          per_half?: boolean
           position: number
           quantity?: number | null
           replaces_armour_id?: number | null
@@ -1878,6 +2232,7 @@ export type Database = {
           whole_unit?: boolean
         }
         Update: {
+          affiliation_id?: number | null
           alternative?: number
           armour_id?: number | null
           created_at?: string
@@ -1890,6 +2245,7 @@ export type Database = {
           note?: string | null
           option_group?: string
           optional?: boolean
+          per_half?: boolean
           position?: number
           quantity?: number | null
           replaces_armour_id?: number | null
@@ -1905,6 +2261,13 @@ export type Database = {
           whole_unit?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "unit_options_affiliation_id_fkey"
+            columns: ["affiliation_id"]
+            isOneToOne: false
+            referencedRelation: "affiliations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "unit_options_armour_id_fkey"
             columns: ["armour_id"]
@@ -2665,7 +3028,12 @@ export type Database = {
         Row: {
           army_list_id: number
           category: string
+          combination_counts_as_one: boolean
+          distinct_items: boolean
           id: number
+          limit_max: number | null
+          limit_min: number | null
+          limit_scope: string | null
           note: string | null
           position: number
           rules_heading: string | null
@@ -2674,7 +3042,12 @@ export type Database = {
         Insert: {
           army_list_id: number
           category: string
+          combination_counts_as_one?: boolean
+          distinct_items?: boolean
           id?: number
+          limit_max?: number | null
+          limit_min?: number | null
+          limit_scope?: string | null
           note?: string | null
           position?: number
           rules_heading?: string | null
@@ -2683,7 +3056,12 @@ export type Database = {
         Update: {
           army_list_id?: number
           category?: string
+          combination_counts_as_one?: boolean
+          distinct_items?: boolean
           id?: number
+          limit_max?: number | null
+          limit_min?: number | null
+          limit_scope?: string | null
           note?: string | null
           position?: number
           rules_heading?: string | null
@@ -2764,8 +3142,55 @@ export type Database = {
           },
         ]
       }
+      wargear_item_eligibility: {
+        Row: {
+          excluded: boolean
+          position: number
+          unit_id: number | null
+          unit_type_id: number | null
+          wargear_item_id: number
+        }
+        Insert: {
+          excluded?: boolean
+          position?: number
+          unit_id?: number | null
+          unit_type_id?: number | null
+          wargear_item_id: number
+        }
+        Update: {
+          excluded?: boolean
+          position?: number
+          unit_id?: number | null
+          unit_type_id?: number | null
+          wargear_item_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wargear_item_eligibility_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wargear_item_eligibility_unit_type_id_fkey"
+            columns: ["unit_type_id"]
+            isOneToOne: false
+            referencedRelation: "unit_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wargear_item_eligibility_wargear_item_id_fkey"
+            columns: ["wargear_item_id"]
+            isOneToOne: false
+            referencedRelation: "wargear_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wargear_items: {
         Row: {
+          affiliation_id: number | null
           armour_id: number | null
           created_at: string
           id: number
@@ -2779,6 +3204,7 @@ export type Database = {
           weapon_id: number | null
         }
         Insert: {
+          affiliation_id?: number | null
           armour_id?: number | null
           created_at?: string
           id?: number
@@ -2792,6 +3218,7 @@ export type Database = {
           weapon_id?: number | null
         }
         Update: {
+          affiliation_id?: number | null
           armour_id?: number | null
           created_at?: string
           id?: number
@@ -2805,6 +3232,13 @@ export type Database = {
           weapon_id?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "wargear_items_affiliation_id_fkey"
+            columns: ["affiliation_id"]
+            isOneToOne: false
+            referencedRelation: "affiliations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "wargear_items_armour_id_fkey"
             columns: ["armour_id"]

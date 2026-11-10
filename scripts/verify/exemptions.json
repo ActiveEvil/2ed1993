@@ -15,6 +15,9 @@
     {"key": "wargear_cat:1:Command Weapons", "reason": "\"Only where an entry allows.\" states no limit; the entries carry it, LB-14 design 2.1"},
     {"key": "wargear_cat:1:Veteran Abilities", "reason": "\"One price per unit, whatever its size.\" is a price, not a count; any number may be taken, LB-14 design 2.1"}
   ],
+  "armour_bars": [
+    {"key": "unit:Wazdakka Gutzmek:armour 23 (Mega-Armour) bars bikes, and unit_options 506 gives unit_profiles 351 the Warbike", "reason": "the printed exception: White Dwarf 204 Q&A bars mega-armoured Orks from Warbikes and names Wazdakka Gutzmek as the one who rides"}
+  ],
   "design_components": [
     {"key": "components/FilterField.tsx", "reason": "rendered through RowFilter in the JumpBar specimen"},
     {"key": "components/Lightbox.tsx", "reason": "rendered through Gallery, ruled 7 October"},

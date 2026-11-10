@@ -50,6 +50,24 @@ reports a section no unit option opens, and an "X only" sentence that
 disagrees with the units and profiles that open it; sections 78 to 80 are
 held to FIXED_OPENERS instead. The requirement checks repeat the table's
 per-kind constraints so that a dump from any branch reports by list.
+The second LB-14 migration (army_list_requirements_2) adds the rest.
+requirement_profile holds a row's subject_profile_id to the subject entry's
+unit, and requirement_points an ally_scope points row to a percentage.
+item_eligibility holds LB14D-9 (b): an item with eligibility rows has a
+restriction, and a restriction saying "only" or "Not" has eligibility rows or
+an affiliation_id. affiliation_list holds LB14D-4: an affiliation gates or
+fixes only rows on its own list, and an entry's affiliation_label names a
+label some affiliation on that list carries. mastery_level_max holds BF-3 (a):
+an entry that buys Mastery Levels at a per-level price states its cap, and
+only such an entry does. replaced_weapons reports an option that holds
+weapons both in replaces_weapon_id and in unit_option_replaced_weapons.
+requirement_profile also holds a substitution's target_profile_id to the
+target entry's unit (BF-18).
+armour_bars holds BF-17 and BF-19: an armour flagged bars_bike is on no
+profile of a unit whose datafax has the Bikes & Trikes motive type,
+BIKE_MOTIVE_TYPE, and on no profile that a compulsory unit option gives such a
+unit to ride, and an armour flagged bars_jump_pack is on no profile that is also granted the
+Jump Pack card, JUMP_PACK_CARD, and on no wargear item that bundles it.
 """
 import json, os, re, sys, unicodedata
 from collections import defaultdict
@@ -474,6 +492,9 @@ def kind_ok(row):
     targets = {t["c"] for t in row["t"]}
     mode, count, label = row.get("mode"), row.get("count"), row.get("label")
     kind = row["k"]
+    if row.get("sp") and not (subjects == {"entry_id"}
+                              and kind in ("attachment", "substitution", "requires_unit")):
+        return False
     if kind == "requires_unit":
         return (subjects <= {"entry_id", "set_id", "unit_option_id", "entry_option_id", "ally_id"}
                 and bool(targets) and targets <= {"target_entry_id", "target_set_id",
@@ -490,9 +511,13 @@ def kind_ok(row):
         return (subjects <= {"entry_id", "unit_category_id"} and "target_category_id" in targets
                 and mode in ("rider", "always"))
     if kind == "pairing":
-        return (subjects <= SUBJECT_ITEMS and targets <= TARGET_ITEMS
+        return (subjects <= SUBJECT_ITEMS | {"entry_id"}
+                and targets <= TARGET_ITEMS | {"target_entry_id"}
                 and mode in ("requires", "excludes", "exclusive")
-                and (mode == "exclusive") == (not targets))
+                and (mode == "exclusive") == (not targets)
+                and ("entry_id" not in subjects or mode == "exclusive")
+                and ("target_entry_id" not in targets or (
+                    mode == "excludes" and subjects <= {"wargear_item_id", "unit_option_id"})))
     if kind == "attachment":
         return (subjects == {"entry_id"} and bool(targets & {"target_entry_id", "target_set_id"})
                 and mode in ("must", "may"))
@@ -506,16 +531,18 @@ def kind_ok(row):
     if kind == "ally_scope":
         need = {"requires": "target_entry_id", "excludes_unit": "target_unit_id",
                 "excludes_ally": "target_ally_id"}
-        if subjects != {"ally_id"} or mode not in (*need, "commanders"):
+        if subjects != {"ally_id"} or mode not in (*need, "commanders", "points"):
             return False
-        if mode == "commanders":
+        if mode in ("commanders", "points"):
             return count is not None and not targets & set(need.values())
         return need[mode] in targets
     if kind == "substitution":
-        return subjects == {"entry_id"} and "target_entry_id" in targets and mode is None
+        return (subjects == {"entry_id"} and "target_entry_id" in targets
+                and targets <= {"target_entry_id", "target_profile_id"} and mode is None)
     if kind == "unit_composition":
         return (subjects == {"entry_id"} and "target_entry_id" in targets
-                and mode == "mounted_with")
+                and mode in ("mounted_with", "min_models_when_mounted")
+                and (mode == "min_models_when_mounted") == (count is not None))
     return False
 
 
@@ -535,7 +562,9 @@ def requirement_checks(req):
         subject = row["s"][0]["n"] if row["s"] else "?"
         label = f"{row['l']}:{subject}"
         head = f"army_list_requirements {row['id']}"
-        if len(row["s"]) != 1 or len(row["t"]) > 1 or (
+        paired = row["k"] == "substitution" and {t["c"] for t in row["t"]} == {
+            "target_entry_id", "target_profile_id"}
+        if len(row["s"]) != 1 or (len(row["t"]) > 1 and not paired) or (
                 (row.get("variant") is None) != (row.get("under") is None)):
             yield ("requirement_kind", row["k"], label,
                    f"{head}: needs one subject, at most one target and a variant pair")
@@ -556,10 +585,107 @@ def requirement_checks(req):
                     if any(k == "requires_unit" for k, _ in pairs[(s["c"], s["id"], t["c"], t["id"])]):
                         yield ("requirement_redundant", row["k"], label,
                                f"{head}: a requires_unit row repeats this attachment")
+        profile = row.get("sp")
+        if profile and profile["u"] != profile.get("eu"):
+            yield ("requirement_profile", row["k"], label,
+                   f"{head}: subject_profile_id {profile['id']} ({profile['n']}) is on unit "
+                   f"{profile['u']}, the subject entry's unit is {profile.get('eu')}")
+        target = row.get("tp")
+        if row["k"] == "substitution" and target and target["u"] != target.get("eu"):
+            yield ("requirement_profile", row["k"], label,
+                   f"{head}: target_profile_id {target['id']} ({target['n']}) is on unit "
+                   f"{target['u']}, the target entry's unit is {target.get('eu')}")
+        if row["k"] == "ally_scope" and row.get("mode") == "points" and not (
+                1 <= (row.get("count") or 0) <= 100):
+            yield ("requirement_points", row["k"], label,
+                   f"{head}: points count {row.get('count')!r} is not a percentage")
         if row["k"] == "requires_unit" and row.get("mode") == "unless_transporting":
             if not any(s["c"] == "entry_id" and s["id"] in transports for s in row["s"]):
                 yield ("requirement_transport", row["k"], label,
                        f"{head}: unless_transporting on a subject with no transport rows")
+
+
+GATED = re.compile(r"\bonly\b|^Not\b")
+
+
+def eligibility_checks(req):
+    lists = {section["id"]: section["l"] for section in req["sections"]}
+    for item in req["items"]:
+        label = f"{lists.get(item['c'])}:{item['id']}"
+        head = f"wargear_items {item['id']}"
+        restriction = item.get("r")
+        if item.get("e") and not restriction:
+            yield ("item_eligibility", "wargear_item", label,
+                   f"{head}: has eligibility rows and no restriction")
+        if restriction and GATED.search(restriction) and not (item.get("e") or item.get("a")):
+            yield ("item_eligibility", "wargear_item", label,
+                   f"{head}: {restriction!r} has no eligibility rows and no affiliation")
+
+
+def affiliation_checks(req):
+    values = {a["id"]: a for a in req.get("affiliations", [])}
+    labels = {(a["l"], a["label"]) for a in values.values()}
+    gated = list(req.get("affiliated", [])) + [
+        {"c": "entry", "id": e["id"], "a": e["a"], "ls": [e["l"]]}
+        for e in req.get("entries", []) if e.get("a")]
+    for row in gated:
+        value = values.get(row["a"])
+        if value is None or value["l"] not in row["ls"]:
+            where = f"list {value['l']}" if value else "no list"
+            yield ("affiliation_list", "affiliation", f"{row['c']}:{row['id']}",
+                   f"{row['c']} {row['id']}: affiliation {row['a']} is on {where}, "
+                   f"the row on {row['ls']}")
+    for entry in req.get("entries", []):
+        if entry.get("label") and (entry["l"], entry["label"]) not in labels:
+            yield ("affiliation_list", "entry", f"{entry['l']}:{entry['n']}",
+                   f"army_list_entries {entry['id']}: affiliation_label "
+                   f"{entry['label']!r} has no value on list {entry['l']}")
+
+
+def mastery_checks(req):
+    for entry in req.get("entries", []):
+        name = f"{entry['l']}:{entry['n']}"
+        head = f"army_list_entries {entry['id']}"
+        if entry["buys"] and entry.get("ml") is None:
+            yield ("mastery_level_max", "entry", name,
+                   f"{head}: buys Mastery Levels with no mastery_level_max")
+        if not entry["buys"] and entry.get("ml") is not None:
+            yield ("mastery_level_max", "entry", name,
+                   f"{head}: mastery_level_max {entry['ml']} on an entry that buys no levels")
+
+
+def replaced_checks(req):
+    for option in sorted({r["uo"] for r in req.get("replaced", []) if r.get("rw")}):
+        yield ("replaced_weapons", "unit_option", str(option),
+               f"unit_options {option}: replaces_weapon_id and replaced-weapon rows both set")
+
+
+BIKE_MOTIVE_TYPE = 3
+JUMP_PACK_CARD = 12
+
+
+def armour_checks(req):
+    for armour in req.get("armour", []):
+        head = f"armour {armour['id']} ({armour['n']})"
+        for profile in armour.get("p", []):
+            if armour["bike"] and profile.get("m") == BIKE_MOTIVE_TYPE:
+                yield ("armour_bars", "unit", profile["un"],
+                       f"{head} bars bikes, and unit_profiles {profile['id']} wears it "
+                       f"on a bike unit")
+            for grant in profile.get("g", []):
+                if armour["bike"] and grant.get("m") == BIKE_MOTIVE_TYPE:
+                    yield ("armour_bars", "unit", profile["un"],
+                           f"{head} bars bikes, and unit_options {grant['uo']} gives "
+                           f"unit_profiles {profile['id']} the {grant['un']}")
+            if armour["jump"] and JUMP_PACK_CARD in profile.get("wc", []):
+                yield ("armour_bars", "unit", profile["un"],
+                       f"{head} bars jump packs, and unit_profiles {profile['id']} is "
+                       f"also granted the Jump Pack card")
+        for item in armour.get("i", []):
+            if armour["jump"] and JUMP_PACK_CARD in item.get("wc", []):
+                yield ("armour_bars", "wargear_item", f"{item['l']}:{item['id']}",
+                       f"{head} bars jump packs, and wargear_items {item['id']} bundles "
+                       f"the Jump Pack card with it")
 
 
 def alternative_checks(req):
@@ -638,6 +764,11 @@ def main():
         found += section_checks(requirements)
         found += requirement_checks(requirements)
         found += alternative_checks(requirements)
+        found += eligibility_checks(requirements)
+        found += affiliation_checks(requirements)
+        found += mastery_checks(requirements)
+        found += replaced_checks(requirements)
+        found += armour_checks(requirements)
     for check, kind, name, detail in found:
         if excused(check, kind, name, detail):
             excused_count += 1

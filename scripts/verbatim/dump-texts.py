@@ -163,16 +163,39 @@ sources = {
     "units": [{"n": u["name"], "s": u["source"], "l": sorted(unit_lists.get(u["id"], ()))}
               for u in rows("units", "id,name,source") if u["source"]]}
 
+def stripped(row):
+    return {k: v for k, v in row.items() if v is not None}
+
+
 entry_lists = {e["id"]: category_lists[e["unit_category_id"]]
                for e in rows("army_list_entries", "id,unit_category_id")}
-items = sorted(rows("wargear_items", "id,wargear_category_id,restriction,"
-                    "weapons(name),armour(name),units(name)"), key=lambda i: i["id"])
+items = sorted(rows("wargear_items", "id,wargear_category_id,restriction,affiliation_id,"
+                    "armour_id,weapons(name),armour(name),units(name)"), key=lambda i: i["id"])
+eligibility = {}
+for e in sorted(rows("wargear_item_eligibility",
+                     "wargear_item_id,unit_id,unit_type_id,excluded,position"),
+                key=lambda e: (e["wargear_item_id"], e["position"])):
+    eligibility.setdefault(e["wargear_item_id"], []).append(
+        stripped({"u": e["unit_id"], "ut": e["unit_type_id"], "x": e["excluded"]}))
 sections = sorted(rows("wargear_categories", "id,army_list_id,category,note,limit_scope,"
                        "limit_max,limit_min,combination_counts_as_one,distinct_items"),
                   key=lambda c: c["id"])
 section_lists = {c["id"]: c["army_list_id"] for c in sections}
 profiles = {p["id"]: p["name"] for p in rows("unit_profiles", "id,name")}
-option_units = {o["id"]: o for o in rows("unit_options", "id,unit_id,unit_profile_id")}
+option_units = {o["id"]: o for o in rows(
+    "unit_options", "id,unit_id,unit_profile_id,affiliation_id,per_half,whole_unit,"
+    "replaces_weapon_id")}
+profile_names = {p["id"]: p for p in rows("unit_profiles", "id,name,unit_id")}
+unit_entry_lists = {}
+for i, l in entry_lists.items():
+    unit_entry_lists.setdefault(entry_units[i], set()).add(l)
+mastery_bases = {b["id"] for b in rows("points_bases", "id,name")
+                 if b["name"] == "Per Mastery Level"}
+buys_mastery = {o["army_list_entry_id"]
+                for o in rows("army_list_entry_options", "army_list_entry_id,points_basis_id")
+                if o["points_basis_id"] in mastery_bases}
+entry_rows = rows("army_list_entries", "id,unit_id,affiliation_id,affiliation_label,"
+                  "squadron_max,mastery_level_max")
 faction_names = {f["id"]: f["name"] for f in rows("factions", "id,name")}
 list_names = {l["id"]: l["name"] for l in rows("army_lists", "id,name")}
 refs = {
@@ -201,8 +224,20 @@ TARGETS = (("target_entry_id", "entry"), ("target_set_id", "set"),
            ("target_entry_option_id", "entry_option"))
 
 
-def stripped(row):
-    return {k: v for k, v in row.items() if v is not None}
+def subject_profile(row):
+    if row.get("subject_profile_id") is None:
+        return None
+    profile = profile_names[row["subject_profile_id"]]
+    return {"id": profile["id"], "n": profile["name"], "u": profile["unit_id"],
+            "eu": entry_units.get(row["entry_id"])}
+
+
+def target_profile(row):
+    if row.get("target_profile_id") is None:
+        return None
+    profile = profile_names[row["target_profile_id"]]
+    return stripped({"id": profile["id"], "n": profile["name"], "u": profile["unit_id"],
+                     "eu": entry_units.get(row["target_entry_id"])})
 
 
 def resolved(row, columns):
@@ -211,11 +246,52 @@ def resolved(row, columns):
             for c, kind in columns if row[c] is not None]
 
 
+def grouped(table, key, value):
+    out = {}
+    for row in rows(table, f"{key},{value}"):
+        if row[value] is not None:
+            out.setdefault(row[key], set()).add(row[value])
+    return out
+
+
+armour_profiles = grouped("unit_profile_armour", "armour_id", "unit_profile_id")
+unit_motives = {d["unit_id"]: d["motive_type_id"]
+                for d in rows("datafaxes", "unit_id,motive_type_id")}
+profile_cards = grouped("unit_profile_wargear_cards", "unit_profile_id", "wargear_card_id")
+item_cards = grouped("wargear_item_components", "wargear_item_id", "wargear_card_id")
+unit_grants = {}
+for o in sorted(rows("unit_options", "id,unit_id,unit_profile_id,granted_unit_id,optional"),
+                key=lambda o: o["id"]):
+    if o["granted_unit_id"] is not None and not o["optional"]:
+        unit_grants.setdefault(o["unit_id"], []).append(o)
+
+
+def profile_grants(profile):
+    return [stripped({"uo": o["id"], "u": o["granted_unit_id"], "un": units[o["granted_unit_id"]],
+                      "m": unit_motives.get(o["granted_unit_id"])})
+            for o in unit_grants.get(profile_units[profile], ())
+            if o["unit_profile_id"] in (None, profile)] or None
+
+
+barring = [
+    stripped({"id": a["id"], "n": a["name"], "bike": a["bars_bike"], "jump": a["bars_jump_pack"],
+              "p": [stripped({"id": p, "u": profile_units[p], "un": units[profile_units[p]],
+                              "m": unit_motives.get(profile_units[p]),
+                              "wc": sorted(profile_cards.get(p, ())) or None,
+                              "g": profile_grants(p)})
+                    for p in sorted(armour_profiles.get(a["id"], ()))] or None,
+              "i": [stripped({"id": i["id"], "l": section_lists[i["wargear_category_id"]],
+                              "wc": sorted(item_cards.get(i["id"], ())) or None})
+                    for i in items if i["armour_id"] == a["id"]] or None})
+    for a in sorted(rows("armour", "id,name,bars_bike,bars_jump_pack"), key=lambda a: a["id"])
+    if a["bars_bike"] or a["bars_jump_pack"]]
+
 requirements = {
     "rows": [stripped({"id": r["id"], "k": r["kind"], "l": r["army_list_id"],
                        "s": resolved(r, SUBJECTS), "t": resolved(r, TARGETS),
                        "mode": r["mode"], "count": r["count"], "label": r["label"],
-                       "variant": r["variant_id"], "under": r["under_variant"]})
+                       "variant": r["variant_id"], "under": r["under_variant"],
+                       "sp": subject_profile(r), "tp": target_profile(r)})
              for r in sorted(rows("army_list_requirements", "*"), key=lambda r: r["id"])],
     "sections": [stripped({"id": c["id"], "l": c["army_list_id"], "n": c["category"],
                            "note": c["note"], "scope": c["limit_scope"],
@@ -230,13 +306,50 @@ requirements = {
                    "pn": profiles.get(option_units[link["unit_option_id"]]["unit_profile_id"])})
          for link in rows("unit_option_categories", "unit_option_id,wargear_category_id")),
         key=lambda o: (o["c"], o["uo"])),
-    "items": [stripped({"id": i["id"], "c": i["wargear_category_id"], "r": i["restriction"]})
+    "items": [stripped({"id": i["id"], "c": i["wargear_category_id"], "r": i["restriction"],
+                        "a": i["affiliation_id"], "e": eligibility.get(i["id"])})
               for i in items],
+    "affiliations": [{"id": a["id"], "l": a["army_list_id"], "label": a["label"], "n": a["name"]}
+                     for a in sorted(rows("affiliations", "id,army_list_id,label,name"),
+                                     key=lambda a: a["id"])],
+    "affiliated": [{"c": "option", "id": i, "a": o["affiliation_id"],
+                    "ls": sorted(unit_entry_lists.get(o["unit_id"], ()))}
+                   for i, o in sorted(option_units.items()) if o["affiliation_id"]]
+                  + [{"c": "item", "id": i["id"], "a": i["affiliation_id"],
+                      "ls": [section_lists[i["wargear_category_id"]]]}
+                     for i in items if i["affiliation_id"]],
+    "entries": [stripped({"id": e["id"], "l": entry_lists[e["id"]], "n": units[e["unit_id"]],
+                          "a": e["affiliation_id"], "label": e["affiliation_label"],
+                          "sq": e["squadron_max"], "ml": e["mastery_level_max"],
+                          "buys": e["id"] in buys_mastery})
+                for e in sorted(entry_rows, key=lambda e: e["id"])
+                if e["id"] in buys_mastery or any(
+                    e[c] is not None for c in ("affiliation_id", "affiliation_label",
+                                               "squadron_max", "mastery_level_max"))],
+    "allies": [stripped({"id": a["id"], "l": a["army_list_id"], "display": a["display"],
+                         "mode": a["mode"]})
+               for a in sorted(rows("army_list_allies", "id,army_list_id,display,mode"),
+                               key=lambda a: a["id"])],
+    "deductions": [{"id": r["id"], "deduction": r["deduction"]}
+                   for r in sorted(rows("army_list_allowance_rules", "id,deduction"),
+                                   key=lambda r: r["id"]) if r["deduction"]],
+    "halves": [{"uo": i, "u": o["unit_id"], "whole": o["whole_unit"]}
+               for i, o in sorted(option_units.items()) if o["per_half"]],
+    "replaced": [stripped({"uo": r["unit_option_id"], "w": r["weapon_id"],
+                           "rw": option_units[r["unit_option_id"]]["replaces_weapon_id"]})
+                 for r in sorted(rows("unit_option_replaced_weapons",
+                                      "unit_option_id,weapon_id,position"),
+                                 key=lambda r: (r["unit_option_id"], r["position"], r["weapon_id"]))],
     "alternatives": sorted(
         (stripped({"id": w["id"], "d": w["datafax_id"], "a": w["alternative"],
                    "max": w["alternative_max"]})
          for w in rows("datafax_weapons", "id,datafax_id,alternative,alternative_max")
-         if w["alternative"]), key=lambda w: w["id"])}
+         if w["alternative"]), key=lambda w: w["id"]),
+    "ratios": sorted(
+        ({"id": w["id"], "d": w["datafax_id"], "per": w["per_models"]}
+         for w in rows("datafax_weapons", "id,datafax_id,per_models")
+         if w["per_models"] is not None), key=lambda w: w["id"]),
+    "armour": barring}
 
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
                       "cards": cards, "grants": grants, "sources": sources,

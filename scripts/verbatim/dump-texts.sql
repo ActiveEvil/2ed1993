@@ -47,11 +47,39 @@ select json_build_object(
     'rows', coalesce((select json_agg(json_strip_nulls(json_build_object('id', r.id, 'k', r.kind, 'l', r.army_list_id,
       's', coalesce((select json_agg(json_build_object('c', x.c, 'id', f.id, 'n', f.n, 'l', f.l) order by x.o) from sides x join refs f on f.kind = x.kind and f.id = (to_jsonb(r) ->> x.c)::integer where x.side = 's'), '[]'),
       't', coalesce((select json_agg(json_build_object('c', x.c, 'id', f.id, 'n', f.n, 'l', f.l) order by x.o) from sides x join refs f on f.kind = x.kind and f.id = (to_jsonb(r) ->> x.c)::integer where x.side = 't'), '[]'),
-      'mode', r.mode, 'count', r.count, 'label', r.label, 'variant', r.variant_id, 'under', r.under_variant)) order by r.id) from army_list_requirements r), '[]'),
+      'mode', r.mode, 'count', r.count, 'label', r.label, 'variant', r.variant_id, 'under', r.under_variant,
+      'sp', (select json_build_object('id', p.id, 'n', p.name, 'u', p.unit_id, 'eu', (select e.unit_id from army_list_entries e where e.id = r.entry_id)) from unit_profiles p where p.id = r.subject_profile_id),
+      'tp', (select json_build_object('id', p.id, 'n', p.name, 'u', p.unit_id, 'eu', (select e.unit_id from army_list_entries e where e.id = r.target_entry_id)) from unit_profiles p where p.id = r.target_profile_id))) order by r.id) from army_list_requirements r), '[]'),
     'sections', coalesce((select json_agg(json_strip_nulls(json_build_object('id', wc.id, 'l', wc.army_list_id, 'n', wc.category, 'note', wc.note, 'scope', wc.limit_scope, 'max', wc.limit_max, 'min', wc.limit_min, 'combo', wc.combination_counts_as_one, 'distinct', wc.distinct_items)) order by wc.id) from wargear_categories wc), '[]'),
     'openers', coalesce((select json_agg(json_strip_nulls(json_build_object('c', uoc.wargear_category_id, 'uo', uoc.unit_option_id, 'u', uo.unit_id, 'un', u.name, 'p', uo.unit_profile_id, 'pn', p.name)) order by uoc.wargear_category_id, uoc.unit_option_id) from unit_option_categories uoc join unit_options uo on uo.id = uoc.unit_option_id join units u on u.id = uo.unit_id left join unit_profiles p on p.id = uo.unit_profile_id), '[]'),
-    'items', coalesce((select json_agg(json_strip_nulls(json_build_object('id', wi.id, 'c', wi.wargear_category_id, 'r', wi.restriction)) order by wi.id) from wargear_items wi), '[]'),
-    'alternatives', coalesce((select json_agg(json_strip_nulls(json_build_object('id', dw.id, 'd', dw.datafax_id, 'a', dw.alternative, 'max', dw.alternative_max)) order by dw.id) from datafax_weapons dw where dw.alternative <> 0), '[]')
+    'items', coalesce((select json_agg(json_strip_nulls(json_build_object('id', wi.id, 'c', wi.wargear_category_id, 'r', wi.restriction, 'a', wi.affiliation_id,
+      'e', (select json_agg(json_build_object('u', we.unit_id, 'ut', we.unit_type_id, 'x', we.excluded) order by we.position) from wargear_item_eligibility we where we.wargear_item_id = wi.id))) order by wi.id) from wargear_items wi), '[]'),
+    'affiliations', coalesce((select json_agg(json_build_object('id', af.id, 'l', af.army_list_id, 'label', af.label, 'n', af.name) order by af.id) from affiliations af), '[]'),
+    'affiliated', coalesce((select json_agg(json_build_object('c', g.c, 'id', g.id, 'a', g.a, 'ls', g.ls) order by g.o, g.id) from (
+      select 1 o, 'option' c, uo.id, uo.affiliation_id a, coalesce((select json_agg(distinct uc.army_list_id order by uc.army_list_id) from army_list_entries e join unit_categories uc on uc.id = e.unit_category_id where e.unit_id = uo.unit_id), '[]') ls from unit_options uo where uo.affiliation_id is not null
+      union all select 2, 'item', wi.id, wi.affiliation_id, json_build_array(wc.army_list_id) from wargear_items wi join wargear_categories wc on wc.id = wi.wargear_category_id where wi.affiliation_id is not null) g), '[]'),
+    'entries', coalesce((select json_agg(json_strip_nulls(json_build_object('id', e.id, 'l', uc.army_list_id, 'n', u.name, 'a', e.affiliation_id, 'label', e.affiliation_label, 'sq', e.squadron_max, 'ml', e.mastery_level_max, 'buys', m.buys)) order by e.id)
+      from army_list_entries e join units u on u.id = e.unit_id join unit_categories uc on uc.id = e.unit_category_id
+      cross join lateral (select exists (select 1 from army_list_entry_options o join points_bases pb on pb.id = o.points_basis_id where o.army_list_entry_id = e.id and pb.name = 'Per Mastery Level') buys) m
+      where m.buys or coalesce(e.affiliation_id::text, e.affiliation_label, e.squadron_max::text, e.mastery_level_max::text) is not null), '[]'),
+    'allies', coalesce((select json_agg(json_strip_nulls(json_build_object('id', al.id, 'l', al.army_list_id, 'display', al.display, 'mode', al.mode)) order by al.id) from army_list_allies al), '[]'),
+    'deductions', coalesce((select json_agg(json_build_object('id', ar.id, 'deduction', ar.deduction) order by ar.id) from army_list_allowance_rules ar where ar.deduction <> 0), '[]'),
+    'halves', coalesce((select json_agg(json_build_object('uo', uo.id, 'u', uo.unit_id, 'whole', uo.whole_unit) order by uo.id) from unit_options uo where uo.per_half), '[]'),
+    'replaced', coalesce((select json_agg(json_strip_nulls(json_build_object('uo', rw.unit_option_id, 'w', rw.weapon_id, 'rw', uo.replaces_weapon_id)) order by rw.unit_option_id, rw.position, rw.weapon_id) from unit_option_replaced_weapons rw join unit_options uo on uo.id = rw.unit_option_id), '[]'),
+    'alternatives', coalesce((select json_agg(json_strip_nulls(json_build_object('id', dw.id, 'd', dw.datafax_id, 'a', dw.alternative, 'max', dw.alternative_max)) order by dw.id) from datafax_weapons dw where dw.alternative <> 0), '[]'),
+    'ratios', coalesce((select json_agg(json_build_object('id', dw.id, 'd', dw.datafax_id, 'per', dw.per_models) order by dw.id) from datafax_weapons dw where dw.per_models is not null), '[]'),
+    'armour', coalesce((select json_agg(json_strip_nulls(json_build_object('id', a.id, 'n', a.name, 'bike', a.bars_bike, 'jump', a.bars_jump_pack,
+      'p', (select json_agg(json_strip_nulls(json_build_object('id', p.id, 'u', p.unit_id, 'un', u.name,
+        'm', (select d.motive_type_id from datafaxes d where d.unit_id = p.unit_id),
+        'wc', (select json_agg(pc.wargear_card_id order by pc.wargear_card_id) from unit_profile_wargear_cards pc where pc.unit_profile_id = p.id),
+        'g', (select json_agg(json_strip_nulls(json_build_object('uo', o.id, 'u', o.granted_unit_id, 'un', gu.name,
+          'm', (select d.motive_type_id from datafaxes d where d.unit_id = o.granted_unit_id))) order by o.id)
+          from unit_options o join units gu on gu.id = o.granted_unit_id
+          where o.unit_id = p.unit_id and not o.optional and (o.unit_profile_id is null or o.unit_profile_id = p.id)))) order by p.id)
+        from unit_profiles p join units u on u.id = p.unit_id where p.id in (select pa.unit_profile_id from unit_profile_armour pa where pa.armour_id = a.id)),
+      'i', (select json_agg(json_strip_nulls(json_build_object('id', wi.id, 'l', wc.army_list_id,
+        'wc', (select json_agg(distinct ic.wargear_card_id order by ic.wargear_card_id) from wargear_item_components ic where ic.wargear_item_id = wi.id and ic.wargear_card_id is not null))) order by wi.id)
+        from wargear_items wi join wargear_categories wc on wc.id = wi.wargear_category_id where wi.armour_id = a.id))) order by a.id) from armour a where a.bars_bike or a.bars_jump_pack), '[]')
   )
 ) from (
   select 'rule:' || rc.slug, r.name, r.rule from rules r join rule_categories rc on rc.id = r.category_id
