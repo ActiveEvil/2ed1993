@@ -286,6 +286,10 @@ barring = [
     for a in sorted(rows("armour", "id,name,bars_bike,bars_jump_pack"), key=lambda a: a["id"])
     if a["bars_bike"] or a["bars_jump_pack"]]
 
+weapon_rows = rows("datafax_weapons", "id,datafax_id,alternative,alternative_max,optional,"
+                   "replaces_datafax_weapon_id,grant_mode,add_points")
+weapon_datafaxes = {w["id"]: w["datafax_id"] for w in weapon_rows}
+
 requirements = {
     "rows": [stripped({"id": r["id"], "k": r["kind"], "l": r["army_list_id"],
                        "s": resolved(r, SUBJECTS), "t": resolved(r, TARGETS),
@@ -342,9 +346,13 @@ requirements = {
                                  key=lambda r: (r["unit_option_id"], r["position"], r["weapon_id"]))],
     "alternatives": sorted(
         (stripped({"id": w["id"], "d": w["datafax_id"], "a": w["alternative"],
-                   "max": w["alternative_max"]})
-         for w in rows("datafax_weapons", "id,datafax_id,alternative,alternative_max")
-         if w["alternative"]), key=lambda w: w["id"]),
+                   "max": w["alternative_max"], "rep": w["replaces_datafax_weapon_id"],
+                   "rd": weapon_datafaxes.get(w["replaces_datafax_weapon_id"]),
+                   "mode": w["grant_mode"], "add": w["add_points"],
+                   "opt": None if w["replaces_datafax_weapon_id"] is None else w["optional"]})
+         for w in weapon_rows
+         if w["alternative"] or w["replaces_datafax_weapon_id"] is not None),
+        key=lambda w: w["id"]),
     "ratios": sorted(
         ({"id": w["id"], "d": w["datafax_id"], "per": w["per_models"]}
          for w in rows("datafax_weapons", "id,datafax_id,per_models")

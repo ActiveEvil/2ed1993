@@ -520,6 +520,9 @@ export const WARBIKE: {
         targeter: true,
         name_as_printed: "Twin Autocannon",
         built_in_of: null,
+        replaces_datafax_weapon_id: null,
+        grant_mode: null,
+        add_points: null,
         datafax_weapon_ammunition: [{ weapon_profile_id: 302, points: 5 }],
         weapons: {
           name: "Autocannon",

@@ -71,6 +71,10 @@ profile of a unit whose datafax has the Bikes & Trikes motive type,
 BIKE_MOTIVE_TYPE, and on no profile that a compulsory unit option gives such a
 unit to ride, and an armour flagged bars_jump_pack is on no profile that is also granted the
 Jump Pack card, JUMP_PACK_CARD, and on no wargear item that bundles it.
+weapon_replaces holds BF-38, and reads the `alternatives` rows: the rows of one
+alternative group agree on replaces_datafax_weapon_id, grant_mode and
+add_points, a row replaces only a row on its own datafax, and a row that
+replaces another is optional.
 """
 import json, os, re, sys, unicodedata
 from collections import defaultdict
@@ -711,6 +715,28 @@ def alternative_checks(req):
                    f"{sorted(found, key=str)}")
 
 
+def replaces_checks(req):
+    groups = defaultdict(set)
+    for row in req["alternatives"]:
+        if row["a"]:
+            groups[(row["d"], row["a"])].add(
+                (row.get("rep"), row.get("mode"), row.get("add")))
+        if row.get("rep") is None:
+            continue
+        head = f"datafax_weapons {row['id']}"
+        if row.get("rd") != row["d"]:
+            yield ("weapon_replaces", "datafax", str(row["d"]),
+                   f"{head}: replaces row {row['rep']} on datafax {row.get('rd')}")
+        if not row.get("opt"):
+            yield ("weapon_replaces", "datafax", str(row["d"]),
+                   f"{head}: replaces row {row['rep']} and is not optional")
+    for (datafax, alternative), found in sorted(groups.items()):
+        if len(found) > 1:
+            yield ("weapon_replaces", "datafax", str(datafax),
+                   f"datafax_weapons alternative {alternative}: rows disagree on "
+                   f"what they replace, {sorted(found, key=str)}")
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     show_exempt = "--list" in sys.argv
@@ -776,6 +802,7 @@ def main():
         found += section_checks(requirements)
         found += requirement_checks(requirements)
         found += alternative_checks(requirements)
+        found += replaces_checks(requirements)
         found += eligibility_checks(requirements)
         found += affiliation_checks(requirements)
         found += mastery_checks(requirements)

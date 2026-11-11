@@ -59,6 +59,9 @@ export type DatafaxData = {
     targeter: boolean;
     name_as_printed: string | null;
     built_in_of: number | null;
+    replaces_datafax_weapon_id: number | null;
+    grant_mode: string | null;
+    add_points: number | null;
     datafax_weapon_ammunition: {
       weapon_profile_id: number;
       points: number | null;
@@ -171,6 +174,17 @@ const sameFitting = (a: Fitting, b: Fitting): boolean =>
   a.mount === b.mount &&
   a.firing_arc_degrees === b.firing_arc_degrees &&
   a.arc_note === b.arc_note;
+
+type Replacement = {
+  replaces_datafax_weapon_id: number | null;
+  grant_mode: string | null;
+  add_points: number | null;
+};
+
+const sameReplacement = (a: Replacement, b: Replacement): boolean =>
+  a.replaces_datafax_weapon_id === b.replaces_datafax_weapon_id &&
+  a.grant_mode === b.grant_mode &&
+  a.add_points === b.add_points;
 
 const joinList =
   (conjunction: string) =>
@@ -378,6 +392,39 @@ export const Datafax: React.FC<{
                 )}
               </Fragment>
             )),
+          )}
+        </>
+      )
+    );
+  };
+
+  const replacement = (
+    members: (typeof weapons)[number][],
+  ): React.ReactNode => {
+    const [first] = members;
+    const replaced = datafax.datafax_weapons.find(
+      ({ id }) => id === first.replaces_datafax_weapon_id,
+    );
+
+    return (
+      replaced !== undefined &&
+      members.every((weapon) => sameReplacement(weapon, first)) && (
+        <>
+          {" "}
+          in place of {replaced.quantity > 1 ? "one" : "the"}{" "}
+          <Link
+            className={LINK}
+            href={`/wargear/weapons#${generateAnchorId(replaced.weapons.name)}`}
+          >
+            {replaced.name_as_printed ?? replaced.weapons.name}
+          </Link>
+          {first.grant_mode === "add_or_replace" && (
+            <>
+              , or in addition
+              {first.add_points !== null && first.add_points > 0 && (
+                <> at {cost(first.add_points)} more</>
+              )}
+            </>
           )}
         </>
       )
@@ -717,8 +764,12 @@ export const Datafax: React.FC<{
                         )}
                         {group.shared && fitting(group.members[0])}
                         {targeters && TARGETER}
-                        {group.members.every(({ optional }) => optional) &&
-                          " may be fitted"}
+                        {group.members.every(({ optional }) => optional) && (
+                          <>
+                            {" may be fitted"}
+                            {replacement(group.members)}
+                          </>
+                        )}
                         {group.members.length === 1 &&
                           group.members[0].points !== null && (
                             <>, at {cost(group.members[0].points)}</>

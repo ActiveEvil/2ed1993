@@ -1358,6 +1358,7 @@ export type Database = {
       }
       datafax_weapons: {
         Row: {
+          add_points: number | null
           alternative: number
           alternative_max: number | null
           arc_note: string | null
@@ -1365,6 +1366,7 @@ export type Database = {
           created_at: string
           datafax_id: number
           firing_arc_degrees: number | null
+          grant_mode: string | null
           id: number
           linked_group: number | null
           mount: string | null
@@ -1374,11 +1376,13 @@ export type Database = {
           points: number | null
           position: number
           quantity: number
+          replaces_datafax_weapon_id: number | null
           targeter: boolean
           updated_at: string | null
           weapon_id: number
         }
         Insert: {
+          add_points?: number | null
           alternative?: number
           alternative_max?: number | null
           arc_note?: string | null
@@ -1386,6 +1390,7 @@ export type Database = {
           created_at?: string
           datafax_id: number
           firing_arc_degrees?: number | null
+          grant_mode?: string | null
           id?: number
           linked_group?: number | null
           mount?: string | null
@@ -1395,11 +1400,13 @@ export type Database = {
           points?: number | null
           position: number
           quantity?: number
+          replaces_datafax_weapon_id?: number | null
           targeter?: boolean
           updated_at?: string | null
           weapon_id: number
         }
         Update: {
+          add_points?: number | null
           alternative?: number
           alternative_max?: number | null
           arc_note?: string | null
@@ -1407,6 +1414,7 @@ export type Database = {
           created_at?: string
           datafax_id?: number
           firing_arc_degrees?: number | null
+          grant_mode?: string | null
           id?: number
           linked_group?: number | null
           mount?: string | null
@@ -1416,6 +1424,7 @@ export type Database = {
           points?: number | null
           position?: number
           quantity?: number
+          replaces_datafax_weapon_id?: number | null
           targeter?: boolean
           updated_at?: string | null
           weapon_id?: number
@@ -1433,6 +1442,13 @@ export type Database = {
             columns: ["datafax_id"]
             isOneToOne: false
             referencedRelation: "datafaxes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "datafax_weapons_replaces_datafax_weapon_id_fkey"
+            columns: ["replaces_datafax_weapon_id"]
+            isOneToOne: false
+            referencedRelation: "datafax_weapons"
             referencedColumns: ["id"]
           },
           {
