@@ -84,7 +84,8 @@ squads can carry: the targets of its squads-side transport rows, or without
 them every entry in the list's SQUAD_BANDS, less any squad every profile of
 which wears armour that bars bikes when the ride is a bike (BF-14, BF-17).
 requirement_attachment wants attachment rows covering every profile of a
-character whose entry note or unit option notes match JOINS, magazine asides
+character whose entry note or unit option notes match JOINS (which takes
+"stands in for a unit's officer" but not "the army's"), magazine asides
 left out; allowance rules play no part (XL-4).
 option_eligibility mirrors item_eligibility for unit_options.restriction: a
 restriction matching OPTION_GATED has an affiliation_id or a requirement row
@@ -763,7 +764,8 @@ UNWRITTEN_LISTS = {3, 9, 12, 13, 14}
 CHARACTER_TYPE = 1
 SQUAD_BANDS = {"Squads", "Mobs", "Broods"}
 COMMANDS = re.compile(r"\b(?:Commands|commands?)\b(?:\s+the\s+army\b|[^.]*\bplace\b)")
-JOINS = re.compile(r"\b(?:joins?(?!\s+as\b)|leads?|leading|stays with)\b", re.I)
+JOINS = re.compile(r"\b(?:joins?(?!\s+as\b)|leads?|leading|stays with"
+                   r"|stands in for (?:an?|the) (?!army(?:&apos;|'|’)s)[^,.]*?(?:&apos;|'|’)s)\b", re.I)
 ASIDE = re.compile(r'<section class="house-rule".*?</section>', re.S)
 
 
