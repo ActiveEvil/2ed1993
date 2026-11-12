@@ -286,6 +286,9 @@ barring = [
     for a in sorted(rows("armour", "id,name,bars_bike,bars_jump_pack"), key=lambda a: a["id"])
     if a["bars_bike"] or a["bars_jump_pack"]]
 
+lineup = rows("army_list_entries", "id,unit_category_id,unit_id,note,transport_scope")
+unit_types = {u["id"]: u["unit_type_id"] for u in rows("units", "id,unit_type_id")}
+
 weapon_rows = rows("datafax_weapons", "id,datafax_id,alternative,alternative_max,optional,"
                    "replaces_datafax_weapon_id,grant_mode,add_points")
 weapon_datafaxes = {w["id"]: w["datafax_id"] for w in weapon_rows}
@@ -357,7 +360,23 @@ requirements = {
         ({"id": w["id"], "d": w["datafax_id"], "per": w["per_models"]}
          for w in rows("datafax_weapons", "id,datafax_id,per_models")
          if w["per_models"] is not None), key=lambda w: w["id"]),
-    "armour": barring}
+    "armour": barring,
+    "lineup": [stripped({"id": e["id"], "l": entry_lists[e["id"]], "b": e["unit_category_id"],
+                         "u": e["unit_id"], "n": units[e["unit_id"]],
+                         "ut": unit_types[e["unit_id"]], "note": e["note"],
+                         "ts": e["transport_scope"], "m": unit_motives.get(e["unit_id"])})
+               for e in sorted(lineup, key=lambda e: e["id"])],
+    "bands": [{"id": i, "l": l, "n": n} for i, (n, l) in sorted(refs["band"].items())],
+    "members": sorted(({"set": m["set_id"], "e": m["army_list_entry_id"]}
+                       for m in rows("army_list_allowance_set_entries",
+                                     "set_id,army_list_entry_id")),
+                      key=lambda m: (m["set"], m["e"])),
+    "options": [stripped({"id": o["id"], "u": o["unit_id"], "g": o["option_group"],
+                          "whole": o["whole_unit"], "note": o["note"]})
+                for o in sorted(rows("unit_options", "id,unit_id,option_group,whole_unit,note"),
+                                key=lambda o: o["id"])
+                if o["note"] or o["option_group"] == "support"],
+    "profiles": [{"id": i, "u": p["unit_id"]} for i, p in sorted(profile_names.items())]}
 
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
                       "cards": cards, "grants": grants, "sources": sources,

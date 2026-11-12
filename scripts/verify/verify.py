@@ -75,6 +75,18 @@ weapon_replaces holds BF-38, and reads the `alternatives` rows: the rows of one
 alternative group agree on replaces_datafax_weapon_id, grant_mode and
 add_points, a row replaces only a row on its own datafax, and a row that
 replaces another is optional.
+The cross-list checks read the `lineup` block and hold the consistency
+rulings XL-1 to XL-7. requirement_commander wants a commander row with count
+0 on every list with entries, and reports a substitution row whose subject or
+target is a commander row's subject or has a note saying it commands.
+ride_option wants a whole-unit support option on every squad a ride open to
+squads can carry: the targets of its squads-side transport rows, or without
+them every entry in the list's SQUAD_BANDS, less any squad every profile of
+which wears armour that bars bikes when the ride is a bike (BF-14, BF-17).
+requirement_attachment wants attachment rows covering every profile of a
+character whose entry note or unit option notes match JOINS, magazine asides
+left out; allowance rules play no part (XL-4). A finding on a list in UNWRITTEN_LISTS is held, not failed, and shows
+with --list. unwritten_lists keeps that set honest and is never held.
 """
 import json, os, re, sys, unicodedata
 from collections import defaultdict
@@ -737,6 +749,132 @@ def replaces_checks(req):
                    f"what they replace, {sorted(found, key=str)}")
 
 
+UNWRITTEN_LISTS = {3, 9, 12, 13, 14}
+CHARACTER_TYPE = 1
+SQUAD_BANDS = {"Squads", "Mobs", "Broods"}
+COMMANDS = re.compile(r"\b(?:Commands|commands?)\b(?:\s+the\s+army\b|[^.]*\bplace\b)")
+JOINS = re.compile(r"\b(?:joins?(?!\s+as\b)|leads?|leading|stays with)\b", re.I)
+ASIDE = re.compile(r'<section class="house-rule".*?</section>', re.S)
+
+
+def said(text):
+    return strip_tags(ASIDE.sub(" ", text or ""))
+
+
+def unwritten_checks(req):
+    written = {e["l"] for e in req["lineup"]}
+    ruled = {row["l"] for row in req["rows"]}
+    for l in sorted(UNWRITTEN_LISTS & ruled):
+        yield (None, "unwritten_lists", "army_list", str(l),
+               f"list {l} is in UNWRITTEN_LISTS and has army_list_requirements rows")
+    for l in sorted(written - ruled - UNWRITTEN_LISTS):
+        yield (None, "unwritten_lists", "army_list", str(l),
+               f"list {l} has entries and no army_list_requirements rows")
+
+
+def commander_checks(req):
+    counts, leaders = defaultdict(set), set()
+    for row in req["rows"]:
+        if row["k"] == "commander":
+            counts[row["l"]].add(row.get("count"))
+            leaders |= {s["id"] for s in row["s"] if s["c"] == "entry_id"}
+    for l in sorted({e["l"] for e in req["lineup"]}):
+        if 0 not in counts[l]:
+            yield (l, "requirement_commander", "army_list", str(l),
+                   f"list {l} has entries and no commander row with count 0")
+    notes = {e["id"]: said(e.get("note")) for e in req["lineup"]}
+    for row in req["rows"]:
+        if row["k"] != "substitution":
+            continue
+        ends = [r["id"] for r in row["s"] + row["t"] if r["c"] in ("entry_id", "target_entry_id")]
+        why = [f"army_list_entries {i} is a commander row's subject" for i in ends if i in leaders]
+        why += [f"army_list_entries {i} says {m.group(0)!r}"
+                for i in ends for m in [COMMANDS.search(notes.get(i, ""))] if m]
+        if why:
+            yield (row["l"], "requirement_commander", "substitution",
+                   f"{row['l']}:{row['s'][0]['n']}",
+                   f"army_list_requirements {row['id']}: a substitution doing a commander "
+                   f"row's work, as {why[0]}")
+
+
+def ride_checks(req):
+    bands = {b["id"]: b["n"] for b in req["bands"]}
+    members = defaultdict(set)
+    for m in req["members"]:
+        members[m["set"]].add(m["e"])
+    carried = defaultdict(set)
+    for row in req["rows"]:
+        if row["k"] == "transport" and row.get("mode") == "squads":
+            for s in row["s"]:
+                for t in row["t"]:
+                    if t["c"] == "target_entry_id":
+                        carried[s["id"]].add(t["id"])
+                    elif t["c"] == "target_set_id":
+                        carried[s["id"]] |= members[t["id"]]
+    supported = {o["u"] for o in req["options"] if o.get("g") == "support" and o.get("whole")}
+    barred = {p["id"] for a in req.get("armour", []) if a["bike"] for p in a.get("p", [])}
+    profiles = defaultdict(set)
+    for p in req["profiles"]:
+        profiles[p["u"]].add(p["id"])
+    entries = {e["id"]: e for e in req["lineup"]}
+    for ride in req["lineup"]:
+        if ride.get("ts") not in ("squads", "characters_and_squads"):
+            continue
+        squads = carried.get(ride["id"]) or {
+            e["id"] for e in req["lineup"]
+            if e["l"] == ride["l"] and bands.get(e["b"]) in SQUAD_BANDS}
+        for i in sorted(squads):
+            squad = entries[i]
+            if ride.get("m") == BIKE_MOTIVE_TYPE and profiles[squad["u"]] and (
+                    profiles[squad["u"]] <= barred):
+                continue
+            if squad["u"] not in supported:
+                yield (ride["l"], "ride_option", "entry", f"{squad['l']}:{squad['n']}",
+                       f"army_list_entries {i}: can ride army_list_entries {ride['id']} "
+                       f"({ride['n']}), and unit {squad['u']} has no whole-unit support option")
+
+
+def attachment_checks(req):
+    profiles = defaultdict(set)
+    for p in req["profiles"]:
+        profiles[p["u"]].add(p["id"])
+    notes = defaultdict(list)
+    for o in req["options"]:
+        if o.get("note"):
+            notes[o["u"]].append((f"unit_options {o['id']}", o["note"]))
+    scopes = defaultdict(set)
+    for row in req["rows"]:
+        if row["k"] == "attachment":
+            for s in row["s"]:
+                scopes[s["id"]].add((row.get("sp") or {}).get("id"))
+    for entry in req["lineup"]:
+        if entry.get("ut") != CHARACTER_TYPE:
+            continue
+        found = [(where, m.group(0))
+                 for where, text in [(f"army_list_entries {entry['id']}", entry.get("note"))]
+                 + notes[entry["u"]] for m in [JOINS.search(said(text))] if m]
+        if not found:
+            continue
+        where, phrase = found[0]
+        head = f"army_list_entries {entry['id']}: {where} says {phrase!r}"
+        name = f"{entry['l']}:{entry['n']}"
+        covered = scopes[entry["id"]]
+        if not covered:
+            yield (entry["l"], "requirement_attachment", "entry", name,
+                   f"{head}, and the entry has no attachment rows")
+        elif None not in covered and profiles[entry["u"]] - covered:
+            yield (entry["l"], "requirement_attachment", "entry", name,
+                   f"{head}, and its attachment rows leave profiles "
+                   f"{sorted(profiles[entry['u']] - covered)} uncovered")
+
+
+def cross_list_checks(req):
+    yield from unwritten_checks(req)
+    yield from commander_checks(req)
+    yield from ride_checks(req)
+    yield from attachment_checks(req)
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     show_exempt = "--list" in sys.argv
@@ -767,6 +905,9 @@ def main():
     if requirements is None:
         print("no requirements in the dump, so the section, requirement and "
               "alternative_max checks are skipped; re-run dump-texts.py")
+    elif "lineup" not in requirements:
+        print("no lineup in the dump, so the cross-list checks are skipped; "
+              "re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
@@ -816,9 +957,23 @@ def main():
             continue
         failures.append((check, kind, name, detail))
 
+    held_count = 0
+    if requirements is not None and "lineup" in requirements:
+        for l, check, kind, name, detail in cross_list_checks(requirements):
+            if excused(check, kind, name, detail):
+                excused_count += 1
+                if show_exempt:
+                    print(f"  exempt {check:14} {kind}:{name}  {detail}")
+            elif l in UNWRITTEN_LISTS:
+                held_count += 1
+                if show_exempt:
+                    print(f"  held   {check:14} {kind}:{name}  {detail}")
+            else:
+                failures.append((check, kind, name, detail))
+
     html = sum(1 for r in texts if is_html(r["k"]))
     print(f"{len(texts)} texts ({html} html, {len(texts) - html} plain), "
-          f"{len(failures)} findings, {excused_count} exempt")
+          f"{len(failures)} findings, {excused_count} exempt, {held_count} held")
     for check, kind, name, detail in sorted(failures):
         print(f"  {check:14} {kind}:{name}\n{'':18}{detail}")
     sys.exit(1 if failures else 0)

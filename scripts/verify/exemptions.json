@@ -18,6 +18,13 @@
   "armour_bars": [
     {"key": "unit:Wazdakka Gutzmek:armour 23 (Mega-Armour) bars bikes, and unit_options 506 gives unit_profiles 351 the Warbike", "reason": "the printed exception: White Dwarf 204 Q&A bars mega-armoured Orks from Warbikes and names Wazdakka Gutzmek as the one who rides"}
   ],
+  "requirement_attachment": [
+    {"key": "entry:1:Stumper Muckstart", "reason": "\"need not join a Command Squad\" is the negation; he fights on his own"},
+    {"key": "entry:2:Tech-Priest Engineer", "reason": "\"never leads a squad\" is the negation; he travels with one and fights as an independent model"}
+  ],
+  "ride_option": [
+    {"key": "entry:2:Rough Rider Squad", "reason": "already mounted on horses, XL-9 of 12 November"}
+  ],
   "design_components": [
     {"key": "components/FilterField.tsx", "reason": "rendered through RowFilter in the JumpBar specimen"},
     {"key": "components/Lightbox.tsx", "reason": "rendered through Gallery, ruled 7 October"},
