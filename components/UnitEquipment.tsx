@@ -74,6 +74,7 @@ type ProfileVehicleCard = {
 export type EquipmentProfile = {
   id: number;
   name: string;
+  models_min: number;
   models_max: number | null;
   unit_profile_weapons: ProfileWeapon[];
   unit_profile_armour: ProfileArmour[];
@@ -443,13 +444,20 @@ export const UnitEquipment: React.FC<{
       return "The unit";
     }
 
+    const starting = profiles.filter(({ models_min }) => models_min > 0);
+    const wholeStarting =
+      !option.profile ||
+      (starting.length === 1 && starting[0].name === option.profile.name);
+
     return isSingleModelUnit
       ? null
       : option.models_max === null
         ? option.whole_unit
-          ? option.profile
-            ? "all models"
-            : "All models"
+          ? option.optional && wholeStarting
+            ? "The whole unit"
+            : option.profile
+              ? "all models"
+              : "All models"
           : option.profile
             ? grantee && grantee.models_max !== 1
               ? "any model"
@@ -779,7 +787,9 @@ export const UnitEquipment: React.FC<{
                   const cost = optionCosts?.get(option.id) ?? null;
                   const note = option.note ? markExtensions(option.note) : null;
                   const blockNote = isBlockHtml(note);
-                  const leadIn = lead && Boolean(option.profile || scope);
+                  const leadProfile =
+                    scope === "The whole unit" ? null : option.profile;
+                  const leadIn = lead && Boolean(leadProfile || scope);
                   const structured =
                     leadIn ||
                     granted ||
@@ -801,12 +811,12 @@ export const UnitEquipment: React.FC<{
                       {continuation && (
                         <span className="font-subtitle">{OR}</span>
                       )}
-                      {lead && option.profile && (
-                        <strong>{option.profile.name}</strong>
+                      {lead && leadProfile && (
+                        <strong>{leadProfile.name}</strong>
                       )}
                       {lead && scope && (
                         <strong>
-                          {option.profile && ", "}
+                          {leadProfile && ", "}
                           {scope}
                         </strong>
                       )}

@@ -692,6 +692,7 @@ export const ROUGH_RIDERS: {
       {
         id: 49,
         name: "Rough Rider",
+        models_min: 5,
         models_max: 5,
         unit_profile_weapons: [
           {
@@ -738,6 +739,7 @@ export const ROUGH_RIDERS: {
       {
         id: 50,
         name: "Horse",
+        models_min: 5,
         models_max: 5,
         unit_profile_weapons: [],
         unit_profile_armour: [],

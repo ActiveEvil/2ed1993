@@ -303,7 +303,10 @@ restriction. The phrasings:
 
 | data | renders |
 | --- | --- |
-| `whole_unit` | All models |
+| `whole_unit`, `optional` false | All models |
+| `whole_unit`, `optional` true | The whole unit |
+| `whole_unit`, `optional` true, profile is the only starting profile | The whole unit (profile name dropped) |
+| `whole_unit`, `optional` true, profile is part of a mixed unit | Guardian, all models |
 | profile, no count, multi-model profile | Guardian, any model |
 | profile, no count, single-model profile | Sergeant |
 | min = max = N | Guardian, 2 models |
@@ -440,6 +443,7 @@ Genestealer Cults). Ruled by Thomas 15 October 2026 (ORK-47).
 | 5 Oct | Section rules | A special rule that is an item in an Equipment section links from a unit entry to that section's article on the list page and has no chapter on the faction rules page; on a list that does not stock it, the name prints unlinked and the prose prints in full. Where it is stocked, the entry prints the name and any assignment note, not the prose, and the article spaces its paragraphs as the entry does. |
 | 5 Nov | Mounted riders | An entry with its own `points` and compulsory profile-priced `army_list_entry_options` prints each rider's price in the Points column, the entry's points on the unpriced mount row (the first one, if several; nowhere if none), and the sum on the entry row. Optional profile prices print in the column and are left out of the total. Graded entries (`points` null) are unchanged. First use: the Exodite Lords on Carnosaur. |
 | 5 Nov | Weighted set members | `army_list_allowance_set_entries.count_as` (integer, default 1) is how many of the set's counted thing one of the entry stands for; the bracket says "which counts as two" after the member's name. First use: the Exodite Lords set on Codex: Eldar, where the Carnosaur's two riders count against the one-Lord-per-Dragon-Knights-squad rule (CAR-10). |
+| 12 Nov | Whole-unit fact or choice | A whole-unit fact (`optional` false) keeps "All models"; a whole-unit choice (`optional` true) leads with "The whole unit" — "unit", not "squad", as cards are also mobs, packs and broods. Where a whole-unit choice names a profile and that profile is the only one with `models_min` above 0, the profile name is dropped (Freebooter Pirates, Gretchin Mob, Snotling Herd: the other profile is the upgraded form at 0); a profile that is only part of the unit keeps "Guardian, all models". Applies to every option group. Rows that grant rules keep "The unit"; facts with a profile and single-model units are unchanged. Refines 18 Sep. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;
