@@ -27,7 +27,6 @@ about 10&ndash;20 seconds a page depending on cores.
 ## Running
 
     python3 dump-texts.py                                     # writes texts.json
-    psql "$DATABASE_URL" -At -f dump-texts.sql > texts.json   # equivalent, needs psql
 
     python3 measure.py texts.json                 # audit, worst first
     python3 measure.py texts.json --gate          # exit 1 on unexempt failure

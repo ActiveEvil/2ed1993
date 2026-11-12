@@ -66,6 +66,9 @@ target entry's unit (BF-18).
 The third migration (army_list_requirements_3) adds the attachment mode
 leads. requirement_leader holds BF-32: a leads row carries no count, and no
 entry has both a must and a leads row to the same target.
+The fourth migration (army_list_requirements_4) adds target_datafax_weapon_id.
+requirement_datafax_weapon holds the weapon's datafax to the subject entry's
+unit (BF-45).
 armour_bars holds BF-17 and BF-19: an armour flagged bars_bike is on no
 profile of a unit whose datafax has the Bikes & Trikes motive type,
 BIKE_MOTIVE_TYPE, and on no profile that a compulsory unit option gives such a
@@ -86,7 +89,8 @@ which wears armour that bars bikes when the ride is a bike (BF-14, BF-17).
 requirement_attachment wants attachment rows covering every profile of a
 character whose entry note or unit option notes match JOINS (which takes
 "stands in for a unit's officer" but not "the army's"), magazine asides
-left out; allowance rules play no part (XL-4).
+left out, save that an option scoped to a profile needs only that profile
+covered; allowance rules play no part (XL-4).
 option_eligibility mirrors item_eligibility for unit_options.restriction: a
 restriction matching OPTION_GATED has an affiliation_id or a requirement row
 other than army_cap naming the option, unless the words before "only" name a
@@ -576,6 +580,11 @@ def kind_ok(row):
     return False
 
 
+def subject_name(row):
+    first = row["s"][0] if row["s"] else None
+    return (first.get("n") or f"{first['c'][:-3]} {first['id']}") if first else "?"
+
+
 def requirement_checks(req):
     rows = {row["id"]: row for row in req["rows"]}
     transports = {s["id"] for row in req["rows"] if row["k"] == "transport"
@@ -589,8 +598,7 @@ def requirement_checks(req):
                         (row["k"], row.get("mode")))
 
     for row in req["rows"]:
-        subject = row["s"][0]["n"] if row["s"] else "?"
-        label = f"{row['l']}:{subject}"
+        label = f"{row['l']}:{subject_name(row)}"
         head = f"army_list_requirements {row['id']}"
         paired = row["k"] == "substitution" and {t["c"] for t in row["t"]} == {
             "target_entry_id", "target_profile_id"}
@@ -629,6 +637,12 @@ def requirement_checks(req):
             yield ("requirement_profile", row["k"], label,
                    f"{head}: subject_profile_id {profile['id']} ({profile['n']}) is on unit "
                    f"{profile['u']}, the subject entry's unit is {profile.get('eu')}")
+        weapon = row.get("tw")
+        if weapon and weapon["u"] != weapon.get("eu"):
+            yield ("requirement_datafax_weapon", row["k"], label,
+                   f"{head}: target_datafax_weapon_id {weapon['id']} is on datafax "
+                   f"{weapon['d']} of unit {weapon['u']}, the subject entry's unit is "
+                   f"{weapon.get('eu')}")
         target = row.get("tp")
         if row["k"] == "substitution" and target and target["u"] != target.get("eu"):
             yield ("requirement_profile", row["k"], label,
@@ -760,7 +774,7 @@ def replaces_checks(req):
                    f"what they replace, {sorted(found, key=str)}")
 
 
-UNWRITTEN_LISTS = {9, 12, 13, 14}
+UNWRITTEN_LISTS = {9, 12, 14}
 CHARACTER_TYPE = 1
 SQUAD_BANDS = {"Squads", "Mobs", "Broods"}
 COMMANDS = re.compile(r"\b(?:Commands|commands?)\b(?:\s+the\s+army\b|[^.]*\bplace\b)")
@@ -804,7 +818,7 @@ def commander_checks(req):
                 for i in ends for m in [COMMANDS.search(notes.get(i, ""))] if m]
         if why:
             yield (row["l"], "requirement_commander", "substitution",
-                   f"{row['l']}:{row['s'][0]['n']}",
+                   f"{row['l']}:{subject_name(row)}",
                    f"army_list_requirements {row['id']}: a substitution doing a commander "
                    f"row's work, as {why[0]}")
 
@@ -853,7 +867,7 @@ def attachment_checks(req):
     notes = defaultdict(list)
     for o in req["options"]:
         if o.get("note"):
-            notes[o["u"]].append((f"unit_options {o['id']}", o["note"]))
+            notes[o["u"]].append((f"unit_options {o['id']}", o["note"], o.get("p")))
     scopes = defaultdict(set)
     for row in req["rows"]:
         if row["k"] == "attachment":
@@ -862,22 +876,24 @@ def attachment_checks(req):
     for entry in req["lineup"]:
         if entry.get("ut") != CHARACTER_TYPE:
             continue
-        found = [(where, m.group(0))
-                 for where, text in [(f"army_list_entries {entry['id']}", entry.get("note"))]
-                 + notes[entry["u"]] for m in [JOINS.search(said(text))] if m]
+        sources = [(f"army_list_entries {entry['id']}", entry.get("note"), None)] + notes[entry["u"]]
+        found = [(where, m.group(0), scope) for where, text, scope in sources
+                 for m in [JOINS.search(said(text))] if m]
         if not found:
             continue
-        where, phrase = found[0]
+        where, phrase, _ = found[0]
         head = f"army_list_entries {entry['id']}: {where} says {phrase!r}"
         name = f"{entry['l']}:{entry['n']}"
+        required = set().union(*({scope} if scope else profiles[entry["u"]]
+                                 for _, _, scope in found))
         covered = scopes[entry["id"]]
         if not covered:
             yield (entry["l"], "requirement_attachment", "entry", name,
                    f"{head}, and the entry has no attachment rows")
-        elif None not in covered and profiles[entry["u"]] - covered:
+        elif None not in covered and required - covered:
             yield (entry["l"], "requirement_attachment", "entry", name,
                    f"{head}, and its attachment rows leave profiles "
-                   f"{sorted(profiles[entry['u']] - covered)} uncovered")
+                   f"{sorted(required - covered)} uncovered")
 
 
 OPTION_GATED = re.compile(r"\bonly\b|^Not\b", re.I)

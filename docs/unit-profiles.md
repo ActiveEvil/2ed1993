@@ -403,8 +403,11 @@ it is 0-1: where one unit commands and named special characters stand in for
 it, the entry carries the note "Every army has one, unless X or Y commands in
 his place." and each stand-in's entry "Commands the army in the X's place."
 (Codex Imperial Guard, Codex Space Wolves); where more than one entry may
-command, the sentence goes in the Characters band note instead (Codex Eldar,
-Genestealer Cults). Ruled by Thomas 15 October 2026 (ORK-47).
+command, the entries share an allowance set with a minimum of one, and the
+sentence prints from that set's rule as a line at the head of the band, with
+no sentence in the band note (Genestealer Cults, BF-13; Codex Eldar, BF-44).
+Ruled by Thomas 15 October 2026 (ORK-47); the band-note placement it gave for
+the last case was replaced by the generated line on 9 November (BF-13).
 
 ## The calls
 

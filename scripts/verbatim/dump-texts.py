@@ -5,8 +5,7 @@
   python3 scripts/verbatim/dump-texts.py -          # or to stdout
 
 Reads SUPABASE_URL and SUPABASE_PUBLISHABLE_DEFAULT_KEY from .env.local at the
-repo root, or from the environment. Same shape as dump-texts.sql, which needs a
-DATABASE_URL and psql; this needs neither.
+repo root, or from the environment.
 """
 import json, os, re, sys, urllib.parse, urllib.request
 
@@ -240,6 +239,15 @@ def target_profile(row):
                      "eu": entry_units.get(row["target_entry_id"])})
 
 
+def target_weapon(row):
+    if row.get("target_datafax_weapon_id") is None:
+        return None
+    weapon = row["target_datafax_weapon_id"]
+    datafax = weapon_datafaxes[weapon]
+    return stripped({"id": weapon, "d": datafax, "u": datafax_units[datafax],
+                     "eu": entry_units.get(row["entry_id"])})
+
+
 def resolved(row, columns):
     return [stripped({"c": c, "id": row[c], "n": refs[kind][row[c]][0],
                       "l": refs[kind][row[c]][1]})
@@ -292,13 +300,15 @@ unit_types = {u["id"]: u["unit_type_id"] for u in rows("units", "id,unit_type_id
 weapon_rows = rows("datafax_weapons", "id,datafax_id,alternative,alternative_max,optional,"
                    "replaces_datafax_weapon_id,grant_mode,add_points")
 weapon_datafaxes = {w["id"]: w["datafax_id"] for w in weapon_rows}
+datafax_units = {d["id"]: d["unit_id"] for d in rows("datafaxes", "id,unit_id")}
 
 requirements = {
     "rows": [stripped({"id": r["id"], "k": r["kind"], "l": r["army_list_id"],
                        "s": resolved(r, SUBJECTS), "t": resolved(r, TARGETS),
                        "mode": r["mode"], "count": r["count"], "label": r["label"],
                        "variant": r["variant_id"], "under": r["under_variant"],
-                       "sp": subject_profile(r), "tp": target_profile(r)})
+                       "sp": subject_profile(r), "tp": target_profile(r),
+                       "tw": target_weapon(r)})
              for r in sorted(rows("army_list_requirements", "*"), key=lambda r: r["id"])],
     "sections": [stripped({"id": c["id"], "l": c["army_list_id"], "n": c["category"],
                            "note": c["note"], "scope": c["limit_scope"],
@@ -371,9 +381,10 @@ requirements = {
                        for m in rows("army_list_allowance_set_entries",
                                      "set_id,army_list_entry_id")),
                       key=lambda m: (m["set"], m["e"])),
-    "options": [stripped({"id": o["id"], "u": o["unit_id"], "g": o["option_group"],
-                          "whole": o["whole_unit"], "note": o["note"]})
-                for o in sorted(rows("unit_options", "id,unit_id,option_group,whole_unit,note"),
+    "options": [stripped({"id": o["id"], "u": o["unit_id"], "p": o["unit_profile_id"],
+                          "g": o["option_group"], "whole": o["whole_unit"], "note": o["note"]})
+                for o in sorted(rows("unit_options",
+                                     "id,unit_id,unit_profile_id,option_group,whole_unit,note"),
                                 key=lambda o: o["id"])
                 if o["note"] or o["option_group"] == "support"],
     "profiles": [{"id": i, "u": p["unit_id"]} for i, p in sorted(profile_names.items())],

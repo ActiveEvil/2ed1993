@@ -814,6 +814,7 @@ export type Database = {
           subject_profile_id: number | null
           target_ally_id: number | null
           target_category_id: number | null
+          target_datafax_weapon_id: number | null
           target_entry_id: number | null
           target_entry_option_id: number | null
           target_profile_id: number | null
@@ -845,6 +846,7 @@ export type Database = {
           subject_profile_id?: number | null
           target_ally_id?: number | null
           target_category_id?: number | null
+          target_datafax_weapon_id?: number | null
           target_entry_id?: number | null
           target_entry_option_id?: number | null
           target_profile_id?: number | null
@@ -876,6 +878,7 @@ export type Database = {
           subject_profile_id?: number | null
           target_ally_id?: number | null
           target_category_id?: number | null
+          target_datafax_weapon_id?: number | null
           target_entry_id?: number | null
           target_entry_option_id?: number | null
           target_profile_id?: number | null
@@ -945,6 +948,13 @@ export type Database = {
             columns: ["target_category_id"]
             isOneToOne: false
             referencedRelation: "unit_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "army_list_requirements_target_datafax_weapon_id_fkey"
+            columns: ["target_datafax_weapon_id"]
+            isOneToOne: false
+            referencedRelation: "datafax_weapons"
             referencedColumns: ["id"]
           },
           {

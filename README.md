@@ -32,7 +32,6 @@ pnpm dev
 | `SUPABASE_URL` | `lib/supabase.ts`, `scripts/verbatim/dump-texts.py` |
 | `SUPABASE_PUBLISHABLE_DEFAULT_KEY` | `lib/supabase.ts`, `scripts/verbatim/dump-texts.py` |
 | `NEXT_PUBLIC_SUPABASE_PROJECT_ID` | `supabase-image-loader.ts` |
-| `DATABASE_URL` | only `dump-texts.sql`, the psql equivalent of `dump-texts.py` |
 
 The publishable key is read-only by RLS policy. Every table needs RLS enabled
 and a public select policy or its rows will simply not appear.
