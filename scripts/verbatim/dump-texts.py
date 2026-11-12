@@ -376,7 +376,17 @@ requirements = {
                 for o in sorted(rows("unit_options", "id,unit_id,option_group,whole_unit,note"),
                                 key=lambda o: o["id"])
                 if o["note"] or o["option_group"] == "support"],
-    "profiles": [{"id": i, "u": p["unit_id"]} for i, p in sorted(profile_names.items())]}
+    "profiles": [{"id": i, "u": p["unit_id"]} for i, p in sorted(profile_names.items())],
+    "restrictions": [stripped({"id": o["id"], "u": o["unit_id"], "r": o["restriction"],
+                               "a": o["affiliation_id"]})
+                     for o in sorted(rows("unit_options", "id,unit_id,affiliation_id,restriction"),
+                                     key=lambda o: o["id"]) if o["restriction"]],
+    "gear": sorted({g["name"] for table in ("weapons", "armour", "wargear_cards")
+                    for g in rows(table, "name")}),
+    "count_as": sorted(({"set": m["set_id"], "e": m["army_list_entry_id"], "n": m["count_as"]}
+                        for m in rows("army_list_allowance_set_entries",
+                                      "set_id,army_list_entry_id,count_as")
+                        if m["count_as"] != 1), key=lambda m: (m["set"], m["e"]))}
 
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
                       "cards": cards, "grants": grants, "sources": sources,

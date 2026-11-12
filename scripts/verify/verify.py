@@ -85,7 +85,17 @@ them every entry in the list's SQUAD_BANDS, less any squad every profile of
 which wears armour that bars bikes when the ride is a bike (BF-14, BF-17).
 requirement_attachment wants attachment rows covering every profile of a
 character whose entry note or unit option notes match JOINS, magazine asides
-left out; allowance rules play no part (XL-4). A finding on a list in UNWRITTEN_LISTS is held, not failed, and shows
+left out; allowance rules play no part (XL-4).
+option_eligibility mirrors item_eligibility for unit_options.restriction: a
+restriction matching OPTION_GATED has an affiliation_id or a requirement row
+other than army_cap naming the option, unless the words before "only" name a
+weapon, armour or card in `gear`, which makes it a limit within the unit; one
+matching CAPPED also needs an army_cap row with the option as subject, as a
+row holds one unit_option_id and so cannot share a cap across options.
+squadron_max holds an entry note's "squadron or battery of up to N" and the
+column to each other, both ways. stand_in_set
+wants an entry whose note matches STANDS_IN in an allowance set with the
+entry it names, counted as one. A finding on a list in UNWRITTEN_LISTS is held, not failed, and shows
 with --list. unwritten_lists keeps that set honest and is never held.
 """
 import json, os, re, sys, unicodedata
@@ -868,11 +878,103 @@ def attachment_checks(req):
                    f"{sorted(profiles[entry['u']] - covered)} uncovered")
 
 
+OPTION_GATED = re.compile(r"\bonly\b|^Not\b", re.I)
+CAPPED = re.compile(r"\bone\b.*\bonly\b", re.I)
+SQUADRON = re.compile(r"\b(?:squadron|battery) of up to (\w+)\b")
+NUMBER_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+                "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+STANDS_IN = re.compile(r"\bStands in for (?:one of )?the army(?:&apos;|')s ([^,.]+)[,.]"
+                       r".*\bevery allowance counts him as (?:one|an? [^,.]+)\.", re.S)
+
+
+def option_checks(req):
+    gear = {g.lower() for g in req["gear"]}
+    named = {r["id"] for row in req["rows"] if row["k"] != "army_cap"
+             for r in row["s"] + row["t"]
+             if r["c"] in ("unit_option_id", "target_unit_option_id")}
+    capped = {r["id"] for row in req["rows"] if row["k"] == "army_cap"
+              for r in row["s"] if r["c"] == "unit_option_id"}
+    lists = defaultdict(set)
+    for e in req["lineup"]:
+        lists[e["u"]].add(e["l"])
+    for option in req["restrictions"]:
+        restriction = option["r"]
+        if not OPTION_GATED.search(restriction):
+            continue
+        limit = re.match(r"^(.+?) only\b", restriction)
+        if limit and limit.group(1).lower() in gear:
+            continue
+        missing = []
+        if not (option.get("a") or option["id"] in named):
+            missing.append("no affiliation and no requirement row for the condition")
+        if CAPPED.search(restriction) and option["id"] not in capped:
+            missing.append("no army_cap row for the cap")
+        if not missing:
+            continue
+        for l in sorted(lists[option["u"]]) or [None]:
+            yield (l, "option_eligibility", "unit_option", f"{l}:{option['id']}",
+                   f"unit_options {option['id']}: {restriction!r} has "
+                   + ", and ".join(missing))
+
+
+def squadron_checks(req):
+    columns = {e["id"]: e.get("sq") for e in req.get("entries", [])}
+    for entry in req["lineup"]:
+        match = SQUADRON.search(said(entry.get("note")))
+        if not match:
+            if columns.get(entry["id"]) is not None:
+                yield (entry["l"], "squadron_max", "entry", f"{entry['l']}:{entry['n']}",
+                       f"army_list_entries {entry['id']}: squadron_max is "
+                       f"{columns[entry['id']]}, and the note has no squadron or battery phrase")
+            continue
+        word = match.group(1).lower()
+        count = int(word) if word.isdigit() else NUMBER_WORDS.get(word)
+        if count != columns.get(entry["id"]):
+            yield (entry["l"], "squadron_max", "entry", f"{entry['l']}:{entry['n']}",
+                   f"army_list_entries {entry['id']}: note says {match.group(0)!r}, "
+                   f"squadron_max is {columns.get(entry['id'])!r}")
+
+
+def stand_in_checks(req):
+    sets = defaultdict(set)
+    for m in req["members"]:
+        sets[m["e"]].add(m["set"])
+    counted = {(m["set"], m["e"]): m["n"] for m in req.get("count_as", [])}
+    for entry in req["lineup"]:
+        match = STANDS_IN.search(said(entry.get("note")))
+        if not match:
+            continue
+        head = f"army_list_entries {entry['id']}: stands in for {match.group(1)!r}"
+        name = f"{entry['l']}:{entry['n']}"
+        phrase = stem(match.group(1))
+        others = [e for e in req["lineup"] if e["l"] == entry["l"] and e["id"] != entry["id"]]
+        targets = ([e for e in others if stem(e["n"]) == phrase]
+                   or [e for e in others if phrase.startswith(stem(e["n"]) + " ")])
+        if len({e["id"] for e in targets}) != 1:
+            yield (entry["l"], "stand_in_set", "entry", name,
+                   f"{head}, which names no single entry on list {entry['l']}")
+            continue
+        target = targets[0]
+        shared = sorted(sets[entry["id"]] & sets[target["id"]])
+        if not shared:
+            yield (entry["l"], "stand_in_set", "entry", name,
+                   f"{head}, and no allowance set holds it with army_list_entries "
+                   f"{target['id']} ({target['n']})")
+        elif all(counted.get((s, entry["id"]), 1) != 1 for s in shared):
+            yield (entry["l"], "stand_in_set", "entry", name,
+                   f"{head}, and set {shared[0]} counts it as "
+                   f"{counted[(shared[0], entry['id'])]}, not one")
+
+
 def cross_list_checks(req):
     yield from unwritten_checks(req)
     yield from commander_checks(req)
     yield from ride_checks(req)
     yield from attachment_checks(req)
+    if "restrictions" in req:
+        yield from option_checks(req)
+        yield from squadron_checks(req)
+        yield from stand_in_checks(req)
 
 
 def main():
@@ -908,6 +1010,9 @@ def main():
     elif "lineup" not in requirements:
         print("no lineup in the dump, so the cross-list checks are skipped; "
               "re-run dump-texts.py")
+    elif "restrictions" not in requirements:
+        print("no restrictions in the dump, so option_eligibility, squadron_max and "
+              "stand_in_set are skipped; re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
