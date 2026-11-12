@@ -760,7 +760,7 @@ def replaces_checks(req):
                    f"what they replace, {sorted(found, key=str)}")
 
 
-UNWRITTEN_LISTS = {3, 9, 12, 13, 14}
+UNWRITTEN_LISTS = {9, 12, 13, 14}
 CHARACTER_TYPE = 1
 SQUAD_BANDS = {"Squads", "Mobs", "Broods"}
 COMMANDS = re.compile(r"\b(?:Commands|commands?)\b(?:\s+the\s+army\b|[^.]*\bplace\b)")

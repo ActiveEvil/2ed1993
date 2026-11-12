@@ -20,7 +20,11 @@
   ],
   "requirement_attachment": [
     {"key": "entry:1:Stumper Muckstart", "reason": "\"need not join a Command Squad\" is the negation; he fights on his own"},
-    {"key": "entry:2:Tech-Priest Engineer", "reason": "\"never leads a squad\" is the negation; he travels with one and fights as an independent model"}
+    {"key": "entry:2:Tech-Priest Engineer", "reason": "\"never leads a squad\" is the negation; he travels with one and fights as an independent model"},
+    {"key": "entry:3:Confessor", "reason": "\"may not lead a squad\" is the negation; he leads no squad, Black Codex p10, XL-5"}
+  ],
+  "requirement_commander": [
+    {"key": "army_list:3", "reason": "the Imperial Agents are always an ally and the list prints no commander, so no commander row, BF-42"}
   ],
   "ride_option": [
     {"key": "entry:2:Rough Rider Squad", "reason": "already mounted on horses, XL-9 of 12 November"}
