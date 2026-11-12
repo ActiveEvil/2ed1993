@@ -330,7 +330,8 @@ Baseline: **`/general-rules`**.
     gap or a known problem, written as prose for flavour and inspiration. It
     never changes what strict mode accepts, and it needs no official FAQ behind
     it. The Virus Outbreak aside, which sets the card drawer's default, is the
-    one exception. Ruled by Thomas 12 November 2026 (XL-12).
+    one exception. On a list entry it goes at the end of the entry's note, not
+    on an option row. Ruled by Thomas 12 November 2026 (XL-12).
   - **Magazine material** — rules and extensions taken from Citadel Journal
     and White Dwarf. Marked with a band and a spine: the citation once, in the
     band, and nothing added to it; the spine down the right edge for the
