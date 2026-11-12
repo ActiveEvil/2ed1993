@@ -147,6 +147,12 @@
         line-height: var(--tw-leading, var(--text-sm--line-height));
       }
     }
+    .house-rule:not(.mag-note) {
+      margin-top: calc(var(--spacing) * 2);
+    }
+    &:has(+ p) > .house-rule:not(.mag-note):last-child {
+      margin-bottom: calc(var(--spacing) * 2);
+    }
   }
   .dynamic-content.measure {
     h3,
