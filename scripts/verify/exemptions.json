@@ -21,7 +21,8 @@
   "requirement_attachment": [
     {"key": "entry:1:Stumper Muckstart", "reason": "\"need not join a Command Squad\" is the negation; he fights on his own"},
     {"key": "entry:2:Tech-Priest Engineer", "reason": "\"never leads a squad\" is the negation; he travels with one and fights as an independent model"},
-    {"key": "entry:3:Confessor", "reason": "\"may not lead a squad\" is the negation; he leads no squad, Black Codex p10, XL-5"}
+    {"key": "entry:3:Confessor", "reason": "\"may not lead a squad\" is the negation; he leads no squad, Black Codex p10, XL-5"},
+    {"key": "entry:12:Iron Priest", "reason": "\"May lead\" is a permission; the Servitor Bodyguard is tied to him by its own requires_unit row, BF-36 and BF-50"}
   ],
   "requirement_commander": [
     {"key": "army_list:3", "reason": "the Imperial Agents are always an ally and the list prints no commander, so no commander row, BF-42"}

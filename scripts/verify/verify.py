@@ -452,6 +452,7 @@ def grant_checks(grants):
 LIMIT_VOCABULARY = {
     "One per model.": ("model", 1, False, False),
     "One item per model.": ("model", 1, False, False),
+    "Exactly one per model.": ("model", 1, False, False),
     "Any number per model.": ("model", None, False, False),
     "One item per crew.": ("crew", 1, False, False),
     "One per weapons team.": ("team", 1, False, False),
@@ -461,6 +462,7 @@ LIMIT_VOCABULARY = {
     "One item or combination per model.": ("model", 1, True, False),
     "Up to two per model, each a different power.": ("model", 2, False, True),
 }
+LIMIT_MINIMUMS = {"Exactly one per model.": 1}
 FIXED_OPENERS = {78: {315}, 79: {315}, 80: {311}}
 SUBJECT_ITEMS = {"wargear_item_id", "unit_option_id", "entry_option_id"}
 TARGET_ITEMS = {"target_wargear_item_id", "target_unit_option_id", "target_entry_option_id"}
@@ -488,7 +490,7 @@ def section_checks(req):
         if expected is None:
             yield ("section_limit", "wargear_cat", label,
                    f"{head}: opening sentence {sentences[0]!r} is not in the vocabulary")
-        elif found != expected or section.get("min") is not None:
+        elif found != expected or section.get("min") != LIMIT_MINIMUMS.get(sentences[0]):
             yield ("section_limit", "wargear_cat", label,
                    f"{head}: {sentences[0]!r} reads {expected}, columns hold {found}"
                    f" with limit_min {section.get('min')!r}")
@@ -774,7 +776,7 @@ def replaces_checks(req):
                    f"what they replace, {sorted(found, key=str)}")
 
 
-UNWRITTEN_LISTS = {9, 12, 14}
+UNWRITTEN_LISTS = {9, 14}
 CHARACTER_TYPE = 1
 SQUAD_BANDS = {"Squads", "Mobs", "Broods"}
 COMMANDS = re.compile(r"\b(?:Commands|commands?)\b(?:\s+the\s+army\b|[^.]*\bplace\b)")
