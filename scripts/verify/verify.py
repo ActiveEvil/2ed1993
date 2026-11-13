@@ -95,8 +95,8 @@ option_eligibility mirrors item_eligibility for unit_options.restriction: a
 restriction matching OPTION_GATED has an affiliation_id or a requirement row
 other than army_cap naming the option, unless the words before "only" name a
 weapon, armour or card in `gear`, which makes it a limit within the unit; one
-matching CAPPED also needs an army_cap row with the option as subject, as a
-row holds one unit_option_id and so cannot share a cap across options.
+matching CAPPED also needs an army_cap row naming the option, as its subject
+or, where two options share one cap, as its target_unit_option_id (XL-17).
 squadron_max holds an entry note's "squadron or battery of up to N" and the
 column to each other, both ways. stand_in_set
 wants an entry whose note matches STANDS_IN in an allowance set with the
@@ -776,7 +776,7 @@ def replaces_checks(req):
                    f"what they replace, {sorted(found, key=str)}")
 
 
-UNWRITTEN_LISTS = {9, 14}
+UNWRITTEN_LISTS = {9}
 CHARACTER_TYPE = 1
 SQUAD_BANDS = {"Squads", "Mobs", "Broods"}
 COMMANDS = re.compile(r"\b(?:Commands|commands?)\b(?:\s+the\s+army\b|[^.]*\bplace\b)")
@@ -913,7 +913,8 @@ def option_checks(req):
              for r in row["s"] + row["t"]
              if r["c"] in ("unit_option_id", "target_unit_option_id")}
     capped = {r["id"] for row in req["rows"] if row["k"] == "army_cap"
-              for r in row["s"] if r["c"] == "unit_option_id"}
+              for r in row["s"] + row["t"]
+              if r["c"] in ("unit_option_id", "target_unit_option_id")}
     lists = defaultdict(set)
     for e in req["lineup"]:
         lists[e["u"]].add(e["l"])
