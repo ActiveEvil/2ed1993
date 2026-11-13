@@ -397,15 +397,18 @@ differ, each part states its own amount ("Up to one per Guardian Squad, or
 exactly one per Eldar Pirates"). A rule counted per rule takes no minimum, and
 the database refuses one (ELD-47).
 
-**The commander entry.** Where the commander is compulsory and nothing
-displaces it, the entry is 1-1 with no note (the Black Codex lists). Otherwise
-it is 0-1, whether named special characters stand in for one unit or more than
-one entry may command: the entries share an allowance set with a minimum of
-one, the sentence prints from that set's rule as a line at the head of the
-band, and neither the band note nor the ordinary entry's note repeats it
-(Genestealer Cults, BF-13; Codex Eldar, BF-44; Codex Army Lists: Space Marines,
-XL-8; Codex Space Wolves). A stand-in's own entry keeps "Commands the army in
-the X's place." Ruled by Thomas 15 October 2026 (ORK-47); the band-note
+**The commander entry.** Where the commander is compulsory and nothing displaces
+it, the entry is 1-1 with no note (Codex Army Lists: Imperial Guard, Squats,
+Orks and Chaos). Otherwise it is 0-1, whether named special characters stand in
+for one unit or more than one entry may command: the entries share an allowance
+set with a minimum of one, the sentence prints from that set's rule as a line at
+the head of the band, and neither the band note nor the ordinary entry's note
+repeats it (Genestealer Cults, BF-13; Codex Eldar, BF-44; Codex Army Lists:
+Space Marines, XL-8; Codex Space Wolves). A stand-in's own entry keeps "Commands
+the army in the X's place." Where a list makes no commander compulsory, the
+entry is 0-1 with no note and no set, and an army that leaves it out has no
+commander (Codex Army Lists: Tyranids, BF-57). Ruled by Thomas 15 October 2026
+(ORK-47); the band-note
 placement it gave was replaced by the generated line on 9 November (BF-13), and
 the entry note "Every army has one, unless X or Y commands in his place." by
 the same line on 12 November (XL-8).

@@ -100,8 +100,8 @@ or, where two options share one cap, as its target_unit_option_id (XL-17).
 squadron_max holds an entry note's "squadron or battery of up to N" and the
 column to each other, both ways. stand_in_set
 wants an entry whose note matches STANDS_IN in an allowance set with the
-entry it names, counted as one. A finding on a list in UNWRITTEN_LISTS is held, not failed, and shows
-with --list. unwritten_lists keeps that set honest and is never held.
+entry it names, counted as one. unwritten_lists reports a list that has entries
+and no army_list_requirements rows.
 """
 import json, os, re, sys, unicodedata
 from collections import defaultdict
@@ -776,7 +776,6 @@ def replaces_checks(req):
                    f"what they replace, {sorted(found, key=str)}")
 
 
-UNWRITTEN_LISTS = {9}
 CHARACTER_TYPE = 1
 SQUAD_BANDS = {"Squads", "Mobs", "Broods"}
 COMMANDS = re.compile(r"\b(?:Commands|commands?)\b(?:\s+the\s+army\b|[^.]*\bplace\b)")
@@ -792,10 +791,7 @@ def said(text):
 def unwritten_checks(req):
     written = {e["l"] for e in req["lineup"]}
     ruled = {row["l"] for row in req["rows"]}
-    for l in sorted(UNWRITTEN_LISTS & ruled):
-        yield (None, "unwritten_lists", "army_list", str(l),
-               f"list {l} is in UNWRITTEN_LISTS and has army_list_requirements rows")
-    for l in sorted(written - ruled - UNWRITTEN_LISTS):
+    for l in sorted(written - ruled):
         yield (None, "unwritten_lists", "army_list", str(l),
                f"list {l} has entries and no army_list_requirements rows")
 
@@ -1083,23 +1079,18 @@ def main():
             continue
         failures.append((check, kind, name, detail))
 
-    held_count = 0
     if requirements is not None and "lineup" in requirements:
         for l, check, kind, name, detail in cross_list_checks(requirements):
             if excused(check, kind, name, detail):
                 excused_count += 1
                 if show_exempt:
                     print(f"  exempt {check:14} {kind}:{name}  {detail}")
-            elif l in UNWRITTEN_LISTS:
-                held_count += 1
-                if show_exempt:
-                    print(f"  held   {check:14} {kind}:{name}  {detail}")
             else:
                 failures.append((check, kind, name, detail))
 
     html = sum(1 for r in texts if is_html(r["k"]))
     print(f"{len(texts)} texts ({html} html, {len(texts) - html} plain), "
-          f"{len(failures)} findings, {excused_count} exempt, {held_count} held")
+          f"{len(failures)} findings, {excused_count} exempt")
     for check, kind, name, detail in sorted(failures):
         print(f"  {check:14} {kind}:{name}\n{'':18}{detail}")
     sys.exit(1 if failures else 0)
