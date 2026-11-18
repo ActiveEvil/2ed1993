@@ -149,9 +149,12 @@ const textWeight = (html: string): number => {
 };
 
 const points = (value: number): string =>
-  `${Number.isInteger(value) ? value : value.toFixed(1)} point${value === 1 ? "" : "s"}`;
+  value === 0
+    ? "Free"
+    : `${Number.isInteger(value) ? value : value.toFixed(1)} point${value === 1 ? "" : "s"}`;
 
-const cost = (value: number): string => `+${points(value)}`;
+const cost = (value: number): string =>
+  value === 0 ? "Free" : `+${points(value)}`;
 
 type Fitting = {
   mount: string | null;

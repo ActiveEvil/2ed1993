@@ -140,7 +140,7 @@ type Entry = {
 };
 
 const formatPoints = (points: number): string =>
-  `${points}${points === 1 ? "pt" : "pts"}`;
+  points === 0 ? "Free" : `${points}${points === 1 ? "pt" : "pts"}`;
 
 const formatAllowance = (min: number, max: number | null): string | null =>
   max === null
@@ -152,6 +152,10 @@ const formatAllowance = (min: number, max: number | null): string | null =>
       : `${min}–${max}`;
 
 const formatCost = (points: number, basis: string | null): string => {
+  if (points === 0) {
+    return "Free";
+  }
+
   switch (basis) {
     case "Per model upgrade":
       return `+${formatPoints(points)} per model`;

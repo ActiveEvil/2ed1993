@@ -77,12 +77,20 @@ const deckInk = (deck: CardDeck, first: string | undefined) => {
 };
 
 export const wargearCardPoints = (points: string | null): string =>
-  points ? `${points} Point${points === "1" ? "" : "s"}` : "Special";
+  !points
+    ? "Special"
+    : /^0+(\.0+)?$/.test(points)
+      ? "Free"
+      : `${points} Point${points === "1" ? "" : "s"}`;
 
 export const vehicleCardPoints = (
   points: number,
   basis: string | null,
 ): string => {
+  if (points === 0) {
+    return "Free";
+  }
+
   switch (basis) {
     case "Per weapon upgrade":
       return `+${points} Points per weapon`;
