@@ -52,7 +52,9 @@ last-resort prose field and should normally be null.
   who must both ride — the Points column prints each rider's price and the
   entry's own points on the mount's row, and the entry row carries the total
   (307pts). A priced profile that is optional keeps its price in the column
-  and stays out of the total.
+  and stays out of the total. A compulsory profile price on a basis other
+  than "Per entry" is not added in but follows the entry's points after a
+  plus sign: the Weirdboy Warphead Mob reads "80pts + 10pts per model".
 - `mastery_level` and `wargear_cards_max` render as a sub-line under the
   profile name ("Mastery 4 · 1 wargear card"). A psyker character with no
   printed level takes its psi-level from `w` — the hero level, 1 to 4 — and
@@ -459,6 +461,7 @@ the same line on 12 November (XL-8).
 | 5 Nov | Mounted riders | An entry with its own `points` and compulsory profile-priced `army_list_entry_options` prints each rider's price in the Points column, the entry's points on the unpriced mount row (the first one, if several; nowhere if none), and the sum on the entry row. Optional profile prices print in the column and are left out of the total. Graded entries (`points` null) are unchanged. First use: the Exodite Lords on Carnosaur. |
 | 5 Nov | Weighted set members | `army_list_allowance_set_entries.count_as` (integer, default 1) is how many of the set's counted thing one of the entry stands for; the bracket says "which counts as two" after the member's name. First use: the Exodite Lords set on Codex: Eldar, where the Carnosaur's two riders count against the one-Lord-per-Dragon-Knights-squad rule (CAR-10). |
 | 12 Nov | Whole-unit fact or choice | A whole-unit fact (`optional` false) keeps "All models"; a whole-unit choice (`optional` true) leads with "The whole unit" — "unit", not "squad", as cards are also mobs, packs and broods. Where a whole-unit choice names a profile and that profile is the only one with `models_min` above 0, the profile name is dropped (Freebooter Pirates, Gretchin Mob, Snotling Herd: the other profile is the upgraded form at 0); a profile that is only part of the unit keeps "Guardian, all models". Applies to every option group. Rows that grant rules keep "The unit"; facts with a profile and single-model units are unchanged. Refines 18 Sep. |
+| 18 Nov | Compulsory per-model profile price | On an entry with its own `points`, a compulsory profile price on the "Per entry" basis is added into the entry row's total as before; one on any other basis is not added but follows the total after a plus sign. The Weirdboy Warphead Mob reads "80pts + 10pts per model", and its Madboy row keeps "10pts per model" in the Points column (LB-29). Refines 5 Nov. |
 
 Schema changes to these tables were applied as plain SQL with explicit
 approval up to 27 August and are absent from the Supabase migrations history;

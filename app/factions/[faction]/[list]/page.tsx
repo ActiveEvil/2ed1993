@@ -331,6 +331,8 @@ const buildEntry = (
   const compulsory = [...priceByProfile.values()].filter(
     (option) => !option.optional,
   );
+  const perEntry = (option: RawOption) =>
+    (option.points_bases?.name ?? "Per entry") === "Per entry";
 
   const wargearCardsMax =
     profiles.length > 0 &&
@@ -347,11 +349,20 @@ const buildEntry = (
   let cost: string | null = null;
 
   if (entry.points !== null) {
-    cost = formatCost(
-      entry.points +
-        compulsory.reduce((total, option) => total + (option.points ?? 0), 0),
-      basis,
-    );
+    cost = [
+      formatCost(
+        entry.points +
+          compulsory
+            .filter(perEntry)
+            .reduce((total, option) => total + (option.points ?? 0), 0),
+        basis,
+      ),
+      ...compulsory
+        .filter((option) => !perEntry(option))
+        .map((option) =>
+          formatCost(option.points ?? 0, option.points_bases?.name ?? null),
+        ),
+    ].join(" + ");
   } else if (
     basis === "See datafax" &&
     datafax !== null &&
