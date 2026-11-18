@@ -10,7 +10,7 @@ import {
 import { pricingCases } from "@/scripts/builder/pricing-cases";
 
 const LIST_IDS = Array.from({ length: 14 }, (_, index) => index + 1);
-const EXPECTED_UNPRICED_OPTIONS = new Set([235, 236, 339, 453, 480, 481]);
+const EXPECTED_UNPRICED_OPTIONS = new Set<number>();
 const TOLERANCE = 1e-9;
 
 const formatRows = (rows: RowRef[]) =>

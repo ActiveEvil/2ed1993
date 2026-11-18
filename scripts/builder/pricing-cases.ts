@@ -219,9 +219,6 @@ export const pricingCases: PricingCase[] = [
       }),
     ],
     expected: 60,
-    expectedUnpriced: [
-      { reason: "no_price_row", row: { table: "unit_options", id: 453 } },
-    ],
     source: "computed",
   },
   {
@@ -235,9 +232,6 @@ export const pricingCases: PricingCase[] = [
       }),
     ],
     expected: 50,
-    expectedUnpriced: [
-      { reason: "no_price_row", row: { table: "unit_options", id: 480 } },
-    ],
     source: "computed",
   },
   {
@@ -251,9 +245,6 @@ export const pricingCases: PricingCase[] = [
       }),
     ],
     expected: 10,
-    expectedUnpriced: [
-      { reason: "no_price_row", row: { table: "unit_options", id: 481 } },
-    ],
     source: "computed",
   },
   {

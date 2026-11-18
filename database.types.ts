@@ -2622,6 +2622,7 @@ export type Database = {
       }
       unit_special_rule_assignments: {
         Row: {
+          army_list_entry_id: number | null
           id: number
           note: string | null
           position: number
@@ -2630,6 +2631,7 @@ export type Database = {
           unit_profile_id: number | null
         }
         Insert: {
+          army_list_entry_id?: number | null
           id?: number
           note?: string | null
           position?: number
@@ -2638,6 +2640,7 @@ export type Database = {
           unit_profile_id?: number | null
         }
         Update: {
+          army_list_entry_id?: number | null
           id?: number
           note?: string | null
           position?: number
@@ -2646,6 +2649,13 @@ export type Database = {
           unit_profile_id?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "unit_special_rule_assignments_army_list_entry_id_fkey"
+            columns: ["unit_id", "army_list_entry_id"]
+            isOneToOne: false
+            referencedRelation: "army_list_entries"
+            referencedColumns: ["unit_id", "id"]
+          },
           {
             foreignKeyName: "unit_special_rule_assignments_special_rule_id_fkey"
             columns: ["special_rule_id"]

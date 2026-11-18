@@ -78,6 +78,9 @@ weapon_replaces holds BF-38, and reads the `alternatives` rows: the rows of one
 alternative group agree on replaces_datafax_weapon_id, grant_mode and
 add_points, a row replaces only a row on its own datafax, and a row that
 replaces another is optional.
+rule_scope reads the `rule_scopes` rows: a special rule scoped to one army
+list entry is not also on the same unit unscoped, so it prints once per entry.
+The composite foreign key already holds the entry to the rule's unit.
 The cross-list checks read the `lineup` block and hold the consistency
 rulings XL-1 to XL-7. requirement_commander wants a commander row with count
 0 on every list with entries, and reports a substitution row whose subject or
@@ -743,6 +746,16 @@ def armour_checks(req):
                        f"the Jump Pack card with it")
 
 
+def rule_scope_checks(req):
+    rows = req.get("rule_scopes", [])
+    whole = {(row["u"], row["r"]) for row in rows if "e" not in row}
+    for row in rows:
+        if "e" in row and (row["u"], row["r"]) in whole:
+            yield ("rule_scope", "unit", row["n"],
+                   f"unit_special_rule_assignments {row['id']}: scoped to "
+                   f"army_list_entries {row['e']} and also on the unit unscoped")
+
+
 def alternative_checks(req):
     groups = defaultdict(set)
     for row in req["alternatives"]:
@@ -1071,6 +1084,7 @@ def main():
         found += mastery_checks(requirements)
         found += replaced_checks(requirements)
         found += armour_checks(requirements)
+        found += rule_scope_checks(requirements)
     for check, kind, name, detail in found:
         if excused(check, kind, name, detail):
             excused_count += 1

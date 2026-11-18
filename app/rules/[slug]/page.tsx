@@ -33,6 +33,7 @@ const loadFactionRules = (factionId: number) =>
       "rule:unit_special_rules(id, name, rule, anchor, wargear_items(id), rules(id, name, rule_categories(slug, name))), units!inner(id, name, faction_id, army_list_entries(id, unit_categories(army_lists(slug, factions(slug)))))",
     )
     .eq("units.faction_id", factionId)
+    .is("army_list_entry_id", null)
     .order("id", { referencedTable: "units.army_list_entries" });
 
 type AssignmentRow = NonNullable<

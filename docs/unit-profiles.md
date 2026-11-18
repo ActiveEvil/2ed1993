@@ -172,7 +172,15 @@ reaches Space Marines, Imperial Guard, Imperial Agents and Squats) — with
 12" against 18"). `unit_profile_id` gives the rule to one profile rather than
 the whole unit (ruling 46: the Wolf Scout Sergeant is a full Space Marine and
 the Wolf Scouts are not); a composite foreign key keeps the profile inside the
-same unit, and null means every model. A rule still appears once per unit.
+same unit, and null means every model. `army_list_entry_id` gives the rule to
+one army list entry, where a unit shared between lists has it in one list only
+(the Dreadnought's Acute Senses and Hatred in Codex: Space Wolves); a composite
+foreign key keeps the entry inside the same unit, and null means every entry.
+A rule still appears once per entry card: once on the unit unscoped, or once
+per entry scoped, not both (the unique key holds the first two, `rule_scope`
+in verify.py the third). Scoped rows reach only their entry's card; the
+faction rules pages, the `/rules` index and the sitemap read unscoped rows
+only.
 Rules that the core chapters hold are pointers, not copies; faction-specific
 rules are prose; the reader follows the link to the chapter for the full
 text. A rule that more than one faction carries is a core chapter with a

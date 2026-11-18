@@ -301,6 +301,9 @@ weapon_rows = rows("datafax_weapons", "id,datafax_id,alternative,alternative_max
                    "replaces_datafax_weapon_id,grant_mode,add_points")
 weapon_datafaxes = {w["id"]: w["datafax_id"] for w in weapon_rows}
 datafax_units = {d["id"]: d["unit_id"] for d in rows("datafaxes", "id,unit_id")}
+rule_rows = rows("unit_special_rule_assignments",
+                 "id,unit_id,special_rule_id,army_list_entry_id")
+scoped_units = {r["unit_id"] for r in rule_rows if r["army_list_entry_id"] is not None}
 
 requirements = {
     "rows": [stripped({"id": r["id"], "k": r["kind"], "l": r["army_list_id"],
@@ -397,7 +400,11 @@ requirements = {
     "count_as": sorted(({"set": m["set_id"], "e": m["army_list_entry_id"], "n": m["count_as"]}
                         for m in rows("army_list_allowance_set_entries",
                                       "set_id,army_list_entry_id,count_as")
-                        if m["count_as"] != 1), key=lambda m: (m["set"], m["e"]))}
+                        if m["count_as"] != 1), key=lambda m: (m["set"], m["e"])),
+    "rule_scopes": [stripped({"id": r["id"], "u": r["unit_id"], "n": units[r["unit_id"]],
+                              "r": r["special_rule_id"], "e": r["army_list_entry_id"]})
+                    for r in sorted(rule_rows, key=lambda r: r["id"])
+                    if r["unit_id"] in scoped_units]}
 
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
                       "cards": cards, "grants": grants, "sources": sources,

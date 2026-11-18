@@ -40,7 +40,8 @@ export default async function Page() {
       .from("unit_special_rule_assignments")
       .select(
         "rule:unit_special_rules(name, rule, wargear_items(id)), units!inner(faction_id)",
-      ),
+      )
+      .is("army_list_entry_id", null),
   ]);
   const hero = heroImage?.images ?? null;
 

@@ -153,7 +153,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from("unit_special_rule_assignments")
     .select(
       "rule:unit_special_rules(rule, wargear_items(id)), units!inner(faction_id)",
-    );
+    )
+    .is("army_list_entry_id", null);
 
   assertNoQueryErrors("/sitemap.xml", ruleCategoriesError, assignmentsError);
 

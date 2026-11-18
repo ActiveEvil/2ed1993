@@ -50,7 +50,7 @@ const loadList = (faction: string, list: string) =>
   supabase
     .from("army_lists")
     .select(
-      "id, name, published_year, description, source, factions!inner(slug, name, strategy_rating, parent:parent_faction_id(strategy_rating)), unit_categories(id, category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, optional, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id), units(id, name, source, factions(slug, parent:parent_faction_id(slug)), unit_types(name), datafaxes(id, points, origin), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, strategy_rating, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name, origin, wargear_cards_availabilities(availabilities(name, position)))), unit_profile_vehicle_cards(position, card:vehicle_cards(name, origin, vehicle_cards_availabilities(availabilities(name, position))))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, alternative, optional, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(id, name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name, origin, wargear_cards_availabilities(availabilities(name, position))), vehicle_card:vehicle_cards(name, origin, vehicle_cards_availabilities(availabilities(name, position))), unit_option_categories(position, wargear_categories(category, wargear_items(special_rule_id)))), unit_special_rule_assignments(position, note, unit_profile_id, rule:unit_special_rules(id, name, rule, rule_id, anchor, wargear_items(id), rules(id, name, rule_categories(slug))))))), army_list_allowance_sets(id, name, singular, position, army_list_allowance_set_entries(army_list_entry_id, position, count_as), army_list_allowance_rules!army_list_allowance_rules_set_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id)), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, display, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, rules_heading, rules_intro, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug, parent:parent_faction_id(slug)), unit_types(name), datafaxes(points, origin)), special_rule:unit_special_rules(id, name, rule, anchor, rules(name, rule_categories(slug))), wargear_item_components(id, position, quantity, weapons(name), armour(name), card:wargear_cards(name, origin, wargear_cards_availabilities(availabilities(name, position))))))",
+      "id, name, published_year, description, source, factions!inner(slug, name, strategy_rating, parent:parent_faction_id(strategy_rating)), unit_categories(id, category, note, min_percent, max_percent, position, army_list_allowance_rules!army_list_allowance_rules_unit_category_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id), army_list_entries(id, position, allowance_min, allowance_max, points, note, transport_scope, entry_group:army_list_entry_groups(id, name, position), points_bases(name), army_list_entry_options(id, position, points, points_percent, note, optional, unit_profile_id, unit_option_id, points_bases(name), weapons!army_list_entry_options_weapon_id_fkey(name)), army_list_allowance_rules!army_list_allowance_rules_army_list_entry_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id), units(id, name, source, factions(slug, parent:parent_faction_id(slug)), unit_types(name), datafaxes(id, points, origin), unit_profiles(id, name, position, alternative, models_min, models_max, mastery_level, wargear_cards_max, strategy_rating, m, ws, bs, s, t, w, i, a, ld, unit_profile_weapons(id, quantity, alternative, position, weapons(name)), unit_profile_armour(armour_id, position, alternative, save_override, armour(name)), unit_profile_wargear_cards(position, card:wargear_cards(name, origin, wargear_cards_availabilities(availabilities(name, position)))), unit_profile_vehicle_cards(position, card:vehicle_cards(name, origin, vehicle_cards_availabilities(availabilities(name, position))))), unit_options!unit_options_unit_id_fkey(id, models_min, models_max, models_per, whole_unit, quantity, grant_mode, restriction, note, option_group, alternative, optional, position, profile:unit_profiles!unit_options_unit_profile_id_fkey(name), upgrade:unit_profiles!unit_options_to_unit_profile_id_fkey(name, units(id, name)), replaces:weapons!unit_options_replaces_weapon_id_fkey(name), grants:weapons!unit_options_weapon_id_fkey(name), grants_armour:armour!unit_options_armour_id_fkey(name), replaces_armour:armour!unit_options_replaces_armour_id_fkey(name), card:wargear_cards(name, origin, wargear_cards_availabilities(availabilities(name, position))), vehicle_card:vehicle_cards(name, origin, vehicle_cards_availabilities(availabilities(name, position))), unit_option_categories(position, wargear_categories(category, wargear_items(special_rule_id)))), unit_special_rule_assignments(position, note, unit_profile_id, army_list_entry_id, rule:unit_special_rules(id, name, rule, rule_id, anchor, wargear_items(id), rules(id, name, rule_categories(slug))))))), army_list_allowance_sets(id, name, singular, position, army_list_allowance_set_entries(army_list_entry_id, position, count_as), army_list_allowance_rules!army_list_allowance_rules_set_id_fkey(id, count, min_count, per_count, note, qualifier, label, per_entry_id, per_category_id, per_set_id, per_rule_id)), army_list_allies!army_list_allies_army_list_id_fkey(id, position, note, display, factions(slug, name), ally_list:army_lists!army_list_allies_ally_army_list_id_fkey(slug, name, factions(slug, name))), wargear_categories(category, note, rules_heading, rules_intro, wargear_items(id, points, restriction, armour(name), weapons(name), units(name, factions(slug, parent:parent_faction_id(slug)), unit_types(name), datafaxes(points, origin)), special_rule:unit_special_rules(id, name, rule, anchor, rules(name, rule_categories(slug))), wargear_item_components(id, position, quantity, weapons(name), armour(name), card:wargear_cards(name, origin, wargear_cards_availabilities(availabilities(name, position))))))",
     )
     .eq("slug", list)
     .eq("factions.slug", faction)
@@ -293,6 +293,10 @@ const buildEntry = (
   const basis = entry.points_bases?.name ?? null;
   const options = entry.army_list_entry_options;
   const profiles = entry.units.unit_profiles;
+  const assignments = entry.units.unit_special_rule_assignments.filter(
+    ({ army_list_entry_id }) =>
+      army_list_entry_id === null || army_list_entry_id === entry.id,
+  );
 
   const priceByProfile = new Map<number, RawOption>();
 
@@ -414,9 +418,10 @@ const buildEntry = (
       ? []
       : [
           {
-            position: entry.units.unit_special_rule_assignments.length,
+            position: assignments.length,
             note: `${profile.strategy_rating} when commanding the army.`,
             unit_profile_id: profile.id,
+            army_list_entry_id: entry.id,
             rule: {
               id: -profile.id,
               name: "Strategy Rating",
@@ -437,10 +442,7 @@ const buildEntry = (
   const note = splitExtensions(entry.note ?? "");
   const unit = {
     ...entry.units,
-    unit_special_rule_assignments: [
-      ...entry.units.unit_special_rule_assignments,
-      ...ratingRules,
-    ],
+    unit_special_rule_assignments: [...assignments, ...ratingRules],
   };
 
   const search = [
@@ -465,7 +467,7 @@ const buildEntry = (
         ({ wargear_categories }) => wargear_categories.category,
       ),
     ]),
-    ...entry.units.unit_special_rule_assignments.map((assignment) =>
+    ...assignments.map((assignment) =>
       assignment.rule ? ruleName(assignment.rule.name) : "",
     ),
   ]
