@@ -381,4 +381,289 @@ export const pricingCases: PricingCase[] = [
     expected: 120,
     source: "LB-26",
   },
+  {
+    id: "p",
+    label: "Predator, list 11, Lascannons, Destroyer and Daemonic Possession",
+    listIds: [11],
+    units: [
+      unit("predator", 11, 169, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 42 }, { rowId: 49 }],
+        vehicleCards: [{ cardId: 42 }, { cardId: 40 }],
+      }),
+    ],
+    expected: 256.25,
+    source: "LB-32",
+  },
+  {
+    id: "q-i",
+    label: "Predator, list 5, Heavy Bolters with Heavy Flamers",
+    listIds: [5],
+    units: [
+      unit("predator", 5, 21, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 5 }],
+        vehicleCards: [{ cardId: 2, rows: [{ rowId: 5, weapons: 2 }] }],
+      }),
+    ],
+    expected: 140,
+    source: "LB-33",
+  },
+  {
+    id: "q-ii",
+    label: "Land Raider, Heavy Flamer on the twin-linked Heavy Bolters",
+    listIds: [5],
+    units: [
+      unit("land-raider", 5, 19, {
+        vehicles: 1,
+        vehicleCards: [{ cardId: 2, rows: [{ rowId: 22 }] }],
+      }),
+    ],
+    expected: 220,
+    source: "LB-33",
+  },
+  {
+    id: "q-iii",
+    label: "Predator, list 11, Heavy Bolters with Heavy Flamers",
+    listIds: [11],
+    units: [
+      unit("predator", 11, 169, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 42 }, { rowId: 45 }],
+        vehicleCards: [{ cardId: 2, rows: [{ rowId: 45, weapons: 2 }] }],
+      }),
+    ],
+    expected: 140,
+    source: "LB-33",
+  },
+  {
+    id: "r-i",
+    label: "Land Raider, Ammo Feed on the twin-linked Heavy Bolters",
+    listIds: [5],
+    units: [
+      unit("land-raider", 5, 19, {
+        vehicles: 1,
+        vehicleCards: [{ cardId: 20, rows: [{ rowId: 22 }] }],
+      }),
+    ],
+    expected: 225,
+    source: "the card",
+  },
+  {
+    id: "r-ii",
+    label: "Predator, list 5, Heavy Bolters with Ammo Feeds",
+    listIds: [5],
+    units: [
+      unit("predator", 5, 21, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 5 }],
+        vehicleCards: [{ cardId: 20, rows: [{ rowId: 5, weapons: 2 }] }],
+      }),
+    ],
+    expected: 130,
+    source: "the card",
+  },
+  {
+    id: "s",
+    label: "Land Raider, two Storm Bolters",
+    listIds: [5],
+    units: [
+      unit("land-raider", 5, 19, {
+        vehicles: 1,
+        vehicleCards: [{ cardId: 3, count: 2 }],
+      }),
+    ],
+    expected: 230,
+    source: "the card",
+  },
+  {
+    id: "t",
+    label: "Rhino, list 11, Combi-Bolter",
+    listIds: [11],
+    units: [
+      unit("rhino", 11, 168, {
+        vehicles: 1,
+        vehicleCards: [{ cardId: 45, count: 1 }],
+      }),
+    ],
+    expected: 55,
+    source: "the card",
+  },
+  {
+    id: "u",
+    label: "Vyper, Crystalline Web on two locations",
+    listIds: [13],
+    units: [
+      unit("vyper", 13, 313, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 119 }],
+        vehicleCards: [{ cardId: 29, count: 2 }],
+      }),
+    ],
+    expected: 95,
+    source: "LB-36",
+  },
+  {
+    id: "v-i",
+    label: "War Walker with Talons",
+    listIds: [13],
+    units: [
+      unit("war-walker", 13, 306, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 67 }],
+        vehicleCards: [{ cardId: 27 }],
+      }),
+    ],
+    expected: 170,
+    source: "the card",
+  },
+  {
+    id: "v-ii",
+    label: "Vyper with Talons",
+    listIds: [13],
+    units: [
+      unit("vyper", 13, 313, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 119 }],
+        vehicleCards: [{ cardId: 27 }],
+      }),
+    ],
+    expected: 75,
+    source: "the card",
+  },
+  {
+    id: "w-i",
+    label: "Predator, list 5, Bulldozer Blade",
+    listIds: [5],
+    units: [
+      unit("predator", 5, 21, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 5 }],
+        vehicleCards: [{ cardId: 1 }],
+      }),
+    ],
+    expected: 135,
+    source: "none needed",
+  },
+  {
+    id: "w-ii",
+    label: "Predator, list 11, Bulldozer Blade",
+    listIds: [11],
+    units: [
+      unit("predator", 11, 169, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 42 }, { rowId: 45 }],
+        vehicleCards: [{ cardId: 1 }],
+      }),
+    ],
+    expected: 135,
+    source: "LB-34 · Later",
+  },
+  {
+    id: "x",
+    label: "Predator, list 11, Bulldozer Blade and Daemonic Possession",
+    listIds: [11],
+    units: [
+      unit("predator", 11, 169, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 42 }, { rowId: 45 }],
+        vehicleCards: [{ cardId: 1 }, { cardId: 40 }],
+      }),
+    ],
+    expected: 168.75,
+    source: "LB-32",
+  },
+  {
+    id: "y-i",
+    label: "Chaplain, Champion grade, Aegis Suit",
+    listIds: [5],
+    units: [
+      unit("chaplain", 5, 6, {
+        grade: 17,
+        models: { 17: 1 },
+        wargearCards: [{ cardId: 9, profileId: 17 }],
+      }),
+    ],
+    expected: 73,
+    source: "rule 90",
+  },
+  {
+    id: "y-ii",
+    label: "Commander, list 11, Psycannon and Daemon Weapon",
+    listIds: [11],
+    units: [
+      unit("commander", 11, 101, {
+        models: { 129: 1 },
+        wargearCards: [
+          { cardId: 26, profileId: 129 },
+          { cardId: 110, profileId: 129 },
+        ],
+      }),
+    ],
+    expected: 152,
+    source: "LB-35 · Later",
+  },
+  {
+    id: "y-iii",
+    label: "Chaplain, Champion grade, Animus Speculum",
+    listIds: [5],
+    units: [
+      unit("chaplain", 5, 6, {
+        grade: 17,
+        models: { 17: 1 },
+        wargearCards: [{ cardId: 69, profileId: 17 }],
+      }),
+    ],
+    expected: 55,
+    expectedUnpriced: [
+      {
+        reason: "card_points_not_numeric",
+        row: { table: "wargear_cards", id: 69 },
+      },
+    ],
+    source: "LB-30",
+  },
+  {
+    id: "y-iv",
+    label: "Chaplain, Champion grade, Book of Salvation",
+    listIds: [5],
+    units: [
+      unit("chaplain", 5, 6, {
+        grade: 17,
+        models: { 17: 1 },
+        wargearCards: [{ cardId: 124, profileId: 17 }],
+      }),
+    ],
+    expected: 55,
+    source: "LB-31",
+  },
+  {
+    id: "z",
+    label:
+      "Chaos Space Marine Terminator Squad teleporting, Assault Cannon, led by a Champion with an Aegis Suit",
+    listIds: [11],
+    units: [
+      unit("csm-terminators", 11, 108, {
+        models: { 139: 5 },
+        options: [{ unitOptionId: 269 }, { unitOptionId: 204, models: 1 }],
+        items: [
+          {
+            itemId: 288,
+            holder: "model",
+            profileId: 139,
+            holders: 1,
+            viaOptionId: 204,
+          },
+        ],
+      }),
+      unit("csm-champion", 11, 103, {
+        models: { 131: 1 },
+        attachedTo: { unitKey: "csm-terminators", mode: "leads" },
+        wargearCards: [{ cardId: 9, profileId: 131 }],
+      }),
+    ],
+    expected: 749,
+    expectedByUnit: { "csm-terminators": 691, "csm-champion": 58 },
+    source: "LB-22",
+  },
 ];

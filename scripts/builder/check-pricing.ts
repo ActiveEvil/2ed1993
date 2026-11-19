@@ -2,6 +2,7 @@ import { type Catalogue, loadCatalogue } from "@/lib/catalogue";
 import {
   type RowRef,
   type UnitPrice,
+  type UnitTaken,
   type Unpriced,
   priceList,
   smallestSelection,
@@ -11,6 +12,7 @@ import { pricingCases } from "@/scripts/builder/pricing-cases";
 
 const LIST_IDS = Array.from({ length: 14 }, (_, index) => index + 1);
 const EXPECTED_UNPRICED_OPTIONS = new Set<number>();
+const EXPECTED_UNPRICED_WARGEAR_CARDS = new Set([69, 70, 71, 72]);
 const TOLERANCE = 1e-9;
 
 const formatRows = (rows: RowRef[]) =>
@@ -30,6 +32,28 @@ function describe(price: UnitPrice): string[] {
       : []),
   ];
 }
+
+const CARD_BEARER: UnitTaken = {
+  key: "card-bearer",
+  listId: 5,
+  entryId: 6,
+  grade: 17,
+  models: { 17: 1 },
+  options: [],
+  items: [],
+  datafaxWeapons: [],
+};
+
+const CARD_VEHICLE: UnitTaken = {
+  key: "card-vehicle",
+  listId: 5,
+  entryId: 19,
+  models: {},
+  vehicles: 1,
+  options: [],
+  items: [],
+  datafaxWeapons: [],
+};
 
 const close = (a: number, b: number) => Math.abs(a - b) < TOLERANCE;
 
@@ -103,6 +127,9 @@ type SweepCounts = {
   expectedOptionGaps: number;
   unexpected: number;
   entryGaps: number;
+  wargearCards: number;
+  expectedCardGaps: number;
+  vehicleCards: number;
 };
 
 function sweepList(catalogue: Catalogue, counts: SweepCounts): void {
@@ -182,6 +209,66 @@ function sweepList(catalogue: Catalogue, counts: SweepCounts): void {
   }
 }
 
+function sweepCards(catalogue: Catalogue, counts: SweepCounts): void {
+  const catalogues = new Map([[catalogue.list.id, catalogue]]);
+  const gapsOf = (selection: UnitTaken) =>
+    priceList(catalogues, [selection]).units[0].unpriced;
+  const bearerGaps = new Set(gapsOf(CARD_BEARER).map(gapKey));
+  const vehicleGaps = new Set(gapsOf(CARD_VEHICLE).map(gapKey));
+
+  for (const card of catalogue.wargearCards) {
+    const expected = EXPECTED_UNPRICED_WARGEAR_CARDS.has(card.id);
+    const gaps = gapsOf({
+      ...CARD_BEARER,
+      wargearCards: [{ cardId: card.id, profileId: 17 }],
+    }).filter((gap) => !bearerGaps.has(gapKey(gap)));
+    if (gaps.length === 0) {
+      if (expected) {
+        counts.unexpected += 1;
+        console.log(
+          `  list ${CARD_BEARER.listId} entry ${CARD_BEARER.entryId} wargear card ${card.id}: priced, expected card_points_not_numeric`,
+        );
+      } else {
+        counts.wargearCards += 1;
+      }
+      continue;
+    }
+    for (const gap of gaps) {
+      if (
+        expected &&
+        gap.reason === "card_points_not_numeric" &&
+        gap.rows.some(
+          (row) => row.table === "wargear_cards" && row.id === card.id,
+        )
+      ) {
+        counts.expectedCardGaps += 1;
+        continue;
+      }
+      counts.unexpected += 1;
+      console.log(
+        `  list ${CARD_BEARER.listId} entry ${CARD_BEARER.entryId} wargear card ${card.id}: ${formatGap(gap)}`,
+      );
+    }
+  }
+
+  for (const card of catalogue.vehicleCards) {
+    const gaps = gapsOf({
+      ...CARD_VEHICLE,
+      vehicleCards: [{ cardId: card.id, vehicles: 1, count: 1 }],
+    }).filter((gap) => !vehicleGaps.has(gapKey(gap)));
+    if (gaps.length === 0) {
+      counts.vehicleCards += 1;
+      continue;
+    }
+    for (const gap of gaps) {
+      counts.unexpected += 1;
+      console.log(
+        `  list ${CARD_VEHICLE.listId} entry ${CARD_VEHICLE.entryId} vehicle card ${card.id}: ${formatGap(gap)}`,
+      );
+    }
+  }
+}
+
 async function main(): Promise<number> {
   const catalogues = new Map<number, Catalogue>();
   for (const listId of LIST_IDS) {
@@ -206,15 +293,28 @@ async function main(): Promise<number> {
     expectedOptionGaps: 0,
     unexpected: 0,
     entryGaps: 0,
+    wargearCards: 0,
+    expectedCardGaps: 0,
+    vehicleCards: 0,
   };
   for (const catalogue of catalogues.values()) {
     sweepList(catalogue, counts);
+  }
+  const cardCatalogue = catalogues.get(CARD_BEARER.listId);
+  if (cardCatalogue) {
+    sweepCards(cardCatalogue, counts);
+  } else {
+    counts.unexpected += 1;
+    console.log(`  list ${CARD_BEARER.listId}: not loaded, cards not swept`);
   }
   console.log(
     `entries ${counts.entries}; selections priced ${counts.selections}; upgrade-only ${counts.upgradeOnly}; selections with pending ${counts.withPending}; entry gaps ${counts.entryGaps}`,
   );
   console.log(
     `optional options swept ${counts.options}; expected option gaps ${counts.expectedOptionGaps}; unexpected findings ${counts.unexpected}`,
+  );
+  console.log(
+    `wargear cards priced ${counts.wargearCards}; expected card gaps ${counts.expectedCardGaps}; vehicle cards priced ${counts.vehicleCards}`,
   );
   console.log(`cases failed ${failures} of ${pricingCases.length}`);
 

@@ -27,6 +27,19 @@ export type DatafaxPick = {
   vehicles?: number;
 };
 
+export type WargearCardTaken = {
+  cardId: number;
+  profileId: number;
+  holders?: number;
+};
+
+export type VehicleCardTaken = {
+  cardId: number;
+  vehicles?: number;
+  count?: number;
+  rows?: { rowId: number; weapons?: number }[];
+};
+
 export type UnitTaken = {
   key: string;
   listId: number;
@@ -40,6 +53,8 @@ export type UnitTaken = {
   split?: boolean;
   attachedTo?: { unitKey: string; mode: "leads" | "must" | "may" };
   rideFor?: string;
+  wargearCards?: WargearCardTaken[];
+  vehicleCards?: VehicleCardTaken[];
 };
 
 export type RowRef = { table: string; id: number };
@@ -58,7 +73,10 @@ export type PriceLine = {
     | "card_grant"
     | "substitution_credit"
     | "ride_replaced"
-    | "surcharge";
+    | "surcharge"
+    | "wargear_card"
+    | "vehicle_card"
+    | "vehicle_card_percent";
   amount: number;
   quantity: number;
   rows: RowRef[];
@@ -99,9 +117,20 @@ const BASIS = {
   seeDatafax: 4,
   perModelUpgrade: 5,
   perMasteryLevel: 6,
+  perWeaponUpgrade: 7,
+  perLocation: 8,
+  perCentOfVehicle: 9,
 } as const;
 
 const SURCHARGE_ROUNDED_HALF_UP_LISTS: ReadonlySet<number> = new Set([12]);
+
+const VEHICLE_CARD = {
+  heavyFlamer: 2,
+  ammoFeed: 20,
+  talons: 27,
+} as const;
+
+const MOTIVE_TYPE_WALKERS = 4;
 
 const CARD_POINTS = /^\d+(\.\d+)?$/;
 
@@ -714,6 +743,175 @@ function priceDatafaxWeapons(
   }
 }
 
+function record(draft: Draft, results: (PriceLine | Unpriced)[]): void {
+  for (const result of results) {
+    if (isUnpriced(result)) {
+      draft.unpriced.push(result);
+    } else {
+      draft.lines.push(result);
+    }
+  }
+}
+
+function wargearCardLine(
+  catalogue: Catalogue,
+  taken: WargearCardTaken,
+): PriceLine | Unpriced {
+  if (!catalogue.wargearCards.some((card) => card.id === taken.cardId)) {
+    return {
+      reason: "no_price_row",
+      rows: [ref("wargear_cards", taken.cardId)],
+    };
+  }
+  const points = cardPoints(catalogue, taken.cardId);
+  if (isUnpriced(points)) {
+    return points;
+  }
+  const holders = taken.holders ?? 1;
+  return {
+    key: "wargear_card",
+    amount: points * holders,
+    quantity: holders,
+    rows: [
+      ref("wargear_cards", taken.cardId),
+      ref("unit_profiles", taken.profileId),
+    ],
+  };
+}
+
+function datafaxOf(catalogue: Catalogue, unit: UnitTaken) {
+  const entry = catalogue.entries.find(
+    (candidate) => candidate.id === unit.entryId,
+  );
+  return (entry && unitOf(catalogue, entry)?.datafaxes) ?? null;
+}
+
+function cardWeapons(
+  catalogue: Catalogue,
+  unit: UnitTaken,
+  taken: VehicleCardTaken,
+): { weapons: number; rows: RowRef[]; gaps: Unpriced[] } {
+  const named = taken.rows ?? [];
+  if (
+    (taken.cardId !== VEHICLE_CARD.heavyFlamer &&
+      taken.cardId !== VEHICLE_CARD.ammoFeed) ||
+    named.length === 0
+  ) {
+    return { weapons: taken.count ?? 1, rows: [], gaps: [] };
+  }
+  const datafax = datafaxOf(catalogue, unit);
+  const result = { weapons: 0, rows: [] as RowRef[], gaps: [] as Unpriced[] };
+  for (const pick of named) {
+    const row = catalogue.datafaxWeapons.find(
+      (candidate) =>
+        candidate.id === pick.rowId &&
+        datafax !== null &&
+        candidate.datafax_id === datafax.id,
+    );
+    if (!row) {
+      result.gaps.push({
+        reason: "no_price_row",
+        rows: [ref("datafax_weapons", pick.rowId)],
+      });
+      continue;
+    }
+    result.rows.push(ref("datafax_weapons", row.id));
+    if (row.linked_group === null) {
+      result.weapons += pick.weapons ?? 1;
+    } else if (taken.cardId === VEHICLE_CARD.ammoFeed) {
+      result.weapons += 1;
+    }
+  }
+  return result;
+}
+
+function vehicleCardLine(
+  catalogue: Catalogue,
+  unit: UnitTaken,
+  taken: VehicleCardTaken,
+): (PriceLine | Unpriced)[] {
+  const card = catalogue.vehicleCards.find((row) => row.id === taken.cardId);
+  const cardRef = ref("vehicle_cards", taken.cardId);
+  if (!card) {
+    return [{ reason: "no_price_row", rows: [cardRef] }];
+  }
+  const vehicles = taken.vehicles ?? 1;
+  switch (card.points_basis_id) {
+    case null: {
+      const walker =
+        card.id === VEHICLE_CARD.talons &&
+        datafaxOf(catalogue, unit)?.motive_type_id === MOTIVE_TYPE_WALKERS;
+      return [
+        {
+          key: "vehicle_card",
+          amount: card.points * (walker ? 2 : 1) * vehicles,
+          quantity: vehicles,
+          rows: [cardRef],
+        },
+      ];
+    }
+    case BASIS.perWeaponUpgrade: {
+      const { weapons, rows, gaps } = cardWeapons(catalogue, unit, taken);
+      const quantity = weapons * vehicles;
+      return [
+        {
+          key: "vehicle_card",
+          amount: card.points * quantity,
+          quantity,
+          rows: [cardRef, ...rows],
+        },
+        ...gaps,
+      ];
+    }
+    case BASIS.perLocation: {
+      const quantity = (taken.count ?? 1) * vehicles;
+      return [
+        {
+          key: "vehicle_card",
+          amount: card.points * quantity,
+          quantity,
+          rows: [cardRef],
+        },
+      ];
+    }
+    case BASIS.perCentOfVehicle:
+      return [];
+    default:
+      return [{ reason: "no_price_row", rows: [cardRef] }];
+  }
+}
+
+function applyVehiclePercent(
+  catalogue: Catalogue,
+  unit: UnitTaken,
+  draft: Draft,
+): (PriceLine | Unpriced)[] {
+  const base = sum(draft.lines.map((line) => line.amount));
+  return (unit.vehicleCards ?? []).flatMap(
+    (taken): (PriceLine | Unpriced)[] => {
+      const card = catalogue.vehicleCards.find(
+        (row) => row.id === taken.cardId,
+      );
+      if (!card || card.points_basis_id !== BASIS.perCentOfVehicle) {
+        return [];
+      }
+      const cardRef = ref("vehicle_cards", card.id);
+      if (vehicleCount(unit) > 1) {
+        return [{ reason: "no_price_row", rows: [cardRef] }];
+      }
+      const rate = card.points / 100;
+      return [
+        {
+          key: "vehicle_card_percent",
+          amount: rate * base,
+          quantity: rate,
+          rows: [cardRef],
+        },
+      ];
+    },
+  );
+}
+
 export function priceUnitBase(
   catalogue: Catalogue,
   unit: UnitTaken,
@@ -735,6 +933,17 @@ export function priceUnitBase(
   priceChosenOptions(catalogue, entry, unit, draft);
   priceItems(catalogue, unit, draft);
   priceDatafaxWeapons(catalogue, entry, unit, draft);
+  record(
+    draft,
+    (unit.wargearCards ?? []).map((taken) => wargearCardLine(catalogue, taken)),
+  );
+  record(
+    draft,
+    (unit.vehicleCards ?? []).flatMap((taken) =>
+      vehicleCardLine(catalogue, unit, taken),
+    ),
+  );
+  record(draft, applyVehiclePercent(catalogue, unit, draft));
   return finish(unit.key, draft);
 }
 

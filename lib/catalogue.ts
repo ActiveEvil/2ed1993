@@ -176,14 +176,14 @@ const loadUnitOptions = (unitIds: number[]) =>
     .in("unit_id", unitIds)
     .order("position");
 
-const loadWargearCards = (cardIds: number[]) =>
-  supabase.from("wargear_cards").select("id, name, points").in("id", cardIds);
+const loadWargearCards = () =>
+  supabase.from("wargear_cards").select("id, name, points").order("id");
 
-const loadVehicleCards = (cardIds: number[]) =>
+const loadVehicleCards = () =>
   supabase
     .from("vehicle_cards")
     .select("id, name, points, points_basis_id")
-    .in("id", cardIds);
+    .order("id");
 
 const distinct = (ids: (number | null)[]) =>
   [...new Set(ids)].filter((id): id is number => id !== null);
@@ -273,26 +273,9 @@ export async function loadCatalogue(listId: number) {
     unitOptions.error,
   );
 
-  const profiles = (units.data ?? []).flatMap((unit) => unit.unit_profiles);
-
-  const wargearCardIds = distinct([
-    ...profiles.flatMap((profile) =>
-      profile.unit_profile_wargear_cards.map((card) => card.wargear_card_id),
-    ),
-    ...(unitOptions.data ?? []).map((option) => option.wargear_card_id),
-    ...(entryOptions.data ?? []).map((option) => option.wargear_card_id),
-  ]);
-
-  const vehicleCardIds = distinct([
-    ...profiles.flatMap((profile) =>
-      profile.unit_profile_vehicle_cards.map((card) => card.vehicle_card_id),
-    ),
-    ...(unitOptions.data ?? []).map((option) => option.vehicle_card_id),
-  ]);
-
   const [wargearCards, vehicleCards] = await Promise.all([
-    loadWargearCards(wargearCardIds),
-    loadVehicleCards(vehicleCardIds),
+    loadWargearCards(),
+    loadVehicleCards(),
   ]);
 
   assertNoQueryErrors(CONTEXT, wargearCards.error, vehicleCards.error);
