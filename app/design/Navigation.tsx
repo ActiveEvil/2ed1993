@@ -129,7 +129,7 @@ export const Navigation: React.FC = (): React.JSX.Element => (
     <Entry
       title="Chip"
       source="components/Chip.tsx &middot; CHIP_CLASS"
-      note="The border is --foreground. The box is 20px, with a transparent ::after taking the tap target to 36px, so a wrapping cluster needs gap-y-4. Underlines on hover, never fills; inside a highlighted row the border turns black. On rule pages the chip is a HighlighterLink, so a repeat tap re-fires the highlight."
+      note="The border is --foreground. The box is 20px, with a transparent ::after taking the tap target to 36px, so a wrapping cluster needs gap-y-4. No hover underline or fill; inside a highlighted row the border turns black. On rule pages the chip is a HighlighterLink, so a repeat tap re-fires the highlight."
     >
       <div className="flex flex-wrap gap-x-1 gap-y-4">
         <Chip href="#Grenade_Launcher">Grenade Launcher</Chip>

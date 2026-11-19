@@ -20,11 +20,11 @@ export const vehicleCardColors: Record<string, string> = {
 };
 
 export const vehicleCardInk: Record<string, string> = {
-  "Any Army": "text-2ed-white border-2ed-white",
-  Imperium: "text-2ed-white border-2ed-white",
-  Eldar: "text-2ed-black border-2ed-black",
-  Orks: "text-2ed-white border-2ed-white",
-  Chaos: "text-2ed-white border-2ed-white",
+  "Any Army": "text-2ed-white border-2ed-white!",
+  Imperium: "text-2ed-white border-2ed-white!",
+  Eldar: "text-2ed-black border-2ed-black!",
+  Orks: "text-2ed-white border-2ed-white!",
+  Chaos: "text-2ed-white border-2ed-white!",
 };
 
 // The Sisters of Battle codex is mono throughout and their one datafax, the

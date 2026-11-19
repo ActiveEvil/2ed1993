@@ -58,7 +58,7 @@ const WARGEAR_INK = {
   mat: "bg-2ed-dark-blue",
   name: "text-2ed-white",
   points: "text-2ed-light-yellow",
-  chip: "border-2ed-white text-2ed-white",
+  chip: "border-2ed-white! text-2ed-white",
 };
 
 const deckInk = (deck: CardDeck, first: string | undefined) => {

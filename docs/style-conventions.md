@@ -872,7 +872,7 @@ and back-to-top (7 September 2026), and the skip link (7 October 2026), all
 of which sit over content and were yellow before the refresh; the lightbox
 buttons keep their light blue for the same reason, over a dimmed page. The
 rest — Draw, the filter, the burger — are black or white with a frame. Chips
-underline on hover like every other link; nothing fills.
+do not underline or fill on hover.
 
 ### The shell: band, rail, Jump bar and filter
 
