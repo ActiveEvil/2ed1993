@@ -2,7 +2,7 @@ import { Contrast } from "./Contrast";
 import { DualScheme, Entry, Group, LABEL, factionName } from "./Shared";
 import { hex, toRgb } from "./luminance";
 import { CHIP_CLASS } from "@/components/Chip";
-import { deckColors, factionColors, factionInk } from "@/lib/factions";
+import { deckColors, deckInk, factionColors, factionInk } from "@/lib/factions";
 import { clsx } from "clsx";
 import { useEffect, useRef, useState } from "react";
 
@@ -139,7 +139,7 @@ const FACTION_COLOURS = [
   return {
     name: className.replace(/^bg-/, ""),
     className,
-    ink: slugs.length > 0 ? factionInk[slugs[0]] : undefined,
+    ink: slugs.length > 0 ? factionInk[slugs[0]] : deckInk[decks[0]],
     use: uses.join(" "),
   };
 });
@@ -271,31 +271,15 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Faction colours"
       source="globals.css &middot; lib/factions.ts"
-      note="Datafax and psychic deck mats, fixed in both schemes. A datafax mat carries a label, so its swatch shows the ink from lib/factions.ts; a psychic-only mat holds no text and has none. Uses are read from lib/factions.ts."
+      note="Datafax and psychic deck mats, fixed in both schemes. A datafax mat carries a label and a psychic deck mat its cards' origin line, so each swatch shows the ink from lib/factions.ts (factionInk for a datafax mat, deckInk for a mat only the psychic decks use). Uses are read from lib/factions.ts."
     >
-      <div className="flex flex-col gap-6">
-        {[
-          {
-            label: "Datafax mats, in their ink",
-            colours: FACTION_COLOURS.filter(({ ink }) => ink),
-          },
-          {
-            label: "Psychic deck mats only",
-            colours: FACTION_COLOURS.filter(({ ink }) => !ink),
-          },
-        ].map(({ label, colours }) => (
-          <div key={label} className="flex flex-col gap-3">
-            <span className={LABEL}>{label}</span>
-            <ul className="grid md:grid-cols-2 gap-3">
-              {colours.map(({ name, className, ink, use }) => (
-                <Swatch key={name} name={name} className={className} ink={ink}>
-                  {use}
-                </Swatch>
-              ))}
-            </ul>
-          </div>
+      <ul className="grid md:grid-cols-2 gap-3">
+        {FACTION_COLOURS.map(({ name, className, ink, use }) => (
+          <Swatch key={name} name={name} className={className} ink={ink}>
+            {use}
+          </Swatch>
         ))}
-      </div>
+      </ul>
     </Entry>
 
     <Entry

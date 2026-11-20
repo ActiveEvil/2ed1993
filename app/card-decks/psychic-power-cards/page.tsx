@@ -6,7 +6,7 @@ import { JumpBar } from "@/components/JumpBar";
 import { Panel } from "@/components/Panel";
 import { TitleBand } from "@/components/TitleBand";
 import { generateAnchorId } from "@/lib/anchors";
-import { deckColors } from "@/lib/factions";
+import { deckColors, deckInk } from "@/lib/factions";
 import { pageTitle } from "@/lib/metadata";
 import { assertNoQueryErrors, supabase } from "@/lib/supabase";
 import { clsx } from "clsx";
@@ -34,7 +34,7 @@ export default async function Page() {
       .order("position"),
     supabase
       .from("psychic_power_cards")
-      .select("id, deck, name, description, force, range, note")
+      .select("id, deck, name, description, force, range, note, origin")
       .order("id"),
   ]);
   const heros = heroImages?.map(({ images }) => images);
@@ -128,8 +128,8 @@ export default async function Page() {
                               <h3 className="font-title uppercase text-2xl text-2ed-dark-blue text-center">
                                 {card.name}
                               </h3>
-                              <p
-                                className="text-lg"
+                              <div
+                                className="dynamic-content flex flex-col gap-2 text-lg"
                                 dangerouslySetInnerHTML={{
                                   __html: card.description,
                                 }}
@@ -139,6 +139,16 @@ export default async function Page() {
                                   {card.note}
                                 </p>
                               )}
+                            </div>
+                            <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-4 w-full">
+                              <p
+                                className={clsx(
+                                  "font-block text-sm",
+                                  deckInk[deck.name],
+                                )}
+                              >
+                                {card.origin}
+                              </p>
                             </div>
                           </article>
                         );

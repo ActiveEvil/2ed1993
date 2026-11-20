@@ -112,7 +112,9 @@ def card_rows(table, join):
 
 
 cards = {"wargear-cards": card_rows("wargear_cards", "wargear_cards_availabilities"),
-         "vehicle-cards": card_rows("vehicle_cards", "vehicle_cards_availabilities")}
+         "vehicle-cards": card_rows("vehicle_cards", "vehicle_cards_availabilities"),
+         "psychic-power-cards": [{"n": c["name"], "o": c["origin"], "d": c["deck"]}
+                                 for c in rows("psychic_power_cards", "name,origin,deck")]}
 
 def card_ids(row):
     return {k: row[c] for k, c in (("wc", "wargear_card_id"), ("vc", "vehicle_card_id"))

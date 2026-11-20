@@ -1854,6 +1854,7 @@ export type Database = {
           id: number
           name: string
           note: string | null
+          origin: string | null
           range: string | null
           updated_at: string | null
         }
@@ -1865,6 +1866,7 @@ export type Database = {
           id?: number
           name: string
           note?: string | null
+          origin?: string | null
           range?: string | null
           updated_at?: string | null
         }
@@ -1876,6 +1878,7 @@ export type Database = {
           id?: number
           name?: string
           note?: string | null
+          origin?: string | null
           range?: string | null
           updated_at?: string | null
         }
@@ -3527,6 +3530,7 @@ export type Database = {
         | "Slaanesh"
         | "Tzeentch"
         | "Nurgle"
+        | "Harlequin"
       wargear_rarities: "Uncommon" | "Rare" | "Unique"
     }
     CompositeTypes: {
@@ -3669,6 +3673,7 @@ export const Constants = {
         "Slaanesh",
         "Tzeentch",
         "Nurgle",
+        "Harlequin",
       ],
       wargear_rarities: ["Uncommon", "Rare", "Unique"],
     },

@@ -140,6 +140,10 @@ and inch measurements recorded as decimal (Markup 9).
 **Revised 10 November 2026:** the stock transport line left off an entry
 sold only as a unit (Sources, BF-23).
 
+**Revised 20 November 2026:** a psychic card may carry a card-face chart, and
+every psychic card prints its origin (the psychic-cards paragraph in Working
+practice; Markup 7; Sources).
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -1051,7 +1055,13 @@ pointing at a page that does not exist.
 all; the sole exception is `Eldritch Storm`, which bolds `Scatter Dice`.
 Consistency in that deck means using the site's *terms*, not marking them &mdash;
 `psychic:Scan` was brought into line on 22 August by writing "automatically
-Detected" in bare text, where the wargear cards link both terms.
+Detected" in bare text, where the wargear cards link both terms. A printed
+chart is the one exception (20 November 2026): the Vengeance of Khaine of the
+Harlequin deck carries its Striking Chart in Markup 7's card-face form, the
+page rendering a card's description through a `dynamic-content` block as the
+wargear cards do. Every psychic card prints its origin in the foot row, as the
+other decks do (CR-8); the psychic deck page anchors a card on its name alone,
+which no two psychic cards share.
 
 **Changing what a term means obliges you to re-read every text that uses it.**
 The 22 August split of *Spotted* from *Detected* in `general-rules:Hiding` silently

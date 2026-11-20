@@ -9,6 +9,21 @@ export const deckColors: Record<string, string> = {
   Slaanesh: "bg-faction-slaanesh",
   Tzeentch: "bg-faction-tzeentch",
   Nurgle: "bg-faction-nurgle",
+  Harlequin: "bg-faction-eldar",
+};
+
+export const deckInk: Record<string, string> = {
+  Librarian: "text-2ed-white",
+  Adeptus: "text-2ed-white",
+  Inquisition: "text-2ed-white",
+  "Eldar Seers": "text-2ed-black",
+  "Ork Weirdboyz": "text-2ed-white",
+  Squat: "text-2ed-black",
+  Tyranid: "text-2ed-white",
+  Slaanesh: "text-2ed-black",
+  Tzeentch: "text-2ed-black",
+  Nurgle: "text-2ed-black",
+  Harlequin: "text-2ed-black",
 };
 
 export const vehicleCardColors: Record<string, string> = {

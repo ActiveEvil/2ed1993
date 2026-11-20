@@ -35,6 +35,9 @@ Links into the two card pages are checked against the card anchors, built
 from the `cards` list the dump carries as lib/anchors.ts builds them: the
 name, each availability in position order, then the origin. A page's sections are
 `available-<name>` for each availability that is some card's first.
+Links into the psychic deck page are checked against its anchors from the
+same list: a deck's name (the section) and a card's name (the page anchors
+on the name alone). The list carries each psychic card's origin and deck.
 card_points, double_grant and priced_grant read the `grants` block and hold
 the card-pricing ruling of 3 November: a compulsory unit_options card grant
 adds the card's points to the entry, and a profile grant is included in the
@@ -153,6 +156,7 @@ def anchor(name):
 
 
 CARD_PAGES = {"wargear_card": "wargear-cards", "vehicle_card": "vehicle-cards"}
+DECK_PAGE = "psychic-power-cards"
 
 
 def slug(text):
@@ -166,9 +170,12 @@ def slug(text):
 
 
 def card_anchors(texts, cards):
-    found = {page: set() for page in CARD_PAGES.values()}
+    found = {page: set() for page in (*CARD_PAGES.values(), DECK_PAGE)}
     for page, rows in cards.items():
         for card in rows:
+            if page == DECK_PAGE:
+                found[page].update((slug(card["n"]), slug(card["d"])))
+                continue
             found[page].add(slug(" ".join([card["n"], *card["a"], card["o"]])))
             if card["a"]:
                 found[page].add("available-" + "-".join(card["a"][0].lower().split()))
@@ -377,6 +384,13 @@ def cross_checks(texts, chapters, cards):
                 if fragment not in anchors[page]:
                     yield ("dead_card_link", row["k"], row["n"],
                            f"/wargear/{page}#{fragment} resolves to nothing")
+            if DECK_PAGE in cards:
+                for match in re.finditer(
+                        rf'href="/card-decks/{DECK_PAGE}#([^"]+)"', row["t"]):
+                    fragment = match.group(1)
+                    if fragment not in anchors[DECK_PAGE]:
+                        yield ("dead_card_link", row["k"], row["n"],
+                               f"/card-decks/{DECK_PAGE}#{fragment} resolves to nothing")
 
     paragraphs = defaultdict(list)
     for row in texts:
