@@ -799,6 +799,9 @@ export const UnitEquipment: React.FC<{
                     !option.upgrade &&
                     !option.replaces &&
                     !compulsory;
+                  const replacesOnly =
+                    !granted &&
+                    Boolean(option.replaces || option.replaces_armour);
 
                   return (
                     <LabelledRow
@@ -921,7 +924,7 @@ export const UnitEquipment: React.FC<{
                         !option.replaces &&
                         Boolean(sections.length) &&
                         ", in place of a weapon carried"}
-                      {option.replaces && (
+                      {!replacesOnly && option.replaces && (
                         <>
                           {", in place of "}
                           <Link
@@ -932,7 +935,7 @@ export const UnitEquipment: React.FC<{
                           </Link>
                         </>
                       )}
-                      {option.replaces_armour && (
+                      {!replacesOnly && option.replaces_armour && (
                         <>
                           {option.replaces ? ", " : ", in place of "}
                           <Link
@@ -943,7 +946,7 @@ export const UnitEquipment: React.FC<{
                           </Link>
                         </>
                       )}
-                      {structured && ". "}
+                      {structured && !replacesOnly && ". "}
                       {note && !blockNote && (
                         <span
                           className="dynamic-content compact"
