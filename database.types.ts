@@ -1043,6 +1043,7 @@ export type Database = {
           faction_id: number
           id: number
           name: string
+          published_month: number | null
           published_year: number | null
           slug: string
           source: string | null
@@ -1054,6 +1055,7 @@ export type Database = {
           faction_id: number
           id?: number
           name: string
+          published_month?: number | null
           published_year?: number | null
           slug: string
           source?: string | null
@@ -1065,6 +1067,7 @@ export type Database = {
           faction_id?: number
           id?: number
           name?: string
+          published_month?: number | null
           published_year?: number | null
           slug?: string
           source?: string | null
