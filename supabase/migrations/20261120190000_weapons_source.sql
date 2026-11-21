@@ -1,0 +1,3 @@
+ALTER TABLE "public"."weapons" ADD COLUMN IF NOT EXISTS "source" "text";
+
+COMMENT ON COLUMN "public"."weapons"."source" IS 'The citation as the magazine head reads it, for a weapon that exists only because of a magazine article: publication, issue, page and author status where it applies, for example ''Citadel Journal 8, p11, reader submission''. Set whatever carries the weapon: a weapon reached only through a magazine card has it beside the card''s origin, and a weapon of a magazine list has it beside the list''s source; the fields are not reconciled. Null where the weapon is not magazine material.';
