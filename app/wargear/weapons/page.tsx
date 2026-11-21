@@ -46,7 +46,7 @@ export default async function Page() {
     supabase
       .from("weapons")
       .select(
-        "id, name, category_id, counts_as_weapon_id, profile_description, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
+        "id, name, category_id, counts_as_weapon_id, profile_description, source, weapon_profiles(name, short_range, long_range, short_to_hit, long_to_hit, strength, damage, save_modifier, armour_penetration, weapon_special_rules(name))",
       )
       .order("name")
       .order("position", { referencedTable: "weapon_profiles" }),
@@ -160,6 +160,7 @@ export default async function Page() {
                       const search = [
                         item.name,
                         ...(countsAs ? [countsAs.name] : []),
+                        item.source ?? "",
                         ...source.weapon_profiles.flatMap((profile) => [
                           profile.name ?? "",
                           ...profile.weapon_special_rules.map(
@@ -197,6 +198,7 @@ export default async function Page() {
                           data-search={search}
                           data-refs={refs}
                           className="target:text-black"
+                          source={item.source}
                           name={
                             <HighlighterLink
                               className="hover:underline underline-offset-4"
@@ -315,6 +317,7 @@ export default async function Page() {
                         name={item.name}
                         href={`/wargear/weapons#${ruleId}`}
                         html={item.profile_description!}
+                        source={item.source}
                       />
                     );
                   })}

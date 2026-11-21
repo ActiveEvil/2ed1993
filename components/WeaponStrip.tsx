@@ -1,3 +1,4 @@
+import { MagazineHead, MagazineMark } from "@/components/Heading";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -47,10 +48,13 @@ export const WeaponStrip: React.FC<
     name: React.ReactNode;
     special?: React.ReactNode;
     profiles: StripProfile[];
-    surface?: StripSurface;
     as?: "h3" | "h4" | "h5" | "h6";
     className?: string;
-  } & Pick<React.HTMLAttributes<HTMLElement>, "hidden"> & {
+  } & (
+    | { surface?: "page"; source?: string | null }
+    | { surface: "card"; source?: never }
+  ) &
+    Pick<React.HTMLAttributes<HTMLElement>, "hidden"> & {
       "data-search"?: string;
       "data-refs"?: string;
     }
@@ -59,6 +63,7 @@ export const WeaponStrip: React.FC<
   name,
   special,
   profiles,
+  source,
   surface = "page",
   as: Heading = "h3",
   className,
@@ -69,16 +74,21 @@ export const WeaponStrip: React.FC<
     className={clsx(
       "@container group flex flex-col border-4 border-frame",
       SURFACE[surface].rules,
+      source && "mag-strip",
       className,
     )}
     {...rest}
   >
     <div className="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1 px-3 py-2 bg-black text-white">
-      <Heading className="font-subtitle text-base">{name}</Heading>
+      <Heading className="font-subtitle text-base">
+        {name}
+        <MagazineMark source={source} />
+      </Heading>
       {special && (
         <span className="font-subtitle text-xs text-right">{special}</span>
       )}
     </div>
+    {source && <MagazineHead source={source} />}
     {profiles.map((profile) => (
       <Fragment key={profile.key}>
         {profile.label && (

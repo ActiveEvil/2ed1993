@@ -6,6 +6,7 @@ import {
   HOUSE_RULE,
   MAGAZINE_ASIDE,
   MAGAZINE_NOTE,
+  NEURO_DISRUPTOR,
   ORDERED_LIST,
   TEXT_BLOCK,
   WARBIKE,
@@ -16,6 +17,8 @@ import { generateAnchorId } from "@/lib/anchors";
 import { bandHeadings, markExtensions } from "@/lib/magazine";
 
 const RULE_ID = `${generateAnchorId(BLAST_2.name)}_Rule`;
+
+const MARKED_RULES_ID = `${generateAnchorId(NEURO_DISRUPTOR.name)}_Rules`;
 
 const CONTROLS = WARBIKE.datafax.damage_charts[0].damage_chart_results[2];
 
@@ -48,7 +51,7 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
     <Entry
       title="Magazine material"
       source=".mag &middot; .mag-aside &middot; .mag-note &middot; --mag-strong on --mag-ink"
-      note="Rules and extensions from Citadel Journal and White Dwarf. A whole rule is a block: the heading row becomes a band carrying the citation from rules.source; each h3 inside is a slim band joined to the spine; a spine runs down the right edge; a foot closes it. An extension is the same block at the prose width, built from a house-rule aside whose label names the magazine, with the citation lifted from data-source into the head. Black in both schemes, like the frames. The rail marks a whole rule with the publication's initials, CJ or WD, in a 1px box. On an army list the same device reaches a magazine unit (units.source: the head, spine and foot on its ProfileFrame, the initials on its entry row) and a whole magazine list (army_lists.source: the head at the top of the list, the spine and foot round its content, its units unmarked). A magazine addition to a codex entry is an extension aside, as in a rule. A removal, something a pre-codex printing had that the codex dropped, is the quieter note: the same house-rule section with data-kind=removal, rendered without the head, the citation in the row's ink behind the initials, then the text, with the spine and foot. Either block last inside a ProfileFrame sits inset from the frame's border by 8px."
+      note="Rules and extensions from Citadel Journal and White Dwarf. A whole rule is a block: the heading row becomes a band carrying the citation from rules.source; each h3 inside is a slim band joined to the spine; a spine runs down the right edge; a foot closes it. An extension is the same block at the prose width, built from a house-rule aside whose label names the magazine, with the citation lifted from data-source into the head. Black in both schemes, like the frames. The rail marks a whole rule with the publication's initials, CJ or WD, in a 1px box. On an army list the same device reaches a magazine unit (units.source: the head, spine and foot on its ProfileFrame, the initials on its entry row) and a whole magazine list (army_lists.source: the head at the top of the list, the spine and foot round its content, its units unmarked). A magazine addition to a codex entry is an extension aside, as in a rule. A removal, something a pre-codex printing had that the codex dropped, is the quieter note: the same house-rule section with data-kind=removal, rendered without the head, the citation in the row's ink behind the initials, then the text, with the spine and foot. Either block last inside a ProfileFrame sits inset from the frame's border by 8px. A weapon with weapons.source is marked on the weapons page, on its strip and on its section of unique rules; see WeaponStrip under Data and SpecialRuleSection below. The citation prints at 10px on a 13px line, off the type scale by decision, through --text-cite; the initials stay at 12px."
     >
       <Source>{ARID_TERRAIN.source}</Source>
       <DualScheme>
@@ -89,8 +92,8 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
 
     <Entry
       title="SpecialRuleSection"
-      source="components/SpecialRuleSection.tsx &middot; id, name, href, html, related"
-      note="A named rule on the weapons and armour references: a SectionHeading h3 linking to itself, the prose at the measure, and a See line where the rule has its own chapter. It carries data-search for the filter, and its id is what a strip's data-refs names, so a visible strip keeps the rules it cites. Targeted, the section turns light yellow."
+      source="components/SpecialRuleSection.tsx &middot; id, name, href, html, related, source"
+      note="A named rule on the weapons and armour references: a SectionHeading h3 linking to itself, the prose at the measure, and a See line where the rule has its own chapter. It carries data-search for the filter, and its id is what a strip's data-refs names, so a visible strip keeps the rules it cites. Targeted, the section turns light yellow. With a source, as for a magazine weapon's unique rules, the title takes the initials and drops its rule, and the head and prose sit 8px below it in a .mag block with the spine and foot. Targeted, that block keeps its black head, spine and foot on the yellow, and a table in its prose takes the yellow rows as in an unmarked section."
     >
       <Source>{BLAST_2.source}</Source>
       <SpecialRuleSection
@@ -99,6 +102,14 @@ export const ContentBlocks: React.FC = (): React.JSX.Element => (
         href={`/design#${RULE_ID}`}
         html={BLAST_2.html}
         related={BLAST_2.related}
+      />
+      <Source>{NEURO_DISRUPTOR.source}</Source>
+      <SpecialRuleSection
+        id={MARKED_RULES_ID}
+        name={NEURO_DISRUPTOR.name}
+        href={`/design#${MARKED_RULES_ID}`}
+        html={NEURO_DISRUPTOR.html}
+        source={NEURO_DISRUPTOR.citation}
       />
     </Entry>
   </Group>

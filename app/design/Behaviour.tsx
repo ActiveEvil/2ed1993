@@ -56,7 +56,7 @@ export const Behaviour: React.FC = (): React.JSX.Element => (
     <Entry
       title="Filtering rows"
       source="components/RowFilter.tsx &middot; FilterField.tsx"
-      note="The filter in the JumpBar specimen is live. It acts on the two rows here that carry data-search, the Grenade Launcher strip and the Blast 2&quot; rule; the strip's data-refs keeps the rule visible while the strip is. A term neither carries shows the empty note."
+      note="The filter in the JumpBar specimen is live. It acts on the four rows here that carry data-search: the Grenade Launcher and Neuro-Disruptor strips, the Blast 2&quot; rule and the Neuro-Disruptor's unique rules. A strip's data-refs keeps the rule it cites visible while the strip is. A term none of them carries shows the empty note."
     >
       <List items={FILTERING} />
       <p

@@ -897,6 +897,34 @@ export const GRENADE_LAUNCHER: {
   specials: ['Blast 2"'],
 };
 
+export const NEURO_DISRUPTOR: Stored & {
+  name: string;
+  citation: string;
+  profiles: Omit<WeaponProfileRow, "weapon_special_rules">[];
+} = {
+  source: "weapons · Neuro-Disruptor, source in draft",
+  name: "Neuro-Disruptor",
+  citation: "Citadel Journal 17, p49",
+  profiles: [
+    {
+      name: null,
+      short_range: "0-12",
+      long_range: "12-24",
+      short_to_hit: "+1",
+      long_to_hit: "–",
+      strength: "*",
+      damage: "*",
+      save_modifier: "-1",
+      armour_penetration: "–",
+    },
+  ],
+  html: `<p>
+    A creature hit falls under <a href="/rules/psychology#Stupidity">Stupidity</a> at once. At the start of each
+    following turn it takes a normal <a href="/rules/psychology#Leadership_Tests">Leadership test</a>: a failure
+    prolongs the effect, a pass shakes it off entirely and no further tests are needed.
+</p>`,
+};
+
 export const BLAST_2: {
   source: string;
   name: string;

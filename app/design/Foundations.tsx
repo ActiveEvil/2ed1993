@@ -147,6 +147,10 @@ const FACTION_COLOURS = [
 const SCALE = [
   ["2xs / 8px", "The image credit below 16rem"],
   [
+    "cite / 10px",
+    "Off the scale by decision, on a 13px line: the magazine citation only, in .mag-head and .mark-cite",
+  ],
+  [
     "xs / 12px",
     "Eyebrows, labels, chips, table heads, image credits, the house-rule label",
   ],
@@ -293,7 +297,7 @@ export const Foundations: React.FC = (): React.JSX.Element => (
     <Entry
       title="Type"
       source="layout.tsx &middot; 3 roles"
-      note="font-block is set once on the body; the other two are named where used. Nothing sits below text-xs except the image credit's text-2xs."
+      note="font-block is set once on the body; the other two are named where used. Below text-xs sit the magazine citation at 10px and the image credit's text-2xs."
     >
       <ul className="flex flex-col gap-4">
         <li className="flex flex-col gap-1">
@@ -369,8 +373,8 @@ export const Foundations: React.FC = (): React.JSX.Element => (
             <span className="mark-rail" aria-hidden="true">
               CJ
             </span>{" "}
-            that mark a whole magazine rule in the rail, or a magazine unit on
-            its entry row.
+            that mark a whole magazine rule in the rail, a magazine unit on its
+            entry row, or a magazine weapon on its strip and rules title.
           </small>
         </li>
         <li className="flex items-center gap-3">

@@ -144,6 +144,12 @@ sold only as a unit (Sources, BF-23).
 every psychic card prints its origin (the psychic-cards paragraph in Working
 practice; Markup 7; Sources).
 
+**Revised 21 November 2026:** `weapons.source` added to Magazine material
+(Voice), with the mark on a weapon strip and on a weapon's section under
+Unique Weapon Special Rules, and the citation set at 10px; the card surface's
+exclusion restated in The strip grammar; the weapon checks added to the
+Standing verification suite.
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -372,6 +378,27 @@ Baseline: **`/general-rules`**.
     that note to the last place inside the ProfileFrame, inset from the
     frame's border by `--spacing * 2`, so the block's own spine stands clear
     of the frame. Ruled by Thomas 4 November 2026.
+    A weapon that exists only because of a magazine article holds its
+    citation in `weapons.source`, null otherwise. The field is set on
+    whatever carries the weapon: beside a card's `origin` where the weapon is
+    reached only through a magazine card, and beside the list's source where
+    it belongs to a magazine list. Unlike a unit, a weapon of a magazine list
+    carries its own source (WS-2). Neither field is derived from the other,
+    but `verify.py` reports a weapon whose source names none of the magazine
+    issues among the origins of the cards that carry it. On the weapons page
+    a marked strip takes the initials box after its name in the black bar,
+    outlined in `2ed-white` as on the mobile Jump list; the head directly
+    under the bar, at its own padding so that the citation lines up with the
+    name; and the spine down the strip's right edge. The cells, label bands
+    and targeted state are unchanged, and the bar and head stay black when
+    the strip is targeted. The weapon's section under Unique Weapon Special
+    Rules keeps its title, with the initials after it and no rule beneath,
+    and sets the head and the prose in a `.mag` block below it with the
+    spine and foot. A strip on a card face or a datafax carries no mark
+    (CR-9). The citation prints at 10px on a 13px line wherever it appears,
+    band, head or removal note; the size is off the type scale by decision,
+    and the initials box stays at 12px. Ruled by Thomas 20 and 21
+    November 2026 (WS-1 to WS-5).
   - **Source note** — records where two printings disagree, or which of them
     the site follows. An unmarked `<p><small><em>`: no marker, set small and
     italic so it reads as editorial rather than as rule. In use before it was
@@ -792,7 +819,11 @@ in `text-2ed-black`, inside a wargear or vehicle card face and a datafax
 data table). On a card the strip carries no `id`, since the artefact is the
 anchor; on the page it carries the entry's `id`, `data-search` and
 `data-refs`, so anchors and the filter work exactly as they did on the table
-rows.
+rows. Only the page surface takes the magazine mark, for a weapon with a
+`weapons.source`; a strip on the card surface never carries it, whatever the
+weapon (CR-9, restated for strips 21 November 2026). A marked weapon's
+citation joins its strip's `data-search` string, as a card's origin joins the
+card's.
 
 ### Surfaces and artefacts
 
@@ -1252,8 +1283,10 @@ links to a chapter slug that does not exist (from the `chapters` list the
 dump carries beside `texts`), duplicate paragraphs across texts, a magazine
 aside without `data-source` or with a `data-kind` outside the known set,
 and, from the `sources` list the dump carries, every `rules.source`,
-`units.source` and `army_lists.source` in the citation form and no unit
-with a source on a list that has one (MAG-5).
+`units.source`, `army_lists.source` and `weapons.source` in the citation
+form, no unit with a source on a list that has one (MAG-5), and a weapon
+source naming the issue of one of the magazine cards that carry the weapon,
+where any does (`weapon_card_origin`).
 
 **Known artefact:** running `verify.py` against a single-text JSON reports a
 false `dead_link`, because the anchor population it checks against is derived

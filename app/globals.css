@@ -28,6 +28,9 @@
 @theme inline {
   --text-2xs: 0.5rem;
   --text-2xs--line-height: 0.75rem;
+  /* The magazine citation sits off the scale by decision. */
+  --text-cite: 0.625rem;
+  --text-cite--line-height: 0.8125rem;
   --container-prose: 65ch;
   --aspect-retro: 4 / 3;
   --aspect-portrait: 4 / 5;
@@ -455,6 +458,15 @@
       }
     }
   }
+  /* On a weapon strip the head lines up with the name in the bar above it. */
+  .mag-strip {
+    border-right-width: calc(var(--spacing) * 4);
+    border-right-color: var(--mag-strong);
+    border-bottom-color: var(--mag-strong);
+    > .mag-head {
+      margin-right: 0;
+    }
+  }
   /* A magazine block last in a frame stands clear of the frame's border. */
   .profile-frame {
     .mag-aside,
@@ -485,8 +497,8 @@
   .mark-cite,
   .mag-head {
     font-family: var(--ibm-plex-sans);
-    font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
+    font-size: var(--text-cite);
+    line-height: var(--tw-leading, var(--text-cite--line-height));
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
     letter-spacing: 0.08em;
@@ -514,8 +526,10 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-  /* The mobile Jump list sits on black, where the box needs its edge. */
-  details .mark-rail {
+  /* The mobile Jump list and a strip's name bar sit on black, where the box
+     needs its edge. */
+  details .mark-rail,
+  .mag-strip .mark-rail {
     outline-color: var(--color-2ed-white);
   }
   [aria-current] .mark-rail {
@@ -581,7 +595,7 @@
 }
 
 .highlight-target:target {
-  > .dynamic-content {
+  .dynamic-content {
     .table-container {
       table {
         tbody {

@@ -43,8 +43,14 @@ the card-pricing ruling of 3 November: a compulsory unit_options card grant
 adds the card's points to the entry, and a profile grant is included in the
 unit's price.
 magazine_citation and unit_on_magazine_list read the `sources` block: every
-rules.source, units.source and army_lists.source takes the citation form, and
-no unit on a list that has a source carries a source of its own (MAG-5).
+rules.source, units.source, army_lists.source and weapons.source takes the
+citation form, and no unit on a list that has a source carries a source of its
+own (MAG-5). weapon_card_origin reads the block's weapons, each with the
+origins of the wargear and vehicle cards that carry it: a weapon with a source
+carried by a card with a magazine origin names the publication and issue of
+one such card. Other origins are not compared, and a source not in the
+citation form is left to magazine_citation. A weapon of a magazine list
+carries its own source (WS-2), so there is no list check for weapons.
 The checks named section_* and requirement_*, entry_option_compulsory and
 alternative_max read the `requirements` block and hold LB-14 (the design of
 4 November, sections 2 and 4.2). section_limit reads a section note's opening
@@ -407,11 +413,12 @@ def cross_checks(texts, chapters, cards):
 
 NUMERIC = re.compile(r"^\d+(\.\d+)?$")
 CITATION = re.compile(r"^(Citadel Journal|White Dwarf) \d+, pp?\d+(–\d+)?(, reader submission)?$")
+ISSUE = re.compile(r"^(?:Citadel Journal|White Dwarf) \d+")
 
 
 def source_checks(sources):
-    for kind in ("rules", "army_lists", "units"):
-        for row in sources[kind]:
+    for kind in ("rules", "army_lists", "units", "weapons"):
+        for row in sources.get(kind, []):
             if not CITATION.match(row["s"]):
                 yield ("magazine_citation", kind, row["n"],
                        f"source {row['s']!r} is not in the citation form")
@@ -419,6 +426,11 @@ def source_checks(sources):
         if row["l"]:
             yield ("unit_on_magazine_list", "units", row["n"],
                    f"carries a source on a list with its own: {', '.join(row['l'])}")
+    for row in sources.get("weapons", []):
+        issues = [o for o in row["o"] if ISSUE.fullmatch(o)]
+        if issues and CITATION.match(row["s"]) and ISSUE.match(row["s"])[0] not in issues:
+            yield ("weapon_card_origin", "weapons", row["n"],
+                   f"source {row['s']!r} names none of its cards' origins: {', '.join(issues)}")
 
 
 def grant_checks(grants):
@@ -1046,8 +1058,12 @@ def main():
         print("no grants in the dump, so card_points, double_grant and "
               "priced_grant are skipped; re-run dump-texts.py")
     if sources is None:
-        print("no sources in the dump, so magazine_citation and "
-              "unit_on_magazine_list are skipped; re-run dump-texts.py")
+        print("no sources in the dump, so magazine_citation, "
+              "unit_on_magazine_list and weapon_card_origin are skipped; "
+              "re-run dump-texts.py")
+    elif "weapons" not in sources:
+        print("no weapons in the sources, so weapons.source and "
+              "weapon_card_origin are skipped; re-run dump-texts.py")
     if requirements is None:
         print("no requirements in the dump, so the section, requirement and "
               "alternative_max checks are skipped; re-run dump-texts.py")

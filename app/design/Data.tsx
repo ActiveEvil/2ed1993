@@ -2,6 +2,7 @@ import { DualScheme, Entry, Fixture, Group, Source } from "./Shared";
 import {
   GRENADE_LAUNCHER,
   NARROW_TABLE,
+  NEURO_DISRUPTOR,
   PAIRS_CHART,
   PROFILE_CHART,
   RANGE_CHART,
@@ -18,6 +19,8 @@ import { Fragment } from "react";
 const ROWS = ["Boltgun", "Bolt Pistol", "Chainsword", "Power Fist"];
 
 const STRIP_ID = generateAnchorId(GRENADE_LAUNCHER.name);
+
+const MARKED_ID = generateAnchorId(NEURO_DISRUPTOR.name);
 
 const AUTOCANNON = WARBIKE.datafax.datafax_weapons[0].weapons;
 
@@ -44,8 +47,8 @@ export const Data: React.FC = (): React.JSX.Element => (
 
     <Entry
       title="WeaponStrip"
-      source="components/WeaponStrip.tsx &middot; name, special, profiles, surface"
-      note="A weapon or armour entry outside a table: a black name bar with the special rules right-aligned in white, then label and value cells, one row per profile. At 28rem the cells sit on one line; narrower, they fall into two rows, Range and To hit above the rest, or two by two for the four-cell close-combat and armour strips. The switch follows the strip's width, so a card strip keeps two rows on a wide screen. Labels are the one abbreviation set: Range, To hit, Str, Dam, Save Mod, AP. On the page surface the strip rules in --frame, carries id, data-search and data-refs, and turns yellow when targeted. On the card surface it rules in 2ed-black on --card-face and carries no id."
+      source="components/WeaponStrip.tsx &middot; name, special, profiles, surface, source"
+      note="A weapon or armour entry outside a table: a black name bar with the special rules right-aligned in white, then label and value cells, one row per profile. At 28rem the cells sit on one line; narrower, they fall into two rows, Range and To hit above the rest, or two by two for the four-cell close-combat and armour strips. The switch follows the strip's width, so a card strip keeps two rows on a wide screen. Labels are the one abbreviation set: Range, To hit, Str, Dam, Save Mod, AP. On the page surface the strip rules in --frame, carries id, data-search and data-refs, and turns yellow when targeted. A weapon with a weapons.source takes the magazine mark there, through .mag-strip: the initials after the name, outlined in 2ed-white against the bar; the head under the bar at its own padding, so the citation lines up with the name; and the spine down the right edge. The bar and head stay black when the strip is targeted. On the card surface it rules in 2ed-black on --card-face, carries no id, and takes no source, which the props' type enforces (CR-9)."
     >
       <Source>{GRENADE_LAUNCHER.source} &middot; page surface</Source>
       <WeaponStrip
@@ -81,6 +84,41 @@ export const Data: React.FC = (): React.JSX.Element => (
         profiles={GRENADE_LAUNCHER.profiles.map((profile, index) => ({
           key: index,
           label: profile.name,
+          cells: rangedCells(profile),
+        }))}
+      />
+      <Source>{NEURO_DISRUPTOR.source} &middot; page surface, marked</Source>
+      <WeaponStrip
+        id={MARKED_ID}
+        data-search={[
+          NEURO_DISRUPTOR.name,
+          NEURO_DISRUPTOR.citation,
+          "unique rules",
+        ]
+          .join(" ")
+          .toLowerCase()}
+        data-refs={`${MARKED_ID}_Rules`}
+        className="target:text-black"
+        source={NEURO_DISRUPTOR.citation}
+        name={
+          <HighlighterLink
+            className="hover:underline underline-offset-4"
+            href={`/design#${MARKED_ID}`}
+          >
+            {NEURO_DISRUPTOR.name}
+          </HighlighterLink>
+        }
+        special={
+          <HighlighterLink
+            className="underline underline-offset-4"
+            href={`/design#${MARKED_ID}_Rules`}
+          >
+            Unique rules
+          </HighlighterLink>
+        }
+        profiles={NEURO_DISRUPTOR.profiles.map((profile, index) => ({
+          key: index,
+          label: null,
           cells: rangedCells(profile),
         }))}
       />

@@ -116,7 +116,7 @@ export const Navigation: React.FC = (): React.JSX.Element => (
         <RowFilter
           label="Filter"
           unit="entries"
-          total={2}
+          total={4}
           placeholder="e.g. boltgun, plasma, sustained fire"
         />
       </JumpBar>
