@@ -30,7 +30,7 @@ const loadFactionRules = (factionId: number) =>
   supabase
     .from("unit_special_rule_assignments")
     .select(
-      "rule:unit_special_rules(id, name, rule, anchor, wargear_items(id), rules(id, name, rule_categories(slug, name))), units!inner(id, name, faction_id, army_list_entries(id, unit_categories(army_lists(slug, factions(slug)))))",
+      "rule:unit_special_rules(id, name, rule, anchor, wargear_items(id), rules(id, name, rule_categories(slug, name))), units!inner(id, name, source, faction_id, army_list_entries(id, unit_categories(army_lists(slug, factions(slug)))))",
     )
     .eq("units.faction_id", factionId)
     .is("army_list_entry_id", null)
@@ -49,6 +49,7 @@ type FactionRule = {
   prose: string;
   target: NonNullable<AssignmentRow["rule"]>["rules"];
   targetAnchor: string | null;
+  source: string | null;
   carriers: Carrier[];
 };
 
@@ -80,8 +81,13 @@ const collectFactionRules = (rows: AssignmentRow[]): FactionRule[] => {
       prose: rule.rule,
       target: rule.rules,
       targetAnchor: rule.anchor,
+      source: row.units.source,
       carriers: [],
     };
+
+    if (entry.source !== row.units.source) {
+      entry.source = null;
+    }
 
     if (!entry.carriers.some(({ id }) => id === row.units.id)) {
       entry.carriers.push({
@@ -284,7 +290,7 @@ export default async function Page(props: {
           id: null,
           name: rule.name,
           rule: html,
-          source: null,
+          source: rule.source,
         });
         continue;
       }
@@ -295,7 +301,7 @@ export default async function Page(props: {
         id: anchor,
         name: rule.name,
         rule: html,
-        source: null,
+        source: rule.source,
       });
     }
 

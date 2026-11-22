@@ -51,6 +51,9 @@ carried by a card with a magazine origin names the publication and issue of
 one such card. Other origins are not compared, and a source not in the
 citation form is left to magazine_citation. A weapon of a magazine list
 carries its own source (WS-2), so there is no list check for weapons.
+unit_rule_citation reads the block's unit_rules, each with its carriers and
+their sources: a unit rule whose carriers all have a source has one source
+among them, which its chapter on the faction rules page cites (CJ8-11a).
 The checks named section_* and requirement_*, entry_option_compulsory and
 alternative_max read the `requirements` block and hold LB-14 (the design of
 4 November, sections 2 and 4.2). section_limit reads a section note's opening
@@ -431,6 +434,12 @@ def source_checks(sources):
         if issues and CITATION.match(row["s"]) and ISSUE.match(row["s"])[0] not in issues:
             yield ("weapon_card_origin", "weapons", row["n"],
                    f"source {row['s']!r} names none of its cards' origins: {', '.join(issues)}")
+    for row in sources.get("unit_rules", []):
+        cited = {c["s"] for c in row["c"]}
+        if None not in cited and len(cited) > 1:
+            carriers = "; ".join(f"{c['n']} ({c['s']})" for c in row["c"])
+            yield ("unit_rule_citation", "unit_special_rules", row["n"],
+                   f"carriers have different sources: {carriers}")
 
 
 def grant_checks(grants):
@@ -1064,6 +1073,9 @@ def main():
     elif "weapons" not in sources:
         print("no weapons in the sources, so weapons.source and "
               "weapon_card_origin are skipped; re-run dump-texts.py")
+    if sources is not None and "unit_rules" not in sources:
+        print("no unit_rules in the sources, so unit_rule_citation is skipped; "
+              "re-run dump-texts.py")
     if requirements is None:
         print("no requirements in the dump, so the section, requirement and "
               "alternative_max checks are skipped; re-run dump-texts.py")

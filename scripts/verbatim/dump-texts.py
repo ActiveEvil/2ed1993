@@ -161,6 +161,11 @@ for table, card in (("wargear_cards_weapons", "wargear_cards"),
                     ("vehicle_cards_weapons", "vehicle_cards")):
     for w in rows(table, f"weapon_id,{card}(origin)"):
         weapon_origins.setdefault(w["weapon_id"], set()).add(w[card]["origin"])
+unit_sources = {u["id"]: u["source"] for u in rows("units", "id,source") if u["source"]}
+rule_carriers = {}
+for a in rows("unit_special_rule_assignments", "unit_id,special_rule_id,army_list_entry_id"):
+    if a["army_list_entry_id"] is None:
+        rule_carriers.setdefault(a["special_rule_id"], set()).add(a["unit_id"])
 sources = {
     "rules": [{"n": r["name"], "s": r["source"]}
               for r in rows("rules", "name,source") if r["source"]],
@@ -169,7 +174,12 @@ sources = {
     "units": [{"n": u["name"], "s": u["source"], "l": sorted(unit_lists.get(u["id"], ()))}
               for u in rows("units", "id,name,source") if u["source"]],
     "weapons": [{"n": w["name"], "s": w["source"], "o": sorted(weapon_origins.get(w["id"], ()))}
-                for w in rows("weapons", "id,name,source") if w["source"]]}
+                for w in rows("weapons", "id,name,source") if w["source"]],
+    "unit_rules": [{"n": r["name"],
+                    "c": [{"n": units[u], "s": unit_sources.get(u)}
+                          for u in sorted(rule_carriers[r["id"]], key=lambda u: units[u])]}
+                   for r in sorted(rows("unit_special_rules", "id,name,rule"), key=lambda r: r["id"])
+                   if r["rule"] and any(u in unit_sources for u in rule_carriers.get(r["id"], ()))]}
 
 def stripped(row):
     return {k: v for k, v in row.items() if v is not None}

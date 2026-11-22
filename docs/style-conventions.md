@@ -360,7 +360,10 @@ Baseline: **`/general-rules`**.
     and its units carry no source of their own. A magazine option on a codex
     entry is an extension aside in the entry's text. Where a magazine entry
     replaces a codex entry in terms, both are shown, the magazine entry's
-    note naming the codex entry it stands in for. The mark itself is the
+    note naming the codex entry it stands in for. A unit rule carried only by
+    magazine units with one shared citation is marked on the faction rules
+    page as a whole rule is. It takes that citation; a rule with a codex
+    carrier stays unmarked (CJ8-11a, 22 November 2026). The mark itself is the
     publication's initials, CJ or WD, in a 1px box: in the rail beside a whole
     rule and on an entry row beside a magazine unit. It carries no words
     beyond the initials. Ruled by Thomas 2 November 2026, with "optional"
