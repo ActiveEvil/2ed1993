@@ -902,7 +902,7 @@ export const NEURO_DISRUPTOR: Stored & {
   citation: string;
   profiles: Omit<WeaponProfileRow, "weapon_special_rules">[];
 } = {
-  source: "weapons · Neuro-Disruptor, source in draft",
+  source: "weapons · Neuro-Disruptor",
   name: "Neuro-Disruptor",
   citation: "Citadel Journal 17, p49",
   profiles: [

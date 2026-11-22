@@ -412,7 +412,7 @@ def cross_checks(texts, chapters, cards):
 
 
 NUMERIC = re.compile(r"^\d+(\.\d+)?$")
-CITATION = re.compile(r"^(Citadel Journal|White Dwarf) \d+, pp?\d+(–\d+)?(, reader submission)?$")
+CITATION = re.compile(r"^(Citadel Journal|White Dwarf) \d+, (pp?\d+(–\d+)?|card sheet)(, reader submission)?$")
 ISSUE = re.compile(r"^(?:Citadel Journal|White Dwarf) \d+")
 
 
