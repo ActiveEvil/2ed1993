@@ -369,14 +369,11 @@ squads carry `add`, quantity 1, `whole_unit` true; the Exarch carries
 Exarch Warrior Powers"). Both sit under SPECIAL, as the codexes print them
 (VET-3, ELD-62).
 
-**`army_list_entries.note` groups adjacent byte-identical notes.** On the
-list page, consecutive entries within a category whose `note` values are the
-same string are rendered as one block on the group surface with the note
-printed once beneath them (`groupBlocks` in the list page). The comparison
-is exact: a note that differs by a character, or an entry between two
-matching notes with no note of its own, breaks the block and each note
-prints again under its own entry. Author a shared note identically on every
-entry it covers, and keep those entries adjacent in `position`.
+**Each entry prints its own note.** On the list page, `army_list_entries.note`
+prints under the entry's own heading. The page grouped adjacent identical notes
+until 22 November 2026. That day the same stand-in sentence on two adjacent
+entries printed once beneath both, and no longer under the first. A note shared
+by several entries is not modelled (CJ10-18).
 
 **A named allowance set lists its members in brackets.** Wherever an
 allowance line prints a set's name, the members follow it in brackets in

@@ -53,11 +53,6 @@ const SCHEME_TOKENS = [
     use: "55% foreground, 45% background, in oklab. The dotted leader from an army-list entry to its points, and the chapter numbers in a ContentsTable.",
   },
   {
-    name: "--group-surface",
-    className: "bg-group-surface",
-    use: "92% background, 8% foreground, in oklab. The band behind a note and the army-list entries it governs. Lighter than the zebra: at 85% the leader dots fall under 3:1 in light.",
-  },
-  {
     name: "--frame",
     className: "bg-frame",
     use: "Every 4px frame on a page surface. Black in every scheme and in print.",
@@ -244,8 +239,8 @@ export const Foundations: React.FC = (): React.JSX.Element => (
   <Group title="Foundations">
     <Entry
       title="Scheme tokens"
-      source="globals.css &middot; 11 variables"
-      note="Declared in all four scheme blocks and in print. Eight change with the scheme; --frame, --mag-strong and --mag-ink do not. A [data-theme] ancestor overrides the OS. Values are read from the browser."
+      source="globals.css &middot; 10 variables"
+      note="Declared in all four scheme blocks and in print. Seven change with the scheme; --frame, --mag-strong and --mag-ink do not. A [data-theme] ancestor overrides the OS. Values are read from the browser."
     >
       <DualScheme>
         <ul className="flex flex-col gap-3">

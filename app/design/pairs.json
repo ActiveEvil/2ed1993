@@ -12,21 +12,9 @@
     "size": 18
   },
   {
-    "where": "Note over a grouped run",
-    "ink": "foreground",
-    "on": "group-surface",
-    "size": 14
-  },
-  {
     "where": "Entry leader dots",
     "ink": "leader-ink",
     "on": "background",
-    "graphic": true
-  },
-  {
-    "where": "Entry leader dots on a run",
-    "ink": "leader-ink",
-    "on": "group-surface",
     "graphic": true
   },
   {

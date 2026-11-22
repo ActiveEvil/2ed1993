@@ -553,41 +553,6 @@ const groupRuns = (entries: Entry[]): Run[] => {
   return runs;
 };
 
-type Block = { note: string | null; entries: Entry[] };
-
-const groupBlocks = (entries: Entry[]): Block[] => {
-  const runs: Block[] = [];
-
-  for (const entry of entries) {
-    const last = runs[runs.length - 1];
-
-    if (last && entry.note !== null && last.note === entry.note) {
-      last.entries.push(entry);
-    } else {
-      runs.push({ note: entry.note, entries: [entry] });
-    }
-  }
-
-  const grouped: Block[] = [];
-
-  for (const run of runs) {
-    if (run.note !== null && run.entries.length > 1) {
-      grouped.push(run);
-      continue;
-    }
-
-    const last = grouped[grouped.length - 1];
-
-    if (last && last.note === null) {
-      last.entries.push(...run.entries);
-    } else {
-      grouped.push({ note: null, entries: run.entries });
-    }
-  }
-
-  return grouped;
-};
-
 const EntryHeading: React.FC<
   { grouped: boolean; className?: string } & React.PropsWithChildren
 > = ({ grouped, className, children }): React.JSX.Element => {
@@ -598,12 +563,9 @@ const EntryHeading: React.FC<
 
 const Details: React.FC<{
   entry: Entry;
-  showNote: boolean;
   showExtensions: boolean;
-}> = ({ entry, showNote, showExtensions }): React.JSX.Element | null => {
-  const note =
-    (showNote ? (entry.note ?? "") : "") +
-    (showExtensions ? entry.extensions : "");
+}> = ({ entry, showExtensions }): React.JSX.Element | null => {
+  const note = (entry.note ?? "") + (showExtensions ? entry.extensions : "");
 
   if (
     !note &&
@@ -1000,130 +962,112 @@ export default async function Page(props: {
                                     {run.group.name}
                                   </h3>
                                 )}
-                                {groupBlocks(run.entries).map((block) => (
-                                  <div
-                                    key={block.entries[0].id}
-                                    className={
-                                      block.note
-                                        ? "flex flex-col gap-3 bg-group-surface pb-4"
-                                        : "flex flex-col gap-3"
-                                    }
-                                  >
-                                    <div className="flex flex-col gap-4">
-                                      {block.entries.map((entry) => (
-                                        <article
-                                          key={entry.id}
-                                          id={entry.anchor}
-                                          data-search={entry.search}
-                                          className="group flex min-w-0 flex-col gap-1 py-4 px-2 md:px-4 target:bg-2ed-light-yellow target:text-black"
-                                        >
-                                          <div className="flex items-baseline gap-x-3 text-lg">
-                                            <EntryHeading
-                                              grouped={Boolean(run.group)}
-                                              className="min-w-0 shrink font-subtitle text-xl md:text-2xl"
+                                <div className="flex flex-col gap-3">
+                                  <div className="flex flex-col gap-4">
+                                    {run.entries.map((entry) => (
+                                      <article
+                                        key={entry.id}
+                                        id={entry.anchor}
+                                        data-search={entry.search}
+                                        className="group flex min-w-0 flex-col gap-1 py-4 px-2 md:px-4 target:bg-2ed-light-yellow target:text-black"
+                                      >
+                                        <div className="flex items-baseline gap-x-3 text-lg">
+                                          <EntryHeading
+                                            grouped={Boolean(run.group)}
+                                            className="min-w-0 shrink font-subtitle text-xl md:text-2xl"
+                                          >
+                                            <HighlighterLink
+                                              className="hover:underline underline-offset-4"
+                                              href={`${listHref}#${entry.anchor}`}
                                             >
-                                              <HighlighterLink
-                                                className="hover:underline underline-offset-4"
-                                                href={`${listHref}#${entry.anchor}`}
-                                              >
-                                                {entry.name}
-                                              </HighlighterLink>
-                                              <MagazineMark
+                                              {entry.name}
+                                            </HighlighterLink>
+                                            <MagazineMark
+                                              source={entry.source}
+                                            />
+                                          </EntryHeading>
+                                          {entry.allowance && (
+                                            <span className="shrink-0">
+                                              {entry.allowance}
+                                            </span>
+                                          )}
+                                          {entry.datafaxHref && (
+                                            <Link
+                                              href={entry.datafaxHref}
+                                              className="shrink-0 font-subtitle text-xs uppercase tracking-widest underline underline-offset-4"
+                                            >
+                                              Datafax
+                                            </Link>
+                                          )}
+                                          <span
+                                            className="grow shrink-0 basis-8 border-b-2 border-dotted border-leader-ink"
+                                            aria-hidden="true"
+                                          />
+                                          <span className="shrink-0 whitespace-nowrap">
+                                            {entry.graded
+                                              ? "see grades"
+                                              : entry.cost}
+                                          </span>
+                                        </div>
+                                        <Details
+                                          entry={entry}
+                                          showExtensions={!entry.framed}
+                                        />
+                                        {entry.framed && (
+                                          <ProfileFrame
+                                            className={clsx(
+                                              "mt-1 min-w-0",
+                                              entry.source !== null &&
+                                                "mag-frame",
+                                            )}
+                                          >
+                                            {entry.source !== null && (
+                                              <MagazineHead
                                                 source={entry.source}
                                               />
-                                            </EntryHeading>
-                                            {entry.allowance && (
-                                              <span className="shrink-0">
-                                                {entry.allowance}
-                                              </span>
                                             )}
-                                            {entry.datafaxHref && (
-                                              <Link
-                                                href={entry.datafaxHref}
-                                                className="shrink-0 font-subtitle text-xs uppercase tracking-widest underline underline-offset-4"
-                                              >
-                                                Datafax
-                                              </Link>
-                                            )}
-                                            <span
-                                              className="grow shrink-0 basis-8 border-b-2 border-dotted border-leader-ink"
-                                              aria-hidden="true"
-                                            />
-                                            <span className="shrink-0 whitespace-nowrap">
-                                              {entry.graded
-                                                ? "see grades"
-                                                : entry.cost}
-                                            </span>
-                                          </div>
-                                          <Details
-                                            entry={entry}
-                                            showNote={block.note === null}
-                                            showExtensions={!entry.framed}
-                                          />
-                                          {entry.framed && (
-                                            <ProfileFrame
-                                              className={clsx(
-                                                "mt-1 min-w-0",
-                                                entry.source !== null &&
-                                                  "mag-frame",
-                                              )}
-                                            >
-                                              {entry.source !== null && (
-                                                <MagazineHead
-                                                  source={entry.source}
-                                                />
-                                              )}
-                                              {Boolean(entry.rows.length) && (
-                                                <CharacteristicTable
-                                                  caption={`${entry.name} profile`}
-                                                  rows={entry.rows}
-                                                  costLabel="Pts"
-                                                />
-                                              )}
-                                              <UnitEquipment
-                                                unit={entry.unit}
-                                                optionCosts={entry.optionCosts}
-                                                wargearCardsMax={
-                                                  entry.wargearCardsMax
-                                                }
-                                                compact
-                                                categoryHref={categoryHref}
-                                                entryAnchor={entryAnchor}
-                                                sectionRules={sectionRules}
-                                                rulesSlug={
-                                                  rulesSlugByFaction.get(
-                                                    entry.factionSlug,
-                                                  ) ?? null
-                                                }
-                                                className={
-                                                  entry.rows.length
-                                                    ? "border-t-4 border-frame"
-                                                    : undefined
-                                                }
+                                            {Boolean(entry.rows.length) && (
+                                              <CharacteristicTable
+                                                caption={`${entry.name} profile`}
+                                                rows={entry.rows}
+                                                costLabel="Pts"
                                               />
-                                              {entry.extensions && (
-                                                <div
-                                                  className="dynamic-content compact"
-                                                  dangerouslySetInnerHTML={{
-                                                    __html: entry.extensions,
-                                                  }}
-                                                />
-                                              )}
-                                            </ProfileFrame>
-                                          )}
-                                        </article>
-                                      ))}
-                                    </div>
-                                    {block.note && (
-                                      <div
-                                        className="dynamic-content compact px-2 md:px-4 text-sm"
-                                        dangerouslySetInnerHTML={{
-                                          __html: block.note,
-                                        }}
-                                      />
-                                    )}
+                                            )}
+                                            <UnitEquipment
+                                              unit={entry.unit}
+                                              optionCosts={entry.optionCosts}
+                                              wargearCardsMax={
+                                                entry.wargearCardsMax
+                                              }
+                                              compact
+                                              categoryHref={categoryHref}
+                                              entryAnchor={entryAnchor}
+                                              sectionRules={sectionRules}
+                                              rulesSlug={
+                                                rulesSlugByFaction.get(
+                                                  entry.factionSlug,
+                                                ) ?? null
+                                              }
+                                              className={
+                                                entry.rows.length
+                                                  ? "border-t-4 border-frame"
+                                                  : undefined
+                                              }
+                                            />
+                                            {entry.extensions && (
+                                              <div
+                                                className="dynamic-content compact"
+                                                dangerouslySetInnerHTML={{
+                                                  __html: entry.extensions,
+                                                }}
+                                              />
+                                            )}
+                                          </ProfileFrame>
+                                        )}
+                                      </article>
+                                    ))}
                                   </div>
-                                ))}
+                                </div>
                               </div>
                             ))}
                           </div>

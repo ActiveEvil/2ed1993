@@ -20,7 +20,6 @@ const TOKENS: Token[] = [
   { key: "card-stripe", className: "bg-card-stripe" },
   { key: "stripe", className: "bg-stripe" },
   { key: "leader-ink", className: "bg-leader-ink" },
-  { key: "group-surface", className: "bg-group-surface" },
   { key: "black", className: "bg-black" },
   { key: "white", className: "bg-white" },
   { key: "2ed-black", className: "bg-2ed-black" },
