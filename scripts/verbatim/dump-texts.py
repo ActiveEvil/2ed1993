@@ -427,9 +427,20 @@ requirements = {
                     for r in sorted(rule_rows, key=lambda r: r["id"])
                     if r["unit_id"] in scoped_units]}
 
+printings = {
+    "rows": [{"id": p["id"], "wc": p["wargear_card_id"], "pub": p["publication"],
+              "page": p["page"], "n": p["copies"], "prov": p["provisional"],
+              "text": p["printed_as_text"]}
+             for p in sorted(rows("wargear_card_printings",
+                                  "id,wargear_card_id,publication,page,copies,provisional,"
+                                  "printed_as_text"), key=lambda p: p["id"])],
+    "cards": [{"id": c["id"], "n": c["name"], "r": c["rarity"], "o": c["origin"]}
+              for c in sorted(rows("wargear_cards", "id,name,rarity,origin"),
+                              key=lambda c: c["id"])]}
+
 payload = json.dumps({"texts": texts, "chapters": sorted(categories.values()),
                       "cards": cards, "grants": grants, "sources": sources,
-                      "requirements": requirements},
+                      "requirements": requirements, "printings": printings},
                      ensure_ascii=False)
 if len(sys.argv) > 1 and sys.argv[1] == "-":
     print(payload)

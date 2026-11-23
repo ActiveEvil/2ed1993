@@ -54,6 +54,12 @@ carries its own source (WS-2), so there is no list check for weapons.
 unit_rule_citation reads the block's unit_rules, each with its carriers and
 their sources: a unit rule whose carriers all have a source has one source
 among them, which its chapter on the faction rules page cites (CJ8-11a).
+printing_rarity, printing_missing, printing_origin and printing_text read the
+`printings` block: printings sit only on Rare cards, every Rare card has one, a
+Rare card's origin is the publication of one of its printings (LB-44), and no
+card holds a printed_as_text row beside a card-face row (LB-45). Provisional
+rows are not findings: they are listed after the summary and leave the exit
+code alone (LB-8).
 The checks named section_* and requirement_*, entry_option_compulsory and
 alternative_max read the `requirements` block and hold LB-14 (the design of
 4 November, sections 2 and 4.2). section_limit reads a section note's opening
@@ -442,6 +448,36 @@ def source_checks(sources):
             carriers = "; ".join(f"{c['n']} ({c['s']})" for c in row["c"])
             yield ("unit_rule_citation", "unit_special_rules", row["n"],
                    f"carriers have different sources: {carriers}")
+
+
+def printing_checks(printings):
+    held = defaultdict(list)
+    for row in printings["rows"]:
+        held[row["wc"]].append(row)
+    cards = {c["id"]: c for c in printings["cards"]}
+    for ident, rows in sorted(held.items()):
+        card = cards.get(ident, {"n": f"wc {ident}", "r": None})
+        if card["r"] != "Rare":
+            yield ("printing_rarity", "wargear_cards", card["n"],
+                   f"wargear_cards {ident}: printed in {', '.join(r['pub'] for r in rows)}, "
+                   f"and its rarity is {card['r']!r}, not Rare")
+        text = [r["pub"] for r in rows if r["text"]]
+        faces = [r["pub"] for r in rows if not r["text"]]
+        if text and faces:
+            yield ("printing_text", "wargear_cards", card["n"],
+                   f"wargear_cards {ident}: printed as text in {', '.join(text)} beside "
+                   f"a card face in {', '.join(faces)}")
+    for card in printings["cards"]:
+        if card["r"] != "Rare":
+            continue
+        published = [r["pub"] for r in held.get(card["id"], ())]
+        if not published:
+            yield ("printing_missing", "wargear_cards", card["n"],
+                   f"wargear_cards {card['id']}: Rare, and has no printing")
+        elif card["o"] not in published:
+            yield ("printing_origin", "wargear_cards", card["n"],
+                   f"wargear_cards {card['id']}: origin {card['o']!r} is the publication "
+                   f"of none of its printings: {', '.join(published)}")
 
 
 def grant_checks(grants):
@@ -1072,7 +1108,7 @@ def main():
     path = args[0] if args else os.path.join(
         os.path.dirname(HERE), "verbatim", "texts.json")
     texts = json.load(open(path, encoding="utf-8"))
-    chapters = cards = grants = sources = requirements = None
+    chapters = cards = grants = sources = requirements = printings = None
     if isinstance(texts, dict):
         if "chapters" in texts:
             chapters = set(texts["chapters"])
@@ -1080,6 +1116,7 @@ def main():
         grants = texts.get("grants")
         sources = texts.get("sources")
         requirements = texts.get("requirements")
+        printings = texts.get("printings")
         texts = texts["texts"]
     if chapters is None:
         print("no chapter list in the dump, so dead_chapter is skipped; "
@@ -1112,6 +1149,9 @@ def main():
     elif "shared" not in requirements:
         print("no shared sets in the dump, so stand_in_set does not check the "
               "shares_allowance mark; re-run dump-texts.py")
+    if printings is None:
+        print("no printings in the dump, so printing_rarity, printing_missing, "
+              "printing_origin and printing_text are skipped; re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
@@ -1143,6 +1183,8 @@ def main():
         found += grant_checks(grants)
     if sources is not None:
         found += source_checks(sources)
+    if printings is not None:
+        found += printing_checks(printings)
     if requirements is not None:
         found += section_checks(requirements)
         found += requirement_checks(requirements)
@@ -1176,6 +1218,13 @@ def main():
           f"{len(failures)} findings, {excused_count} exempt")
     for check, kind, name, detail in sorted(failures):
         print(f"  {check:14} {kind}:{name}\n{'':18}{detail}")
+    waiting = [r for r in (printings or {}).get("rows", []) if r["prov"]]
+    if waiting:
+        names = {c["id"]: c["n"] for c in printings["cards"]}
+        print(f"{len(waiting)} provisional {'printing' if len(waiting) == 1 else 'printings'} "
+              f"outstanding (LB-8)")
+        for r in waiting:
+            print(f"  {names.get(r['wc'], '?')}: wargear_cards {r['wc']}, {r['pub']}")
     sys.exit(1 if failures else 0)
 
 
