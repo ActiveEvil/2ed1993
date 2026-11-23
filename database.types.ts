@@ -462,6 +462,7 @@ export type Database = {
           id: number
           name: string | null
           position: number
+          shares_allowance: boolean
           singular: string | null
           updated_at: string | null
         }
@@ -471,6 +472,7 @@ export type Database = {
           id?: number
           name?: string | null
           position: number
+          shares_allowance?: boolean
           singular?: string | null
           updated_at?: string | null
         }
@@ -480,6 +482,7 @@ export type Database = {
           id?: number
           name?: string | null
           position?: number
+          shares_allowance?: boolean
           singular?: string | null
           updated_at?: string | null
         }
@@ -1107,6 +1110,36 @@ export type Database = {
         }
         Relationships: []
       }
+      catalogue_redirects: {
+        Row: {
+          created_at: string
+          id: number
+          new_id: number | null
+          old_id: number
+          reason: string
+          table_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          new_id?: number | null
+          old_id: number
+          reason: string
+          table_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          new_id?: number | null
+          old_id?: number
+          reason?: string
+          table_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       damage_chart_results: {
         Row: {
           created_at: string
@@ -1336,18 +1369,21 @@ export type Database = {
       datafax_weapon_ammunition: {
         Row: {
           datafax_weapon_id: number
+          id: number
           points: number | null
           position: number
           weapon_profile_id: number
         }
         Insert: {
           datafax_weapon_id: number
+          id?: number
           points?: number | null
           position?: number
           weapon_profile_id: number
         }
         Update: {
           datafax_weapon_id?: number
+          id?: number
           points?: number | null
           position?: number
           weapon_profile_id?: number
@@ -2040,6 +2076,252 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "factions"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_list_choices: {
+        Row: {
+          created_at: string
+          datafax_weapon_ammunition_id: number | null
+          datafax_weapon_id: number | null
+          fitted: string | null
+          fitted_count: number | null
+          half: string | null
+          holder: string | null
+          holders: number | null
+          id: string
+          kind: string
+          levels: number | null
+          models: number | null
+          parent_id: string | null
+          snapshot: Json
+          unit_id: string
+          unit_option_id: number | null
+          unit_profile_id: number | null
+          updated_at: string | null
+          vehicle_card_id: number | null
+          vehicles: number | null
+          via_unit_option_id: number | null
+          wargear_card_id: number | null
+          wargear_item_id: number | null
+          weapons: number | null
+        }
+        Insert: {
+          created_at?: string
+          datafax_weapon_ammunition_id?: number | null
+          datafax_weapon_id?: number | null
+          fitted?: string | null
+          fitted_count?: number | null
+          half?: string | null
+          holder?: string | null
+          holders?: number | null
+          id?: string
+          kind: string
+          levels?: number | null
+          models?: number | null
+          parent_id?: string | null
+          snapshot: Json
+          unit_id: string
+          unit_option_id?: number | null
+          unit_profile_id?: number | null
+          updated_at?: string | null
+          vehicle_card_id?: number | null
+          vehicles?: number | null
+          via_unit_option_id?: number | null
+          wargear_card_id?: number | null
+          wargear_item_id?: number | null
+          weapons?: number | null
+        }
+        Update: {
+          created_at?: string
+          datafax_weapon_ammunition_id?: number | null
+          datafax_weapon_id?: number | null
+          fitted?: string | null
+          fitted_count?: number | null
+          half?: string | null
+          holder?: string | null
+          holders?: number | null
+          id?: string
+          kind?: string
+          levels?: number | null
+          models?: number | null
+          parent_id?: string | null
+          snapshot?: Json
+          unit_id?: string
+          unit_option_id?: number | null
+          unit_profile_id?: number | null
+          updated_at?: string | null
+          vehicle_card_id?: number | null
+          vehicles?: number | null
+          via_unit_option_id?: number | null
+          wargear_card_id?: number | null
+          wargear_item_id?: number | null
+          weapons?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_list_choices_parent_id_fkey"
+            columns: ["parent_id", "unit_id"]
+            isOneToOne: false
+            referencedRelation: "saved_list_choices"
+            referencedColumns: ["id", "unit_id"]
+          },
+          {
+            foreignKeyName: "saved_list_choices_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "saved_list_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_list_units: {
+        Row: {
+          affiliation_id: number | null
+          ally_id: number | null
+          army_list_entry_id: number
+          army_list_id: number
+          attach_mode: string | null
+          attached_to: string | null
+          created_at: string
+          grade_profile_id: number | null
+          id: string
+          list_id: string
+          position: number
+          ride_for: string | null
+          snapshot: Json
+          split: boolean
+          squadron: number | null
+          updated_at: string | null
+          vehicles: number | null
+        }
+        Insert: {
+          affiliation_id?: number | null
+          ally_id?: number | null
+          army_list_entry_id: number
+          army_list_id: number
+          attach_mode?: string | null
+          attached_to?: string | null
+          created_at?: string
+          grade_profile_id?: number | null
+          id?: string
+          list_id: string
+          position: number
+          ride_for?: string | null
+          snapshot: Json
+          split?: boolean
+          squadron?: number | null
+          updated_at?: string | null
+          vehicles?: number | null
+        }
+        Update: {
+          affiliation_id?: number | null
+          ally_id?: number | null
+          army_list_entry_id?: number
+          army_list_id?: number
+          attach_mode?: string | null
+          attached_to?: string | null
+          created_at?: string
+          grade_profile_id?: number | null
+          id?: string
+          list_id?: string
+          position?: number
+          ride_for?: string | null
+          snapshot?: Json
+          split?: boolean
+          squadron?: number | null
+          updated_at?: string | null
+          vehicles?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_list_units_attached_to_fkey"
+            columns: ["attached_to", "list_id"]
+            isOneToOne: false
+            referencedRelation: "saved_list_units"
+            referencedColumns: ["id", "list_id"]
+          },
+          {
+            foreignKeyName: "saved_list_units_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "saved_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_list_units_ride_for_fkey"
+            columns: ["ride_for", "list_id"]
+            isOneToOne: false
+            referencedRelation: "saved_list_units"
+            referencedColumns: ["id", "list_id"]
+          },
+        ]
+      }
+      saved_lists: {
+        Row: {
+          army_list_id: number
+          breach_count: number | null
+          commander_unit_id: string | null
+          created_at: string
+          evaluated_at: string | null
+          evaluated_total: number | null
+          id: string
+          include_citadel_journal: boolean
+          include_white_dwarf: boolean
+          mode: string
+          name: string
+          owner_id: string
+          points_limit: number
+          share_token: string | null
+          updated_at: string | null
+          variant_id: number | null
+          warnings_muted: boolean
+        }
+        Insert: {
+          army_list_id: number
+          breach_count?: number | null
+          commander_unit_id?: string | null
+          created_at?: string
+          evaluated_at?: string | null
+          evaluated_total?: number | null
+          id?: string
+          include_citadel_journal?: boolean
+          include_white_dwarf?: boolean
+          mode: string
+          name: string
+          owner_id?: string
+          points_limit: number
+          share_token?: string | null
+          updated_at?: string | null
+          variant_id?: number | null
+          warnings_muted?: boolean
+        }
+        Update: {
+          army_list_id?: number
+          breach_count?: number | null
+          commander_unit_id?: string | null
+          created_at?: string
+          evaluated_at?: string | null
+          evaluated_total?: number | null
+          id?: string
+          include_citadel_journal?: boolean
+          include_white_dwarf?: boolean
+          mode?: string
+          name?: string
+          owner_id?: string
+          points_limit?: number
+          share_token?: string | null
+          updated_at?: string | null
+          variant_id?: number | null
+          warnings_muted?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_lists_commander_unit_id_fkey"
+            columns: ["commander_unit_id", "id"]
+            isOneToOne: false
+            referencedRelation: "saved_list_units"
+            referencedColumns: ["id", "list_id"]
           },
         ]
       }
@@ -2927,6 +3209,50 @@ export type Database = {
             columns: ["weapon_id"]
             isOneToOne: false
             referencedRelation: "weapons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wargear_card_printings: {
+        Row: {
+          copies: number
+          created_at: string
+          id: number
+          page: string | null
+          printed_as_text: boolean
+          provisional: boolean
+          publication: string
+          updated_at: string | null
+          wargear_card_id: number
+        }
+        Insert: {
+          copies: number
+          created_at?: string
+          id?: number
+          page?: string | null
+          printed_as_text?: boolean
+          provisional?: boolean
+          publication: string
+          updated_at?: string | null
+          wargear_card_id: number
+        }
+        Update: {
+          copies?: number
+          created_at?: string
+          id?: number
+          page?: string | null
+          printed_as_text?: boolean
+          provisional?: boolean
+          publication?: string
+          updated_at?: string | null
+          wargear_card_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wargear_card_printings_wargear_card_id_fkey"
+            columns: ["wargear_card_id"]
+            isOneToOne: false
+            referencedRelation: "wargear_cards"
             referencedColumns: ["id"]
           },
         ]
