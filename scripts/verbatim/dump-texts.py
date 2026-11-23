@@ -420,6 +420,8 @@ requirements = {
                         for m in rows("army_list_allowance_set_entries",
                                       "set_id,army_list_entry_id,count_as")
                         if m["count_as"] != 1), key=lambda m: (m["set"], m["e"])),
+    "shared": sorted(s["id"] for s in rows("army_list_allowance_sets", "id,shares_allowance")
+                     if s["shares_allowance"]),
     "rule_scopes": [stripped({"id": r["id"], "u": r["unit_id"], "n": units[r["unit_id"]],
                               "r": r["special_rule_id"], "e": r["army_list_entry_id"]})
                     for r in sorted(rule_rows, key=lambda r: r["id"])

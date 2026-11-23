@@ -114,8 +114,10 @@ matching CAPPED also needs an army_cap row naming the option, as its subject
 or, where two options share one cap, as its target_unit_option_id (XL-17).
 squadron_max holds an entry note's "squadron or battery of up to N" and the
 column to each other, both ways. stand_in_set
-wants an entry whose note matches STANDS_IN in an allowance set with the
-entry it names, counted as one. unwritten_lists reports a list that has entries
+wants an entry whose note matches STANDS_IN or STANDS_IN_CODEX in an allowance
+set with the entry it names, counted as one, and one such set marked in the
+dump's `shared` list; and it wants every marked set to hold such an entry
+(LB-20). unwritten_lists reports a list that has entries
 and no army_list_requirements rows.
 """
 import json, os, re, sys, unicodedata
@@ -949,6 +951,7 @@ NUMBER_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
                 "seven": 7, "eight": 8, "nine": 9, "ten": 10}
 STANDS_IN = re.compile(r"\bStands in for (?:one of )?the army(?:&apos;|')s ([^,.]+)[,.]"
                        r".*\bevery allowance counts him as (?:one|an? [^,.]+)\.", re.S)
+STANDS_IN_CODEX = re.compile(r"\bStands in for the\s+([^,.]+?)\s+of the codex\b")
 
 
 def option_checks(req):
@@ -1005,10 +1008,14 @@ def stand_in_checks(req):
     for m in req["members"]:
         sets[m["e"]].add(m["set"])
     counted = {(m["set"], m["e"]): m["n"] for m in req.get("count_as", [])}
+    marked = set(req["shared"]) if "shared" in req else None
+    standing = set()
     for entry in req["lineup"]:
-        match = STANDS_IN.search(said(entry.get("note")))
+        note = said(entry.get("note"))
+        match = STANDS_IN.search(note) or STANDS_IN_CODEX.search(note)
         if not match:
             continue
+        standing.add(entry["id"])
         head = f"army_list_entries {entry['id']}: stands in for {match.group(1)!r}"
         name = f"{entry['l']}:{entry['n']}"
         phrase = stem(match.group(1))
@@ -1025,10 +1032,27 @@ def stand_in_checks(req):
             yield (entry["l"], "stand_in_set", "entry", name,
                    f"{head}, and no allowance set holds it with army_list_entries "
                    f"{target['id']} ({target['n']})")
-        elif all(counted.get((s, entry["id"]), 1) != 1 for s in shared):
+            continue
+        if all(counted.get((s, entry["id"]), 1) != 1 for s in shared):
             yield (entry["l"], "stand_in_set", "entry", name,
                    f"{head}, and set {shared[0]} counts it as "
                    f"{counted[(shared[0], entry['id'])]}, not one")
+        if marked is not None and not marked & set(shared):
+            yield (entry["l"], "stand_in_set", "entry", name,
+                   f"{head}, and no set it shares with army_list_entries {target['id']} "
+                   f"({target['n']}) is marked shares_allowance: {shared}")
+    if marked is None:
+        return
+    lists = {e["id"]: e["l"] for e in req["lineup"]}
+    held = defaultdict(set)
+    for m in req["members"]:
+        held[m["set"]].add(m["e"])
+    for s in sorted(marked):
+        if not held[s] & standing:
+            l = next((lists[e] for e in sorted(held[s]) if e in lists), None)
+            yield (l, "stand_in_set", "set", f"{l}:{s}",
+                   f"army_list_allowance_sets {s}: marked shares_allowance, and no entry "
+                   f"in it has a note that stands in for another")
 
 
 def cross_list_checks(req):
@@ -1085,6 +1109,9 @@ def main():
     elif "restrictions" not in requirements:
         print("no restrictions in the dump, so option_eligibility, squadron_max and "
               "stand_in_set are skipped; re-run dump-texts.py")
+    elif "shared" not in requirements:
+        print("no shared sets in the dump, so stand_in_set does not check the "
+              "shares_allowance mark; re-run dump-texts.py")
 
     exempt_path = os.path.join(HERE, "exemptions.json")
     exempt = json.load(open(exempt_path)) if os.path.exists(exempt_path) else {}
