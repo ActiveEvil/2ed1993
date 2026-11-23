@@ -666,4 +666,63 @@ export const pricingCases: PricingCase[] = [
     expectedByUnit: { "csm-terminators": 691, "csm-champion": 58 },
     source: "LB-22",
   },
+  {
+    id: "aa-i",
+    label: "Leman Russ, list 1, Auto-Launcher with Frag Defender",
+    listIds: [1],
+    units: [
+      unit("leman-russ", 1, 203, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 30, ammunitionId: 21 }],
+      }),
+    ],
+    expected: 215,
+    source: "LB-40 · Later (2)",
+  },
+  {
+    id: "aa-ii",
+    label: "Leman Russ, list 1, Auto-Launcher with Frag",
+    listIds: [1],
+    units: [
+      unit("leman-russ", 1, 203, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 30, ammunitionId: 19 }],
+      }),
+    ],
+    expected: 210,
+    source: "LB-40 · Later (2)",
+  },
+  {
+    id: "aa-iii",
+    label: "Leman Russ, list 2, Auto-Launcher with Frag Defender",
+    listIds: [2],
+    units: [
+      unit("leman-russ", 2, 149, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 30, ammunitionId: 21 }],
+      }),
+    ],
+    expected: 215,
+    source: "LB-48",
+  },
+  {
+    id: "aa-iv",
+    label:
+      "Leman Russ, list 1, Auto-Launcher naming the Hellhound's Frag Defender load",
+    listIds: [1],
+    units: [
+      unit("leman-russ", 1, 203, {
+        vehicles: 1,
+        datafaxWeapons: [{ rowId: 30, ammunitionId: 24 }],
+      }),
+    ],
+    expected: 205,
+    expectedUnpriced: [
+      {
+        reason: "no_price_row",
+        row: { table: "datafax_weapon_ammunition", id: 24 },
+      },
+    ],
+    source: "LB-40 · Later (2)",
+  },
 ];

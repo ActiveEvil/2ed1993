@@ -162,10 +162,11 @@ const loadDatafaxWeapons = (unitIds: number[]) =>
   supabase
     .from("datafax_weapons")
     .select(
-      "id, datafax_id, weapon_id, position, quantity, optional, alternative, alternative_max, points, add_points, grant_mode, replaces_datafax_weapon_id, targeter, per_models, built_in_of, linked_group, datafaxes!inner()",
+      "id, datafax_id, weapon_id, position, quantity, optional, alternative, alternative_max, points, add_points, grant_mode, replaces_datafax_weapon_id, targeter, per_models, built_in_of, linked_group, datafax_weapon_ammunition(id, weapon_profile_id, points, position), datafaxes!inner()",
     )
     .in("datafaxes.unit_id", unitIds)
-    .order("position");
+    .order("position")
+    .order("position", { referencedTable: "datafax_weapon_ammunition" });
 
 const loadUnitOptions = (unitIds: number[]) =>
   supabase

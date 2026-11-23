@@ -23,6 +23,7 @@ export type ItemTaken = {
 
 export type DatafaxPick = {
   rowId: number;
+  ammunitionId?: number;
   fitted?: "in_place" | "in_addition";
   vehicles?: number;
 };
@@ -706,6 +707,16 @@ function priceDatafaxWeapons(
       });
       continue;
     }
+    const load = row.datafax_weapon_ammunition.find(
+      (candidate) => candidate.id === pick.ammunitionId,
+    );
+    if (pick.ammunitionId !== undefined && !load) {
+      draft.unpriced.push({
+        reason: "no_price_row",
+        rows: [ref("datafax_weapon_ammunition", pick.ammunitionId)],
+      });
+      continue;
+    }
     const added =
       pick.fitted === "in_addition" && row.grant_mode === "add_or_replace"
         ? (row.add_points ?? 0)
@@ -713,9 +724,14 @@ function priceDatafaxWeapons(
     const quantity = pick.vehicles ?? vehicleCount(unit);
     draft.lines.push({
       key: "datafax_weapon",
-      amount: ((row.points ?? 0) + added) * quantity,
+      amount: ((load?.points ?? row.points ?? 0) + added) * quantity,
       quantity,
-      rows: [ref("datafax_weapons", row.id)],
+      rows: load
+        ? [
+            ref("datafax_weapons", row.id),
+            ref("datafax_weapon_ammunition", load.id),
+          ]
+        : [ref("datafax_weapons", row.id)],
     });
   }
 
