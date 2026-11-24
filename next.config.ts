@@ -12,7 +12,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://${projectId}.supabase.co;
     font-src 'self';
-    connect-src 'self';
+    connect-src 'self' https://${projectId}.supabase.co;
     frame-ancestors 'none';
     base-uri 'self';
     object-src 'none';

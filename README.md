@@ -31,7 +31,8 @@ pnpm dev
 | --- | --- |
 | `SUPABASE_URL` | `lib/supabase.ts`, `scripts/verbatim/dump-texts.py` |
 | `SUPABASE_PUBLISHABLE_DEFAULT_KEY` | `lib/supabase.ts`, `scripts/verbatim/dump-texts.py` |
-| `NEXT_PUBLIC_SUPABASE_PROJECT_ID` | `supabase-image-loader.ts` |
+| `NEXT_PUBLIC_SUPABASE_PROJECT_ID` | `next.config.ts`, `supabase-image-loader.ts`, `lib/supabase-browser.ts` |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | `lib/supabase-browser.ts` |
 
 The publishable key is read-only by RLS policy. Every table needs RLS enabled
 and a public select policy or its rows will simply not appear.
