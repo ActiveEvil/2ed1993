@@ -22,11 +22,13 @@ only off HTML.
 The dump joins the psychic note into the card's text, so `psychic` stays in
 HTML_KINDS and any note needing literal characters belongs in exemptions.
 unit_options.note, damage_charts.note, datafax_locations.note,
-unit_special_rules.rule, unit_special_rule_assignments.note,
+datafax_annotations.note, unit_special_rules.rule,
+unit_special_rule_assignments.note,
 wargear_categories.rules_intro, army_lists.description and, since 4 November,
 army_list_entries.note are rendered through dangerouslySetInnerHTML, so
-`unit_wargear`, `damage_chart`, `datafax_location`, `unit_rule`,
-`unit_rule_note`, `wargear_cat_intro`, `army_list` and `entry` are HTML kinds.
+`unit_wargear`, `damage_chart`, `datafax_location`, `datafax_annotation`,
+`unit_rule`, `unit_rule_note`, `wargear_cat_intro`, `army_list` and `entry`
+are HTML kinds.
 A unit rule's prose may carry a D6 chart, so `unit_rule` ids join the
 duplicate_id cross-check under a namespace of their own — every unit rule on
 an army-list page shares that page.
@@ -136,7 +138,7 @@ HTML_KINDS = ("rule:", "weapon", "weapon_rule", "armour", "armour_rule",
               "psychic", "warp",
               "faction", "damage_result", "unit_wargear", "damage_chart",
               "datafax_location", "unit_rule", "unit_rule_note", "unit_cat",
-              "wargear_cat_intro", "army_list", "entry")
+              "wargear_cat_intro", "army_list", "entry", "datafax_annotation")
 ENTITIES = {"quot", "apos", "mdash", "ndash", "deg", "amp",
             "dagger", "Dagger", "sect", "times", "divide",
             "ldquo", "rdquo", "uarr", "sup2", "AElig"}
