@@ -50,6 +50,26 @@ const prices =
 const characterPrices =
   "entry 2 Space Marine Commander 90, entry 4 Captain 90, entry 5 Apothecary 37, all per entry with no squadron";
 
+const wolfGuard = [
+  unit("champion", 12, 223, { models: { 234: 1 } }),
+  unit("bike", 12, 234, { vehicles: 1, rideFor: "champion" }),
+  unit("pack", 12, 224, { models: { 235: 1, 236: 9 } }),
+  unit("rhino", 12, 236, { vehicles: 1, rideFor: "pack" }),
+];
+const harlequinArmy = [
+  unit("great-harlequin", 13, 308, { models: { 288: 1 } }),
+  unit("jetbike", 13, 307, { vehicles: 1, rideFor: "great-harlequin" }),
+  unit("squad", 13, 312, { models: { 292: 1, 293: 9 } }),
+];
+const harlequinKeys = harlequinArmy.map((harlequin) => harlequin.key);
+
+const list12 =
+  "list 12 bands: 35 Characters max 50, 36 Squads min 25, 37 Support max 50; rows 152 and 153 (Bike, and band 37, to 35); entry 223 Wolf Guard Champion 31, entry 224 Grey Hunter Pack 316, both per entry; entry 234 Bike 20 a vehicle, entry 236 Rhino 50 a vehicle";
+const list13 =
+  "list 13 bands: 42 Characters max 50, 43 Squads min 25, 44 Support max 50, 45 Harlequins max 50; rows 98 and 100 (Jetbike to 42 and to 45); entry 281 Farseer 170 and entry 308 Great Harlequin 93, per entry; entry 312 Harlequin Squad 25 a model; entry 307 Jetbike 20 a vehicle";
+const list14 =
+  "list 14 bands: 49 Characters max 50, 50 Mobs min 25, 51 Support max 50; row 232 (Warboar to 49); entry 353 Warboss 65 per entry; entry 382 Warboar 6 a model";
+
 export const totalsCases: TotalsCase[] = [
   {
     id: "lb57-a",
@@ -272,5 +292,175 @@ export const totalsCases: TotalsCase[] = [
       { kind: "points_limit", governs: null, unitKeys: ["chaplain"] },
     ],
     source: `LB-30; ${prices}; ${characterPrices}; the priced Characters 362 already over 350, so the band is decided; total 662 of 700 stays unchecked`,
+  },
+  {
+    id: "a14-a",
+    label:
+      "List 12, Wolf Guard Champion on a Bike, Grey Hunter Pack in a Rhino, 100 points",
+    listIds: [12],
+    units: wolfGuard,
+    context: { hostListId: 12, pointsLimit: 100 },
+    expected: [
+      {
+        kind: "points_limit",
+        listId: 12,
+        governs: null,
+        allowed: 100,
+        taken: 417,
+        unitKeys: ["champion", "bike", "pack", "rhino"],
+      },
+      {
+        kind: "band_max",
+        listId: 12,
+        governs: band(35),
+        allowed: 50,
+        taken: 51,
+        unitKeys: ["champion", "bike"],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `A14, A15; ${list12}; total 417 over 100; Characters 31 + 20 = 51 over 50; the pack's Rhino stays in Support, 50 of 50; Squads 316 of at least 25`,
+  },
+  {
+    id: "a14-b",
+    label:
+      "List 13, Farseer and Great Harlequin, each on a Jetbike, 360 points",
+    listIds: [13],
+    units: [
+      unit("farseer", 13, 281, { models: { 255: 1 } }),
+      unit("jetbike-1", 13, 307, { vehicles: 1, rideFor: "farseer" }),
+      unit("great-harlequin", 13, 308, { models: { 288: 1 } }),
+      unit("jetbike-2", 13, 307, { vehicles: 1, rideFor: "great-harlequin" }),
+    ],
+    context: { hostListId: 13, pointsLimit: 360 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 13,
+        governs: band(42),
+        allowed: 180,
+        taken: 190,
+        unitKeys: ["farseer", "jetbike-1"],
+      },
+      {
+        kind: "band_min",
+        listId: 13,
+        governs: band(43),
+        allowed: 90,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `A14 (the rider's own band decides); ${list13}; Characters 170 + 20 = 190 over 180; Squads 0 under 90; Harlequins 93 + 20 = 113 of 180; total 303`,
+  },
+  {
+    id: "lb65-a",
+    label: "List 13, Harlequin Squad on five Jetbikes, 400 points",
+    listIds: [13],
+    units: [
+      unit("squad", 13, 312, { models: { 292: 1, 293: 4 } }),
+      unit("jetbikes", 13, 307, { vehicles: 5, rideFor: "squad" }),
+    ],
+    context: { hostListId: 13, pointsLimit: 400 },
+    expected: [
+      {
+        kind: "band_min",
+        listId: 13,
+        governs: band(43),
+        allowed: 100,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-65; ${list13}; Squads 0 under 100; the squad's Jetbikes stay in Support, 5 × 20 = 100 of 200; Harlequins 5 × 25 = 125 of 200, which with the Jetbikes moved would be 225 and breach`,
+  },
+  {
+    id: "a14-c",
+    label: "List 14, Warboss on a Warboar, 140 points",
+    listIds: [14],
+    units: [
+      unit("warboss", 14, 353, { models: { 305: 1 } }),
+      unit("warboar", 14, 382, { models: { 301: 1 }, rideFor: "warboss" }),
+    ],
+    context: { hostListId: 14, pointsLimit: 140 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 14,
+        governs: band(49),
+        allowed: 70,
+        taken: 71,
+        unitKeys: ["warboss", "warboar"],
+      },
+      {
+        kind: "band_min",
+        listId: 14,
+        governs: band(50),
+        allowed: 35,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `A14; ${list14}; Characters 65 + 6 = 71 over 70; Mobs 0 under 35`,
+  },
+  {
+    id: "lb62-a",
+    label:
+      "List 13, Harlequin army: Great Harlequin on a Jetbike and a Harlequin Squad, 400 points",
+    listIds: [13],
+    units: harlequinArmy,
+    context: { hostListId: 13, pointsLimit: 400, variantId: 89 },
+    expected: [],
+    expectedUnchecked: [],
+    source: `LB-62 (army_variant row 89); ${list13}; every band waived; total 93 + 20 + 250 = 363 of 400`,
+  },
+  {
+    id: "lb62-b",
+    label: "List 13, the same army without the variant, 400 points",
+    listIds: [13],
+    units: harlequinArmy,
+    context: { hostListId: 13, pointsLimit: 400 },
+    expected: [
+      {
+        kind: "band_min",
+        listId: 13,
+        governs: band(43),
+        allowed: 100,
+        taken: 0,
+        unitKeys: [],
+      },
+      {
+        kind: "band_max",
+        listId: 13,
+        governs: band(45),
+        allowed: 200,
+        taken: 363,
+        unitKeys: harlequinKeys,
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-62; ${list13}; Squads 0 under 100; Harlequins 93 + 20 (row 100) + 250 = 363 over 200`,
+  },
+  {
+    id: "lb62-c",
+    label: "List 13, Harlequin army, 300 points",
+    listIds: [13],
+    units: harlequinArmy,
+    context: { hostListId: 13, pointsLimit: 300, variantId: 89 },
+    expected: [
+      {
+        kind: "points_limit",
+        listId: 13,
+        governs: null,
+        allowed: 300,
+        taken: 363,
+        unitKeys: harlequinKeys,
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-62 (the points limit still holds); ${list13}; total 363 over 300; every band waived`,
   },
 ];

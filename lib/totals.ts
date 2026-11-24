@@ -19,7 +19,11 @@ export type TotalsResult = {
   }[];
 };
 
-export type TotalsContext = { hostListId: number; pointsLimit: number };
+export type TotalsContext = {
+  hostListId: number;
+  pointsLimit: number;
+  variantId?: number | null;
+};
 
 export function checkTotals(
   catalogues: ReadonlyMap<number, Catalogue>,
@@ -83,9 +87,52 @@ export function checkTotals(
     return result;
   }
 
-  const bandOf = new Map(
-    catalogue.entries.map((entry) => [entry.id, entry.unit_category_id]),
+  const variantId =
+    catalogue.requirements.find(
+      (row) => row.kind === "army_variant" && row.id === context.variantId,
+    )?.id ?? null;
+  if (variantId !== null) {
+    return result;
+  }
+
+  const entries = new Map(catalogue.entries.map((entry) => [entry.id, entry]));
+  const unitTypes = new Map(
+    catalogue.units.map((catalogueUnit) => [
+      catalogueUnit.id,
+      catalogueUnit.unit_type_id,
+    ]),
   );
+  const byKey = new Map(units.map((unit) => [unit.key, unit]));
+  const reassignments = catalogue.requirements.filter(
+    (row) =>
+      row.kind === "band_reassignment" &&
+      row.mode === "rider" &&
+      (row.variant_id === null ||
+        (row.variant_id === variantId) === row.under_variant),
+  );
+
+  // A14, A15, LB-65: a ride's points join its rider's band when the rider is a character of that band.
+  const bandOf = (unit: UnitTaken) => {
+    const own = entries.get(unit.entryId)?.unit_category_id;
+    const rider =
+      unit.rideFor === undefined ? undefined : byKey.get(unit.rideFor);
+    const riderEntry =
+      rider?.listId === context.hostListId
+        ? entries.get(rider.entryId)
+        : undefined;
+    if (!riderEntry || unitTypes.get(riderEntry.unit_id) !== 1) {
+      return own;
+    }
+    const target = riderEntry.unit_category_id;
+    return reassignments.some(
+      (row) =>
+        row.target_category_id === target &&
+        (row.entry_id === unit.entryId || row.unit_category_id === own),
+    )
+      ? target
+      : own;
+  };
+
   const host = units.filter((unit) => unit.listId === context.hostListId);
   const bands = [...catalogue.bands].sort((a, b) => a.position - b.position);
 
@@ -94,7 +141,7 @@ export function checkTotals(
       continue;
     }
     const governs: RowRef = { table: "unit_categories", id: band.id };
-    const feeding = host.filter((unit) => bandOf.get(unit.entryId) === band.id);
+    const feeding = host.filter((unit) => bandOf(unit) === band.id);
     const taken = sum(feeding);
     const decided = incomplete(feeding).length === 0;
     if (band.max_percent !== null) {
