@@ -34,8 +34,11 @@ pnpm dev
 | `NEXT_PUBLIC_SUPABASE_PROJECT_ID` | `next.config.ts`, `supabase-image-loader.ts`, `lib/supabase-browser.ts` |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | `lib/supabase-browser.ts` |
 
-The publishable key is read-only by RLS policy. Every table needs RLS enabled
-and a public select policy or its rows will simply not appear.
+Every table has RLS enabled. The reference tables carry a public select policy
+each, so the publishable key reads them and writes nothing, and a table without
+that policy shows no rows. The saved-list tables (`saved_lists`,
+`saved_list_units`, `saved_list_choices`) let a signed-in user read and write
+their own rows and no others.
 
 ## The important thing about this repo
 
@@ -72,6 +75,7 @@ app/                 routes; one folder per section
   rules/[slug]         the eleven rules chapters
   wargear/             weapons, armour, wargear-cards, vehicle-cards
   card-decks/          four decks
+  datafaxes/[faction]  vehicle datafaxes by faction, and fortifications
   factions/[slug]
   gallery/
   design/              component and token showcase (noindex)
@@ -80,9 +84,17 @@ app/                 routes; one folder per section
 components/          shared primitives — Panel, SectionBar, Chip, JumpBar,
                      Cards, FilterField, RowFilter, Logos, Gallery, TopNav …
 lib/
-  supabase.ts          client + assertNoQueryErrors
+  supabase.ts          server client + assertNoQueryErrors
+  supabase-browser.ts  browser client with a persisted session, for the builder
   sections.ts          parses stored HTML for jump-bar and chip navigation
   anchors.ts           generateAnchorId — the one anchor derivation
+  allowance.ts         allowance sentences for list entries and bands
+  catalogue.ts         loadCatalogue — one army list's full data, for the builder
+  pricing.ts           list-builder pricing
+  magazine.ts          magazine marks on stored HTML
+  metadata.ts          page titles and descriptions
+  dates.ts             an army list's month and year
+  factions.ts          faction, deck and vehicle-card colours
 scripts/
   verify/              standing verification suite
   verbatim/            verbatim gate and corpus tooling
@@ -168,12 +180,15 @@ their one permitted use is as clean-text detectors in the verbatim gate.
 
 ## Not built yet
 
-One table exists without a page behind it: `equipment_weapons`. Its
-denormalisation is parked by decision until the army-lists rework.
+Tables without a page behind them: `equipment_weapons`, whose
+denormalisation is parked by decision until the army-lists rework; and the list
+builder's tables (`saved_lists`, `saved_list_units`, `saved_list_choices`,
+`catalogue_redirects`, `wargear_card_printings`), which exist ahead of the
+builder itself.
 
 ## Deployment
 
-Vercel, from `main`. `next.config.ts` carries the `www` → apex redirect, three
+Vercel, from `main`. `next.config.ts` carries the `www` → apex redirect, four
 security headers, and a custom Supabase image loader
 (`supabase-image-loader.ts`) — images are served from Supabase storage, not
 `public/`.
