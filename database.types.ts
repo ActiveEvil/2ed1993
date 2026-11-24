@@ -306,6 +306,7 @@ export type Database = {
       army_list_allowance_rules: {
         Row: {
           army_list_entry_id: number | null
+          at_least_one: boolean
           count: number | null
           created_at: string
           deduction: number
@@ -325,6 +326,7 @@ export type Database = {
         }
         Insert: {
           army_list_entry_id?: number | null
+          at_least_one?: boolean
           count?: number | null
           created_at?: string
           deduction?: number
@@ -344,6 +346,7 @@ export type Database = {
         }
         Update: {
           army_list_entry_id?: number | null
+          at_least_one?: boolean
           count?: number | null
           created_at?: string
           deduction?: number
