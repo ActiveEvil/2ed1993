@@ -53,7 +53,7 @@ const loadRequirements = (listId: number) =>
 const loadAllowanceSets = (listId: number) =>
   supabase
     .from("army_list_allowance_sets")
-    .select("id, name, singular, position")
+    .select("id, name, singular, position, shares_allowance")
     .eq("army_list_id", listId)
     .order("position");
 
@@ -67,7 +67,7 @@ const loadAllowanceSetEntries = (listId: number) =>
     .order("position");
 
 const ALLOWANCE_RULE_COLUMNS =
-  "id, unit_category_id, army_list_entry_id, set_id, count, min_count, per_count, deduction, per_entry_id, per_category_id, per_set_id, per_rule_id";
+  "id, unit_category_id, army_list_entry_id, set_id, count, min_count, per_count, deduction, per_entry_id, per_category_id, per_set_id, per_rule_id, at_least_one";
 
 const loadBandAllowanceRules = (listId: number) =>
   supabase

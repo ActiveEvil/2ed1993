@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check": "python3 scripts/verbatim/dump-texts.py && python3 scripts/verify/verify.py && pnpm dlx tsx --env-file=.env.local scripts/builder/check-pricing.ts"
+    "check": "python3 scripts/verbatim/dump-texts.py && python3 scripts/verify/verify.py && pnpm dlx tsx --env-file=.env.local scripts/builder/check-pricing.ts && pnpm dlx tsx --env-file=.env.local scripts/builder/check-counting.ts"
   },
   "dependencies": {
     "@sindresorhus/slugify": "^3.0.0",
