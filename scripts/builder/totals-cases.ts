@@ -70,6 +70,17 @@ const list13 =
 const list14 =
   "list 14 bands: 49 Characters max 50, 50 Mobs min 25, 51 Support max 50; row 232 (Warboar to 49); entry 353 Warboss 65 per entry; entry 382 Warboar 6 a model";
 
+const wolfLord = unit("wolf-lord", 12, 219, { models: { 227: 1 } });
+const pack = wolfGuard[2];
+const rhino = wolfGuard[3];
+const warboss = unit("warboss", 14, 353, { models: { 305: 1 } });
+const allied = (ally: UnitTaken, allyId: number) => ({ ...ally, allyId });
+
+const list9 =
+  "list 9 bands: 19 Characters max 50, 20 Broods min 25, no Support; entry 91 Hive Tyrant 264, entry 92 Tyranid Warrior Brood 174, entry 94 Genestealer Brood 100, all per entry";
+const others =
+  "entry 219 Wolf Lord 90 per entry; entry 376 Goff Boyz Mob 12 a model; entry 2 Space Marine Commander 90 per entry";
+
 export const totalsCases: TotalsCase[] = [
   {
     id: "lb57-a",
@@ -462,5 +473,116 @@ export const totalsCases: TotalsCase[] = [
     ],
     expectedUnchecked: [],
     source: `LB-62 (the points limit still holds); ${list13}; total 363 over 300; every band waived`,
+  },
+  {
+    id: "b11-a",
+    label:
+      "List 12 with a Tactical Squad and a Predator through ally row 25, 1000 points",
+    listIds: [12, 5],
+    units: [wolfLord, pack, rhino, allied(tactical, 25), allied(predator, 25)],
+    context: { hostListId: 12, pointsLimit: 1000 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 12,
+        governs: band(37),
+        allowed: 500,
+        taken: 530,
+        unitKeys: ["rhino", "tactical", "predator"],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `b.11, R-43; ${list12}; ${prices}; ${others}; Support 50 + 300 + 180 = 530 over 500; Characters 90 of 500; Squads 316 of at least 250, the Tactical Squad not among them; total 936`,
+  },
+  {
+    id: "lb60-a",
+    label: "List 12 with a Warboss no ally row names, 1000 points",
+    listIds: [12, 14],
+    units: [wolfLord, pack, warboss],
+    context: { hostListId: 12, pointsLimit: 1000 },
+    expected: [
+      {
+        kind: "no_ally_row",
+        listId: 12,
+        governs: { table: "army_lists", id: 14 },
+        allowed: 0,
+        taken: 1,
+        unitKeys: ["warboss"],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-60, LB-18; ${list12}; ${list14}; ${others}; Support 65 of 500; Characters 90 of 500, the Warboss not among them; total 471`,
+  },
+  {
+    id: "lb64-a",
+    label: "List 9 with a Tactical Squad no ally row names, 1000 points",
+    listIds: [9, 5],
+    units: [
+      unit("hive-tyrant", 9, 91, { models: { 119: 1 } }),
+      unit("warriors", 9, 92, { models: { 120: 3 } }),
+      unit("genestealers", 9, 94, { models: { 122: 5 } }),
+      tactical,
+    ],
+    context: { hostListId: 9, pointsLimit: 1000 },
+    expected: [
+      {
+        kind: "no_ally_row",
+        listId: 9,
+        governs: { table: "army_lists", id: 5 },
+        allowed: 0,
+        taken: 1,
+        unitKeys: ["tactical"],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-64, LB-60; ${list9}; ${prices}; the squad counts towards the limit only, total 838; Characters 264 of 500; Broods 174 + 100 = 274 of at least 250`,
+  },
+  {
+    id: "lb63-a",
+    label: "List 14 with a Predator through looted row 39, 350 points",
+    listIds: [14, 5],
+    units: [
+      warboss,
+      unit("goff-mob", 14, 376, { models: { 331: 8 } }),
+      allied(predator, 39),
+    ],
+    context: { hostListId: 14, pointsLimit: 350 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 14,
+        governs: band(51),
+        allowed: 175,
+        taken: 180,
+        unitKeys: ["predator"],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-63; ${list14}; ${prices}; ${others}; Support 180 over 175; Characters 65 of 175; Mobs 96 of at least 87.5; total 341`,
+  },
+  {
+    id: "lb62-d",
+    label:
+      "List 13, Harlequin army with a Commander through ally row 33 and a Warboss no ally row names, 500 points",
+    listIds: [13, 5, 14],
+    units: [
+      harlequinArmy[0],
+      harlequinArmy[2],
+      allied(unit("commander", 5, 2, { models: { 13: 1 } }), 33),
+      warboss,
+    ],
+    context: { hostListId: 13, pointsLimit: 500, variantId: 89 },
+    expected: [
+      {
+        kind: "no_ally_row",
+        listId: 13,
+        governs: { table: "army_lists", id: 14 },
+        allowed: 0,
+        taken: 1,
+        unitKeys: ["warboss"],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-62, LB-60; ${list13}; ${list14}; ${others}; every band waived, the warning stands; total 93 + 250 + 90 + 65 = 498`,
   },
 ];

@@ -54,6 +54,7 @@ export type UnitTaken = {
   split?: boolean;
   attachedTo?: { unitKey: string; mode: "leads" | "must" | "may" };
   rideFor?: string;
+  allyId?: number | null;
   wargearCards?: WargearCardTaken[];
   vehicleCards?: VehicleCardTaken[];
 };
