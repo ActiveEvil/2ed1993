@@ -111,7 +111,17 @@ function countList(
 ): AllowanceBreach[] {
   const listId = catalogue.list.id;
   const acts = actsOf(catalogue, units);
-  const rules = [...catalogue.allowanceRules].sort((a, b) => a.id - b.id);
+  // LB-66
+  const rules = catalogue.allowanceRules
+    .filter(
+      (rule) =>
+        host ||
+        (rule.per_entry_id === null &&
+          rule.per_set_id === null &&
+          rule.per_category_id === null &&
+          rule.per_rule_id === null),
+    )
+    .sort((a, b) => a.id - b.id);
 
   const weights = (row: RowRef): Map<number, number> => {
     if (row.table === TABLE.entry) {

@@ -461,4 +461,47 @@ export const countingCases: CountingCase[] = [
     source:
       "LB-61; both Rough Rider Squads seated under rule 32 (entry 199, 3 per entry 195; entry 199 has no allowance_max); rule 34 allows 2; rule 24 (entry 195, 1 per entry 199) met",
   },
+  {
+    id: "lb66-a",
+    label: "List 12 host with a Wolf Lord, list 1 taken with an Ogryn Squad",
+    listIds: [12, 1],
+    units: [unit("wolf-lord", 12, 219), unit("ogryns", 1, 200)],
+    context: { hostListId: 12 },
+    expected: [],
+    source:
+      "LB-66; rules 33 and 34 (set 3, per rule) are not read for a list other than the host",
+  },
+  {
+    id: "lb66-b",
+    label: "List 12 host with a Wolf Lord, list 1 taken with two Command HQs",
+    listIds: [12, 1],
+    units: [
+      unit("wolf-lord", 12, 219),
+      unit("hq-1", 1, 193),
+      unit("hq-2", 1, 193),
+    ],
+    context: { hostListId: 12 },
+    expected: [
+      {
+        kind: "army_max",
+        listId: 1,
+        governs: set(18),
+        rows: [rule(73)],
+        allowed: 1,
+        taken: 2,
+        unitKeys: ["hq-1", "hq-2"],
+      },
+      {
+        kind: "entry_max",
+        listId: 1,
+        governs: entry(193),
+        rows: [entry(193)],
+        allowed: 1,
+        taken: 2,
+        unitKeys: ["hq-1", "hq-2"],
+      },
+    ],
+    source:
+      "LB-66, XL-14; entry 193 allowance_max 1 and rule 73 (set 18, army-wide, count 1) still hold for a list other than the host",
+  },
 ];

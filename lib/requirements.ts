@@ -10,7 +10,8 @@ export type RequirementBreach = {
     | "leads_twice"
     | "subordinate_without_leader"
     | "attachment_over_count"
-    | "bodyguard_short";
+    | "bodyguard_short"
+    | "required_unit_missing";
   listId: number;
   rows: RowRef[];
   unitKeys: string[];
@@ -39,6 +40,7 @@ const KIND_ORDER: RequirementBreach["kind"][] = [
   "subordinate_without_leader",
   "attachment_over_count",
   "bodyguard_short",
+  "required_unit_missing",
 ];
 
 const refs = (rows: Requirement[]): RowRef[] =>
@@ -85,14 +87,16 @@ const applyingRows = (
       row.subject_profile_id === null || row.subject_profile_id === unit.grade,
   );
 
+const inSet = (catalogue: Catalogue, setId: number | null, entryId: number) =>
+  setId !== null &&
+  catalogue.allowanceSetEntries.some(
+    (member) =>
+      member.set_id === setId && member.army_list_entry_id === entryId,
+  );
+
 const reaches = (catalogue: Catalogue, row: Requirement, entryId: number) =>
   row.target_entry_id === entryId ||
-  (row.target_set_id !== null &&
-    catalogue.allowanceSetEntries.some(
-      (member) =>
-        member.set_id === row.target_set_id &&
-        member.army_list_entry_id === entryId,
-    ));
+  inSet(catalogue, row.target_set_id, entryId);
 
 // BF-41
 const upgradeLeaders = (
@@ -230,10 +234,83 @@ const checkTarget = (
   return breaches;
 };
 
+const subjectUnits = (
+  catalogue: Catalogue,
+  row: Requirement,
+  units: UnitTaken[],
+) =>
+  units.filter(
+    (unit) =>
+      unit.entryId === row.entry_id ||
+      inSet(catalogue, row.set_id, unit.entryId) ||
+      unit.options.some((option) => option.unitOptionId === row.unit_option_id),
+  );
+
+// A6
+const carriesSquad = (
+  catalogue: Catalogue,
+  unit: UnitTaken,
+  byKey: ReadonlyMap<string, UnitTaken>,
+) => {
+  const squad =
+    unit.rideFor === undefined ? undefined : byKey.get(unit.rideFor);
+  return (
+    squad !== undefined &&
+    catalogue.requirements.some(
+      (row) =>
+        row.kind === "transport" &&
+        row.mode === "squads" &&
+        row.entry_id === unit.entryId &&
+        row.target_entry_id === squad.entryId,
+    )
+  );
+};
+
+// LB-66, LB-71
+const checkRequiredUnits = (
+  catalogue: Catalogue,
+  units: UnitTaken[],
+  byKey: ReadonlyMap<string, UnitTaken>,
+  context: RequirementContext,
+): RequirementBreach[] => {
+  const hostUnits = units.filter((unit) => unit.listId === context.hostListId);
+  return catalogue.requirements
+    .filter(
+      (row) =>
+        row.kind === "requires_unit" && byVariant(row, true, context.variantId),
+    )
+    .sort((a, b) => a.id - b.id)
+    .flatMap((row): RequirementBreach[] => {
+      const subjects = subjectUnits(catalogue, row, hostUnits).filter(
+        (unit) =>
+          row.mode !== "unless_transporting" ||
+          !carriesSquad(catalogue, unit, byKey),
+      );
+      const present = hostUnits.some((unit) =>
+        reaches(catalogue, row, unit.entryId),
+      );
+      return subjects.length > 0 && !present
+        ? [
+            {
+              kind: "required_unit_missing",
+              listId: context.hostListId,
+              rows: refs([row]),
+              unitKeys: subjects.map((unit) => unit.key),
+            },
+          ]
+        : [];
+    });
+};
+
 const compareBreaches = (a: RequirementBreach, b: RequirementBreach) =>
   a.listId - b.listId ||
   KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) ||
-  (a.unitKeys[0] < b.unitKeys[0] ? -1 : a.unitKeys[0] > b.unitKeys[0] ? 1 : 0);
+  (a.unitKeys[0] < b.unitKeys[0]
+    ? -1
+    : a.unitKeys[0] > b.unitKeys[0]
+      ? 1
+      : 0) ||
+  (a.rows[0]?.id ?? 0) - (b.rows[0]?.id ?? 0);
 
 export function checkRequirements(
   catalogues: ReadonlyMap<number, Catalogue>,
@@ -299,6 +376,11 @@ export function checkRequirements(
         context,
       ),
     );
+  }
+
+  const host = catalogues.get(context.hostListId);
+  if (host) {
+    breaches.push(...checkRequiredUnits(host, units, byKey, context));
   }
 
   return breaches.sort(compareBreaches);
