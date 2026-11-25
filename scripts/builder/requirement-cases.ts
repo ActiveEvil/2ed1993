@@ -47,7 +47,7 @@ export const requirementCases: RequirementCase[] = [
       unit("hq", 1, 193),
       unit("lord", 1, 196, { grade: 207, ...to("hq", "must") }),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "hq" },
     expected: [],
     source: "LB-67, LB-69; row 19",
   },
@@ -60,7 +60,7 @@ export const requirementCases: RequirementCase[] = [
       unit("lord", 1, 196, { grade: 207, ...to("hq", "must") }),
       unit("master", 1, 196, { grade: 206, ...to("hq", "must") }),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "hq" },
     expected: [
       {
         kind: "attachment_over_count",
@@ -81,7 +81,7 @@ export const requirementCases: RequirementCase[] = [
       unit("cs", 1, 194),
       unit("lord", 1, 196, { grade: 207, ...to("cs", "must") }),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "lord" },
     expected: [
       {
         kind: "attachment_not_allowed",
@@ -97,7 +97,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 1, Primaris Psyker taken alone",
     listIds: [1],
     units: [unit("psyker", 1, 196, { grade: 204 })],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "psyker" },
     expected: [
       {
         kind: "attachment_missing",
@@ -116,7 +116,7 @@ export const requirementCases: RequirementCase[] = [
       unit("cs", 1, 194),
       unit("master", 1, 196, { grade: 206, ...to("cs", "must") }),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "master" },
     expected: [],
     source: "LB-67, LB-69; row 49, set 1",
   },
@@ -125,7 +125,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 1, Nork Deddog in a Command Squad",
     listIds: [1],
     units: [unit("cs", 1, 194), unit("nork", 1, 207, to("cs", "must"))],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "nork" },
     expected: [
       {
         kind: "attachment_not_allowed",
@@ -144,7 +144,7 @@ export const requirementCases: RequirementCase[] = [
       unit("rr", 1, 195, { options: [{ unitOptionId: 266 }] }),
       unit("lord", 1, 196, { grade: 207, ...to("rr", "must") }),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "rr" },
     expected: [
       {
         kind: "attachment_not_allowed",
@@ -164,7 +164,7 @@ export const requirementCases: RequirementCase[] = [
         options: [{ unitOptionId: 264 }, { unitOptionId: 265 }],
       }),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "hq" },
     expected: [
       {
         kind: "leads_twice",
@@ -185,7 +185,7 @@ export const requirementCases: RequirementCase[] = [
       unit("squad", 1, 1),
       unit("commissar", 1, 197, to("squad", "must")),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "commissar" },
     expected: [
       {
         kind: "attachment_not_allowed",
@@ -204,7 +204,7 @@ export const requirementCases: RequirementCase[] = [
       unit("knights", 13, 297),
       unit("lord", 13, 284, { grade: 261, ...to("knights", "leads") }),
     ],
-    context: { hostListId: 13 },
+    context: { hostListId: 13, commanderUnitKey: "lord" },
     expected: [
       {
         kind: "attachment_not_allowed",
@@ -220,7 +220,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 13, Exodite Lord as a Champion, alone",
     listIds: [13],
     units: [unit("lord", 13, 284, { grade: 260 })],
-    context: { hostListId: 13 },
+    context: { hostListId: 13, commanderUnitKey: "lord" },
     expected: [
       {
         kind: "attachment_missing",
@@ -240,7 +240,7 @@ export const requirementCases: RequirementCase[] = [
       unit("nob-1", 14, 359, to("goffs", "leads")),
       unit("nob-2", 14, 359, to("goffs", "must")),
     ],
-    context: { hostListId: 14 },
+    context: { hostListId: 14, commanderUnitKey: "nob-1" },
     expected: [],
     source: "BF-34, LB-68; rows 218, 219",
   },
@@ -249,7 +249,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 14, Goff Boyz Mob with one Nob, not leading",
     listIds: [14],
     units: [unit("goffs", 14, 376), unit("nob", 14, 359, to("goffs", "must"))],
-    context: { hostListId: 14 },
+    context: { hostListId: 14, commanderUnitKey: "nob" },
     expected: [
       {
         kind: "subordinate_without_leader",
@@ -269,7 +269,7 @@ export const requirementCases: RequirementCase[] = [
       unit("nob-1", 14, 359, to("goffs", "leads")),
       unit("nob-2", 14, 359, to("goffs", "leads")),
     ],
-    context: { hostListId: 14 },
+    context: { hostListId: 14, commanderUnitKey: "nob-1" },
     expected: [
       {
         kind: "leads_twice",
@@ -290,7 +290,7 @@ export const requirementCases: RequirementCase[] = [
       unit("korps", 14, 373, { options: [{ unitOptionId: 466 }] }),
       unit("drillboss", 14, 358, to("korps", "leads")),
     ],
-    context: { hostListId: 14 },
+    context: { hostListId: 14, commanderUnitKey: "drillboss" },
     expected: [
       {
         kind: "leads_twice",
@@ -308,7 +308,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 7, Warlord with three Hearthguard",
     listIds: [7],
     units: [unit("warlord", 7, 37), ...hearthguard(3)],
-    context: { hostListId: 7 },
+    context: { hostListId: 7, commanderUnitKey: "warlord" },
     expected: [
       {
         kind: "bodyguard_short",
@@ -326,7 +326,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 7, Warlord with four Hearthguard",
     listIds: [7],
     units: [unit("warlord", 7, 37), ...hearthguard(4)],
-    context: { hostListId: 7 },
+    context: { hostListId: 7, commanderUnitKey: "warlord" },
     expected: [],
     source: "A25; row 7",
   },
@@ -335,7 +335,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 7, Hearthguard taken alone",
     listIds: [7],
     units: [unit("hg", 7, 39)],
-    context: { hostListId: 7 },
+    context: { hostListId: 7, commanderUnitKey: "hg" },
     expected: [
       {
         kind: "attachment_missing",
@@ -351,7 +351,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 8 host, allied Chaos Champion alone",
     listIds: [8, 11],
     units: [unit("champion", 11, 103)],
-    context: { hostListId: 8 },
+    context: { hostListId: 8, commanderUnitKey: "champion" },
     expected: [
       {
         kind: "attachment_missing",
@@ -370,7 +370,7 @@ export const requirementCases: RequirementCase[] = [
       unit("terminators", 11, 108),
       unit("champion", 11, 103, to("terminators", "leads")),
     ],
-    context: { hostListId: 8 },
+    context: { hostListId: 8, commanderUnitKey: "champion" },
     expected: [],
     source: "LB-66; row 28, set 19",
   },
@@ -382,7 +382,7 @@ export const requirementCases: RequirementCase[] = [
       unit("goffs", 8, 79),
       unit("champion", 11, 103, to("goffs", "leads")),
     ],
-    context: { hostListId: 8 },
+    context: { hostListId: 8, commanderUnitKey: "champion" },
     expected: [
       {
         kind: "attachment_not_allowed",
@@ -403,7 +403,7 @@ export const requirementCases: RequirementCase[] = [
       unit("psyker", 1, 196, { grade: 204 }),
       unit("nork", 1, 207, to("cs", "must")),
     ],
-    context: { hostListId: 1 },
+    context: { hostListId: 1, commanderUnitKey: "hq" },
     expected: [
       {
         kind: "attachment_missing",
@@ -453,7 +453,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 12, Rhino carrying a Wolf Lord, no Iron Priest",
     listIds: [12],
     units: [unit("lord", 12, 219), unit("rhino", 12, 236, { rideFor: "lord" })],
-    context: { hostListId: 12 },
+    context: { hostListId: 12, commanderUnitKey: "lord" },
     expected: [
       {
         kind: "required_unit_missing",
@@ -518,7 +518,7 @@ export const requirementCases: RequirementCase[] = [
       unit("predator", 12, 238),
       unit("servitors", 12, 231),
     ],
-    context: { hostListId: 12 },
+    context: { hostListId: 12, commanderUnitKey: "priest" },
     expected: [],
     source: "LB-71, A1, A3; rows 168, 171",
   },
@@ -527,7 +527,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 14, Dreadnought with Mad Doc Grotsnik, no Mekaniak",
     listIds: [14],
     units: [unit("doc", 14, 398), unit("dread", 14, 384)],
-    context: { hostListId: 14 },
+    context: { hostListId: 14, commanderUnitKey: "doc" },
     expected: [
       {
         kind: "required_unit_missing",
@@ -547,7 +547,7 @@ export const requirementCases: RequirementCase[] = [
       unit("notsnick", 14, 415),
       unit("dread", 14, 384),
     ],
-    context: { hostListId: 14 },
+    context: { hostListId: 14, commanderUnitKey: "painboy" },
     expected: [],
     source: "LB-71, A2; rows 240, 241",
   },
@@ -560,7 +560,7 @@ export const requirementCases: RequirementCase[] = [
       unit("rb-1", 14, 416),
       unit("rb-2", 14, 416),
     ],
-    context: { hostListId: 14 },
+    context: { hostListId: 14, commanderUnitKey: "notsnick" },
     expected: [
       {
         kind: "required_unit_missing",
@@ -626,7 +626,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 3, Servitor Squad with a Tech-Priest Magos",
     listIds: [3],
     units: [unit("magos", 3, 49, { grade: 67 }), unit("servitors", 3, 60)],
-    context: { hostListId: 3 },
+    context: { hostListId: 3, commanderUnitKey: "magos" },
     expected: [],
     source: "LB-71, A2; row 58",
   },
@@ -645,7 +645,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 8 host Dreadnought with an allied List 14 Painboy only",
     listIds: [8, 14],
     units: [unit("dread", 8, 187), unit("painboy", 14, 361)],
-    context: { hostListId: 8 },
+    context: { hostListId: 8, commanderUnitKey: "painboy" },
     expected: [
       {
         kind: "required_unit_missing",
@@ -661,7 +661,7 @@ export const requirementCases: RequirementCase[] = [
     label: "List 12, Wolf Guard Champion alone and a Rhino alone",
     listIds: [12],
     units: [unit("champion", 12, 223), unit("rhino", 12, 236)],
-    context: { hostListId: 12 },
+    context: { hostListId: 12, commanderUnitKey: "champion" },
     expected: [
       {
         kind: "attachment_missing",
@@ -677,5 +677,367 @@ export const requirementCases: RequirementCase[] = [
       },
     ],
     source: "LB-67, LB-71, A6; rows 154, 169",
+  },
+  {
+    id: "cmd-1",
+    label: "List 1, Macharius, Yarrick and a Command HQ, Macharius nominated",
+    listIds: [1],
+    units: [
+      unit("macharius", 1, 205),
+      unit("yarrick", 1, 206),
+      unit("hq", 1, 193),
+    ],
+    context: { hostListId: 1, commanderUnitKey: "macharius" },
+    expected: [],
+    source: "LB-72, LB-77, LB-19; rows 22, 23, 24",
+  },
+  {
+    id: "cmd-2",
+    label: "List 1, Macharius, Yarrick and a Command HQ, Yarrick nominated",
+    listIds: [1],
+    units: [
+      unit("macharius", 1, 205),
+      unit("yarrick", 1, 206),
+      unit("hq", 1, 193),
+    ],
+    context: { hostListId: 1, commanderUnitKey: "yarrick" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 1,
+        rows: [ref(23)],
+        unitKeys: ["yarrick", "macharius"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 22, 23, 24",
+  },
+  {
+    id: "cmd-3",
+    label: "List 1, Yarrick and a Command HQ, Yarrick nominated",
+    listIds: [1],
+    units: [unit("yarrick", 1, 206), unit("hq", 1, 193)],
+    context: { hostListId: 1, commanderUnitKey: "yarrick" },
+    expected: [],
+    source: "LB-72, LB-77, LB-19; rows 22, 24",
+  },
+  {
+    id: "cmd-4",
+    label: "List 1, Yarrick and a Command HQ, the HQ nominated",
+    listIds: [1],
+    units: [unit("yarrick", 1, 206), unit("hq", 1, 193)],
+    context: { hostListId: 1, commanderUnitKey: "hq" },
+    expected: [],
+    source: "LB-72, LB-77, LB-19; rows 22, 24",
+  },
+  {
+    id: "cmd-5",
+    label: "List 1, Yarrick and a Command HQ, nobody nominated",
+    listIds: [1],
+    units: [unit("yarrick", 1, 206), unit("hq", 1, 193)],
+    context: { hostListId: 1 },
+    expected: [
+      {
+        kind: "commander_missing",
+        listId: 1,
+        rows: [ref(22), ref(24)],
+        unitKeys: ["yarrick", "hq"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 22, 24",
+  },
+  {
+    id: "cmd-6",
+    label: "List 1, Kamir's squad and Yarrick, nobody nominated",
+    listIds: [1],
+    units: [
+      unit("rr", 1, 195, { options: [{ unitOptionId: 266 }] }),
+      unit("yarrick", 1, 206),
+    ],
+    context: { hostListId: 1 },
+    expected: [
+      {
+        kind: "commander_missing",
+        listId: 1,
+        rows: [ref(24), ref(25)],
+        unitKeys: ["rr", "yarrick"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 24, 25",
+  },
+  {
+    id: "cmd-7",
+    label: "List 2, Colonel, the nomination naming no unit",
+    listIds: [2],
+    units: [unit("colonel", 2, 23)],
+    context: { hostListId: 2, commanderUnitKey: "gone" },
+    expected: [
+      {
+        kind: "commander_missing",
+        listId: 2,
+        rows: [ref(43)],
+        unitKeys: ["colonel"],
+      },
+    ],
+    source: "LB-72, LB-77; row 43",
+  },
+  {
+    id: "cmd-8",
+    label: "List 6, Farseer and Avatar, the Farseer nominated",
+    listIds: [6],
+    units: [unit("farseer", 6, 130), unit("avatar", 6, 131)],
+    context: { hostListId: 6, commanderUnitKey: "farseer" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 6,
+        rows: [ref(40)],
+        unitKeys: ["farseer", "avatar"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 39, 40",
+  },
+  {
+    id: "cmd-9",
+    label: "List 6, Exarch and Warlock, nobody nominated",
+    listIds: [6],
+    units: [unit("exarch", 6, 132), unit("warlock", 6, 133)],
+    context: { hostListId: 6 },
+    expected: [
+      {
+        kind: "commander_missing",
+        listId: 6,
+        rows: [],
+        unitKeys: ["exarch", "warlock"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-73",
+  },
+  {
+    id: "cmd-10",
+    label: "List 10, Patriarch and Magus, the Magus nominated",
+    listIds: [10],
+    units: [unit("patriarch", 10, 96), unit("magus", 10, 97)],
+    context: { hostListId: 10, commanderUnitKey: "magus" },
+    expected: [],
+    source: "LB-72, LB-77, LB-19; rows 3, 4",
+  },
+  {
+    id: "cmd-11",
+    label:
+      "List 10 host, Patriarch and an allied Chaos Space Marine Commander, the ally nominated",
+    listIds: [10, 11],
+    units: [unit("patriarch", 10, 96), unit("chaos", 11, 101)],
+    context: { hostListId: 10, commanderUnitKey: "chaos" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 10,
+        rows: [ref(3)],
+        unitKeys: ["chaos", "patriarch"],
+      },
+    ],
+    source: "LB-72, LB-74, LB-77, LB-19; rows 3, 46",
+  },
+  {
+    id: "cmd-12",
+    label: "List 12, Wolf Lord, Ragnar and Kyrl, Kyrl nominated",
+    listIds: [12],
+    units: [
+      unit("lord", 12, 219),
+      unit("ragnar", 12, 240),
+      unit("kyrl", 12, 245),
+    ],
+    context: { hostListId: 12, commanderUnitKey: "kyrl" },
+    expected: [],
+    source: "LB-72, LB-77, LB-19; rows 147, 149, 150",
+  },
+  {
+    id: "cmd-13",
+    label: "List 12, Logan Grimnar and Ragnar, Ragnar nominated",
+    listIds: [12],
+    units: [unit("logan", 12, 242), unit("ragnar", 12, 240)],
+    context: { hostListId: 12, commanderUnitKey: "ragnar" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 12,
+        rows: [ref(148)],
+        unitKeys: ["ragnar", "logan"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 148, 149",
+  },
+  {
+    id: "cmd-14",
+    label: "List 12, Iron Priest and a Rhino, the Rhino nominated",
+    listIds: [12],
+    units: [unit("priest", 12, 222), unit("rhino", 12, 236)],
+    context: { hostListId: 12, commanderUnitKey: "rhino" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 12,
+        rows: [],
+        unitKeys: ["rhino", "priest"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-73; row 169",
+  },
+  {
+    id: "cmd-15",
+    label: "List 13, Harlequin army, two Great Harlequins, nobody nominated",
+    listIds: [13],
+    units: [unit("gh-1", 13, 308), unit("gh-2", 13, 308)],
+    context: { hostListId: 13, variantId: 89 },
+    expected: [
+      {
+        kind: "commander_missing",
+        listId: 13,
+        rows: [ref(95)],
+        unitKeys: ["gh-1", "gh-2"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; row 95",
+  },
+  {
+    id: "cmd-16",
+    label:
+      "List 13, Farseer and Great Harlequin, the Great Harlequin nominated",
+    listIds: [13],
+    units: [unit("farseer", 13, 281), unit("gh", 13, 308)],
+    context: { hostListId: 13, commanderUnitKey: "gh" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 13,
+        rows: [ref(92)],
+        unitKeys: ["gh", "farseer"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 92, 95",
+  },
+  {
+    id: "cmd-17",
+    label:
+      "List 13, Harlequin army, Farseer and Great Harlequin, the Farseer nominated",
+    listIds: [13],
+    units: [unit("farseer", 13, 281), unit("gh", 13, 308)],
+    context: { hostListId: 13, variantId: 89, commanderUnitKey: "farseer" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 13,
+        rows: [ref(95)],
+        unitKeys: ["farseer", "gh"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 92, 95",
+  },
+  {
+    id: "cmd-18",
+    label: "List 14, Warboss and Ghazghkull, the Warboss nominated",
+    listIds: [14],
+    units: [unit("warboss", 14, 353), unit("ghazghkull", 14, 399)],
+    context: { hostListId: 14, commanderUnitKey: "warboss" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 14,
+        rows: [ref(217)],
+        unitKeys: ["warboss", "ghazghkull"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-19; rows 215, 217",
+  },
+  {
+    id: "cmd-19",
+    label: "List 14, Nazdreg and Ghazghkull, Nazdreg nominated",
+    listIds: [14],
+    units: [unit("nazdreg", 14, 396), unit("ghazghkull", 14, 399)],
+    context: { hostListId: 14, commanderUnitKey: "nazdreg" },
+    expected: [],
+    source: "LB-72, LB-77, LB-19; rows 216, 217",
+  },
+  {
+    id: "cmd-20",
+    label:
+      "List 5, White Dwarf on, Commander and Captain, the Captain nominated",
+    listIds: [5],
+    units: [unit("commander", 5, 2), unit("captain", 5, 4)],
+    context: {
+      hostListId: 5,
+      includeWhiteDwarf: true,
+      commanderUnitKey: "captain",
+    },
+    expected: [],
+    source: "LB-72, LB-77, LB-76; row 41",
+  },
+  {
+    id: "cmd-21",
+    label:
+      "List 5, White Dwarf off, Commander and Captain, the Captain nominated",
+    listIds: [5],
+    units: [unit("commander", 5, 2), unit("captain", 5, 4)],
+    context: { hostListId: 5, commanderUnitKey: "captain" },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 5,
+        rows: [ref(41)],
+        unitKeys: ["captain", "commander"],
+      },
+    ],
+    source: "LB-72, LB-77, LB-76; row 41",
+  },
+  {
+    id: "cmd-22",
+    label: "List 5, White Dwarf on, Commander and Captain, nobody nominated",
+    listIds: [5],
+    units: [unit("commander", 5, 2), unit("captain", 5, 4)],
+    context: { hostListId: 5, includeWhiteDwarf: true },
+    expected: [
+      {
+        kind: "commander_missing",
+        listId: 5,
+        rows: [ref(41)],
+        unitKeys: ["commander", "captain"],
+      },
+    ],
+    source: "LB-72, LB-74, LB-77, LB-76; row 41",
+  },
+  {
+    id: "cmd-23",
+    label:
+      "List 12, White Dwarf on, Wolf Lord and Iron Priest, the Iron Priest nominated",
+    listIds: [12],
+    units: [unit("lord", 12, 219), unit("priest", 12, 222)],
+    context: {
+      hostListId: 12,
+      includeWhiteDwarf: true,
+      commanderUnitKey: "priest",
+    },
+    expected: [],
+    source: "LB-72, LB-77, LB-76; row 147",
+  },
+  {
+    id: "cmd-24",
+    label:
+      "List 5 host, White Dwarf on, Commander and an allied Inquisitor, the ally nominated",
+    listIds: [5, 3],
+    units: [unit("commander", 5, 2), unit("inquisitor", 3, 64)],
+    context: {
+      hostListId: 5,
+      includeWhiteDwarf: true,
+      commanderUnitKey: "inquisitor",
+    },
+    expected: [
+      {
+        kind: "commander_not_allowed",
+        listId: 5,
+        rows: [ref(41)],
+        unitKeys: ["inquisitor", "commander"],
+      },
+    ],
+    source: "LB-72, LB-74, LB-77, LB-76; row 41",
   },
 ];

@@ -5,7 +5,9 @@ const CONTEXT = "lib/catalogue";
 const loadList = (listId: number) =>
   supabase
     .from("army_lists")
-    .select("id, name, slug, source, faction_id, factions(id, slug)")
+    .select(
+      "id, name, slug, source, faction_id, factions(id, slug, parent_faction_id)",
+    )
     .eq("id", listId)
     .single();
 

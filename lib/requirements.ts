@@ -11,7 +11,9 @@ export type RequirementBreach = {
     | "subordinate_without_leader"
     | "attachment_over_count"
     | "bodyguard_short"
-    | "required_unit_missing";
+    | "required_unit_missing"
+    | "commander_missing"
+    | "commander_not_allowed";
   listId: number;
   rows: RowRef[];
   unitKeys: string[];
@@ -22,6 +24,8 @@ export type RequirementBreach = {
 export type RequirementContext = {
   hostListId: number;
   variantId?: number | null;
+  commanderUnitKey?: string | null;
+  includeWhiteDwarf?: boolean;
 };
 
 type Attachment = {
@@ -41,7 +45,13 @@ const KIND_ORDER: RequirementBreach["kind"][] = [
   "attachment_over_count",
   "bodyguard_short",
   "required_unit_missing",
+  "commander_missing",
+  "commander_not_allowed",
 ];
+
+const CHARACTER_TYPE = 1;
+
+const SPACE_MARINES_FACTION = 2;
 
 const refs = (rows: Requirement[]): RowRef[] =>
   [...new Set(rows.map((row) => row.id))]
@@ -302,6 +312,114 @@ const checkRequiredUnits = (
     });
 };
 
+const upgradeEntryIds = (catalogue: Catalogue, unit: UnitTaken) =>
+  unit.options.flatMap((option) => {
+    const entry = upgradeTarget(catalogue, option.unitOptionId);
+    return entry ? [entry.id] : [];
+  });
+
+const isCharacter = (
+  catalogues: ReadonlyMap<number, Catalogue>,
+  unit: UnitTaken,
+) => {
+  const catalogue = catalogues.get(unit.listId);
+  return (
+    catalogue !== undefined &&
+    [unit.entryId, ...upgradeEntryIds(catalogue, unit)].some((entryId) => {
+      const entry = catalogue.entries.find((row) => row.id === entryId);
+      return catalogue.units.some(
+        (row) =>
+          row.id === entry?.unit_id && row.unit_type_id === CHARACTER_TYPE,
+      );
+    })
+  );
+};
+
+const checkCommander = (
+  catalogues: ReadonlyMap<number, Catalogue>,
+  units: UnitTaken[],
+  context: RequirementContext,
+): RequirementBreach[] => {
+  const host = catalogues.get(context.hostListId);
+  if (!host) {
+    return [];
+  }
+  const hostUnits = units.filter((unit) => unit.listId === context.hostListId);
+  const held = host.requirements
+    .filter(
+      (row) =>
+        row.kind === "commander" && byVariant(row, true, context.variantId),
+    )
+    .map((row) => ({
+      row,
+      rank: Number(row.count),
+      holders: hostUnits.filter(
+        (unit) =>
+          unit.entryId === row.entry_id ||
+          (row.entry_id !== null &&
+            upgradeEntryIds(host, unit).includes(row.entry_id)),
+      ),
+    }))
+    .filter((item) => item.holders.length > 0);
+
+  const opening: typeof held = [];
+  const nominees: UnitTaken[] = [];
+  if (held.length === 0) {
+    // LB-73
+    nominees.push(...units.filter((unit) => isCharacter(catalogues, unit)));
+  } else {
+    // LB-19
+    const ranks = [...new Set(held.map((item) => item.rank))].sort(
+      (a, b) => b - a,
+    );
+    for (const rank of ranks) {
+      const atRank = held.filter((item) => item.rank === rank);
+      const must = atRank.filter((item) => item.row.mode === "must");
+      const added = must.length > 0 ? must : atRank;
+      opening.push(...added);
+      nominees.push(...added.flatMap((item) => item.holders));
+      if (must.length > 0) {
+        break;
+      }
+    }
+  }
+
+  // LB-76
+  const faction = host.list.factions;
+  if (
+    context.includeWhiteDwarf &&
+    (host.list.faction_id === SPACE_MARINES_FACTION ||
+      faction?.parent_faction_id === SPACE_MARINES_FACTION)
+  ) {
+    nominees.push(...hostUnits.filter((unit) => isCharacter(catalogues, unit)));
+  }
+
+  // BF-57
+  if (nominees.length === 0) {
+    return [];
+  }
+  const unitKeys = distinct(
+    units.filter((unit) => nominees.includes(unit)).map((unit) => unit.key),
+  );
+  const nominated = units.find((unit) => unit.key === context.commanderUnitKey);
+  const breach = {
+    listId: context.hostListId,
+    rows: refs(opening.map((item) => item.row)),
+  };
+  if (!nominated) {
+    return [{ kind: "commander_missing", ...breach, unitKeys }];
+  }
+  return nominees.includes(nominated)
+    ? []
+    : [
+        {
+          kind: "commander_not_allowed",
+          ...breach,
+          unitKeys: distinct([nominated.key, ...unitKeys]),
+        },
+      ];
+};
+
 const compareBreaches = (a: RequirementBreach, b: RequirementBreach) =>
   a.listId - b.listId ||
   KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) ||
@@ -382,6 +500,7 @@ export function checkRequirements(
   if (host) {
     breaches.push(...checkRequiredUnits(host, units, byKey, context));
   }
+  breaches.push(...checkCommander(catalogues, units, context));
 
   return breaches.sort(compareBreaches);
 }
