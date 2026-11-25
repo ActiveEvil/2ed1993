@@ -1,12 +1,14 @@
 import { type Catalogue, loadCatalogue } from "@/lib/catalogue";
 import { type AllowanceBreach, countAllowances } from "@/lib/counting";
 import { priceList, type RowRef } from "@/lib/pricing";
+import { checkRequirements, type RequirementBreach } from "@/lib/requirements";
 import {
   checkTotals,
   type TotalsBreach,
   type TotalsResult,
 } from "@/lib/totals";
 import { countingCases } from "@/scripts/builder/counting-cases";
+import { requirementCases } from "@/scripts/builder/requirement-cases";
 import { totalsCases } from "@/scripts/builder/totals-cases";
 
 const formatRow = (row: RowRef) => `${row.table} ${row.id}`;
@@ -129,11 +131,59 @@ function runTotalsCases(catalogues: Map<number, Catalogue>): number {
   return failures;
 }
 
+const formatCount = (breach: RequirementBreach) =>
+  breach.allowed === undefined
+    ? ""
+    : `: allowed ${breach.allowed}, taken ${breach.taken}`;
+
+const formatRequirementBreach = (breach: RequirementBreach) =>
+  `${breach.kind} list ${breach.listId}${formatCount(breach)} [${breach.rows.map(formatRow).join(", ")}] (${breach.unitKeys.join(", ")})`;
+
+const matchesRequirement = (
+  got: RequirementBreach,
+  wanted: RequirementBreach,
+) => formatRequirementBreach(got) === formatRequirementBreach(wanted);
+
+function runRequirementCases(catalogues: Map<number, Catalogue>): number {
+  let failures = 0;
+  for (const requirementCase of requirementCases) {
+    const missing = requirementCase.listIds.filter((id) => !catalogues.has(id));
+    const result = checkRequirements(
+      catalogues,
+      requirementCase.units,
+      requirementCase.context,
+    );
+    const passed =
+      missing.length === 0 &&
+      result.length === requirementCase.expected.length &&
+      result.every((breach, index) =>
+        matchesRequirement(breach, requirementCase.expected[index]),
+      );
+    console.log(
+      `${passed ? "ok  " : "FAIL"} ${requirementCase.id} ${requirementCase.label}: ${result.length} breaches (${requirementCase.source})`,
+    );
+    if (missing.length > 0) {
+      console.log(`    lists not loaded: ${missing.join(", ")}`);
+    }
+    for (const breach of result) {
+      console.log(`    got ${formatRequirementBreach(breach)}`);
+    }
+    if (!passed) {
+      for (const breach of requirementCase.expected) {
+        console.log(`    expected ${formatRequirementBreach(breach)}`);
+      }
+      failures += 1;
+    }
+  }
+  return failures;
+}
+
 async function main(): Promise<number> {
   const listIds = [
     ...new Set([
       ...countingCases.flatMap((countingCase) => countingCase.listIds),
       ...totalsCases.flatMap((totalsCase) => totalsCase.listIds),
+      ...requirementCases.flatMap((requirementCase) => requirementCase.listIds),
     ]),
   ];
   const catalogues = new Map<number, Catalogue>();
@@ -143,9 +193,12 @@ async function main(): Promise<number> {
       catalogues.set(listId, catalogue);
     }
   }
-  const failures = runCases(catalogues) + runTotalsCases(catalogues);
+  const failures =
+    runCases(catalogues) +
+    runTotalsCases(catalogues) +
+    runRequirementCases(catalogues);
   console.log(
-    `cases failed ${failures} of ${countingCases.length + totalsCases.length}`,
+    `cases failed ${failures} of ${countingCases.length + totalsCases.length + requirementCases.length}`,
   );
   return failures > 0 ? 1 : 0;
 }
