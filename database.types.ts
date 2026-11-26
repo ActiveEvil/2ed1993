@@ -510,6 +510,7 @@ export type Database = {
           entry_group_id: number | null
           id: number
           mastery_level_max: number | null
+          mount_scope: string | null
           note: string | null
           points: number | null
           points_basis_id: number | null
@@ -531,6 +532,7 @@ export type Database = {
           entry_group_id?: number | null
           id?: number
           mastery_level_max?: number | null
+          mount_scope?: string | null
           note?: string | null
           points?: number | null
           points_basis_id?: number | null
@@ -552,6 +554,7 @@ export type Database = {
           entry_group_id?: number | null
           id?: number
           mastery_level_max?: number | null
+          mount_scope?: string | null
           note?: string | null
           points?: number | null
           points_basis_id?: number | null
@@ -2193,11 +2196,12 @@ export type Database = {
           grade_profile_id: number | null
           id: string
           list_id: string
+          mount_for: string | null
           position: number
-          ride_for: string | null
           snapshot: Json
           split: boolean
           squadron: number | null
+          transport_for: string | null
           updated_at: string | null
           vehicles: number | null
         }
@@ -2212,11 +2216,12 @@ export type Database = {
           grade_profile_id?: number | null
           id?: string
           list_id: string
+          mount_for?: string | null
           position: number
-          ride_for?: string | null
           snapshot: Json
           split?: boolean
           squadron?: number | null
+          transport_for?: string | null
           updated_at?: string | null
           vehicles?: number | null
         }
@@ -2231,11 +2236,12 @@ export type Database = {
           grade_profile_id?: number | null
           id?: string
           list_id?: string
+          mount_for?: string | null
           position?: number
-          ride_for?: string | null
           snapshot?: Json
           split?: boolean
           squadron?: number | null
+          transport_for?: string | null
           updated_at?: string | null
           vehicles?: number | null
         }
@@ -2255,8 +2261,15 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "saved_list_units_ride_for_fkey"
-            columns: ["ride_for", "list_id"]
+            foreignKeyName: "saved_list_units_mount_for_fkey"
+            columns: ["mount_for", "list_id"]
+            isOneToOne: false
+            referencedRelation: "saved_list_units"
+            referencedColumns: ["id", "list_id"]
+          },
+          {
+            foreignKeyName: "saved_list_units_transport_for_fkey"
+            columns: ["transport_for", "list_id"]
             isOneToOne: false
             referencedRelation: "saved_list_units"
             referencedColumns: ["id", "list_id"]
