@@ -618,12 +618,12 @@ def kind_ok(row):
     if kind == "commander":
         return (subjects == {"entry_id"} and count is not None and mode in ("must", "may")
                 and not targets & {"target_set_id", "target_category_id"})
-    if kind == "transport":
+    if kind in ("transport", "mount"):
         return (subjects == {"entry_id"} and bool(targets & {"target_entry_id", "target_set_id"})
                 and mode in ("squads", "characters"))
     if kind == "band_reassignment":
         return (subjects <= {"entry_id", "unit_category_id"} and "target_category_id" in targets
-                and mode in ("rider", "always"))
+                and mode in ("rider", "carried", "always"))
     if kind == "pairing":
         return (subjects <= SUBJECT_ITEMS | {"entry_id"}
                 and targets <= TARGET_ITEMS | {"target_entry_id"}
@@ -916,7 +916,7 @@ def ride_checks(req):
         members[m["set"]].add(m["e"])
     carried = defaultdict(set)
     for row in req["rows"]:
-        if row["k"] == "transport" and row.get("mode") == "squads":
+        if row["k"] in ("transport", "mount") and row.get("mode") == "squads":
             for s in row["s"]:
                 for t in row["t"]:
                     if t["c"] == "target_entry_id":
