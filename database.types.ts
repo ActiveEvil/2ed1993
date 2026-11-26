@@ -514,6 +514,7 @@ export type Database = {
           points: number | null
           points_basis_id: number | null
           position: number
+          requires_rider: boolean
           squadron_max: number | null
           transport_scope: string | null
           unit_category_id: number
@@ -534,6 +535,7 @@ export type Database = {
           points?: number | null
           points_basis_id?: number | null
           position: number
+          requires_rider?: boolean
           squadron_max?: number | null
           transport_scope?: string | null
           unit_category_id: number
@@ -554,6 +556,7 @@ export type Database = {
           points?: number | null
           points_basis_id?: number | null
           position?: number
+          requires_rider?: boolean
           squadron_max?: number | null
           transport_scope?: string | null
           unit_category_id?: number
