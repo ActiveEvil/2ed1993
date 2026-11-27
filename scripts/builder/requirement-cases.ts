@@ -426,7 +426,7 @@ export const requirementCases: RequirementCase[] = [
     listIds: [12],
     units: [
       unit("hunters", 12, 224),
-      unit("rhino", 12, 236, { rideFor: "hunters" }),
+      unit("rhino", 12, 236, { transportFor: "hunters" }),
     ],
     context: { hostListId: 12 },
     expected: [],
@@ -452,7 +452,10 @@ export const requirementCases: RequirementCase[] = [
     id: "ru-3",
     label: "List 12, Rhino carrying a Wolf Lord, no Iron Priest",
     listIds: [12],
-    units: [unit("lord", 12, 219), unit("rhino", 12, 236, { rideFor: "lord" })],
+    units: [
+      unit("lord", 12, 219),
+      unit("rhino", 12, 236, { transportFor: "lord" }),
+    ],
     context: { hostListId: 12, commanderUnitKey: "lord" },
     expected: [
       {
@@ -470,7 +473,7 @@ export const requirementCases: RequirementCase[] = [
     listIds: [12],
     units: [
       unit("scouts", 12, 227),
-      unit("raider", 12, 235, { rideFor: "scouts" }),
+      unit("raider", 12, 235, { transportFor: "scouts" }),
     ],
     context: { hostListId: 12 },
     expected: [

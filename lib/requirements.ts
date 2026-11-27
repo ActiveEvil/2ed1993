@@ -263,7 +263,7 @@ const carriesSquad = (
   byKey: ReadonlyMap<string, UnitTaken>,
 ) => {
   const squad =
-    unit.rideFor === undefined ? undefined : byKey.get(unit.rideFor);
+    unit.transportFor === undefined ? undefined : byKey.get(unit.transportFor);
   return (
     squad !== undefined &&
     catalogue.requirements.some(

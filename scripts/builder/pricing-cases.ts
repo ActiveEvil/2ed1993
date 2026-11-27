@@ -176,7 +176,7 @@ export const pricingCases: PricingCase[] = [
         models: { 330: 10 },
         options: [{ unitOptionId: 472 }],
       }),
-      unit("warbikes", 14, 395, { vehicles: 10, rideFor: "evil-sunz" }),
+      unit("warbikes", 14, 395, { vehicles: 10, mountFor: "evil-sunz" }),
     ],
     expected: 470,
     expectedByUnit: { "evil-sunz": 470, warbikes: 0 },

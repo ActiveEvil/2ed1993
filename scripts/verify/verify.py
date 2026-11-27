@@ -930,7 +930,7 @@ def ride_checks(req):
         profiles[p["u"]].add(p["id"])
     entries = {e["id"]: e for e in req["lineup"]}
     for ride in req["lineup"]:
-        if ride.get("ts") not in ("squads", "characters_and_squads"):
+        if (ride.get("ms") or ride.get("ts")) not in ("squads", "characters_and_squads"):
             continue
         squads = carried.get(ride["id"]) or {
             e["id"] for e in req["lineup"]

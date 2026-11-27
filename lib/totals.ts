@@ -123,7 +123,7 @@ export function checkTotals(
   const reassignments = catalogue.requirements.filter(
     (row) =>
       row.kind === "band_reassignment" &&
-      row.mode === "rider" &&
+      (row.mode === "rider" || row.mode === "carried") &&
       (row.variant_id === null ||
         (row.variant_id === variantId) === row.under_variant),
   );
@@ -133,14 +133,15 @@ export function checkTotals(
     (band) => band.category === "Support",
   )?.id;
 
-  // A14, A15, LB-65: a ride's points join its rider's band when the rider is a character of that band.
+  // A14, A15, LB-65, LB-91: a mount's or a transport's points join its character's band.
   const bandOf = (unit: UnitTaken) => {
     if (unit.listId !== context.hostListId) {
       return support;
     }
     const own = entries.get(unit.entryId)?.unit_category_id;
-    const rider =
-      unit.rideFor === undefined ? undefined : byKey.get(unit.rideFor);
+    const linkedKey = unit.mountFor ?? unit.transportFor;
+    const mode = unit.mountFor !== undefined ? "rider" : "carried";
+    const rider = linkedKey === undefined ? undefined : byKey.get(linkedKey);
     const riderEntry =
       rider?.listId === context.hostListId
         ? entries.get(rider.entryId)
@@ -151,6 +152,7 @@ export function checkTotals(
     const target = riderEntry.unit_category_id;
     return reassignments.some(
       (row) =>
+        row.mode === mode &&
         row.target_category_id === target &&
         (row.entry_id === unit.entryId || row.unit_category_id === own),
     )

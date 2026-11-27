@@ -53,7 +53,8 @@ export type UnitTaken = {
   datafaxWeapons: DatafaxPick[];
   split?: boolean;
   attachedTo?: { unitKey: string; mode: "leads" | "must" | "may" };
-  rideFor?: string;
+  mountFor?: string;
+  transportFor?: string;
   allyId?: number | null;
   wargearCards?: WargearCardTaken[];
   vehicleCards?: VehicleCardTaken[];
@@ -1095,7 +1096,7 @@ export function priceList(
   const ridden = new Map(
     units.map((unit) => {
       const price = base.get(unit.key)!;
-      const squad = units.find((candidate) => candidate.key === unit.rideFor);
+      const squad = units.find((candidate) => candidate.key === unit.mountFor);
       const catalogue = squad && catalogues.get(squad.listId);
       return [
         unit.key,

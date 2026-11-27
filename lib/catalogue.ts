@@ -29,7 +29,7 @@ const loadEntries = (listId: number) =>
   supabase
     .from("army_list_entries")
     .select(
-      "id, unit_category_id, unit_id, entry_group_id, position, allowance_min, allowance_max, points, points_basis_id, transport_scope, squadron_max, mastery_level_max, allowed_as_ally, affiliation_id, affiliation_label, unit_categories!inner()",
+      "id, unit_category_id, unit_id, entry_group_id, position, allowance_min, allowance_max, points, points_basis_id, transport_scope, mount_scope, squadron_max, mastery_level_max, allowed_as_ally, affiliation_id, affiliation_label, unit_categories!inner()",
     )
     .eq("unit_categories.army_list_id", listId)
     .order("position");

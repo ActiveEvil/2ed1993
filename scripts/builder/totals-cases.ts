@@ -52,13 +52,13 @@ const characterPrices =
 
 const wolfGuard = [
   unit("champion", 12, 223, { models: { 234: 1 } }),
-  unit("bike", 12, 234, { vehicles: 1, rideFor: "champion" }),
+  unit("bike", 12, 234, { vehicles: 1, mountFor: "champion" }),
   unit("pack", 12, 224, { models: { 235: 1, 236: 9 } }),
-  unit("rhino", 12, 236, { vehicles: 1, rideFor: "pack" }),
+  unit("rhino", 12, 236, { vehicles: 1, transportFor: "pack" }),
 ];
 const harlequinArmy = [
   unit("great-harlequin", 13, 308, { models: { 288: 1 } }),
-  unit("jetbike", 13, 307, { vehicles: 1, rideFor: "great-harlequin" }),
+  unit("jetbike", 13, 307, { vehicles: 1, mountFor: "great-harlequin" }),
   unit("squad", 13, 312, { models: { 292: 1, 293: 9 } }),
 ];
 const harlequinKeys = harlequinArmy.map((harlequin) => harlequin.key);
@@ -333,15 +333,45 @@ export const totalsCases: TotalsCase[] = [
     source: `A14, A15; ${list12}; total 417 over 100; Characters 31 + 20 = 51 over 50; the pack's Rhino stays in Support, 50 of 50; Squads 316 of at least 25`,
   },
   {
+    id: "lb91-a",
+    label: "List 12, Wolf Lord carried in a Rhino, 200 points",
+    listIds: [12],
+    units: [
+      wolfLord,
+      unit("lord-rhino", 12, 236, { vehicles: 1, transportFor: "wolf-lord" }),
+    ],
+    context: { hostListId: 12, pointsLimit: 200 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 12,
+        governs: band(35),
+        allowed: 100,
+        taken: 140,
+        unitKeys: ["wolf-lord", "lord-rhino"],
+      },
+      {
+        kind: "band_min",
+        listId: 12,
+        governs: band(36),
+        allowed: 50,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-91, LB-96; ${list12}; ${others}; the Rhino is 50 from its datafax; Characters 90 + 50 = 140 over 100; Squads 0 under 50; Support 0; total 140`,
+  },
+  {
     id: "a14-b",
     label:
       "List 13, Farseer and Great Harlequin, each on a Jetbike, 360 points",
     listIds: [13],
     units: [
       unit("farseer", 13, 281, { models: { 255: 1 } }),
-      unit("jetbike-1", 13, 307, { vehicles: 1, rideFor: "farseer" }),
+      unit("jetbike-1", 13, 307, { vehicles: 1, mountFor: "farseer" }),
       unit("great-harlequin", 13, 308, { models: { 288: 1 } }),
-      unit("jetbike-2", 13, 307, { vehicles: 1, rideFor: "great-harlequin" }),
+      unit("jetbike-2", 13, 307, { vehicles: 1, mountFor: "great-harlequin" }),
     ],
     context: { hostListId: 13, pointsLimit: 360 },
     expected: [
@@ -371,7 +401,7 @@ export const totalsCases: TotalsCase[] = [
     listIds: [13],
     units: [
       unit("squad", 13, 312, { models: { 292: 1, 293: 4 } }),
-      unit("jetbikes", 13, 307, { vehicles: 5, rideFor: "squad" }),
+      unit("jetbikes", 13, 307, { vehicles: 5, mountFor: "squad" }),
     ],
     context: { hostListId: 13, pointsLimit: 400 },
     expected: [
@@ -393,7 +423,7 @@ export const totalsCases: TotalsCase[] = [
     listIds: [14],
     units: [
       unit("warboss", 14, 353, { models: { 305: 1 } }),
-      unit("warboar", 14, 382, { models: { 301: 1 }, rideFor: "warboss" }),
+      unit("warboar", 14, 382, { models: { 301: 1 }, mountFor: "warboss" }),
     ],
     context: { hostListId: 14, pointsLimit: 140 },
     expected: [
