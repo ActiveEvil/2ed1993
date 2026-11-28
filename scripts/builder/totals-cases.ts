@@ -81,6 +81,21 @@ const list9 =
 const others =
   "entry 219 Wolf Lord 90 per entry; entry 376 Goff Boyz Mob 12 a model; entry 2 Space Marine Commander 90 per entry";
 
+const list2 =
+  "list 2 bands: 8 Characters max 50, 9 Squads min 25, 10 Auxilia max 50, 11 Support max 50; rows 259 and 267 (band 11, and Bike, to 8); entry 23 Imperial Guard Colonel 65 and entry 24 Commissar 40, per entry; entry 146 Bike 20 and entry 151 Rhino 50, each a vehicle from its datafax";
+const list5Rides =
+  "list 5 bands: 5 Characters max 50, 6 Squads min 25, 7 Support max 50; rows 261 and 269 (band 7, and Bike, to 5); entry 4 Captain 90 and entry 7 Techmarine 35, per entry; entry 16 Bike 20 and entry 22 Rhino 50, each a vehicle from its datafax";
+const list6 =
+  "list 6 bands: 28 Characters max 50, 29 Squads min 25, 30 Support max 50; row 270 (Jetbike to 28); entry 132 Exarch 50 per entry; entry 181 Jetbike 20 a vehicle from its datafax";
+const list7 =
+  "list 7 bands: 12 Characters max 50, 13 Squads min 25, 14 Support max 50; row 262 (band 14 to 12); entry 37 Warlord 74 per entry; entry 184 Rhino 50 a vehicle from its datafax";
+const list8 =
+  "list 8 bands: 15 Characters max 50, 16 Mobs min 25, 17 Freebooters max 50, 18 Support max 50; rows 263, 271 and 272 (band 18, Nobz Bike and Warboar, to 15); entry 65 Warboss 65, entry 69 Nob 13 and entry 70 Mekaniak 18, per entry; entry 321 Warboar 6 a model; entry 188 Nobz Bike 20 and entry 186 Battlewagon 50, each a vehicle from its datafax";
+const list10 =
+  "list 10 bands: 21 Characters max 50, 22 Broods min 25, 23 Support max 50; rows 264 and 273 (band 23, and Bike, to 21); entry 96 Genestealer Patriarch 163 and entry 97 Genestealer Magus 107, per entry; entry 162 Bike 20 and entry 166 Rhino 50, each a vehicle from its datafax";
+const list11 =
+  "list 11 bands: 24 Characters max 50, 25 Squads min 25, 26 Support max 50, 27 Daemons max 50; rows 265 and 274 to 276 (band 26, Juggernauts, Steeds and Discs of Tzeentch, to 24); entry 101 Chaos Space Marine Commander 97, entry 102 Chaos Space Marine Hero 66, entry 103 Chaos Space Marine Champion 40 and entry 104 Noise Marine Champion 40, per entry; entry 114 Bloodthirster 275, entry 117 Juggernauts 36, entry 121 Steeds 19 and entry 129 Discs of Tzeentch 16, a model; entry 168 Rhino 50 a vehicle from its datafax";
+
 export const totalsCases: TotalsCase[] = [
   {
     id: "lb57-a",
@@ -614,5 +629,315 @@ export const totalsCases: TotalsCase[] = [
     ],
     expectedUnchecked: [],
     source: `LB-62, LB-60; ${list13}; ${list14}; ${others}; every band waived, the warning stands; total 93 + 250 + 90 + 65 = 498`,
+  },
+  {
+    id: "lb99-a",
+    label:
+      "List 2, Colonel on a Bike and Commissar carried in a Rhino, 340 points",
+    listIds: [2],
+    units: [
+      unit("colonel", 2, 23, { models: { 34: 1 } }),
+      unit("bike", 2, 146, { vehicles: 1, mountFor: "colonel" }),
+      unit("commissar", 2, 24, { models: { 35: 1 } }),
+      unit("rhino", 2, 151, { vehicles: 1, transportFor: "commissar" }),
+    ],
+    context: { hostListId: 2, pointsLimit: 340 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 2,
+        governs: band(8),
+        allowed: 170,
+        taken: 175,
+        unitKeys: ["colonel", "bike", "commissar", "rhino"],
+      },
+      {
+        kind: "band_min",
+        listId: 2,
+        governs: band(9),
+        allowed: 85,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-94, LB-99; ${list2}; Characters 65 + 20 + 40 + 50 = 175 over 170, and 155 or 125 with either row unread; Squads 0 under 85; Auxilia 0; Support 0; total 175`,
+  },
+  {
+    id: "lb99-b",
+    label:
+      "List 5, Captain on a Bike and Techmarine carried in a Rhino, 360 points",
+    listIds: [5],
+    units: [
+      unit("captain", 5, 4, { models: { 15: 1 } }),
+      unit("bike", 5, 16, { vehicles: 1, mountFor: "captain" }),
+      unit("techmarine", 5, 7, { models: { 20: 1 } }),
+      unit("rhino", 5, 22, { vehicles: 1, transportFor: "techmarine" }),
+    ],
+    context: { hostListId: 5, pointsLimit: 360 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 5,
+        governs: band(5),
+        allowed: 180,
+        taken: 195,
+        unitKeys: ["captain", "bike", "techmarine", "rhino"],
+      },
+      {
+        kind: "band_min",
+        listId: 5,
+        governs: band(6),
+        allowed: 90,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-94, LB-99; ${list5Rides}; Characters 90 + 20 + 35 + 50 = 195 over 180, and 175 or 145 with either row unread; Squads 0 under 90; Support 0; total 195`,
+  },
+  {
+    id: "lb99-c",
+    label: "List 6, Exarch on a Jetbike, 120 points",
+    listIds: [6],
+    units: [
+      unit("exarch", 6, 132, { models: { 164: 1 } }),
+      unit("jetbike", 6, 181, { vehicles: 1, mountFor: "exarch" }),
+    ],
+    context: { hostListId: 6, pointsLimit: 120 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 6,
+        governs: band(28),
+        allowed: 60,
+        taken: 70,
+        unitKeys: ["exarch", "jetbike"],
+      },
+      {
+        kind: "band_min",
+        listId: 6,
+        governs: band(29),
+        allowed: 30,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-99; ${list6}; Characters 50 + 20 = 70 over 60; Squads 0 under 30; Support 0; total 70`,
+  },
+  {
+    id: "lb94-a",
+    label: "List 7, Warlord carried in a Rhino, 200 points",
+    listIds: [7],
+    units: [
+      unit("warlord", 7, 37, { models: { 55: 1 } }),
+      unit("rhino", 7, 184, { vehicles: 1, transportFor: "warlord" }),
+    ],
+    context: { hostListId: 7, pointsLimit: 200 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 7,
+        governs: band(12),
+        allowed: 100,
+        taken: 124,
+        unitKeys: ["warlord", "rhino"],
+      },
+      {
+        kind: "band_min",
+        listId: 7,
+        governs: band(13),
+        allowed: 50,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-94; ${list7}; Characters 74 + 50 = 124 over 100; Squads 0 under 50; Support 0; total 124`,
+  },
+  {
+    id: "lb99-d",
+    label:
+      "List 8, Warboss on a Warboar, Nob on a Nobz Bike and Mekaniak carried in a Battlewagon, 340 points",
+    listIds: [8],
+    units: [
+      unit("warboss", 8, 65, { models: { 89: 1 } }),
+      unit("warboar", 8, 321, { models: { 301: 1 }, mountFor: "warboss" }),
+      unit("nob", 8, 69, { models: { 93: 1 } }),
+      unit("nobz-bike", 8, 188, { vehicles: 1, mountFor: "nob" }),
+      unit("mekaniak", 8, 70, { models: { 94: 1 } }),
+      unit("battlewagon", 8, 186, { vehicles: 1, transportFor: "mekaniak" }),
+    ],
+    context: { hostListId: 8, pointsLimit: 340 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 8,
+        governs: band(15),
+        allowed: 170,
+        taken: 172,
+        unitKeys: [
+          "warboss",
+          "warboar",
+          "nob",
+          "nobz-bike",
+          "mekaniak",
+          "battlewagon",
+        ],
+      },
+      {
+        kind: "band_min",
+        listId: 8,
+        governs: band(16),
+        allowed: 85,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-94, LB-95, LB-99; ${list8}; Characters 65 + 6 + 13 + 20 + 18 + 50 = 172 over 170, and 166, 152 or 122 with any one row unread; Mobs 0 under 85; Freebooters 0; Support 0; total 172`,
+  },
+  {
+    id: "lb99-e",
+    label:
+      "List 10, Magus on a Bike and Patriarch carried in a Rhino, 660 points",
+    listIds: [10],
+    units: [
+      unit("magus", 10, 97, { models: { 125: 1 } }),
+      unit("bike", 10, 162, { vehicles: 1, mountFor: "magus" }),
+      unit("patriarch", 10, 96, { models: { 124: 1 } }),
+      unit("rhino", 10, 166, { vehicles: 1, transportFor: "patriarch" }),
+    ],
+    context: { hostListId: 10, pointsLimit: 660 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 10,
+        governs: band(21),
+        allowed: 330,
+        taken: 340,
+        unitKeys: ["magus", "bike", "patriarch", "rhino"],
+      },
+      {
+        kind: "band_min",
+        listId: 10,
+        governs: band(22),
+        allowed: 165,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-94, LB-99; ${list10}; Characters 107 + 20 + 163 + 50 = 340 over 330, and 320 or 290 with either row unread; Broods 0 under 165; Support 0; total 340`,
+  },
+  {
+    id: "lb99-f",
+    label:
+      "List 11, three characters on a Juggernaut, a Steed and a Disc of Tzeentch, and a fourth carried in a Rhino, 700 points",
+    listIds: [11],
+    units: [
+      unit("hero", 11, 102, { models: { 130: 1 } }),
+      unit("juggernaut", 11, 117, { models: { 148: 1 }, mountFor: "hero" }),
+      unit("commander", 11, 101, { models: { 129: 1 } }),
+      unit("steed", 11, 121, { models: { 152: 1 }, mountFor: "commander" }),
+      unit("champion", 11, 103, { models: { 131: 1 } }),
+      unit("disc", 11, 129, { models: { 161: 1 }, mountFor: "champion" }),
+      unit("noise-champion", 11, 104, { models: { 132: 1 } }),
+      unit("rhino", 11, 168, { vehicles: 1, transportFor: "noise-champion" }),
+    ],
+    context: { hostListId: 11, pointsLimit: 700 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 11,
+        governs: band(24),
+        allowed: 350,
+        taken: 364,
+        unitKeys: [
+          "hero",
+          "juggernaut",
+          "commander",
+          "steed",
+          "champion",
+          "disc",
+          "noise-champion",
+          "rhino",
+        ],
+      },
+      {
+        kind: "band_min",
+        listId: 11,
+        governs: band(25),
+        allowed: 175,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-94, LB-99; ${list11}; Characters 66 + 36 + 97 + 19 + 40 + 16 + 40 + 50 = 364 over 350, and 348, 345, 328 or 314 with any one row unread; Squads 0 under 175; Support 0; Daemons 0; total 364`,
+  },
+  {
+    id: "lb99-g",
+    label: "List 11, Bloodthirster on a Juggernaut, 620 points",
+    listIds: [11],
+    units: [
+      unit("bloodthirster", 11, 114, { models: { 145: 1 } }),
+      unit("juggernaut", 11, 117, {
+        models: { 148: 1 },
+        mountFor: "bloodthirster",
+      }),
+    ],
+    context: { hostListId: 11, pointsLimit: 620 },
+    expected: [
+      {
+        kind: "band_min",
+        listId: 11,
+        governs: band(25),
+        allowed: 155,
+        taken: 0,
+        unitKeys: [],
+      },
+      {
+        kind: "band_max",
+        listId: 11,
+        governs: band(27),
+        allowed: 310,
+        taken: 311,
+        unitKeys: ["bloodthirster", "juggernaut"],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-99, A14 (the rider's own band decides); ${list11}; the Juggernaut stays in Daemons with its rider, row 274 naming Characters; Daemons 275 + 36 = 311 over 310; Squads 0 under 155; Characters 0; total 311`,
+  },
+  {
+    id: "lb94-b",
+    label: "List 14, Bigboss carried in a Battlewagon, 160 points",
+    listIds: [14],
+    units: [
+      unit("bigboss", 14, 355, { models: { 308: 1 } }),
+      unit("battlewagon", 14, 390, { vehicles: 1, transportFor: "bigboss" }),
+    ],
+    context: { hostListId: 14, pointsLimit: 160 },
+    expected: [
+      {
+        kind: "band_max",
+        listId: 14,
+        governs: band(49),
+        allowed: 80,
+        taken: 85,
+        unitKeys: ["bigboss", "battlewagon"],
+      },
+      {
+        kind: "band_min",
+        listId: 14,
+        governs: band(50),
+        allowed: 40,
+        taken: 0,
+        unitKeys: [],
+      },
+    ],
+    expectedUnchecked: [],
+    source: `LB-94, LB-95; ${list14}; row 266 (band 51 to 49); entry 355 Bigboss 35 per entry; entry 390 Battlewagon 50 a vehicle from its datafax; Characters 35 + 50 = 85 over 80; Mobs 0 under 40; Support 0; total 85`,
   },
 ];

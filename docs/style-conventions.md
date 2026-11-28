@@ -150,6 +150,10 @@ Unique Weapon Special Rules, and the citation set at 10px; the card surface's
 exclusion restated in The strip grammar; the weapon checks added to the
 Standing verification suite.
 
+**Revised 28 November 2026:** the stock line made the mount's alone, reading
+"Mount for…" and printed from `mount_scope`; a transport prints none (Sources,
+LB-97, LB-98).
+
 *Dating note: an earlier version of this file dated the 8 August revisions as
 6 August. Corrected 8 August.*
 
@@ -731,17 +735,19 @@ the codex is also more complete.
   per-army anti-skimmer weapon options were stripped of their prices in the same
   pass and keep their rules, each closing on a sentence saying the cost sits with
   the army list.
-- **The stock transport line is not printed on an entry that cannot be fielded
-  as a single model.** BF-23, 10 November 2026. An entry with a
-  `transport_scope` prints one of three stock sentences ("Transport for any
-  character."). The renderer leaves the sentence off where the entry's unit
-  has profiles and the smallest `models_min` among its base profiles is above
-  1: the Juggernauts, Steeds and Discs of Tzeentch in Codex Army Lists: Chaos,
+- **The stock mount line is not printed on an entry that cannot be fielded as
+  a single model.** BF-23, 10 November 2026; the line made the mount's alone
+  on 28 November (LB-97, LB-98). An entry with a `mount_scope` prints one of
+  three stock sentences ("Mount for any character."). A transport prints no
+  stock line: its `transport_scope` is kept for the builder and is not read by
+  the page. The renderer leaves the sentence off where the entry's unit has
+  profiles and the smallest `models_min` among its base profiles is above 1:
+  the Juggernauts, Steeds and Discs of Tzeentch in Codex Army Lists: Chaos,
   each sold in units of 5-10. The entry's own note says how a single one is
   bought, and the stock line alone would misstate an entry sold as a unit. The
   line still prints for an entry whose unit has no profiles (the bikes,
-  jetbikes, Vyper and Nobz Bike, which have a datafax) and for the Warboar
-  and Cyboar, whose profile starts at one model.
+  jetbikes, Vyper, Nobz Bike and Warbike, which have a datafax) and for the
+  Warboar and Cyboar, whose profile starts at one model.
 - **Content comes from the one page being transcribed, not its army-list
   cousins.** Added 13 August after a Tarantula draft imported "fitted with a
   targeter" from the Codex Ultramarines entry into the Wargear-book rules text.
